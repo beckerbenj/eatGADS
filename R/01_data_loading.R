@@ -81,7 +81,9 @@ extract_labels <- function(rawDat, old_labels = NULL, type = "SPSS") {
 # a) ----------- variable labels
 extract_varLabels <- function(spss_df) {
   varList <- lapply(spss_df, function(var) attr(var, "label"))
-  varLabel_df <- data.frame(names(varList), unlist(varList), stringsAsFactors = F)
+  varLabels <- as.character(varList)
+  varLabels[varLabels == "NULL"] <- NA
+  varLabel_df <- data.frame(names(varList), varLabels, stringsAsFactors = F)
   # create empty data frame if no variable labels in sav
   if(is.null(varLabel_df)) varLabel_df <- data.frame(matrix(ncol = 2, nrow = 0))
   # names

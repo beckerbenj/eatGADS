@@ -21,7 +21,7 @@ writeDB_SPSS <- function(df, label_df, filePath) {
 
   # 2) add labels to df
   df <- addLabels(df = df, label_df = label_df)
-
+  browser()
   # 3) write spss-file
   haven::write_sav(df, path = filePath)
 
@@ -32,6 +32,7 @@ writeDB_SPSS <- function(df, label_df, filePath) {
 addLabels <- function(df, label_df) {
   for(n in names(df)) {
     single_label_df <- label_df[label_df$varName == n, ]
+    #browser()
     # add labels if any rows in label data frame
     if(nrow(single_label_df) > 0) {
       attributes(df[, n]) <- addLabels_single(label_df = single_label_df)
@@ -60,7 +61,7 @@ addLabels_single <- function(label_df) {
     out[["labels"]] <- value_label_df[, "value"]
     names(out[["labels"]]) <- value_label_df[, "label"]
   }
-
+  #if(any(label_df$varName == "ISTATUS")) browser()
   out
 }
 
