@@ -19,12 +19,25 @@ test_that("Variable name transformation is reported correctly ", {
 ### Label extracting
 rawDat <- haven::read_spss("helper_spss.sav", user_na = TRUE)
 
-label_out <- data.frame(varName = c("VAR1", "VAR2"), varLabel = c("Variable 1", "Variable 2"), value = c(1, 2),
-                        label = c("One", "Two"), missings = c(NA, NA), stringsAsFactors = FALSE)
+label_out1 <- data.frame(varName = c("VAR1", "VAR2", "VAR3"),
+                          varLabel = c("Variable 1", "Variable 2", "Variable 3"),
+                          format = c("F8.2", "F8.0", "A8"),
+                          display_width = c(NA, 10, NA),
+                          class = c("haven_labelled", "haven_labelled", NA),
+                          stringsAsFactors = FALSE)
 
-test_that("Variable label extracted correctly ", {
-  expect_equal(extract_varLabels(rawDat),
-                   data.frame(varName = c("VAR1", "VAR2"), varLabel = c("Variable 1", "Variable 2"), stringsAsFactors = FALSE))
+label_out2 <- data.frame(varName = c("VAR1", "VAR2"), value = c(1, 2),
+                         label = c("One", "Two"), missings = c(NA, NA), stringsAsFactors = FALSE)
+
+label_out_all <- merge(label_out1, label_out2, by = "varName", all = TRUE)
+
+test_that("Extract attribute from data frame", {
+  expect_equal(extract_attribute(rawDat$VAR1, "label"),
+               "Variable 1")
+})
+
+test_that("Attributes except value labels extracted correctly ", {
+  expect_equal(extract_varLabels(rawDat), label_out1)
 })
 
 test_that("Value label of single variable extracted correctly ", {
@@ -32,14 +45,25 @@ test_that("Value label of single variable extracted correctly ", {
                data.frame(varName = "VAR1", value = 1, label = "One", missings = NA, stringsAsFactors = FALSE))
 })
 
+string_test <- rawDat$VAR3
+attributes(string_test)$labels <- c("One" = "One")
+
+test_that("Value label of single variable extracted correctly ", {
+  expect_equal(extract_VL_SPSS(rawDat$VAR1, "VAR1"),
+               data.frame(varName = "VAR1", value = 1, label = "One", missings = NA, stringsAsFactors = FALSE))
+  expect_warning(extract_VL_SPSS(string_test, "test"),
+                 "Values for test cannot be coerced to numeric and have been dropped.")
+  expect_equal(extract_VL_SPSS(string_test, "VAR3", labeled_strings = TRUE),
+               data.frame(varName = "VAR3", value = "One", label = "One", missings = NA, stringsAsFactors = FALSE))
+})
+
 test_that("Value label of multiple variables extracted correctly ", {
-  expect_equal(extract_valueLabels(rawDat),
-               data.frame(varName = c("VAR1", "VAR2"), value = c(1, 2),
-                          label = c("One", "Two"), missings = c(NA, NA), stringsAsFactors = FALSE))
+  expect_equal(extract_valueLabels(rawDat, labeledStrings = FALSE), label_out2)
 })
 
 test_that("All labels extracted correctly ", {
-  expect_equal(extract_labels(rawDat, type = "SPSS"), label_out)
+  expect_equal(extract_labels(rawDat, type = "SPSS", labeledStrings = FALSE),
+               label_out_all)
 })
 
 ### Missing Label extracting
@@ -55,8 +79,8 @@ test_that("Value label of single variable extracted correctly ", {
 
 ### All SPSS importing in once
 test_that("User SPSS importing function works ", {
-  expected <- list(dat = data.frame(VAR1 = 1, VAR2 = 2),
-                   labels = label_out)
+  expected <- list(dat = data.frame(VAR1 = 1, VAR2 = 3, VAR3 = "a", stringsAsFactors = FALSE),
+                   labels = label_out_all)
   expect_equal(import_spss("helper_spss.sav"), expected)
 })
 
