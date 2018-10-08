@@ -104,6 +104,7 @@ extract_varLabels <- function(spss_df) {
 extract_attribute <- function(var, attr_name) {
   out <- attr(var, attr_name)
   if(is.null(out)) out <- NA
+  if(length(out) > 1) out <- paste(out, collapse = ", ")
   out
 }
 

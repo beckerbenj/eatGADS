@@ -31,9 +31,13 @@ label_out2 <- data.frame(varName = c("VAR1", "VAR2"), value = c(1, 2),
 
 label_out_all <- merge(label_out1, label_out2, by = "varName", all = TRUE)
 
+##
+class_test <- rawDat$VAR3
+attributes(class_test)$class <- c("spss_labelled", "labelled")
+
 test_that("Extract attribute from data frame", {
-  expect_equal(extract_attribute(rawDat$VAR1, "label"),
-               "Variable 1")
+  expect_equal(extract_attribute(rawDat$VAR1, "label"), "Variable 1")
+  expect_equal(extract_attribute(class_test, "class"), "spss_labelled, labelled")
 })
 
 test_that("Attributes except value labels extracted correctly ", {
