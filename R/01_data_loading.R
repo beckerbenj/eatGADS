@@ -15,12 +15,12 @@
 #'to be done
 #'
 #'@export
-import_spss <- function(filePath, labeledStrings = FALSE) {
+import_spss <- function(filePath, checkVarNames = TRUE, labeledStrings = FALSE) {
   # import (keep NAs how they are coded to later mark values as missings but keep them seperatable)
   rawDat <- haven::read_spss(file = filePath, user_na = TRUE)
 
   # 1) check and prepare variable names
-  names(rawDat) <- unlist(lapply(names(rawDat), transf_names))
+  if(identical(checkVarNames, TRUE)) names(rawDat) <- unlist(lapply(names(rawDat), transf_names))
 
   # 2) extract labels
   label_df <- extract_labels(rawDat = rawDat, type = "SPSS", labeledStrings = labeledStrings)
@@ -82,7 +82,7 @@ extract_labels <- function(rawDat, old_labels = NULL, type = "SPSS", labeledStri
 extract_varLabels <- function(spss_df) {
   # check for unknown attributes (mostly to secure against changes in haven)
   all_attr <- unlist(lapply(spss_df, function(var) names(attributes(var))))
-  unknown_attr <- all_attr[!all_attr %in% c("label", "format.spss", "display_width", "class", "labels", "na_range", "na_value")]
+  unknown_attr <- all_attr[!all_attr %in% c("label", "format.spss", "display_width", "class", "labels", "na_range", "na_values")]
   if(length(unknown_attr) > 0) stop("Unknown attributes exported from haven:", unknown_attr, ". Please contact package author.")
 
   varLabels <- unlist(lapply(spss_df, extract_attribute, attr_name = "label"))
