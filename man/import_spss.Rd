@@ -4,7 +4,7 @@
 \alias{import_spss}
 \title{Import SPSS data}
 \usage{
-import_spss(filePath, labeledStrings = FALSE)
+import_spss(filePath, checkVarNames = TRUE, labeledStrings = FALSE)
 }
 \arguments{
 \item{filePath}{Source file location, ending on .sav}
