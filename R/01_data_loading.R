@@ -51,35 +51,42 @@ transf_names <- function(vec_name) {
 # 02) extract labels ---------------------------------------------------------
 # actually 2 functions, but important to keep code @ 1 place
 extract_labels <- function(rawDat, old_labels = NULL, type = "SPSS", labeledStrings) {
+  attr_vec <- c("varName", "varLabel", "format", "display_width", "class", "value", "valLabel", "missings")
+  label_df <- data.frame(varName = names(rawDat), stringsAsFactors = FALSE)
+
   ## spss version of function
   if(identical(type, "SPSS")) {
-    # a) extract variable labels
-    var_labels <- extract_varLabels(spss_df = rawDat)
-    # b) extract values labels
-    val_labels <- extract_valueLabels(df = rawDat, type = type, labeledStrings = labeledStrings)
-
-    # Merge into one label DF
-    label_df <- merge(var_labels, val_labels, all = TRUE, sort = FALSE)
+    # a) extract meta-info on variable level
+    var_labels <- extract_variable_level(spss_df = rawDat)
+    # b) extract meta-info on values level
+    val_labels <- extract_value_level(df = rawDat, type = type, labeledStrings = labeledStrings)
   }
 
   ## R version of function
   if(identical(type, "R")) {
     # a) extract values labels from factors
-    fac_labels <- extract_valueLabels(df = rawDat, type = type, labeledStrings = labeledStrings)
+    fac_labels <- extract_value_level(df = rawDat, type = type, labeledStrings = labeledStrings)
     # b) create emtpy df if no variable and value labels so far
     if(is.null(old_labels)) {
       old_labels <- data.frame(matrix(ncol = 5, nrow = 0))
-      names(old_labels) <- c("varName", "varLabel", "value", "label", "missings")
+      names(old_labels) <- c("varName", "varLabel", "value", "valLabel", "missings")
     }
     # Merge into one label DF (keep columns in order)
     label_df <- merge(old_labels, fac_labels, all = TRUE)[, union(names(old_labels), names(fac_labels))]
   }
-  label_df
+
+  # merge results and out with all names
+  label_df <- merge(label_df, var_labels, by = "varName", all = TRUE, sort = FALSE)
+  label_df <- merge(label_df, val_labels, by = "varName", all = TRUE, sort = FALSE)
+  add_vars <- setdiff(attr_vec, names(label_df))
+  label_df[add_vars] <- NA
+
+  label_df[attr_vec]
 }
 
 
 # a) ----------- variable labels
-extract_varLabels <- function(spss_df) {
+extract_variable_level <- function(spss_df) {
   # check for unknown attributes (mostly to secure against changes in haven)
   all_attr <- unlist(lapply(spss_df, function(var) names(attributes(var))))
   unknown_attr <- all_attr[!all_attr %in% c("label", "format.spss", "display_width", "class", "labels", "na_range", "na_values")]
@@ -110,7 +117,7 @@ extract_attribute <- function(var, attr_name) {
 
 # b) ----------- value labels
 # all variables, for SPSS and R
-extract_valueLabels <- function(df, type = "SPSS", labeledStrings) {
+extract_value_level <- function(df, type = "SPSS", labeledStrings) {
   if(identical(type, "SPSS")) {
     FUN = extract_VL_SPSS
   } else if(identical(type, "R")) {
@@ -122,7 +129,7 @@ extract_valueLabels <- function(df, type = "SPSS", labeledStrings) {
   valLabel_df <- do.call(rbind, valueList)
   # add names to data frame, create emtpy data frame if no labels
   if(is.null(valLabel_df)) valLabel_df <- data.frame(matrix(ncol = 4, nrow = 0))
-  names(valLabel_df) <- c("varName", "value", "label", "missings")
+  names(valLabel_df) <- c("varName", "value", "valLabel", "missings")
   rownames(valLabel_df) <- NULL
   valLabel_df
 }
@@ -143,7 +150,7 @@ extract_VL_SPSS <- function(var, varName, labeled_strings = FALSE) {
   # extract value labels and return as long format df
   df <- data.frame(varName = rep(varName, length(attr(var, "labels"))),
                  value = values,
-                 label = attr(attr(var, "labels"), "names"),
+                 valLabel = attr(attr(var, "labels"), "names"),
                  missings = NA,
                  stringsAsFactors = FALSE)
 
