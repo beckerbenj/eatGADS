@@ -59,7 +59,7 @@ extract_labels <- function(rawDat, old_labels = NULL, type = "SPSS", labeledStri
     val_labels <- extract_valueLabels(df = rawDat, type = type, labeledStrings = labeledStrings)
 
     # Merge into one label DF
-    label_df <- merge(var_labels, val_labels, all = TRUE)
+    label_df <- merge(var_labels, val_labels, all = TRUE, sort = FALSE)
   }
 
   ## R version of function

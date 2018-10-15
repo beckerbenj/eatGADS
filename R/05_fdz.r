@@ -20,32 +20,40 @@
 #'@return SPSS syntax snippet
 #'
 #'@examples
-#'dat    <- data.frame ( foreign::read.spss ( "c:/diskdrv/Winword/Psycho/IQB/Daten/LV2016/BS_LV_Primar_2016_Matchingvorlaeufig_09_erweiterteGadsversion##'.sav", to.data.frame = FALSE, use.value.labels = FALSE, use.missings = TRUE))
+#'dat    <- data.frame ( foreign::read.spss ( "q:/BT2016/BT/50_Daten/03_Aufbereitet/06_Gesamtdatensatz/BS_LV_Primar_2016_Matchingvorlaeufig_09_erweiterteGadsversion.sav", to.data.frame = FALSE, use.value.labels = FALSE, use.missings = TRUE))
 #'classes<- sapply(dat, class)
 #'nCat   <- sapply(dat, FUN = function ( x ) { length(unique(x))})
 #'exclude<- intersect(which(classes=="factor"), which(nCat>90))
 #'exclude<- colnames(dat)[exclude]
-#'syntax <- fdz(fileName = "c:/diskdrv/Winword/Psycho/IQB/Daten/LV2016/BS_LV_Primar_2016_Matchingvorlaeufig_09_erweiterteGadsversion.sav", saveFolder = "c:/diskdrv/Winword/Psycho/IQB/temp/20_fdz", nameListe = "liste2.csv", nameSyntax = "syntax2.txt", exclude=exclude)
+#'syntax <- fdz(fileName = "q:/BT2016/BT/50_Daten/03_Aufbereitet/06_Gesamtdatensatz/BS_LV_Primar_2016_Matchingvorlaeufig_09_erweiterteGadsversion.sav", saveFolder = "N:/archiv/temp/20_fdz", nameListe = "liste2.csv", nameSyntax = "syntax2.txt", exclude=exclude)
 #'
 #'@export
 fdz <- function ( fileName, boundary = 5, saveFolder = NA, nameListe = NULL, nameSyntax = NULL, exclude = NULL) {
-       cat("\nRead data set with labels ... \n"); flush.console()
-       mitLab <- read.spss ( fileName, to.data.frame = FALSE, use.value.labels = TRUE, use.missings = TRUE)
-       varLab <- attr(mitLab, "variable.labels")
-       mitLab <- data.frame ( mitLab )
-       cat("\nRead data set without labels ... \n"); flush.console()
-       ohnLab <- data.frame ( read.spss ( fileName, to.data.frame = FALSE, use.value.labels = FALSE, use.missings = TRUE))
-       cat("\nRead missing definition ... \n"); flush.console()
-       mitMis <- data.frame ( read.spss ( fileName, to.data.frame = FALSE, use.value.labels = TRUE, use.missings = FALSE) )
-       skala  <- sapply(ohnLab, class)
-       tab    <- lapply(mitLab, FUN = function (y ) { table(as.character(y)) } )
+
+        df     <- import_spss(fileName, checkVarNames = FALSE, labeledStrings = TRUE)
+  #cat("\nRead data set with labels ... \n"); flush.console()
+  #     mitLab <- read.spss ( fileName, to.data.frame = FALSE, use.value.labels = TRUE, use.missings = TRUE)
+  #     varLab <- attr(mitLab, "variable.labels")
+  #     mitLab <- data.frame ( mitLab )
+  #     cat("\nRead data set without labels ... \n"); flush.console()
+  #     ohnLab <- data.frame ( read.spss ( fileName, to.data.frame = FALSE, use.value.labels = FALSE, use.missings = TRUE))
+  #     cat("\nRead missing definition ... \n"); flush.console()
+  #     mitMis <- data.frame ( read.spss ( fileName, to.data.frame = FALSE, use.value.labels = TRUE, use.missings = FALSE) )
+       skala  <- sapply(df[["dat"]], class)
+# to do: Funktion schreiben, die in dem data.frame die missingwerte (z.B. -9994) auf basis der labels in NA umwandelt
+# folgende Zeilen braucht einen Datensatz mit NAs statt -9994
+       datOM  <- miss2NA(df)                                                    # datensatz ohne missings
+       tab    <- lapply(datOM, FUN = function (y ) { table(as.character(y)) } )
        nKatOM <- sapply(tab, FUN = function ( y ) { length(y)})                 ### Anzahl Kategorien (ohne Missingkategorien)
        nValid <- sapply(tab, FUN = function ( y ) { sum(y)})                    ### untere Zeile: Kategorien mit Haeufigkeit kleiner gleich 5, aber groesser als 0!
        freq5  <- sapply(tab, FUN = function ( y ) { length(which(y < (boundary + 1) & y > 0 ))>0 })
-       grenze <- ifelse(nrow(mitLab) < 100, nrow(mitLab)/2, 100)
-       existVarLab <- nchar(varLab)>0
-       existValLab <- unlist(lapply(ohnLab, FUN = function ( yy ) { !is.null(attr(yy, "value.labels"))}))
-       liste  <- data.frame ( variable = names(varLab), varLab = unlist(varLab), existVarLab = existVarLab, existValLab = existValLab, skala = unlist(skala), nKatOhneMissings = nKatOM, nValid = nValid, nKl5 = freq5, makeAnonymous = FALSE, recodeToNumeric = FALSE, exclude = FALSE)
+       grenze <- ifelse(nrow(datOM) < 100, nrow(datOM)/2, 100)
+       varLab <- unique(df[["labels"]][, c("varName", "varLabel")])
+       existVarLab <- nchar(varLab[,"varLabel"])>0 & !is.na(varLab[,"varLabel"])
+       existValLab <- as.logical(by(data = df[["labels"]], INDICES = df[["labels"]][,"varName"], FUN = function (x ) { any(!is.na(x[,"label"]))  }))
+       liste  <- data.frame ( variable = varLab[,"varName"], varLab = varLab[,"varLabel"], existVarLab = existVarLab,
+                              existValLab = existValLab, skala = unlist(skala), nKatOhneMissings = nKatOM, nValid = nValid,
+                              nKl5 = freq5, makeAnonymous = FALSE, recodeToNumeric = FALSE, exclude = FALSE)
        if (!is.null(exclude) ) {
            chk <- setdiff(exclude,liste[,"variable"])
            if ( length(chk)>0) {
@@ -72,15 +80,22 @@ fdz <- function ( fileName, boundary = 5, saveFolder = NA, nameListe = NULL, nam
             liste[recode1, "makeAnonymous"] <- TRUE
             toRec <- liste[which(liste[,"makeAnonymous"]==TRUE),]
             snipp1<- unlist(by(toRec, INDICES = toRec[,"variable"], FUN = function ( tr ) {
-                     werte <- table(ohnLab[, as.character(tr[["variable"]]) ] ) ### hier: Variablenweise!
-                     werteM<- table(mitMis[, as.character(tr[["variable"]]) ] )
+                     werte <- table(datOM[, as.character(tr[["variable"]]) ] ) ### hier: Variablenweise!
+                     werteM<- table(df[["dat"]][, as.character(tr[["variable"]]) ] )
                      unter6<- werte[which(werte < (boundary + 1) )]
-                     unter6<- data.frame ( Nummer = 1:length(unter6), kategorie = names(unter6), belegung = unter6)
+                     if ( length(unter6) ==0) {cat("darf nicht passieren."); browser()}
+                     unter6<- data.frame ( Nummer = seq_along(unter6), kategorie = names(unter6), belegung = unter6)
                      aufb  <- do.call("rbind", by(data = unter6, INDICES = unter6[,"Nummer"], FUN = function ( z ) {
                               matchU <- match( as.character(z[["kategorie"]]), names(werte))
                               matchW <- matchU                                  ### hier: werteweise (je Variable)
                               toNA   <- FALSE
-                              while ( sum(werte[matchU:matchW])< (boundary + 1) & toNA == FALSE ) { if( (matchW+2)< length(werte))  { matchW <- matchW+1}  else { toNA <- TRUE } }
+                              while ( sum(werte[matchU:matchW])< (boundary + 1) & toNA == FALSE ) {
+                                      if( (matchW+2)< length(werte))  {
+                                           matchW <- matchW+1
+                                      }  else {
+                                          toNA <- TRUE
+                                      }
+                              }
                               inkl   <- names(werte[matchU:matchW])[-1]         ### wenn zwei Werte mit weniger als 5 Belegungen direkt benachbart sind, muss ggf. nicht
                               if(length(inkl) == 0 ) { inkl <- NA}              ### zweimal recodiert werden, falls beide Kategorien zusammen mehr als 5 Belegungen haben
                               z      <- data.frame ( Nummer = z[["Nummer"]], kategorie = z[["kategorie"]], inkludiert = inkl, toNA = toNA)
@@ -106,7 +121,7 @@ fdz <- function ( fileName, boundary = 5, saveFolder = NA, nameListe = NULL, nam
                                  }
                               }
                               return(recStat1)}))                               ### Syntaxgenerierung: "c:\Users\weirichs\Dropbox\IQB\Projekte\Aleks\Aufbereitung_SUFs_StEG_ak_Elterndaten.sps"
-                     recSt3<- c("(ELSE = COPY)", "INTO", paste( as.character(tr[["variable"]]), "_FDZ.\n", sep=""), paste("VARIABLE LABELS ", paste( as.character(tr[["variable"]]), "_FDZ", sep="")," '", varLab[[as.character(tr[["variable"]])]], " (FDZ)'.", sep=""))
+                     recSt3<- c("(ELSE = COPY)", "INTO", paste( as.character(tr[["variable"]]), "_FDZ.\n", sep=""), paste("VARIABLE LABELS ", paste( as.character(tr[["variable"]]), "_FDZ", sep="")," '", varLab[which(varLab[,"varName"] == as.character(tr[["variable"]])), "varLabel"], " (FDZ)'.", sep=""))
                      recSt4<- unlist(by(data = aufb, INDICES = aufb[,"Nummer"], FUN = function ( r ) {
                               if(r[1,"toNA"] == FALSE) {
                                  newValue<- r[1,"kategorie"]
@@ -132,13 +147,14 @@ fdz <- function ( fileName, boundary = 5, saveFolder = NA, nameListe = NULL, nam
     ### jetzt werden die nicht-numerischen Variablen zu numerisch umcodiert
        if ( length(recode2)>0) {                                                ### untere zeile: missingwerte auslesen
             cat("\nRead missing definition for character variables ... \n"); flush.console()
-            b     <- import_spss(fileName, labeledStrings = TRUE)
-            d     <- b[["labels"]]                                              ### achtung, der liest hier bei character-variablen manchmal die missings nicht korrekt aus
+#            b     <- import_spss(fileName, labeledStrings = TRUE)
+# weiter ab hier
+           d     <- df[["labels"]]                                              ### achtung, der liest hier bei character-variablen manchmal die missings nicht korrekt aus
             cat(paste0("\n   Recode ",length(recode2), " non-numeric variables into numeric variables.\n")); flush.console()
             liste[recode2, "recodeToNumeric"] <- TRUE
             toRec <- liste[which(liste[,"recodeToNumeric"]==TRUE),]
             snipp2<- unlist(by(toRec, INDICES = toRec[,"variable"], FUN = function ( tr ) {
-                     werte <- crop(names(table(ohnLab[, as.character(tr[["variable"]]) ] )))
+                     werte <- crop(names(table(datOM[, as.character(tr[["variable"]]) ] )))
                      if ( length(setdiff(werte, ""))==0 ) {
                           recSt <- NULL
                      }  else  {
