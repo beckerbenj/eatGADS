@@ -19,6 +19,6 @@ test_that("Errors for missing/wrong data table names", {
 })
 
 test_that("Adding data frame identifier", {
-  expect <- data.frame(v1 = 1, ID2 = 1, data_table = "df1", stringsAsFactors = FALSE)
+  expect <- data.frame(ID1 = c(1, 2), V1 = c(3, 5), data_table = "df1", stringsAsFactors = FALSE)
   expect_identical(add_DFname(df1$dat, "df1"), expect)
 })

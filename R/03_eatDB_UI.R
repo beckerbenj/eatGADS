@@ -19,8 +19,13 @@
 #'
 #'@export
 createGADS <- function(allList, pkList, fkList, filePath) {
-  eatDB::createDB(dfList = allList$dfList, pkList = pkList, fkList = fkList, metaData = allList$labelList, filePath = filePath)
+  UseMethod("createGADS")
 }
+
+createGADS.all_GADSdata <- function(allList, pkList, fkList, filePath) {
+  eatDB::createDB(dfList = allList$dfList, pkList = pkList, fkList = fkList, metaData = allList$allLabelDF, filePath = filePath)
+}
+
 
 
 #### Get Names from GADS

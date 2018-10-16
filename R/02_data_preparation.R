@@ -17,30 +17,41 @@
 #'
 #'@export
 mergeLabels <- function(...) {
-  l <- list(...)
-  dat_list <- lapply(l, function(x) x$dat)
-  label_list <- lapply(l, function(x) x$labels)
+  UseMethod("mergeLabels")
+}
 
-  ## checks
+
+mergeLabels.GADSdat <- function(...) {
+  l <- list(...)
+  # 1) checks
+  lapply(l, check_GADSdat)
   if(is.null(names(l))) stop("All input has to be named! See help for further clarification.")
   if(any(is.na(names(l)) || any(names(l) == ""))) stop("All input has to be named! See help for further clarification.")
   if(any(duplicated(names(l)))) stop("Names for data frames are duplicated!")
   ## add checks for sqlite compatability, maybe from eatDB?
 
-  # 1) add data frame identifier and create single long format df
+  # 2) extract elements
+  dat_list <- lapply(l, function(x) x$dat)
+  label_list <- lapply(l, function(x) x$labels)
+
+  # 3) add data frame identifier and create single long format df, drop duplicate rows
   label_list <- Map(add_DFname, df = label_list, name = names(label_list))
   label_df <- do.call(rbind, label_list)
   rownames(label_df) <- NULL
 
   # output: list of data frames ready for data base creation, and data frame with labels
-  list(dfList = dat_list, labelList = label_df)
+  new_all_GADSdata(dfList = dat_list, allLabelDF = label_df)
 }
 
-# 01)  add data frame identifier ---------------------------------------------------------
+# 03)  add data frame identifier ---------------------------------------------------------
 add_DFname <- function(df, name) {
   data.frame(df, data_table = rep(name, nrow(df)), stringsAsFactors = FALSE)
 }
 
 
-
-
+# create S3 all_GADSdata object
+new_all_GADSdata <- function(dfList, allLabelDF) {
+  stopifnot(is.list(dfList))
+  stopifnot(is.data.frame(allLabelDF))
+  structure(list(dfList = dfList, allLabelDF = allLabelDF), class = "all_GADSdata")
+}
