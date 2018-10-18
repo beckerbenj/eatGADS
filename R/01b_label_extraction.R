@@ -71,16 +71,13 @@ extract_value_level.factor <- function(var, varName, labeledStrings) {
 extract_value_level.haven_labelled <- function(var, varName, labeledStrings = FALSE) {
   # check if there are value labels
   if(is.null(attributes(var)$labels)) return(NULL)
-  # default behavior: transform value labels to numeric if possible, drop otherwise
+  # default behavior: transform value labels to numeric if possible, change values to NA for string values
   values <- attr(var, "labels")
   if(identical(labeledStrings, FALSE)) {
-    values <- tryCatch(as.numeric(values), warning = function(w) w)
-    if(any(class(values) == "warning")) {
-      values <- NA
-      warning("Values for ", varName, " cannot be coerced to numeric and have been dropped. \n", call. = FALSE)
-      ## is this the desired default behaviour??? noooooooo! converts all to NA! badbadbad
-      return(NULL)
-    }
+    values <- tryCatch(as.numeric(values), warning = function(w) {
+      warning("Some or all values for ", varName, " cannot be coerced to numeric and are therefore changed to NA. \n", call. = FALSE)
+      structure(suppressWarnings(as.numeric(values)), condition = "warning")
+    })
   }
   # extract value labels and return as long format df
   df <- data.frame(varName = rep(varName, length(values)),

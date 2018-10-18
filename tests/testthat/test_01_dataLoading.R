@@ -64,9 +64,9 @@ test_that("Value label of single variable extracted correctly for SPSS type vari
   expect_equal(extract_value_level(rawDat$VAR1, "VAR1"),
                data.frame(varName = "VAR1", value = 1, valLabel = "One", missings = NA, stringsAsFactors = FALSE))
   expect_warning(extract_value_level(string_test$string_var, "test"),
-                 "Values for test cannot be coerced to numeric and have been dropped.")
+                 "Some or all values for test cannot be coerced to numeric and are therefore changed to NA.")
   expect_equal(extract_value_level(string_test$string_var, "string_var", labeledStrings = TRUE),
-               data.frame(varName = "string_var", value = "a", valLabel = "alpha", missings = NA, stringsAsFactors = FALSE))
+               data.frame(varName = "string_var", value = c("a", "99"), valLabel = c("alpha", "99"), missings = NA, stringsAsFactors = FALSE))
 })
 
 test_that("Value label of single variable extracted correctly for R type variables", {

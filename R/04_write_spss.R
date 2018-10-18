@@ -7,9 +7,11 @@
 #'
 #' ...
 #'
+#'@param df Data frame.
 #'@param filePath Path of the existing db file.
-
-#'@return Returns a data frame.
+#'@param filePath Path of sav file to write.
+#'
+#'@return Writes sav-file, returns nothing.
 #'
 #'@examples
 #'# # See vignette.
@@ -44,27 +46,26 @@ addLabels <- function(df, label_df) {
 ###  add labels to a single variable ---------------------------------------------------------
 addLabels_single <- function(label_df) {
   out <- list()
-  # variable labels
+  # attributes on variable level
   out[["label"]] <- unique(label_df[, "varLabel"])
-  stopifnot(length(out[["label"]]) == 1)
-
-  # variable format, display width
   out[["format.spss"]] <- unique(label_df[, "format"])
   out[["display_width"]] <- unique(label_df[, "display_width"])
+  out[["class"]] <- unique(label_df[, "class"])
+  # check
+  unique_attr <- unlist(lapply(out, length))
+  stopifnot(all(unique_attr)  <= 1)
+  # split class
+  out[["class"]] <- strsplit(out[["class"]], split = ", ")[[1]]
 
   # missing labels, if any
   miss_values <- label_df[which(label_df$missings == "miss"), "value"]
   if(length(miss_values) > 0)  out[["na_values"]] <- miss_values
 
-  # class
-  # out[["class"]] <- c("labelled_spss", "labelled")
-  if(unique(label_df[, "class"]) == "haven_labelled")  out[["class"]] <- c("haven_labelled")
-
   # value labels, if any
   value_label_df <- label_df[!is.na(label_df$value), ]
   if(nrow(value_label_df) > 0) {
     out[["labels"]] <- value_label_df[, "value"]
-    names(out[["labels"]]) <- value_label_df[, "label"]
+    names(out[["labels"]]) <- value_label_df[, "valLabel"]
   }
   #if(any(label_df$varName == "TESTUNG")) browser()
   out
