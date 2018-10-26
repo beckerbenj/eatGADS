@@ -7,10 +7,14 @@
 writeDB_SPSS(df, label_df, filePath)
 }
 \arguments{
+\item{df}{Data frame.}
+
 \item{filePath}{Path of the existing db file.}
+
+\item{filePath}{Path of sav file to write.}
 }
 \value{
-Returns a data frame.
+Writes sav-file, returns nothing.
 }
 \description{
 Function to write data frame with labels for values and variables to SPSS-file.

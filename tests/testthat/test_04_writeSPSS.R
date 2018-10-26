@@ -32,6 +32,18 @@ test_that("Variable labels are added correctly to attributes for all variables",
   expect_equal(attributes(out$V2), expected_V2)
 })
 
+### also for R variables
+iris2 <- import_DF(iris)
+expected_Species <- list(label = NA_character_,
+                    format.spss = NA_character_,
+                    display_width = NA_character_,
+                    class = c("haven_labelled_spss", "haven_labelled"),
+                    labels = c(setosa = 1, versicolor = 2, virginica = 3))
+
+test_that("Variable labels are added correctly for factor", {
+  expect_equal(addLabels_single(iris2$labels[iris2$labels$varName == "Species", ]),
+               expected_Species)
+})
 
 ### write SPSS
 # tbd (but how to only temporarily write spss file?)

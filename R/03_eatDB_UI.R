@@ -22,6 +22,7 @@ createGADS <- function(allList, pkList, fkList, filePath) {
   UseMethod("createGADS")
 }
 
+#'@export
 createGADS.all_GADSdata <- function(allList, pkList, fkList, filePath) {
   eatDB::createDB(dfList = allList$dfList, pkList = pkList, fkList = fkList, metaData = allList$allLabelDF, filePath = filePath)
 }

@@ -4,6 +4,7 @@ extract_variable_level <- function(rawDat) {
   UseMethod("extract_variable_level")
 }
 
+#'@export
 extract_variable_level.savDat<- function(rawDat) {
   # check for unknown attributes (mostly to secure against changes in haven)
   all_attr <- unlist(lapply(rawDat, function(var) names(attributes(var))))
@@ -14,6 +15,8 @@ extract_variable_level.savDat<- function(rawDat) {
   varFormat <- unlist(lapply(rawDat, extract_attribute, attr_name = "format.spss"))
   varWidth <- unlist(lapply(rawDat, extract_attribute, attr_name = "display_width", NA_type = NA_real_))
   varClass <- unlist(lapply(rawDat, extract_attribute, attr_name = "class"))
+  # internal convention: all special labeled haven classes are internally represented as "factor"
+  varClass[!is.na(varClass)] <- "factor"
   varLabel_df <- data.frame(names(rawDat), varLabels, varFormat, varWidth, varClass, stringsAsFactors = FALSE)
   # names
   names(varLabel_df) <- c("varName", "varLabel", "format", "display_width", "class")
@@ -22,9 +25,12 @@ extract_variable_level.savDat<- function(rawDat) {
   varLabel_df
 }
 
+#'@export
 extract_variable_level.data.frame <- function(rawDat) {
   # is factor variable to add?
-  data.frame(varName = names(rawDat))
+  varClass <- unlist(lapply(rawDat, extract_attribute, attr_name = "class"))
+
+  data.frame(varName = names(rawDat), class = varClass, stringsAsFactors = FALSE)
 }
 
 
@@ -51,14 +57,16 @@ extract_value_level <- function(var, varName, labeledStrings) {
   UseMethod("extract_value_level")
 }
 
+#'@export
 extract_value_level.default <- function(var, varName, labeledStrings) {
   NULL
 }
 
 # single variable for R (factors!)
+#'@export
 extract_value_level.factor <- function(var, varName, labeledStrings) {
   df <- data.frame(varName = rep(varName, length(levels(var))),
-                   value = seq_along(labels),
+                   value = seq_along(levels(var)),
                    valLabel = levels(var),
                    missings = NA_character_,
                    stringsAsFactors = FALSE)
@@ -93,6 +101,13 @@ extract_value_level.haven_labelled <- function(var, varName, labeledStrings = FA
   df
 }
 
+# emergency function for downwards compatability with older haven versions
+extract_value_level.labeled_spss <- function(var, varName, labeledStrings = FALSE) {
+  warning("You are using an old version of haven. Please download the current version from GitHub. \n Correct importing from SPSS-files can not be guaranteed.", call. = FALSE)
+  class(var) <- "haven_labelled"
+  extract_value_level(var = var, varName = varName, labeledStrings = labeledStrings)
+}
+
 # extract if label is label for missing values
 extract_Miss_SPSS <- function(var, label_df) {
   na_range <- attr(var, "na_range")
@@ -100,7 +115,7 @@ extract_Miss_SPSS <- function(var, label_df) {
   # check if any na_value without this label (check not performed for na_range!)
   lapply(na_value, function(val) {
     if(!val %in% label_df$value) {
-      warning(val, " used as missing label for variable ", label_df$varName[1], " but no value label given. Label is dropped.")
+      warning(val, " used as missing label for variable ", label_df$varName[1], " but no value label given. Label is dropped.", call. = FALSE)
     }})
 
   # add variable indicating missings

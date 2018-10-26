@@ -30,11 +30,11 @@ Generate SPSS syntax to make individual data anonymous
 Data from large-scale assessments often have to be non-identifiable on individual level. Function summarizes low-sized categories of polytomous variables to more general categories. Additionally, character variables are transformed into numeric factors, providing factor levels als value labels.
 }
 \examples{
-dat    <- data.frame ( foreign::read.spss ( "c:/diskdrv/Winword/Psycho/IQB/Daten/LV2016/BS_LV_Primar_2016_Matchingvorlaeufig_09_erweiterteGadsversion##'.sav", to.data.frame = FALSE, use.value.labels = FALSE, use.missings = TRUE))
+dat    <- data.frame ( foreign::read.spss ( "q:/BT2016/BT/50_Daten/03_Aufbereitet/06_Gesamtdatensatz/BS_LV_Primar_2016_Matchingvorlaeufig_09_erweiterteGadsversion.sav", to.data.frame = FALSE, use.value.labels = FALSE, use.missings = TRUE))
 classes<- sapply(dat, class)
 nCat   <- sapply(dat, FUN = function ( x ) { length(unique(x))})
 exclude<- intersect(which(classes=="factor"), which(nCat>90))
 exclude<- colnames(dat)[exclude]
-syntax <- fdz(fileName = "c:/diskdrv/Winword/Psycho/IQB/Daten/LV2016/BS_LV_Primar_2016_Matchingvorlaeufig_09_erweiterteGadsversion.sav", saveFolder = "c:/diskdrv/Winword/Psycho/IQB/temp/20_fdz", nameListe = "liste2.csv", nameSyntax = "syntax2.txt", exclude=exclude)
+syntax <- fdz(fileName = "q:/BT2016/BT/50_Daten/03_Aufbereitet/06_Gesamtdatensatz/BS_LV_Primar_2016_Matchingvorlaeufig_09_erweiterteGadsversion.sav", saveFolder = "N:/archiv/temp/20_fdz", nameListe = "liste2.csv", nameSyntax = "syntax2.txt", exclude=exclude)
 
 }

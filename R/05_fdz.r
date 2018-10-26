@@ -29,7 +29,6 @@
 #'
 #'@export
 fdz <- function ( fileName, boundary = 5, saveFolder = NA, nameListe = NULL, nameSyntax = NULL, exclude = NULL) {
-
         df     <- import_spss(fileName, checkVarNames = FALSE, labeledStrings = TRUE)
   #cat("\nRead data set with labels ... \n"); flush.console()
   #     mitLab <- read.spss ( fileName, to.data.frame = FALSE, use.value.labels = TRUE, use.missings = TRUE)
@@ -50,7 +49,7 @@ fdz <- function ( fileName, boundary = 5, saveFolder = NA, nameListe = NULL, nam
        grenze <- ifelse(nrow(datOM) < 100, nrow(datOM)/2, 100)
        varLab <- unique(df[["labels"]][, c("varName", "varLabel")])
        existVarLab <- nchar(varLab[,"varLabel"])>0 & !is.na(varLab[,"varLabel"])
-       existValLab <- as.logical(by(data = df[["labels"]], INDICES = df[["labels"]][,"varName"], FUN = function (x ) { any(!is.na(x[,"label"]))  }))
+       existValLab <- as.logical(by(data = df[["labels"]], INDICES = df[["labels"]][,"varName"], FUN = function (x ) { any(!is.na(x[,"valLabel"]))  }))
        liste  <- data.frame ( variable = varLab[,"varName"], varLab = varLab[,"varLabel"], existVarLab = existVarLab,
                               existValLab = existValLab, skala = unlist(skala), nKatOhneMissings = nKatOM, nValid = nValid,
                               nKl5 = freq5, makeAnonymous = FALSE, recodeToNumeric = FALSE, exclude = FALSE)
@@ -121,40 +120,51 @@ fdz <- function ( fileName, boundary = 5, saveFolder = NA, nameListe = NULL, nam
                                  }
                               }
                               return(recStat1)}))                               ### Syntaxgenerierung: "c:\Users\weirichs\Dropbox\IQB\Projekte\Aleks\Aufbereitung_SUFs_StEG_ak_Elterndaten.sps"
-                     recSt3<- c("(ELSE = COPY)", "INTO", paste( as.character(tr[["variable"]]), "_FDZ.\n", sep=""), paste("VARIABLE LABELS ", paste( as.character(tr[["variable"]]), "_FDZ", sep="")," '", varLab[which(varLab[,"varName"] == as.character(tr[["variable"]])), "varLabel"], " (FDZ)'.", sep=""))
+                     recSt3<- c("(ELSE = COPY)", "INTO", paste( as.character(tr[["variable"]]), "_FDZ.\n", sep=""),
+                                paste("VARIABLE LABELS ", paste( as.character(tr[["variable"]]), "_FDZ", sep="")," '",
+                                      varLab[which(varLab[,"varName"] == as.character(tr[["variable"]])), "varLabel"], " (FDZ)'.", sep=""))
                      recSt4<- unlist(by(data = aufb, INDICES = aufb[,"Nummer"], FUN = function ( r ) {
                               if(r[1,"toNA"] == FALSE) {
                                  newValue<- r[1,"kategorie"]
-                                 recStat <- paste("VALUE LABELS ", paste( as.character(tr[["variable"]]), "_FDZ ", sep=""), newValue, " 'von ",as.numeric(as.character(r[1,"kategorie"]))," bis ",max(as.numeric(as.character(r[,"inkludiert"])))," (zur Anonymisierung aggregiert (FDZ))'",sep="")
-                                 if(length(misLab)>0) {
-                                   recStat <- paste(recStat, " ", paste(misLab, paste("'missingLabel_",misLab,"'",sep=""), collapse = " "), ".", sep="")
-                                 } else {
-                                   recStat <- paste(recStat, ".",sep="")
-                                 }
+                                 recStat <- paste("VALUE LABELS ", paste( as.character(tr[["variable"]]), "_FDZ ", sep=""), newValue,
+                                                  " 'von ",as.numeric(as.character(r[1,"kategorie"]))," bis ",max(as.numeric(as.character(r[,"inkludiert"]))),
+                                                  " (zur Anonymisierung aggregiert (FDZ))'.",sep="")
                               }  else  {
                                  recStat <- NULL
                               }
                               return(recStat)}))
+    ### wertelabels fuer missings, falls vorhanden
+                     recSt4b <- NULL # initialisieren
+                    #   if(tr$variable == "Eeinss") browser()
+                     lbs <- df$labels[df$labels$varName == as.character(tr[["variable"]]),]
+                     lbs <- lbs[which(lbs[,"missings"]=="miss"),]
+                     new_misLab <- lbs[["value"]]
+                     if ( length(new_misLab)>0) {
+                       stopifnot(nrow(lbs)>0)
+                       recSt4b<- unlist(apply(lbs, MARGIN = 1, FUN = function (r){
+                           paste("VALUE LABELS ", paste( as.character(tr[["variable"]]), "_FDZ ", sep=""), r[["value"]],
+                                            " '", r[["valLabel"]], "'.", sep="")}))
+                     }
                      recSt5<- c ( paste(c("VARIABLE LEVEL ", paste( as.character(tr[["variable"]]), "_FDZ ", sep=""), "(ORDINAL)."), sep="", collapse=""),
                               paste("FORMATS ", paste( as.character(tr[["variable"]]), "_FDZ ", sep=""), "(F3.0).", sep="", collapse=""))
-                     if(length(misLab)>0) {
-                        recSt5 <- c(recSt5, paste("MISSING VALUES ", paste( as.character(tr[["variable"]]), "_FDZ ", sep=""), "(", paste(misLab, collapse=", "),").",sep="", collapse=""))
+                     if(length(new_misLab)>0) {
+                        recSt5 <- c(recSt5, paste("MISSING VALUES ", paste( as.character(tr[["variable"]]), "_FDZ ", sep=""), "(",
+                                                  paste(new_misLab, collapse=", "),").",sep="", collapse=""))
                      }
                      recSt6<- "EXECUTE.\n\n"
-                     recSt <- c(recSt1, recSt2, recSt3, recSt4, recSt5, recSt6)
+                     recSt <- c(recSt1, recSt2, recSt3, recSt4, recSt4b, recSt5, recSt6)
                      return(recSt)}))
        }
     ### jetzt werden die nicht-numerischen Variablen zu numerisch umcodiert
        if ( length(recode2)>0) {                                                ### untere zeile: missingwerte auslesen
             cat("\nRead missing definition for character variables ... \n"); flush.console()
 #            b     <- import_spss(fileName, labeledStrings = TRUE)
-# weiter ab hier
            d     <- df[["labels"]]                                              ### achtung, der liest hier bei character-variablen manchmal die missings nicht korrekt aus
             cat(paste0("\n   Recode ",length(recode2), " non-numeric variables into numeric variables.\n")); flush.console()
             liste[recode2, "recodeToNumeric"] <- TRUE
             toRec <- liste[which(liste[,"recodeToNumeric"]==TRUE),]
             snipp2<- unlist(by(toRec, INDICES = toRec[,"variable"], FUN = function ( tr ) {
-                     werte <- crop(names(table(datOM[, as.character(tr[["variable"]]) ] )))
+                     werte <- eatRep::crop(names(table(datOM[, as.character(tr[["variable"]]) ] )))
                      if ( length(setdiff(werte, ""))==0 ) {
                           recSt <- NULL
                      }  else  {
@@ -179,7 +189,7 @@ fdz <- function ( fileName, boundary = 5, saveFolder = NA, nameListe = NULL, nam
        }
        snipp  <- c(snipp1, snipp2)
        if(is.null(nameSyntax)) { nameSyntax <- "syntaxbaustein.txt" }
-       if(!is.na(saveFolder)) { write(snipp,  file.path(crop(saveFolder,"/"), nameSyntax)) }
+       if(!is.na(saveFolder)) { write(snipp,  file.path(eatRep::crop(saveFolder,"/"), nameSyntax)) }
        if(is.null(nameListe))  { nameListe <- "Liste_komplett.csv"}
-       write.csv2(liste, file.path(crop(saveFolder,"/"), nameListe), na="")
+       write.csv2(liste, file.path(eatRep::crop(saveFolder,"/"), nameListe), na="")
        return(snipp)  }

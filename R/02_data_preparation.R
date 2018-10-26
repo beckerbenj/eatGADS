@@ -20,7 +20,7 @@ mergeLabels <- function(...) {
   UseMethod("mergeLabels")
 }
 
-
+#'@export
 mergeLabels.GADSdat <- function(...) {
   l <- list(...)
   # 1) checks

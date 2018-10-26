@@ -29,20 +29,20 @@ label_out1 <- data.frame(varName = c("VAR1", "VAR2", "VAR3"),
                           varLabel = c("Variable 1", "Variable 2", "Variable 3"),
                           format = c("F8.2", "F8.0", "A8"),
                           display_width = c(NA, 10, NA),
-                          class = c("haven_labelled", "haven_labelled", NA),
+                          class = c("factor", "factor", NA),
                           stringsAsFactors = FALSE)
 label_out2 <- data.frame(varName = c("VAR1", "VAR2"), value = c(1, 2),
                          valLabel = c("One", "Two"), missings = c(NA, NA), stringsAsFactors = FALSE)
 label_out_all <- merge(label_out1, label_out2, by = "varName", all = TRUE)
 ##
 class_test <- rawDat$VAR3
-attributes(class_test)$class <- c("spss_labelled", "labelled")
+attributes(class_test)$format <- c("F8.0")
 
 
 ######### Attribute extracting on variable level
 test_that("Extract attribute from data frame", {
   expect_equal(extract_attribute(rawDat$VAR1, "label"), "Variable 1")
-  expect_equal(extract_attribute(class_test, "class"), "spss_labelled, labelled")
+  expect_equal(extract_attribute(class_test, "format"), "F8.0")
 })
 
 test_that("Attributes on variable level extracted correctly ", {
@@ -69,11 +69,19 @@ test_that("Value label of single variable extracted correctly for SPSS type vari
                data.frame(varName = "string_var", value = c("a", "99"), valLabel = c("alpha", "99"), missings = NA, stringsAsFactors = FALSE))
 })
 
+test_that("Backward compatability to older haven classes", {
+  class(rawDat$VAR1) <- "labeled_spss"
+  expect_warning(extract_value_level(rawDat$VAR1, "test"),
+                 "You are using an old version of haven. Please download the current version from GitHub. \n Correct importing from SPSS-files can not be guaranteed.")
+  expect_equal(suppressWarnings(extract_value_level(rawDat$VAR1, "VAR1")),
+               data.frame(varName = "VAR1", value = 1, valLabel = "One", missings = NA, stringsAsFactors = FALSE))
+})
+
 test_that("Value label of single variable extracted correctly for R type variables", {
   expect_equal(extract_value_level(c(1, 2), "VAR1"), NULL)
   expect_equal(extract_value_level(c("a", "b"), "VAR1"), NULL)
   expect_equal(extract_value_level(factor(c("a", "b"), levels = c("a", "b")), "fac_var"),
-               data.frame(varName = rep("fac_var", 2), value = rep(1, 2), valLabel = c("a", "b"), missings = NA_character_, stringsAsFactors = FALSE))
+               data.frame(varName = rep("fac_var", 2), value = c(1, 2), valLabel = c("a", "b"), missings = NA_character_, stringsAsFactors = FALSE))
 })
 
 
@@ -127,6 +135,8 @@ test_that("Data frames directly from R are imported correctly", {
   expect_equal(dim(iris2$labels), c(7, 8))
   expect_equal(iris2$labels$valLabel,
                c(NA, NA, NA, NA, "setosa", "versicolor", "virginica"))
+  expect_equal(iris2$labels$value,
+               c(NA, NA, NA, NA, 1, 2, 3))
 })
 
 
