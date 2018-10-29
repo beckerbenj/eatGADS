@@ -29,7 +29,7 @@
 #'
 #'@export
 fdz <- function ( fileName, boundary = 5, saveFolder = NA, nameListe = NULL, nameSyntax = NULL, exclude = NULL) {
-        df     <- import_spss(fileName, checkVarNames = FALSE, labeledStrings = TRUE)
+        df     <- import_spss(fileName, checkVarNames = FALSE, labeledStrings = FALSE)
   #cat("\nRead data set with labels ... \n"); flush.console()
   #     mitLab <- read.spss ( fileName, to.data.frame = FALSE, use.value.labels = TRUE, use.missings = TRUE)
   #     varLab <- attr(mitLab, "variable.labels")
@@ -75,100 +75,111 @@ fdz <- function ( fileName, boundary = 5, saveFolder = NA, nameListe = NULL, nam
        }
        snipp1 <- snipp2 <- NULL                                                 ### initialisieren
        if ( length(recode1)>0) {
-            cat(paste0("\n   ",length(recode1), " numeric variables with category size <= ",boundary," will be recoded anonymously.\n")); flush.console()
-            liste[recode1, "makeAnonymous"] <- TRUE
-            toRec <- liste[which(liste[,"makeAnonymous"]==TRUE),]
-            snipp1<- unlist(by(toRec, INDICES = toRec[,"variable"], FUN = function ( tr ) {
-                     werte <- table(datOM[, as.character(tr[["variable"]]) ] ) ### hier: Variablenweise!
-                     werteM<- table(df[["dat"]][, as.character(tr[["variable"]]) ] )
-                     unter6<- werte[which(werte < (boundary + 1) )]
-                     if ( length(unter6) ==0) {cat("darf nicht passieren."); browser()}
-                     unter6<- data.frame ( Nummer = seq_along(unter6), kategorie = names(unter6), belegung = unter6)
-                     aufb  <- do.call("rbind", by(data = unter6, INDICES = unter6[,"Nummer"], FUN = function ( z ) {
-                              matchU <- match( as.character(z[["kategorie"]]), names(werte))
-                              matchW <- matchU                                  ### hier: werteweise (je Variable)
-                              toNA   <- FALSE
-                              while ( sum(werte[matchU:matchW])< (boundary + 1) & toNA == FALSE ) {
-                                      if( (matchW+2)< length(werte))  {
-                                           matchW <- matchW+1
-                                      }  else {
-                                          toNA <- TRUE
-                                      }
-                              }
-                              inkl   <- names(werte[matchU:matchW])[-1]         ### wenn zwei Werte mit weniger als 5 Belegungen direkt benachbart sind, muss ggf. nicht
-                              if(length(inkl) == 0 ) { inkl <- NA}              ### zweimal recodiert werden, falls beide Kategorien zusammen mehr als 5 Belegungen haben
-                              z      <- data.frame ( Nummer = z[["Nummer"]], kategorie = z[["kategorie"]], inkludiert = inkl, toNA = toNA)
-                              return(z)}))
-                     weg   <- which(aufb[,"kategorie"] %in% aufb[,"inkludiert"])
-                     if(length(weg)>0) { aufb <- aufb[-weg,]}
-                     if(length(which( aufb[,"toNA"] == TRUE))>0) {              ### Fuer alle, die zu "NA" recodiert werden, muss nur ein Recodierungsstatement, nicht mehrere verfasst werden
-                        minNum <- min(aufb[which( aufb[,"toNA"] == TRUE),"Nummer"])
-                        aufb[which( aufb[,"toNA"] == TRUE),"Nummer"] <- minNum
-                     }
-                     misLab<- setdiff(names(werteM), names(werte))              ### Missinglabels fuer Variable
-                     recSt1<- c("RECODE", as.character(tr[["variable"]]) )      ### erster Teil des Recodierungsstatements
-                     recSt2<- unlist(by(data = aufb, INDICES = aufb[,"Nummer"], FUN = function ( r ) {
-                              if(r[1,"toNA"] == FALSE) {
-                                 newValue<- r[1,"kategorie"]
-                                 recStat1<- paste("(",as.numeric(as.character(r[1,"kategorie"])), " THRU ", max(as.numeric(as.character(r[,"inkludiert"]))), " = ", newValue, ")",sep="")
-                              }  else  {
-                                 allVal  <- sort(unique(na.omit(c(as.numeric(as.character(r[,"kategorie"])), as.numeric(as.character(r[,"inkludiert"]))))))
-                                 if ( length(allVal)>1) {
-                                      recStat1<- paste("(",allVal[1], " THRU ", allVal[length(allVal)], " = SYSMIS )",sep="")
-                                 }  else  {
-                                      recStat1<- paste("(",allVal[1], " = SYSMIS )",sep="")
+            snipp1 <- makeAnonymous ( x = recode1, liste=liste, boundary = boundary, datOM = datOM, df=df, varLab = varLab)
+       }
+    ### jetzt werden die nicht-numerischen Variablen zu numerisch umcodiert
+       if ( length(recode2)>0) {                                                ### untere zeile: missingwerte auslesen
+            snipp2 <- makeNumeric( x = recode2, df_labels=df$labels, liste=liste, datOM = datOM)
+       }
+       snipp  <- c(snipp1, snipp2)
+       if(is.null(nameSyntax)) { nameSyntax <- "syntaxbaustein.txt" }
+       if(!is.na(saveFolder)) { write(snipp,  file.path(eatTools::crop(saveFolder,"/"), nameSyntax)) }
+       if(is.null(nameListe))  { nameListe <- "Liste_komplett.csv"}
+       write.csv2(liste, file.path(eatTools::crop(saveFolder,"/"), nameListe), na="")
+       return(snipp)  }
+       
+       
+makeAnonymous <- function (x, liste, boundary, datOM, df, varLab) {
+       cat(paste0("\n   ",length(x), " numeric variables with category size <= ",boundary," will be recoded anonymously.\n")); flush.console()
+       liste[x, "makeAnonymous"] <- TRUE
+       toRec <- liste[which(liste[,"makeAnonymous"]==TRUE),]
+       snipp1<- unlist(by(toRec, INDICES = toRec[,"variable"], FUN = function ( tr ) {
+                werte <- table(datOM[, as.character(tr[["variable"]]) ] )       ### hier: Variablenweise!
+                werteM<- table(df[["dat"]][, as.character(tr[["variable"]]) ] )
+                unter6<- werte[which(werte < (boundary + 1) )]
+                if ( length(unter6) ==0) {cat("darf nicht passieren."); browser()}
+                unter6<- data.frame ( Nummer = seq_along(unter6), kategorie = names(unter6), belegung = unter6)
+                aufb  <- do.call("rbind", by(data = unter6, INDICES = unter6[,"Nummer"], FUN = function ( z ) {
+                         matchU <- match( as.character(z[["kategorie"]]), names(werte))
+                         matchW <- matchU                                  ### hier: werteweise (je Variable)
+                         toNA   <- FALSE
+                         while ( sum(werte[matchU:matchW])< (boundary + 1) & toNA == FALSE ) {
+                                 if( (matchW+2)< length(werte))  {
+                                      matchW <- matchW+1
+                                 }  else {
+                                      toNA <- TRUE
                                  }
+                        }
+                        inkl   <- names(werte[matchU:matchW])[-1]         ### wenn zwei Werte mit weniger als 5 Belegungen direkt benachbart sind, muss ggf. nicht
+                        if(length(inkl) == 0 ) { inkl <- NA}              ### zweimal recodiert werden, falls beide Kategorien zusammen mehr als 5 Belegungen haben
+                        z      <- data.frame ( Nummer = z[["Nummer"]], kategorie = z[["kategorie"]], inkludiert = inkl, toNA = toNA)
+                        return(z)}))
+                weg   <- which(aufb[,"kategorie"] %in% aufb[,"inkludiert"])
+                if(length(weg)>0) { aufb <- aufb[-weg,]}
+                if(length(which( aufb[,"toNA"] == TRUE))>0) {              ### Fuer alle, die zu "NA" recodiert werden, muss nur ein Recodierungsstatement, nicht mehrere verfasst werden
+                   minNum <- min(aufb[which( aufb[,"toNA"] == TRUE),"Nummer"])
+                   aufb[which( aufb[,"toNA"] == TRUE),"Nummer"] <- minNum
+                }
+                misLab<- setdiff(names(werteM), names(werte))              ### Missinglabels fuer Variable
+                recSt1<- c("RECODE", as.character(tr[["variable"]]) )      ### erster Teil des Recodierungsstatements
+                recSt2<- unlist(by(data = aufb, INDICES = aufb[,"Nummer"], FUN = function ( r ) {
+                         if(r[1,"toNA"] == FALSE) {
+                              newValue<- r[1,"kategorie"]
+                              recStat1<- paste("(",as.numeric(as.character(r[1,"kategorie"])), " THRU ", max(as.numeric(as.character(r[,"inkludiert"]))), " = ", newValue, ")",sep="")
+                         }  else  {
+                              allVal  <- sort(unique(na.omit(c(as.numeric(as.character(r[,"kategorie"])), as.numeric(as.character(r[,"inkludiert"]))))))
+                              if ( length(allVal)>1) {
+                                   recStat1<- paste("(",allVal[1], " THRU ", allVal[length(allVal)], " = SYSMIS )",sep="")
+                              }  else  {
+                                   recStat1<- paste("(",allVal[1], " = SYSMIS )",sep="")
                               }
-                              return(recStat1)}))                               ### Syntaxgenerierung: "c:\Users\weirichs\Dropbox\IQB\Projekte\Aleks\Aufbereitung_SUFs_StEG_ak_Elterndaten.sps"
-                     recSt3<- c("(ELSE = COPY)", "INTO", paste( as.character(tr[["variable"]]), "_FDZ.\n", sep=""),
-                                paste("VARIABLE LABELS ", paste( as.character(tr[["variable"]]), "_FDZ", sep="")," '",
-                                      varLab[which(varLab[,"varName"] == as.character(tr[["variable"]])), "varLabel"], " (FDZ)'.", sep=""))
-                     recSt4<- unlist(by(data = aufb, INDICES = aufb[,"Nummer"], FUN = function ( r ) {
-                              if(r[1,"toNA"] == FALSE) {
+                         }
+                         return(recStat1)}))                                    ### Syntaxgenerierung: "c:\Users\weirichs\Dropbox\IQB\Projekte\Aleks\Aufbereitung_SUFs_StEG_ak_Elterndaten.sps"
+                recSt3<- c("(ELSE = COPY)", "INTO", paste( as.character(tr[["variable"]]), "_FDZ.\n", sep=""),
+                             paste("VARIABLE LABELS ", paste( as.character(tr[["variable"]]), "_FDZ", sep="")," '",
+                             varLab[which(varLab[,"varName"] == as.character(tr[["variable"]])), "varLabel"], " (FDZ)'.", sep=""))
+                recSt4<- unlist(by(data = aufb, INDICES = aufb[,"Nummer"], FUN = function ( r ) {
+                             if(r[1,"toNA"] == FALSE) {
                                  newValue<- r[1,"kategorie"]
                                  recStat <- paste("VALUE LABELS ", paste( as.character(tr[["variable"]]), "_FDZ ", sep=""), newValue,
                                                   " 'von ",as.numeric(as.character(r[1,"kategorie"]))," bis ",max(as.numeric(as.character(r[,"inkludiert"]))),
                                                   " (zur Anonymisierung aggregiert (FDZ))'.",sep="")
-                              }  else  {
+                             }  else  {
                                  recStat <- NULL
-                              }
-                              return(recStat)}))
+                             }
+                             return(recStat)}))
     ### wertelabels fuer missings, falls vorhanden
-                     recSt4b <- NULL # initialisieren
-                    #   if(tr$variable == "Eeinss") browser()
-                     lbs <- df$labels[df$labels$varName == as.character(tr[["variable"]]),]
-                     lbs <- lbs[which(lbs[,"missings"]=="miss"),]
-                     new_misLab <- lbs[["value"]]
-                     if ( length(new_misLab)>0) {
-                       stopifnot(nrow(lbs)>0)
-                       recSt4b<- unlist(apply(lbs, MARGIN = 1, FUN = function (r){
+                recSt4b <- NULL # initialisieren
+                lbs <- df$labels[df$labels$varName == as.character(tr[["variable"]]),]
+                lbs <- lbs[which(lbs[,"missings"]=="miss"),]
+                new_misLab <- lbs[["value"]]
+                if ( length(new_misLab)>0) {
+                      stopifnot(nrow(lbs)>0)
+                      recSt4b<- unlist(apply(lbs, MARGIN = 1, FUN = function (r){
                            paste("VALUE LABELS ", paste( as.character(tr[["variable"]]), "_FDZ ", sep=""), r[["value"]],
-                                            " '", r[["valLabel"]], "'.", sep="")}))
-                     }
-                     recSt5<- c ( paste(c("VARIABLE LEVEL ", paste( as.character(tr[["variable"]]), "_FDZ ", sep=""), "(ORDINAL)."), sep="", collapse=""),
+                           " '", r[["valLabel"]], "'.", sep="")}))
+                }
+                recSt5<- c ( paste(c("VARIABLE LEVEL ", paste( as.character(tr[["variable"]]), "_FDZ ", sep=""), "(ORDINAL)."), sep="", collapse=""),
                               paste("FORMATS ", paste( as.character(tr[["variable"]]), "_FDZ ", sep=""), "(F3.0).", sep="", collapse=""))
-                     if(length(new_misLab)>0) {
-                        recSt5 <- c(recSt5, paste("MISSING VALUES ", paste( as.character(tr[["variable"]]), "_FDZ ", sep=""), "(",
-                                                  paste(new_misLab, collapse=", "),").",sep="", collapse=""))
-                     }
-                     recSt6<- "EXECUTE.\n\n"
-                     recSt <- c(recSt1, recSt2, recSt3, recSt4, recSt4b, recSt5, recSt6)
-                     return(recSt)}))
-       }
-    ### jetzt werden die nicht-numerischen Variablen zu numerisch umcodiert
-       if ( length(recode2)>0) {                                                ### untere zeile: missingwerte auslesen
-            cat("\nRead missing definition for character variables ... \n"); flush.console()
-#            b     <- import_spss(fileName, labeledStrings = TRUE)
-           d     <- df[["labels"]]                                              ### achtung, der liest hier bei character-variablen manchmal die missings nicht korrekt aus
-            cat(paste0("\n   Recode ",length(recode2), " non-numeric variables into numeric variables.\n")); flush.console()
-            liste[recode2, "recodeToNumeric"] <- TRUE
+                if(length(new_misLab)>0) {
+                    recSt5 <- c(recSt5, paste("MISSING VALUES ", paste( as.character(tr[["variable"]]), "_FDZ ", sep=""), "(", paste(new_misLab, collapse=", "),").",sep="", collapse=""))
+                }
+                recSt6<- "EXECUTE.\n\n"
+                recSt <- c(recSt1, recSt2, recSt3, recSt4, recSt4b, recSt5, recSt6)
+                return(recSt)}))
+       return(snipp1)}
+       
+
+makeNumeric <- function (x, df_labels, liste, datOM) {
+            cat(paste0("\n   Recode ",length(x), " non-numeric variables into numeric variables.\n")); flush.console()
+            liste[x, "recodeToNumeric"] <- TRUE
             toRec <- liste[which(liste[,"recodeToNumeric"]==TRUE),]
             snipp2<- unlist(by(toRec, INDICES = toRec[,"variable"], FUN = function ( tr ) {
-                     werte <- eatRep::crop(names(table(datOM[, as.character(tr[["variable"]]) ] )))
+                     werte <- eatTools::crop(names(table(datOM[, as.character(tr[["variable"]]) ] )))
                      if ( length(setdiff(werte, ""))==0 ) {
                           recSt <- NULL
                      }  else  {
-                          miss  <- d[which(d[,"varName"] == as.character(tr[["variable"]])),]
+                          miss  <- df_labels[which(df_labels[,"varName"] == as.character(tr[["variable"]])),]
                           wom   <- setdiff ( setdiff (werte, miss[,"value"]), "")## werte ohne missings
                           recSt1<- c("RECODE", as.character(tr[["variable"]]) ) ### erster Teil des Recodierungsstatements
                           oldnew<- data.frame ( old = wom, new = 1:length(wom), stringsAsFactors = FALSE)
@@ -186,10 +197,6 @@ fdz <- function ( fileName, boundary = 5, saveFolder = NA, nameListe = NULL, nam
                           recSt <- c(recSt1, recSt2, recSt3, recSt4, recSt5, recSt6, recSt7, recSt8, recSt9)
                      }
                      return(recSt)}))
-       }
-       snipp  <- c(snipp1, snipp2)
-       if(is.null(nameSyntax)) { nameSyntax <- "syntaxbaustein.txt" }
-       if(!is.na(saveFolder)) { write(snipp,  file.path(eatRep::crop(saveFolder,"/"), nameSyntax)) }
-       if(is.null(nameListe))  { nameListe <- "Liste_komplett.csv"}
-       write.csv2(liste, file.path(eatRep::crop(saveFolder,"/"), nameListe), na="")
-       return(snipp)  }
+            return(snipp2)}
+
+
