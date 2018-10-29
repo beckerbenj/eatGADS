@@ -16,11 +16,13 @@ extract_variable_level.savDat<- function(rawDat) {
   varWidth <- unlist(lapply(rawDat, extract_attribute, attr_name = "display_width", NA_type = NA_real_))
   varClass <- unlist(lapply(rawDat, extract_attribute, attr_name = "class"))
   # internal convention: all special labeled haven classes are internally represented as "factor"
-  varClass[!is.na(varClass)] <- "factor"
+  varClass[!is.na(varClass)] <- "labeled"
   varLabel_df <- data.frame(names(rawDat), varLabels, varFormat, varWidth, varClass, stringsAsFactors = FALSE)
   # names
   names(varLabel_df) <- c("varName", "varLabel", "format", "display_width", "class")
   rownames(varLabel_df) <- NULL
+
+  issue_havenBUG_warning(varLabel_df)
 
   varLabel_df
 }
@@ -36,7 +38,7 @@ extract_variable_level.data.frame <- function(rawDat) {
 
 # extract attributes and produce NA for not given attributes
 extract_attribute <- function(var, attr_name, NA_type = NA_character_) {
-  out <- attr(var, attr_name)
+  out <- attr(var, attr_name, exact = TRUE)
   if(is.null(out)) out <- NA_type
   if(length(out) > 1) out <- paste(out, collapse = ", ")
   out
@@ -131,3 +133,15 @@ extract_Miss_SPSS <- function(var, label_df) {
 }
 
 
+# haven bug precautions     ---------------------------------------------------
+issue_havenBUG_warning <- function(varLabel_df) {
+  split_string <- strsplit(varLabel_df$format, "\\.")
+  split_string <- unlist(lapply(split_string, function(x) x[[1]]))
+  spss_length <- as.numeric(eatTools::removeNonNumeric(split_string))
+  bug_vars <- grepl("^A", varLabel_df$format) & (spss_length >= 10 | (spss_length == 9 & !is.na(varLabel_df$class)))
+  # for A9 only missing labels are affected, from A10 all labels are affected!
+  if(any(bug_vars)) {
+    warning("The following variables are long character variables (> A20) and have labels. These labels, including missing labels, might have been lost due to a bug in haven: \n ", paste(varLabel_df[bug_vars, "varName"], collapse = ", "), call. = FALSE)
+  }
+  return(NULL)
+}
