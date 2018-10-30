@@ -29,7 +29,7 @@ label_out1 <- data.frame(varName = c("VAR1", "VAR2", "VAR3"),
                           varLabel = c("Variable 1", "Variable 2", "Variable 3"),
                           format = c("F8.2", "F8.0", "A8"),
                           display_width = c(NA, 10, NA),
-                          class = c("factor", "factor", NA),
+                          class = c("labeled", "labeled", NA),
                           stringsAsFactors = FALSE)
 label_out2 <- data.frame(varName = c("VAR1", "VAR2"), value = c(1, 2),
                          valLabel = c("One", "Two"), missings = c(NA, NA), stringsAsFactors = FALSE)
@@ -127,7 +127,12 @@ test_that("Columns are added if not used for data for label df", {
   expect_identical(names(exceptions$labels), attr_vec)
 })
 
-
+### haven bug warning
+test_that("Warning for long labeled characters and haven bug", {
+  warns <- capture_warnings(import_spss("helper_spss_havenbug.sav"))
+  expect_equal(warns[[1]],
+                 paste("The following variables are long character variables (> A20) and have labels. These labels, including missing labels, might have been lost due to a bug in haven: \n v3, v4"))
+})
 
 ###### test import from R data frame
 test_that("Data frames directly from R are imported correctly", {
