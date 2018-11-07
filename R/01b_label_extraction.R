@@ -78,6 +78,7 @@ extract_value_level.factor <- function(var, varName, labeledStrings) {
 }
 
 # single variable for SPSS
+#'@export
 extract_value_level.haven_labelled <- function(var, varName, labeledStrings = FALSE) {
   # check if there are value labels
   if(is.null(attributes(var)$labels)) return(NULL)
@@ -104,6 +105,7 @@ extract_value_level.haven_labelled <- function(var, varName, labeledStrings = FA
 }
 
 # emergency function for downwards compatability with older haven versions
+#'@export
 extract_value_level.labeled_spss <- function(var, varName, labeledStrings = FALSE) {
   warning("You are using an old version of haven. Please download the current version from GitHub. \n Correct importing from SPSS-files can not be guaranteed.", call. = FALSE)
   class(var) <- "haven_labelled"

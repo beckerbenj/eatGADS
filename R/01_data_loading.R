@@ -112,14 +112,14 @@ new_GADSdat <- function(dat, labels) {
 }
 # GADSdat validator
 check_GADSdat <- function(GADSdat) {
-  if(!"GADSdat" %in% class(GADSdat)) stop("GADSdat has to be of class GADSdat", call. = FALSE)
+  if(!"GADSdat" %in% class(GADSdat)) stop("All input objects have to be of class GADSdat", call. = FALSE)
   if(!is.list(GADSdat) && length(GADSdat) == 2) stop("GADSdat has to be a list with length two", call. = FALSE)
   if(!identical(names(GADSdat), c("dat", "labels"))) stop("List elements of a GADSdat object have to be 'dat' and 'labels'", call. = FALSE)
   if(!is.data.frame(GADSdat$dat)) stop("dat element has to be a data frame", call. = FALSE)
   if(!is.data.frame(GADSdat$labels)) stop("labels element has to be a data frame", call. = FALSE)
 
   # internals
-  if(!all.equal(unique(GADSdat$labels$varName), names(GADSdat$dat))) {
+  if(!identical(unique(GADSdat$labels$varName), names(GADSdat$dat))) {
     stop("Illegal names or order of names in label data frame. Make sure to use the import functions to create GADSdata objects.", call. = FALSE)
   }
 }
@@ -129,14 +129,11 @@ check_GADSdat <- function(GADSdat) {
 # function for preparing of variable names (to be in line with sqlite rules)
 transf_names <- function(vec_name) {
   NewName <- vec_name
-  if(identical(vec_name, "group")) {
-    NewName <- "groupVar"
-    message(paste(vec_name, "has been renamed to", NewName))
-  }
-  if(grepl("\\.", vec_name)) {
-    NewName <- gsub("\\.", "_", vec_name)
-    message(paste(vec_name, "has been renamed to", NewName))
-  }
+  if(identical(vec_name, "group")) NewName <- "groupVar"
+  if(grepl("\\.", vec_name))       NewName <- gsub("\\.", "_", vec_name)
+  NewName <- make.names(NewName)
+
+  if(!identical(NewName, vec_name)) message(paste(vec_name, "has been renamed to", NewName))
   NewName
 }
 

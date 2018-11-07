@@ -1,3 +1,29 @@
+#### Check consistency of missings
+#############################################################################
+#' Check Missings
+#'
+#' Function to check missings
+#'
+#' The function checks missings
+#'
+#'@param ... Lists including data and label element.
+#'
+#'@return Returns a nothing.
+#'
+#'@examples
+#'# Example data set
+#'to be done
+#'
+#'@export
+checkMissings <- function(GADSdat) {
+  UseMethod("checkMissings")
+}
+
+#'@export
+checkMissings.GADSdat <- function(...) {
+# tbd
+
+}
 
 #### Merge value and variable label data frames
 #############################################################################

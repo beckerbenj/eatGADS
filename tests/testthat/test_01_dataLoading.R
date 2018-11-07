@@ -131,7 +131,7 @@ test_that("Columns are added if not used for data for label df", {
 test_that("Warning for long labeled characters and haven bug", {
   warns <- capture_warnings(import_spss("helper_spss_havenbug.sav"))
   expect_equal(warns[[1]],
-                 paste("The following variables are long character variables (> A20) and have labels. These labels, including missing labels, might have been lost due to a bug in haven: \n v3, v4"))
+                 paste("The following variables are long character variables (> A8) and might have labels. These labels, including missing labels, might have been lost due to a bug in haven: \n v3, v4"))
 })
 
 ###### test import from R data frame
