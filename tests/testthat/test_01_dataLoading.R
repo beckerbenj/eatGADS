@@ -23,6 +23,7 @@ test_that("savDat object created correctly", {
 
 
 ################# Attribute extracting ---------------------------------------------------
+# rawDat <- load_spss(file = "c:/Benjamin_Becker/02_Repositories/packages/eatGADS/tests/testthat/helper_spss.sav")
 rawDat <- load_spss("helper_spss.sav")
 
 label_out1 <- data.frame(varName = c("VAR1", "VAR2", "VAR3"),
@@ -59,6 +60,7 @@ test_that("Variable remains even when no attributes are present", {
 
 
 ######### Attribute extracting on value level
+# string_test <- load_spss(file = "c:/Benjamin_Becker/02_Repositories/packages/eatGADS/tests/testthat/helper_spss_exceptions.sav")
 string_test <- load_spss("helper_spss_exceptions.sav")
 test_that("Value label of single variable extracted correctly for SPSS type variables", {
   expect_equal(extract_value_level(rawDat$VAR1, "VAR1"),
@@ -94,15 +96,24 @@ test_that("All labels extracted correctly ", {
                label_out_all)
 })
 
+
+
+
 ### Missing Label extracting
+# rawDat_missings <- haven::read_spss(file = "c:/Benjamin_Becker/02_Repositories/packages/eatGADS/tests/testthat/helper_spss_missings.sav", user_na = TRUE)
 rawDat_missings <- haven::read_spss("helper_spss_missings.sav", user_na = TRUE)
 
 label_miss <- data.frame(varName = rep("VAR1", 3), value = c(-99, -96, 1),
                         valLabel = c("By design", "Omission", "One"), missings = c("miss", "miss", NA), stringsAsFactors = FALSE)
+label_miss2 <- data.frame(varName = rep("VAR2", 2), value = c(-96, -99),
+                         valLabel = c("missing", NA), missings = c(NA, "miss"), stringsAsFactors = FALSE)
 
 test_that("Missings of single variable extracted correctly ", {
   expect_equal(extract_value_level(rawDat_missings[, 1, drop = T], "VAR1"), label_miss)
+  expect_equal(extract_value_level(rawDat_missings[, 2, drop = T], "VAR2"), label_miss2)
 })
+
+
 
 
 ### All SPSS importing in once
@@ -112,8 +123,6 @@ test_that("User SPSS importing function works ", {
   class(expected) <- "GADSdat"
   expect_equal(import_spss("helper_spss.sav"), expected)
 })
-
-
 
 
 exceptions <- import_spss("helper_spss_exceptions.sav", labeledStrings = TRUE)

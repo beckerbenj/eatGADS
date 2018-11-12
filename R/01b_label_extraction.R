@@ -94,11 +94,10 @@ extract_value_level.haven_labelled <- function(var, varName, labeledStrings = FA
   df <- data.frame(varName = rep(varName, length(values)),
                    value = values,
                    valLabel = attr(attr(var, "labels"), "names"),
-                   missings = NA,
                    stringsAsFactors = FALSE)
 
   ## extract missings and add as extra label
-  df <- extract_Miss_SPSS(var = var, label_df = df)
+  df <- extract_Miss_SPSS(var = var, varName = varName, label_df = df)
 
   rownames(df) <- NULL
   df
@@ -113,26 +112,25 @@ extract_value_level.labeled_spss <- function(var, varName, labeledStrings = FALS
 }
 
 # extract if label is label for missing values
-extract_Miss_SPSS <- function(var, label_df) {
+extract_Miss_SPSS <- function(var, varName, label_df) {
   na_range <- attr(var, "na_range")
   na_value <- attr(var, "na_value")
-  # check if any na_value without this label (check not performed for na_range!)
-  lapply(na_value, function(val) {
-    if(!val %in% label_df$value) {
-      warning(val, " used as missing label for variable ", label_df$varName[1], " but no value label given. Label is dropped.", call. = FALSE)
-    }})
+  # which values in na_range exist?
+  suppressWarnings(existing_values <- as.numeric(names(table(var))))
+  na_range_used <- existing_values[existing_values <= na_range[2] & existing_values >= na_range[1]]
+  #browser()
+  values <- c(na_value, na_range_used)
+  if(length(values) > 0) {
+    miss_df <- data.frame(varName = varName, value = values, missings = "miss", stringsAsFactors = FALSE)
+    label_df <- plyr::join(label_df, miss_df, by = "value", type = "full", match = "all")
+  } else {
+    label_df <- data.frame(label_df, missings = NA, stringsAsFactors = FALSE)
+    }
 
-  # add variable indicating missings
-  if(!is.null(na_range) || !is.null(na_value)) {
-    # give values for ifelse
-    if(is.null(na_range)) na_range <- c(Inf, -Inf)
-    if(is.null(na_value)) na_value <- numeric(0)
-    label_df$missings <- ifelse(label_df$value >= na_range[1] & label_df$value <= na_range[2] |
-                                  label_df$value %in% na_value, "miss", NA)
-  }
-  rownames(label_df) <- NULL
   label_df
 }
+
+
 
 
 # haven bug precautions     ---------------------------------------------------
