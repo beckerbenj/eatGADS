@@ -30,6 +30,7 @@
 #'@export
 fdz <- function ( fileName, boundary = 5, saveFolder = NA, nameListe = NULL, nameSyntax = NULL, exclude = NULL) {
         df     <- import_spss(fileName, checkVarNames = FALSE, labeledStrings = FALSE)
+        df     <- checkMissings(df, missingLabel = "missing", addMissingCode = TRUE, addMissingLabel = TRUE)
   #cat("\nRead data set with labels ... \n"); flush.console()
   #     mitLab <- read.spss ( fileName, to.data.frame = FALSE, use.value.labels = TRUE, use.missings = TRUE)
   #     varLab <- attr(mitLab, "variable.labels")

@@ -105,7 +105,7 @@ extract_value_level.haven_labelled <- function(var, varName, labeledStrings = FA
 
 # emergency function for downwards compatability with older haven versions
 #'@export
-extract_value_level.labeled_spss <- function(var, varName, labeledStrings = FALSE) {
+extract_value_level.labelled_spss <- function(var, varName, labeledStrings = FALSE) {
   warning("You are using an old version of haven. Please download the current version from GitHub. \n Correct importing from SPSS-files can not be guaranteed.", call. = FALSE)
   class(var) <- "haven_labelled"
   extract_value_level(var = var, varName = varName, labeledStrings = labeledStrings)
