@@ -37,18 +37,18 @@ test_that("Missing checks raise no false alarms", {
 
 test_that("Missing labels are correctly checked and added", {
   expect_message(checkMissings(df3, addMissingLabel = FALSE),
-                 "Variables ID1 have values coded as missing but value label does not include the term 'missing'.")
+                 "The following variables have values coded as missing but value label does not include the term 'missing':\nID1")
   all_messages <- capture_messages(checkMissings(df3))
   expect_equal(all_messages[2],
-                 "'generic missing' is inserted into variable valLabel for 1 rows.\n")
+                 "'generic missing' is inserted into column valLabel for 1 rows.\n")
   expect_equal(checkMissings(df3)$labels[1, "valLabel"], "generic missing")
 })
 
 test_that("Missing codes are correctly checked and added", {
   expect_message(checkMissings(df4, addMissingCode = FALSE),
-                "Variables V1 have value labels including the term 'missing' which are not coded as missing.")
+                "The following variables have value labels including the term 'missing' which are not coded as missing:\nV1")
   all_messages <- capture_messages(checkMissings(df4))
   expect_equal(all_messages[2],
-               "'miss' is inserted into variable missings for 1 rows.\n")
+               "'miss' is inserted into column missings for 1 rows.\n")
   expect_equal(checkMissings(df4)$labels[2, "missings"], "miss")
 })

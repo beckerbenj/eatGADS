@@ -55,7 +55,7 @@ addLabels_single <- function(label_df) {
   unique_attr <- unlist(lapply(out, length))
   stopifnot(all(unique_attr)  <= 1)
   # out[["class"]] <- strsplit(out[["class"]], split = ", ")[[1]]
-  if(identical(out[["class"]], "factor")) out[["class"]]<- c("haven_labelled_spss", "haven_labelled")
+  if(identical(out[["class"]], "labeled")) out[["class"]]<- c("haven_labelled_spss", "haven_labelled")
 
   # missing labels, if any
   miss_values <- label_df[which(label_df$missings == "miss"), "value"]

@@ -108,7 +108,7 @@ prepare_labels <- function(rawDat, checkVarNames, labeledStrings) {
 # create S3 object GADSdat for User (needs interface!)
 new_GADSdat <- function(dat, labels) {
   stopifnot(is.data.frame(dat) && is.data.frame(labels))
-  structure(list(dat = dat, labels = labels), class = "GADSdat")
+  structure(list(dat = dat, labels = labels), class = c("GADSdat", "list"))
 }
 # GADSdat validator
 check_GADSdat <- function(GADSdat) {

@@ -25,8 +25,6 @@ miss2NA <- function(labeledDat) {
   dat
 }
 
-
-
 recodeVar <- function(var, labs){
   # extract missing labels
   mLabs <- labs[labs$miss == "miss", ]
@@ -36,7 +34,36 @@ recodeVar <- function(var, labs){
   var
 }
 
-
-
 #### Idee:
 # data.frame mit Conversion-Regeln als Input, muss von Hand spezifiziert werden oder als data im packge -> default?
+
+
+#### Get Metainformation
+#############################################################################
+#' Get Metainformation and Labels
+#'
+#' Exctrat metainformation, variable and values labels from GADSdat.
+#'
+#' Metainformation is stored tidily in a GADSdat and can be extracted via extractMeta for a single or multiple variables.
+#'
+#'@param importedSPSS Data frame imported via [import_spss].
+#'
+#'@return Returns the data frame with NA instead of missing codes.
+#'
+#'@examples
+#'# Example data set
+#'to be done
+#'
+#'@export
+extractMeta <- function(GADSdat, vars) {
+  UseMethod("extractMeta")
+}
+#'@export
+extractMeta.GADSdat <- function(GADSdat, vars){
+  check_GADSdat(GADSdat)
+  if(!any(vars %in% GADSdat$labels$varName)) stop("At least one of vars is not a variable in the GADSdat.", call. = TRUE)
+  GADSdat$labels[GADSdat$labels$varName %in% vars, ]
+}
+
+
+

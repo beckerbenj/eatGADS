@@ -16,4 +16,10 @@ test_that("Missing Conversion Data frame", {
   expect_equal(miss2NA(testM)[, 1, drop = F], expected)
 })
 
-
+##### extractMeta
+test_that("Extract Metainformation", {
+  expected <- testM$labels[testM$labels$varName %in% c("VAR1", "VAR2"), ]
+  out <- extractMeta(testM, c("VAR1", "VAR2"))
+  expect_equal(out, expected)
+  expect_error(extractMeta(testM, "var4"))
+})

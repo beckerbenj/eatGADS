@@ -15,7 +15,10 @@ extract_variable_level.savDat<- function(rawDat) {
   varFormat <- unlist(lapply(rawDat, extract_attribute, attr_name = "format.spss"))
   varWidth <- unlist(lapply(rawDat, extract_attribute, attr_name = "display_width", NA_type = NA_real_))
   varClass <- unlist(lapply(rawDat, extract_attribute, attr_name = "class"))
-  # internal convention: all special labeled haven classes are internally represented as "factor"
+  if(any(grepl("^labelled_spss", varClass))) {
+    warning("You are using an old version of haven. Please download the current version from GitHub. \n Correct importing from SPSS-files can not be guaranteed.", call. = FALSE)
+  }
+  # internal convention: all special labeled haven classes are internally represented as "labeled"
   varClass[!is.na(varClass)] <- "labeled"
   varLabel_df <- data.frame(names(rawDat), varLabels, varFormat, varWidth, varClass, stringsAsFactors = FALSE)
   # names
@@ -31,7 +34,7 @@ extract_variable_level.savDat<- function(rawDat) {
 extract_variable_level.data.frame <- function(rawDat) {
   # is factor variable to add?
   varClass <- unlist(lapply(rawDat, extract_attribute, attr_name = "class"))
-
+  varClass[!is.na(varClass)] <- "labeled"
   data.frame(varName = names(rawDat), class = varClass, stringsAsFactors = FALSE)
 }
 
@@ -106,23 +109,25 @@ extract_value_level.haven_labelled <- function(var, varName, labeledStrings = FA
 # emergency function for downwards compatability with older haven versions
 #'@export
 extract_value_level.labelled_spss <- function(var, varName, labeledStrings = FALSE) {
-  warning("You are using an old version of haven. Please download the current version from GitHub. \n Correct importing from SPSS-files can not be guaranteed.", call. = FALSE)
   class(var) <- "haven_labelled"
   extract_value_level(var = var, varName = varName, labeledStrings = labeledStrings)
 }
 
 # extract if label is label for missing values
 extract_Miss_SPSS <- function(var, varName, label_df) {
+  # if(varName =="Pfluus03a") browser()
   na_range <- attr(var, "na_range")
   na_value <- attr(var, "na_value")
-  # which values in na_range exist?
+  # which values in na_range exist? (empirically and/or have label)
   suppressWarnings(existing_values <- as.numeric(names(table(var))))
+  existing_values <- unique(c(existing_values, label_df$value))
   na_range_used <- existing_values[existing_values <= na_range[2] & existing_values >= na_range[1]]
-  #browser()
+
   values <- c(na_value, na_range_used)
+  values <- checkValues_havenBug(values, varName = varName)
   if(length(values) > 0) {
     miss_df <- data.frame(varName = varName, value = values, missings = "miss", stringsAsFactors = FALSE)
-    label_df <- plyr::join(label_df, miss_df, by = "value", type = "full", match = "all")
+    label_df <- plyr::join(label_df, miss_df, by = c("varName", "value"), type = "full", match = "all")
   } else {
     label_df <- data.frame(label_df, missings = NA, stringsAsFactors = FALSE)
     }
@@ -138,10 +143,20 @@ issue_havenBUG_warning <- function(varLabel_df) {
   split_string <- strsplit(varLabel_df$format, "\\.")
   split_string <- unlist(lapply(split_string, function(x) x[[1]]))
   spss_length <- as.numeric(eatTools::removeNonNumeric(split_string))
-  bug_vars <- grepl("^A", varLabel_df$format) & (spss_length >= 10 | (spss_length == 9 & !is.na(varLabel_df$class)))
+  bug_vars <- grepl("^A", varLabel_df$format) & !is.na(varLabel_df$class)
   # for A9 only missing labels are affected, from A10 all labels are affected!
   if(any(bug_vars)) {
-    warning("The following variables are long character variables (> A8) and might have labels. These labels, including missing labels, might have been lost due to a bug in haven: \n ", paste(varLabel_df[bug_vars, "varName"], collapse = ", "), call. = FALSE)
+    warning("The following variables are character variables (Format: A8 etc.) and probably have labels. These labels, including missing labels, might have been corrputed or lost due to a bug in haven: \n ", paste(varLabel_df[bug_vars, "varName"], collapse = ", "), call. = FALSE)
   }
   return(NULL)
+}
+
+checkValues_havenBug <- function(values, varName) {
+  corrupted_values <- values %in% "" | is.na(values)
+  if(any(corrupted_values)) {
+    warning("Corrupted missing values haven been found in variable ", varName,
+            " and are dropped. Contact package author for further information.", call. = FALSE)
+    values <- values[!corrupted_values]
+  }
+  values
 }

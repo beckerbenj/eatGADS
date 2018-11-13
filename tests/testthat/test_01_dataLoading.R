@@ -61,7 +61,7 @@ test_that("Variable remains even when no attributes are present", {
 
 ######### Attribute extracting on value level
 # string_test <- load_spss(file = "c:/Benjamin_Becker/02_Repositories/packages/eatGADS/tests/testthat/helper_spss_exceptions.sav")
-string_test <- load_spss("helper_spss_exceptions.sav")
+string_test <- suppressWarnings(load_spss("helper_spss_exceptions.sav"))
 test_that("Value label of single variable extracted correctly for SPSS type variables", {
   expect_equal(extract_value_level(rawDat$VAR1, "VAR1"),
                data.frame(varName = "VAR1", value = 1, valLabel = "One", missings = NA, stringsAsFactors = FALSE))
@@ -72,10 +72,10 @@ test_that("Value label of single variable extracted correctly for SPSS type vari
 })
 
 test_that("Backward compatability to older haven classes", {
-  class(rawDat$VAR1) <- "labeled_spss"
-  expect_warning(extract_value_level(rawDat$VAR1, "test"),
+  class(rawDat$VAR1) <- "labelled_spss"
+  expect_warning(extract_variable_level(rawDat),
                  "You are using an old version of haven. Please download the current version from GitHub. \n Correct importing from SPSS-files can not be guaranteed.")
-  expect_equal(suppressWarnings(extract_value_level(rawDat$VAR1, "VAR1")),
+  expect_equal(extract_value_level(rawDat$VAR1, "VAR1"),
                data.frame(varName = "VAR1", value = 1, valLabel = "One", missings = NA, stringsAsFactors = FALSE))
 })
 
@@ -107,25 +107,33 @@ label_miss <- data.frame(varName = rep("VAR1", 3), value = c(-99, -96, 1),
                         valLabel = c("By design", "Omission", "One"), missings = c("miss", "miss", NA), stringsAsFactors = FALSE)
 label_miss2 <- data.frame(varName = rep("VAR2", 2), value = c(-96, -99),
                          valLabel = c("missing", NA), missings = c(NA, "miss"), stringsAsFactors = FALSE)
+# value labels or empirical values are used correctly for missing code generation
+label_miss3 <- data.frame(varName = rep("VAR3", 2), value = c(-99, -98),
+                          valLabel = c("missing", NA), missings = c("miss", "miss"), stringsAsFactors = FALSE)
 
 test_that("Missings of single variable extracted correctly ", {
   expect_equal(extract_value_level(rawDat_missings[, 1, drop = T], "VAR1"), label_miss)
   expect_equal(extract_value_level(rawDat_missings[, 2, drop = T], "VAR2"), label_miss2)
+  expect_equal(extract_value_level(rawDat_missings[, 3, drop = T], "VAR3"), label_miss3)
 })
 
-
+test_that("Haven missing lavel bug precautions", {
+  expect_warning(checkValues_havenBug(c("", "la"), varName = "test"))
+  expect_warning(checkValues_havenBug(c(NA, "la"), varName = "test"))
+  expect_equal(suppressWarnings(checkValues_havenBug(c(NA, "", "la"), varName = "test")), "la")
+})
 
 
 ### All SPSS importing in once
 test_that("User SPSS importing function works ", {
   expected <- list(dat = data.frame(VAR1 = 1, VAR2 = 3, VAR3 = "a", stringsAsFactors = FALSE),
                    labels = label_out_all)
-  class(expected) <- "GADSdat"
+  class(expected) <- c("GADSdat", "list")
   expect_equal(import_spss("helper_spss.sav"), expected)
 })
 
 
-exceptions <- import_spss("helper_spss_exceptions.sav", labeledStrings = TRUE)
+exceptions <- suppressWarnings(import_spss("helper_spss_exceptions.sav", labeledStrings = TRUE))
 ### SPSS importing exceptions
 test_that("Order of variables in label df is retained", {
   expect_identical(exceptions$labels$varName[1:2], c("V2", "V1"))
@@ -140,7 +148,7 @@ test_that("Columns are added if not used for data for label df", {
 test_that("Warning for long labeled characters and haven bug", {
   warns <- capture_warnings(import_spss("helper_spss_havenbug.sav"))
   expect_equal(warns[[1]],
-                 paste("The following variables are long character variables (> A8) and might have labels. These labels, including missing labels, might have been lost due to a bug in haven: \n v3, v4"))
+                 paste("The following variables are character variables (Format: A8 etc.) and probably have labels. These labels, including missing labels, might have been corrputed or lost due to a bug in haven: \n v2, v3"))
 })
 
 ###### test import from R data frame

@@ -32,14 +32,14 @@ checkMissings.GADSdat <- function(GADSdat, missingLabel = "missing", addMissingC
 
   ## Which variables are affected, how many adjustments are performed
   if(length(missCode_rows_fail) > 0) {
-    message("Variables ", labels[missCode_rows_fail, "varName"],
-            " have value labels including the term 'missing' which are not coded as missing.")
+    message("The following variables have value labels including the term 'missing' which are not coded as missing:\n",
+            paste(unique(labels[missCode_rows_fail, "varName"]), collapse = ", "))
     if(identical(addMissingCode, TRUE)) labels <- insert_string(df = labels, rows = missCode_rows_fail, col = "missings", string = "miss")
   }
 
   if(length(missLabel_rows_fail) > 0) {
-    message("Variables ", labels[missLabel_rows_fail, "varName"],
-            " have values coded as missing but value label does not include the term 'missing'.")
+    message("The following variables have values coded as missing but value label does not include the term 'missing':\n",
+            paste(unique(labels[missLabel_rows_fail, "varName"]), collapse = ", "))
   if(identical(addMissingLabel, TRUE)) labels <- insert_string(df = labels, rows = missLabel_rows_fail, col = "valLabel", string = "generic missing")
   }
 
@@ -48,7 +48,7 @@ checkMissings.GADSdat <- function(GADSdat, missingLabel = "missing", addMissingC
 }
 
 insert_string <- function(df, rows, col, string) {
-  message("'", string, "' is inserted into variable ", col, " for ", length(rows), " rows.")
+  message("'", string, "' is inserted into column ", col, " for ", length(rows), " rows.")
   df[rows, col] <- string
   df
 }
@@ -112,5 +112,5 @@ add_DFname <- function(df, name) {
 new_all_GADSdata <- function(dfList, allLabelDF) {
   stopifnot(is.list(dfList))
   stopifnot(is.data.frame(allLabelDF))
-  structure(list(dfList = dfList, allLabelDF = allLabelDF), class = "all_GADSdata")
+  structure(list(dfList = dfList, allLabelDF = allLabelDF), class = c("all_GADSdata", "list"))
 }
