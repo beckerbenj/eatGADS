@@ -23,8 +23,8 @@ createGADS <- function(allList, pkList, fkList, filePath) {
 }
 
 #'@export
-createGADS.all_GADSdata <- function(allList, pkList, fkList, filePath) {
-  eatDB::createDB(dfList = allList$dfList, pkList = pkList, fkList = fkList, metaData = allList$allLabelDF, filePath = filePath)
+createGADS.all_GADSdat <- function(allList, pkList, fkList, filePath) {
+  eatDB::createDB(dfList = allList$datList, pkList = pkList, fkList = fkList, metaData = allList$allLabels, filePath = filePath)
 }
 
 
@@ -85,14 +85,19 @@ labelsGADS <- function(filePath) {
 #'@param vSelect Variables
 #'@param filePath Path of the existing db file.
 #'
-#'@return Returns a long format data frame including variable names, labels, values, value labels and missing labels.
+#'@return Returns a GADSdat object.
 #'
 #'@examples
 #'# See vignette.
 #'
 #'@export
 getGADS <- function(vSelect = NULL, filePath) {
-  eatDB::dbPull(vSelect = vSelect, filePath = filePath)
+  GADSdat <- eatDB::dbPull(vSelect = vSelect, filePath = filePath)
+  allLabels <- labelsGADS(filePath = filePath)
+  selectLabels <- allLabels[allLabels$varName %in% names(GADSdat), , drop = FALSE]
+  # drop irrelevant data_table column and duplicate meta data from different data tables
+  selectLabels <- unique(selectLabels[, !names(selectLabels) %in% "data_table"])
+  new_GADSdat(dat = GADSdat, labels = selectLabels)
 }
 
 

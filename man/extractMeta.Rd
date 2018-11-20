@@ -4,7 +4,7 @@
 \alias{extractMeta}
 \title{Get Metainformation and Labels}
 \usage{
-extractMeta(GADSdat, vars)
+extractMeta(GADS_object, vars)
 }
 \arguments{
 \item{importedSPSS}{Data frame imported via [import_spss].}

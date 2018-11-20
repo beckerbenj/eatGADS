@@ -15,13 +15,18 @@
 #'to be done
 #'
 #'@export
-miss2NA <- function(labeledDat) {
-  #
-  datL <- lapply(names(labeledDat$dat), function(nam) {
-    recodeVar(var = labeledDat$dat[, nam], labs = labeledDat$labels[labeledDat$labels$varName == nam, ])
+miss2NA <- function(GADSdat) {
+  UseMethod("miss2NA")
+}
+
+#'@export
+miss2NA.GADSdat <- function(GADSdat) {
+  check_GADSdat(GADSdat)
+  datL <- lapply(names(GADSdat$dat), function(nam) {
+    recodeVar(var = GADSdat$dat[, nam], labs = GADSdat$labels[GADSdat$labels$varName == nam, ])
   })
   dat <- as.data.frame(datL)
-  names(dat) <- names(labeledDat$dat)
+  names(dat) <- names(GADSdat$dat)
   dat
 }
 
@@ -55,14 +60,30 @@ recodeVar <- function(var, labs){
 #'to be done
 #'
 #'@export
-extractMeta <- function(GADSdat, vars) {
+extractMeta <- function(GADS_object, vars) {
   UseMethod("extractMeta")
 }
 #'@export
-extractMeta.GADSdat <- function(GADSdat, vars){
-  check_GADSdat(GADSdat)
-  if(!any(vars %in% GADSdat$labels$varName)) stop("At least one of vars is not a variable in the GADSdat.", call. = TRUE)
-  GADSdat$labels[GADSdat$labels$varName %in% vars, ]
+extractMeta.GADSdat <- function(GADS_object, vars){
+  check_GADSdat(GADS_object)
+  if(!all(vars %in% GADS_object$labels$varName)) stop("At least one of vars is not a variable in the GADSdat.", call. = FALSE)
+  GADS_object$labels[GADS_object$labels$varName %in% vars, ]
+}
+#'@export
+extractMeta.all_GADSdat <- function(GADS_object, vars){
+  check_all_GADSdat(GADS_object)
+  if(!all(vars %in% GADS_object$allLabels$varName)) stop("At least one of vars is not a variable in the all_GADSdat.", call. = FALSE)
+  GADS_object$labels[GADS_object$labels$varName %in% vars, ]
+}
+## Version for labels data frame
+#'@export
+extractMeta.data.frame <- function(GADS_object, vars){
+  if(!identical(names(GADS_object),
+                c("varName", "varLabel", "format", "display_width", "class", "value", "valLabel", "missings", "data_table"))) {
+    stop("GADS_object has to be of type GADSdat, all_GADSdat or has to be a labels data frame created from GADS import functions.")
+  }
+  if(!all(vars %in% GADS_object$varName)) stop("At least one of vars is not a variable in the labels data frame.", call. = FALSE)
+  GADS_object[GADS_object$varName %in% vars, ]
 }
 
 

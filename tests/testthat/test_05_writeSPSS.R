@@ -27,7 +27,7 @@ test_that("Variable labels are added correctly to attributes, for single variabl
 
 ### check all variable label adding (with one variable)
 test_that("Variable labels are added correctly to attributes for all variables", {
-  out <- addLabels(df, label_df)
+  out <- addLabels(df$dat, label_df)
   expect_equal(attributes(out$ID1), expected_ID1)
   expect_equal(attributes(out$V1), expected_ID1)
   expect_equal(attributes(out$V2), expected_V2)

@@ -16,7 +16,7 @@ test_that("GADS DB creation", {
 ### names
 test_that("GADS DB names", {
   expect_identical(namesGADS(filePath = "helper_dataBase.db"),
-                 list(df1 = c("ID1", "V1"), df2 = c("ID1", "V2")))
+                   list(df1 = c("ID1", "V1"), df2 = c("ID1", "V2")))
 })
 
 ### labels
@@ -33,13 +33,17 @@ expected_ID2 <- unique(m1[, 1, drop = FALSE])
 rownames(expected_ID2) <- NULL
 
 test_that("GADS DB get all data", {
-  expect_equal(getGADS(filePath = "helper_dataBase.db"), m1)
-  expect_equal(getGADS(vSelect = c("V2", "V1", "ID1"), filePath = "helper_dataBase.db"), m1)
+  out1 <- getGADS(filePath = "helper_dataBase.db")
+  out2 <- getGADS(vSelect = c("V2", "V1", "ID1"), filePath = "helper_dataBase.db")
+  expect_equal(out1$dat, m1)
+  expect_equal(out2$dat, m1)
+  expect_equal(out1$labels, expected_labels[c(1, 2, 4), -9])
 })
 
 test_that("GADS DB get one variable", {
-  expect_equal(getGADS(vSelect = "ID1", filePath = "helper_dataBase.db"),
-               expected_ID2)
+  out <- getGADS(vSelect = "ID1", filePath = "helper_dataBase.db")
+  expect_equal(out$dat, expected_ID2)
+  expect_equal(out$labels, expected_labels[1, -9])
 })
 
 

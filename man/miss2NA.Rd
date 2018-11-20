@@ -4,7 +4,7 @@
 \alias{miss2NA}
 \title{Recode Missings to NA}
 \usage{
-miss2NA(labeledDat)
+miss2NA(GADSdat)
 }
 \arguments{
 \item{importedSPSS}{Data frame imported via [import_spss].}
