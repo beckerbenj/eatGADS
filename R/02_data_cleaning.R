@@ -125,6 +125,8 @@ applyChangeMeta.GADSdat <- function(GADSdat, changeTable) {
     labels[labels$varName == i, "varName"] <- changeNameDF[changeNameDF$varName == i, "varName_new"]
   }
 
+  # optional: function for value recoding if needed
+
   # 02)  for all but varNames and values (changes only in meta data)
   change_vars <- grep("_new", names(changeTable), value = TRUE)
   simpleChanges <- changeTable[, change_vars[!change_vars %in% c("varName_new")], drop = FALSE]
@@ -152,7 +154,7 @@ check_changeTable <- function(GADSdat, changeTable) {
   for(i in unique(changeTable$varName)) {
     varLevel_df <- changeTable[changeTable$varName == i, varLevel_vars, drop = FALSE]
     varLevel_df <- unique(varLevel_df)
-    if(ncol(varLevel_df) > 1) stop("Variable ", i, " has varying changes on variable level.", call. = FALSE)
+    if(nrow(varLevel_df) > 1) stop("Variable ", i, " has varying changes on variable level.", call. = FALSE)
   }
   return()
 }

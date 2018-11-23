@@ -75,11 +75,13 @@ extractMeta.all_GADSdat <- function(GADS_object, vars){
   if(!all(vars %in% GADS_object$allLabels$varName)) stop("At least one of vars is not a variable in the all_GADSdat.", call. = FALSE)
   GADS_object$labels[GADS_object$labels$varName %in% vars, ]
 }
-## Version for labels data frame
+## Version for labels data frame or changeTable (if more functions for changeTables are implemented add it as an own S3 class)
 #'@export
 extractMeta.data.frame <- function(GADS_object, vars){
-  if(!identical(names(GADS_object),
-                c("varName", "varLabel", "format", "display_width", "class", "value", "valLabel", "missings", "data_table"))) {
+  legal_names_labels <- c("varName", "varLabel", "format", "display_width", "class", "value", "valLabel", "missings", "data_table")
+  legal_names_changeTable <- paste(legal_names_labels, "_new", sep = "")
+  legal_names <- c(legal_names_labels, legal_names_changeTable)
+  if(!all(names(GADS_object) %in% legal_names)) {
     stop("GADS_object has to be of type GADSdat, all_GADSdat or has to be a labels data frame created from GADS import functions.")
   }
   if(!all(vars %in% GADS_object$varName)) stop("At least one of vars is not a variable in the labels data frame.", call. = FALSE)

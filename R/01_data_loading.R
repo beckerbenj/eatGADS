@@ -119,7 +119,7 @@ check_GADSdat <- function(GADSdat) {
   if(!is.data.frame(GADSdat$labels)) stop("labels element has to be a data frame", call. = FALSE)
 
   # internals
-  if(!identical(unique(GADSdat$labels$varName), names(GADSdat$dat))) {
+  if(!(all(unique(GADSdat$labels$varName) %in% names(GADSdat$dat)) && all(unique(GADSdat$labels$varName) %in% names(GADSdat$dat)))) {
     stop("Illegal names or order of names in label data frame. Make sure to use the import functions to create GADSdata objects.", call. = FALSE)
   }
 }
