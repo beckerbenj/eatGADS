@@ -8,22 +8,22 @@ checkMissings(GADSdat, missingLabel = "missing", addMissingCode = TRUE,
   addMissingLabel = TRUE)
 }
 \arguments{
-\item{GADSdat}{GADSdat object imported via eatGADS.}
+\item{GADSdat}{\code{GADSdat} object imported via \code{eatGADS}.}
 
-\item{missingLabel}{Characatre how missing labels are named.}
+\item{missingLabel}{Single string indicating how missing labels are commonly named in the value labels.}
 
-\item{addMissingCode}{If [TRUE], missing codes are added according to occurence of [missingLabel] in [valLabel].}
+\item{addMissingCode}{If \code{TRUE}, missing codes are added according to occurence of \code{"missingLabel"} in \code{"valLabel"}.}
 
-\item{addMissingLabel}{If [TRUE], [generic missing] is added according to occurence of [mis] in [missings].}
+\item{addMissingLabel}{If \code{TRUE}, \code{"generic missing"} is added according to occurence of \code{"mis"} in \code{"missings"}.}
 }
 \value{
-Returns a GADSdat object
+Returns a GADSdat object.
 }
 \description{
 Function to check if missings are coded and labeled correctly in a GADSdat object.
 }
 \details{
-The function compares value labels and missing codes of a GADSdat object and its labels data frame. Missmatches are reported and can be automatically adjusted.
+The function compares value labels \code{"valLabels"} and missing codes \code{"missings"} of a \code{GADSdat} object and its meta data information. Missmatches are reported and can be automatically adjusted.
 }
 \examples{
 # Example data set

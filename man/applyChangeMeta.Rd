@@ -9,16 +9,16 @@ applyChangeMeta(GADSdat, changeTable)
 \arguments{
 \item{GADSdat}{GADSdat object imported via eatGADS.}
 
-\item{changeTable}{Change table.}
+\item{changeTable}{Change table as provided by \code{\link{getChangeMeta}}.}
 }
 \value{
-Returns the complete meta data sheet with additional columns for changes in meta data.
+Returns the modified \code{GADSdat} object.
 }
 \description{
-Function to apply meta data changes to a GADSdat object specified by a change table extracted by getChangeMeta.
+Function to apply meta data changes to a \code{GADSdat} object specified by a change table extracted by \code{\link{getChangeMeta}}.
 }
 \details{
-The function ....
+Values for which the change columns contain \code{NA} remain unchanged. Changes to values are currently not supported.
 }
 \examples{
 # Example data set

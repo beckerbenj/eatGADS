@@ -4,14 +4,14 @@
 #'
 #' Function to check if missings are coded and labeled correctly in a GADSdat object.
 #'
-#' The function compares value labels and missing codes of a GADSdat object and its labels data frame. Missmatches are reported and can be automatically adjusted.
+#' The function compares value labels \code{"valLabels"} and missing codes \code{"missings"} of a \code{GADSdat} object and its meta data information. Missmatches are reported and can be automatically adjusted.
 #'
-#'@param GADSdat GADSdat object imported via eatGADS.
-#'@param missingLabel Characatre how missing labels are named.
-#'@param addMissingCode If [TRUE], missing codes are added according to occurence of [missingLabel] in [valLabel].
-#'@param addMissingLabel If [TRUE], [generic missing] is added according to occurence of [mis] in [missings].
+#'@param GADSdat \code{GADSdat} object imported via \code{eatGADS}.
+#'@param missingLabel Single string indicating how missing labels are commonly named in the value labels.
+#'@param addMissingCode If \code{TRUE}, missing codes are added according to occurence of \code{"missingLabel"} in \code{"valLabel"}.
+#'@param addMissingLabel If \code{TRUE}, \code{"generic missing"} is added according to occurence of \code{"mis"} in \code{"missings"}.
 #'
-#'@return Returns a GADSdat object
+#'@return Returns a GADSdat object.
 #'
 #'@examples
 #'# Example data set
@@ -55,15 +55,15 @@ insert_string <- function(df, rows, col, string) {
 
 
 
-#### Change Meta data
+#### Extract Change Meta data
 #############################################################################
 #' Extract table for Meta Data Changes.
 #'
-#' Function to obtain a data frame from a GADSdat object for meta data changes. Changes to value are currently not supported.
+#' Function to obtain a data frame from a \code{GADSdat} object for meta data changes.
 #'
-#' The function ....
+#' Changes to values are currently not supported.
 #'
-#'@param GADSdat GADSdat object imported via eatGADS.
+#'@param GADSdat \code{GADSdat} object imported via eatGADS.
 #'@param changeCol Names of columns on which changes are to be specified.
 #'
 #'@return Returns the complete meta data sheet with additional columns for changes in meta data.
@@ -89,17 +89,18 @@ getChangeMeta.GADSdat <- function(GADSdat, changeCol = c("varName", "varLabel", 
   labels
 }
 
-
+#### Apply Change Meta data
+#############################################################################
 #' Apply Meta Data Changes.
 #'
-#' Function to apply meta data changes to a GADSdat object specified by a change table extracted by getChangeMeta.
+#' Function to apply meta data changes to a \code{GADSdat} object specified by a change table extracted by \code{\link{getChangeMeta}}.
 #'
-#' The function ....
+#' Values for which the change columns contain \code{NA} remain unchanged. Changes to values are currently not supported.
 #'
 #'@param GADSdat GADSdat object imported via eatGADS.
-#'@param changeTable Change table.
+#'@param changeTable Change table as provided by \code{\link{getChangeMeta}}.
 #'
-#'@return Returns the complete meta data sheet with additional columns for changes in meta data.
+#'@return Returns the modified \code{GADSdat} object.
 #'
 #'@examples
 #'# Example data set
@@ -120,13 +121,13 @@ applyChangeMeta.GADSdat <- function(GADSdat, changeTable) {
 
   # 01) variable names (changes in data and in meta data)
   changeNameDF <- unique(changeTable[!is.na(changeTable[, "varName_new"]), c("varName", "varName_new")])
+  if(any(!changeNameDF$varName %in% names(dat))) stop("varName in the changeTable is not a real variable name.")
   for(i in changeNameDF[, "varName"]) {
     names(dat)[names(dat) == i] <- changeNameDF[changeNameDF$varName == i, "varName_new"]
     labels[labels$varName == i, "varName"] <- changeNameDF[changeNameDF$varName == i, "varName_new"]
   }
 
   # optional: function for value recoding if needed
-
   # 02)  for all but varNames and values (changes only in meta data)
   change_vars <- grep("_new", names(changeTable), value = TRUE)
   simpleChanges <- changeTable[, change_vars[!change_vars %in% c("varName_new")], drop = FALSE]
@@ -142,6 +143,7 @@ applyChangeMeta.GADSdat <- function(GADSdat, changeTable) {
 
 # check change Table, also in relation to GADSdat object
 check_changeTable <- function(GADSdat, changeTable) {
+  if(!is.data.frame(changeTable)) stop("changeTable is not a data.frame.")
   oldChangeTable <- changeTable[, seq(ncol(GADSdat$labels))]
   newChangeTable <- changeTable[, (ncol(GADSdat$labels)+1):ncol(changeTable), drop = FALSE]
 
@@ -160,8 +162,40 @@ check_changeTable <- function(GADSdat, changeTable) {
 }
 
 
+#### Change Variable names
+#############################################################################
+#' Change Variable Names.
+#'
+#' Change variable names of a \code{GADSdat} object.
+#'
+#' Applied to a \code{GADSdat} object, this function is a wrapper of \code{\link{getChangeMeta}} and \code{\link{applyChangeMeta}}
+#'
+#'@param GADSdat GADSdat object imported via eatGADS.
+#'@param oldNames Vector containing the old variable names.
+#'@param newNames Vector containing the new variable names, in identical order as oldNames.
+#'
+#'@return Returns the GADSdat object with changed variable names.
+#'
+#'@examples
+#'# Example data set
+#'to be done
+#'
+#'@export
+changeVarNames <- function(GADSdat, oldNames, newNames) {
+  UseMethod("changeVarNames")
+}
 
-
+#'@export
+changeVarNames.GADSdat <- function(GADSdat, oldNames, newNames) {
+  if(length(oldNames) != length(newNames)) stop("oldNames and newNames are not of identical length.", call. = FALSE)
+  if(!(is.character(oldNames) && is.character(newNames))) stop("oldNames and newNames are not character vectors.", call. = FALSE)
+  if(any(!oldNames %in% names(GADSdat$dat))) stop("varName in oldNames is not a real variable name.", call. = FALSE)
+  changeTable <- getChangeMeta(GADSdat, changeCol = "varName")
+  for(i in seq_along(oldNames)) {
+    changeTable[changeTable$varName == oldNames[i], "varName_new"] <- newNames[i]
+  }
+  applyChangeMeta(GADSdat, changeTable = changeTable)
+}
 
 
 

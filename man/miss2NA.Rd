@@ -2,21 +2,21 @@
 % Please edit documentation in R/06_data_handling.R
 \name{miss2NA}
 \alias{miss2NA}
-\title{Recode Missings to NA}
+\title{Recode Missings to \code{NA}}
 \usage{
 miss2NA(GADSdat)
 }
 \arguments{
-\item{importedSPSS}{Data frame imported via [import_spss].}
+\item{GADSdat}{A \code{GADSdat} object.}
 }
 \value{
-Returns the data frame with NA instead of missing codes.
+Returns the data frame with \code{NA} instead of missing codes.
 }
 \description{
-Recode Missings to NA according to missing labels in label data frame.
+Recode Missings to \code{NA} according to missing labels in label data frame.
 }
 \details{
-Missings are imported as their values via import_spss. Using the value labels in the labels data frame, miss2NA recodes these missings codes to NA.
+Missings are imported as their values via \code{\link{import_spss}}. Using the value labels in the labels data frame, \code{miss2NA} recodes these missings codes to \code{NA}.
 }
 \examples{
 # Example data set

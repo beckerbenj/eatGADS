@@ -162,7 +162,12 @@ test_that("Data frames directly from R are imported correctly", {
 })
 
 
+###### check_GADSdat
+testM <- import_spss("helper_spss_missings.sav")
 
-
+test_that("Object validater for GADSdat objects",{
+  testM$dat[, "newVar"] <- NA
+  expect_error(check_GADSdat(testM), "Illegal names or order of names in label data frame. Make sure to use the import functions to create GADSdata objects.")
+})
 
 

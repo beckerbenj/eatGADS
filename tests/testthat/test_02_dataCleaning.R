@@ -80,3 +80,22 @@ test_that("Changes to GADSdat on value level", {
   expect_equal(names(g2$dat), names(dfSAV$dat))
 })
 
+
+#### Wrapper for Meta Changes
+test_that("Errors are called for changeVarNames", {
+  expect_error(changeVarNames(dfSAV, oldNames = c("VA2"), newNames = c("test")), "varName in oldNames is not a real variable name.")
+  expect_error(changeVarNames(dfSAV, oldNames = c("VAR2"), newNames = c("test", "2")), "oldNames and newNames are not of identical length.")
+  expect_error(changeVarNames(dfSAV, oldNames = c("VAR2"), newNames = 1), "oldNames and newNames are not character vectors.")
+})
+
+test_that("changeVarNames works", {
+  out_single <- changeVarNames(dfSAV, oldNames = c("VAR2"), newNames = c("test"))
+  expect_equal(names(out_single$dat), unique(out_single$labels$varName))
+  expect_equal(names(out_single$dat), c("VAR1", "test", "VAR3"))
+  out_double <- changeVarNames(dfSAV, oldNames = c("VAR1", "VAR3"), newNames = c("test", "test2"))
+  expect_equal(names(out_double$dat), unique(out_double$labels$varName))
+  expect_equal(names(out_double$dat), c("test", "VAR2", "test2"))
+})
+
+
+

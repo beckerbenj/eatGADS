@@ -7,10 +7,10 @@
 mergeLabels(...)
 }
 \arguments{
-\item{...}{Lists including data and label element.}
+\item{...}{\code{GADSdat} objects, as named arguments in the correct merge order.}
 }
 \value{
-Returns a list with a list of all data frames and a single data frame containing all variable and value labels.
+Returns an \code{all_GADSdat} object, which consists of list with a list of all data frames \code{"datList"} and a single data frame containing all meta data information \code{"allLabels"}.
 }
 \description{
 Function to transform list of data-frames and metainformation ready for data base creation

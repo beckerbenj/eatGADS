@@ -40,3 +40,39 @@ test_that("Extract Meta from all_GADSdat", {
   expect_error(extractMeta(expected_bigList[, -1], c("ID1", "V1")))
   expect_error(extractMeta(expected_bigList, c("ID1", "v1")))
 })
+
+######## extractData
+testM2 <- testM
+testM2$dat[, "Var_char"] <- c("a", "b", "c", "d")
+testM2$dat[, "Var_char2"] <- c("b", "b", "b", "b")
+testM2$labels[8, ] <- c("Var_char", NA, NA, NA, NA, NA, NA, NA)
+testM2$labels[9, ] <- c("Var_char2", NA, NA, NA, "labeled", "b", "b_value", NA)
+
+test_that("Warnings and errors for Extract Data",  {
+  w <- capture_warnings(extractData(testM))
+  expect_equal(w[[1]], "Variable VAR1 is partially labeled. Value labels will be dropped for this variable variable.\nLabeled values are: 1")
+  expect_equal(w[[2]], "Variable VAR2 is partially labeled. Value labels will be dropped for this variable variable.\nLabeled values are: -96")
+  expect_error(extractData(testM, convertLabels = "integer"), "Argument convertLabels incorrectly specified.")
+})
+
+test_that("Extract data", {
+  out <- suppressWarnings(extractData(testM))
+  expect_equal(out[, 1], c(1, NA, NA, 2))
+  out2 <- suppressWarnings(extractData(testM, convertMiss = FALSE))
+  expect_equal(out2[, 1], c(1, -99, -96, 2))
+})
+
+test_that("Extract data for strings", {
+  out <- suppressWarnings(extractData(testM2))
+  expect_equal(class(out$Var_char), "character")
+  expect_equal(out$Var_char, c("a", "b", "c", "d"))
+})
+
+test_that("Extract data for strings into factors", {
+  out <- suppressWarnings(extractData(testM2, convertLabels = "factor"))
+  expect_equal(class(out$Var_char), "character")
+  expect_equal(class(out$Var_char2), "factor")
+  expect_equal(out$Var_char2, as.factor(c("b_value", "b_value", "b_value", "b_value")))
+})
+
+

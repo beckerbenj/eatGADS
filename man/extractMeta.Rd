@@ -7,10 +7,12 @@
 extractMeta(GADS_object, vars)
 }
 \arguments{
-\item{importedSPSS}{Data frame imported via [import_spss].}
+\item{vars}{A character vector containing variable names.}
+
+\item{GADSdat}{A \code{GADSdat} object.}
 }
 \value{
-Returns the data frame with NA instead of missing codes.
+Returns a long format data frame with meta information.
 }
 \description{
 Exctrat metainformation, variable and values labels from GADSdat.

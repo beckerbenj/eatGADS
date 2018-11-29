@@ -7,9 +7,9 @@
 #'
 #' The function createDB takes a list of data frames and a single data frame with metainformation as input. This function transforms lists from import_SPSS and import_RDS into a list of data frames (in the same order as inputted, which is then used for the merging order in createDB). Additionally the seperate lists of metainformation for each data frame are merged and a data frame unique identifier is added.
 #'
-#'@param ... Lists including data and label element.
+#'@param ... \code{GADSdat} objects, as named arguments in the correct merge order.
 #'
-#'@return Returns a list with a list of all data frames and a single data frame containing all variable and value labels.
+#'@return Returns an \code{all_GADSdat} object, which consists of list with a list of all data frames \code{"datList"} and a single data frame containing all meta data information \code{"allLabels"}.
 #'
 #'@examples
 #'# Example data set

@@ -3,13 +3,15 @@
 #############################################################################
 #' Import SPSS data
 #'
-#' Function to import sav files while extracting variable and value labels.
+#' Function to import \code{.sav} files while extracting meta information, e.g. variable and value labels.
 #'
-#' SPSS files (.sav) store variable and value labels. Via import_spss data frames are imported and transformed to data frames. The meta-information is stored seperately in a long format data frame. Important Note: To get labels, missings have to be given explicit labels in SPSS! Additional missing column is generated.
+#' SPSS files (\code{.sav}) store variable and value labels and assign specific formatting to variables. \code{import_spss} imports data from SPSS, while storing this meta-information seperately in a long format data frame. Value labels and missing labels are used to identify missing values (see \code{\link{checkMissings}}).
 #'
-#'@param filePath Source file location, ending on .sav
+#'@param filePath Source file location, ending on \code{.sav}.
+#'@param checkVarnames Should variable names be checked for vioalitions of for SQLite and R naming rules?
+#'@param filePath Should strings as labeled values be allowed? This possibly corrupts all labeled values.
 #'
-#'@return Returns a list with a) the actual data and b) a data frame with all variable and value labels in long format.
+#'@return Returns a list with the actual data \code{dat} and a data frame with all meta information in long format \code{labels}.
 #'
 #'@examples
 #'# Example data set
@@ -26,13 +28,14 @@ import_spss <- function(filePath, checkVarNames = TRUE, labeledStrings = FALSE) 
 #############################################################################
 #' Import R data
 #'
-#' Function to import an RDS-saved file.
+#' Function to import \code{.RDS} files while extracting value labels from factors.
 #'
-#' ...
+#' Factors are integers with labeled variable levels. \code{import_RDS} extracts these labels and stores them in a seperate meta data data.frame. See \code{\link{import_SPSS}} for detailed information.
 #'
-#'@param filePath Source file location.
+#'@param filePath Source file location, ending on \code{.RDS}.
+#'@param checkVarnames Should variable names be checked for vioalitions of for SQLite and R naming rules?
 #'
-#'@return Returns a list with a) the actual data and b) a data frame with all variable and value labels in long format.
+#'@return Returns a list with the actual data \code{dat} and a data frame with all meta information in long format \code{labels}.
 #'
 #'@examples
 #'# Example data set
@@ -49,13 +52,14 @@ import_RDS <- function(filePath, checkVarNames = TRUE) {
 #############################################################################
 #' Import R data frame
 #'
-#' Function to import a data frame from R.
+#' Function to import a \code{data.frame} object for use in \code{eatGADS} while extracting value labels from factors.
 #'
-#' ...
+#' Factors are integers with labeled variable levels. \code{import_DF} extracts these labels and stores them in a seperate meta data data.frame. See \code{\link{import_SPSS}} for detailed information.
 #'
-#'@param filePath Source file location.
+#'@param df A data frame.
+#'@param checkVarnames Should variable names be checked for vioalitions of for SQLite and R naming rules?
 #'
-#'@return Returns a list with a) the actual data and b) a data frame with all variable and value labels in long format.
+#'@return Returns a list with the actual data \code{dat} and a data frame with all meta information in long format \code{labels}.
 #'
 #'@examples
 #'# Example data set
@@ -119,7 +123,7 @@ check_GADSdat <- function(GADSdat) {
   if(!is.data.frame(GADSdat$labels)) stop("labels element has to be a data frame", call. = FALSE)
 
   # internals
-  if(!(all(unique(GADSdat$labels$varName) %in% names(GADSdat$dat)) && all(unique(GADSdat$labels$varName) %in% names(GADSdat$dat)))) {
+  if(!(all(unique(GADSdat$labels$varName) %in% names(GADSdat$dat)) && all(names(GADSdat$dat) %in% unique(GADSdat$labels$varName)))) {
     stop("Illegal names or order of names in label data frame. Make sure to use the import functions to create GADSdata objects.", call. = FALSE)
   }
 }

@@ -8,7 +8,7 @@ getChangeMeta(GADSdat, changeCol = c("varName", "varLabel", "format",
   "display_width", "class", "value", "valLabel", "missings"))
 }
 \arguments{
-\item{GADSdat}{GADSdat object imported via eatGADS.}
+\item{GADSdat}{\code{GADSdat} object imported via eatGADS.}
 
 \item{changeCol}{Names of columns on which changes are to be specified.}
 }
@@ -16,10 +16,10 @@ getChangeMeta(GADSdat, changeCol = c("varName", "varLabel", "format",
 Returns the complete meta data sheet with additional columns for changes in meta data.
 }
 \description{
-Function to obtain a data frame from a GADSdat object for meta data changes. Changes to value are currently not supported.
+Function to obtain a data frame from a \code{GADSdat} object for meta data changes.
 }
 \details{
-The function ....
+Changes to values are currently not supported.
 }
 \examples{
 # Example data set

@@ -7,16 +7,18 @@
 import_RDS(filePath, checkVarNames = TRUE)
 }
 \arguments{
-\item{filePath}{Source file location.}
+\item{filePath}{Source file location, ending on \code{.RDS}.}
+
+\item{checkVarnames}{Should variable names be checked for vioalitions of for SQLite and R naming rules?}
 }
 \value{
-Returns a list with a) the actual data and b) a data frame with all variable and value labels in long format.
+Returns a list with the actual data \code{dat} and a data frame with all meta information in long format \code{labels}.
 }
 \description{
-Function to import an RDS-saved file.
+Function to import \code{.RDS} files while extracting value labels from factors.
 }
 \details{
-...
+Factors are integers with labeled variable levels. \code{import_RDS} extracts these labels and stores them in a seperate meta data data.frame. See \code{\link{import_SPSS}} for detailed information.
 }
 \examples{
 # Example data set

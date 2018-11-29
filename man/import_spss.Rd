@@ -7,16 +7,20 @@
 import_spss(filePath, checkVarNames = TRUE, labeledStrings = FALSE)
 }
 \arguments{
-\item{filePath}{Source file location, ending on .sav}
+\item{filePath}{Source file location, ending on \code{.sav}.}
+
+\item{checkVarnames}{Should variable names be checked for vioalitions of for SQLite and R naming rules?}
+
+\item{filePath}{Should strings as labeled values be allowed? This possibly corrupts all labeled values.}
 }
 \value{
-Returns a list with a) the actual data and b) a data frame with all variable and value labels in long format.
+Returns a list with the actual data \code{dat} and a data frame with all meta information in long format \code{labels}.
 }
 \description{
-Function to import sav files while extracting variable and value labels.
+Function to import \code{.sav} files while extracting meta information, e.g. variable and value labels.
 }
 \details{
-SPSS files (.sav) store variable and value labels. Via import_spss data frames are imported and transformed to data frames. The meta-information is stored seperately in a long format data frame. Important Note: To get labels, missings have to be given explicit labels in SPSS! Additional missing column is generated.
+SPSS files (\code{.sav}) store variable and value labels and assign specific formatting to variables. \code{import_spss} imports data from SPSS, while storing this meta-information seperately in a long format data frame. Value labels and missing labels are used to identify missing values (see \code{\link{checkMissings}}).
 }
 \examples{
 # Example data set

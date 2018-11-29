@@ -1,14 +1,94 @@
+#### extractData
+#############################################################################
+#' Extract Data
+#'
+#' Extract data.frame from a \code{GADSdat} object for analyses in R.
+#'
+#' A \code{GADSdat} object includes actual data and the corresponding meta data information. extractData extracts the data and applies relevant meta information (missing conversion, value labels), so the data can be used for analyses in R.
+#'
+#'@param GADSdat A \code{GADSdat} object.
+#'@param convertMiss Should values labeled as missings be recoded to \code{NA}?
+#'@param convertLabels If \code{"numeric"}, values remain as numerics. If \code{"factor"} or \code{"character"}, values are recoded to their labels. Corresponding variable type is applied.
+#'
+#'@return Returns a data frame.
+#'
+#'@examples
+#'# Example data set
+#'to be done
+#'
+#'@export
+extractData <- function(GADSdat, convertMiss = TRUE, convertLabels = "character") {
+  UseMethod("extractData")
+}
+
+#'@export
+extractData.GADSdat <- function(GADSdat, convertMiss = TRUE, convertLabels = "character") {
+  check_GADSdat(GADSdat)
+  if(!convertLabels %in% c("character", "factor", "numeric") && length(convertLabels) == 1) stop("Argument convertLabels incorrectly specified.")
+  dat <- GADSdat$dat
+  labels <- GADSdat$labels
+  ## missings
+  if(identical(convertMiss, TRUE)) dat <- miss2NA(GADSdat)
+  ## labels
+  dat <- labels2values(dat = dat, labels = labels, convertLabels = convertLabels)
+  dat
+}
+
+# converts labels to values
+labels2values <- function(dat, labels, convertLabels) {
+  if(identical(convertLabels, "numeric")) return(dat)
+  # check value labels, remove incomplete labels from insertion to protect variables
+  drop_labels <- unlist(lapply(unique(labels$varName), check_labels, dat = dat, labels = labels))
+  # convert labels into values
+  changed_variables <- character(0)
+  change_labels <- labels[!labels$varName %in% drop_labels, ]
+  for(i in seq(nrow(change_labels))) {
+    curRow <- change_labels[i, , drop = FALSE]
+    if(!is.na(curRow$valLabel)) {
+      dat[which(dat[, curRow$varName] == curRow$value), curRow$varName] <- curRow$valLabel
+      changed_variables <- unique(c(curRow$varName, changed_variables))
+    }
+  }
+  # convert characters to factor if specified
+  if(identical(convertLabels, "factor")) {
+    for(i in changed_variables) dat[, i] <- as.factor(dat[, i])
+  }
+  dat
+}
+
+# check if variable is correctly labeled, issues warning
+check_labels <- function(varName, dat, labels) {
+  real_values <- na_omit(unique(dat[[varName]]))
+  labeled_values <- na_omit(labels[labels$varName == varName, "value"])
+  labeled_values_noMiss <- na_omit(labels[labels$varName == varName & is.na(labels$missings), "value"])
+  ## either all labeled
+  if(all(real_values %in% labeled_values)) return()
+  ## or no labels except missings
+  if(length(labeled_values_noMiss) == 0) return()
+  warning("Variable ", varName, " is partially labeled. Value labels will be dropped for this variable variable.\n",
+          "Labeled values are: ", paste(labeled_values_noMiss, collapse = ", "), call. = FALSE)
+
+  varName
+  #warning("Variable ", varName, " is partially labeled. Value labels will be dropped for this variable variable.\nExisting values are: ",
+  #        paste(real_values, collapse = ", "), "\n", "Labeled values are: ", paste(labeled_values_noMiss, collapse = ", "), call. = FALSE)
+}
+
+na_omit <- function(vec) {
+  vec[!is.na(vec)]
+}
+
+
 #### Missings to NA
 #############################################################################
-#' Recode Missings to NA
+#' Recode Missings to \code{NA}
 #'
-#' Recode Missings to NA according to missing labels in label data frame.
+#' Recode Missings to \code{NA} according to missing labels in label data frame.
 #'
-#' Missings are imported as their values via import_spss. Using the value labels in the labels data frame, miss2NA recodes these missings codes to NA.
+#' Missings are imported as their values via \code{\link{import_spss}}. Using the value labels in the labels data frame, \code{miss2NA} recodes these missings codes to \code{NA}.
 #'
-#'@param importedSPSS Data frame imported via [import_spss].
+#'@param GADSdat A \code{GADSdat} object.
 #'
-#'@return Returns the data frame with NA instead of missing codes.
+#'@return Returns the data frame with \code{NA} instead of missing codes.
 #'
 #'@examples
 #'# Example data set
@@ -25,7 +105,7 @@ miss2NA.GADSdat <- function(GADSdat) {
   datL <- lapply(names(GADSdat$dat), function(nam) {
     recodeVar(var = GADSdat$dat[, nam], labs = GADSdat$labels[GADSdat$labels$varName == nam, ])
   })
-  dat <- as.data.frame(datL)
+  dat <- as.data.frame(datL, stringsAsFactors = FALSE)
   names(dat) <- names(GADSdat$dat)
   dat
 }
@@ -33,7 +113,7 @@ miss2NA.GADSdat <- function(GADSdat) {
 recodeVar <- function(var, labs){
   # extract missing labels
   mLabs <- labs[labs$miss == "miss", ]
-  mCodes <- mLabs[, "value", drop = TRUE]
+  mCodes <- na_omit(mLabs[, "value", drop = TRUE])
   # recode
   var[var %in% mCodes] <- NA
   var
@@ -51,9 +131,10 @@ recodeVar <- function(var, labs){
 #'
 #' Metainformation is stored tidily in a GADSdat and can be extracted via extractMeta for a single or multiple variables.
 #'
-#'@param importedSPSS Data frame imported via [import_spss].
+#'@param GADSdat A \code{GADSdat} object.
+#'@param vars A character vector containing variable names.
 #'
-#'@return Returns the data frame with NA instead of missing codes.
+#'@return Returns a long format data frame with meta information.
 #'
 #'@examples
 #'# Example data set
