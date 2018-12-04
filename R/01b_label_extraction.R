@@ -73,7 +73,7 @@ extract_value_level.factor <- function(var, varName, labeledStrings) {
   df <- data.frame(varName = rep(varName, length(levels(var))),
                    value = seq_along(levels(var)),
                    valLabel = levels(var),
-                   missings = NA_character_,
+                   missings = "valid",
                    stringsAsFactors = FALSE)
   ### insert missing extraction, add col like in spss function
   rownames(df) <- NULL
@@ -125,12 +125,16 @@ extract_Miss_SPSS <- function(var, varName, label_df) {
 
   values <- c(na_value, na_range_used)
   values <- checkValues_havenBug(values, varName = varName)
-  if(length(values) > 0) {
-    miss_df <- data.frame(varName = varName, value = values, missings = "miss", stringsAsFactors = FALSE)
-    label_df <- plyr::join(label_df, miss_df, by = c("varName", "value"), type = "full", match = "all")
-  } else {
-    label_df <- data.frame(label_df, missings = NA, stringsAsFactors = FALSE)
-    }
+
+  # add missing code for existing values
+  label_df[, "missings"] <- ifelse(label_df$value %in% values, "miss", "valid")
+
+  # add values with missing codes if necessary
+  add_values <- values[!values %in% label_df$value]
+  if(length(add_values) >= 1) {
+    add_df <- data.frame(varName = varName, value = add_values, missings = "miss", stringsAsFactors = FALSE)
+    label_df <- plyr::join(label_df, add_df, by = c("varName", "value"), type = "full", match = "all")
+  }
 
   label_df
 }

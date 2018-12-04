@@ -15,7 +15,7 @@
 #'
 #'@examples
 #'# Example data set
-#'to be done
+#'#to be done
 #'
 #'@export
 checkMissings <- function(GADSdat, missingLabel = "missing", addMissingCode = TRUE, addMissingLabel = TRUE) {
@@ -70,7 +70,7 @@ insert_string <- function(df, rows, col, string) {
 #'
 #'@examples
 #'# Example data set
-#'to be done
+#'#to be done
 #'
 #'@export
 getChangeMeta <- function(GADSdat, changeCol = c("varName", "varLabel", "format", "display_width", "class", "value", "valLabel", "missings")) {
@@ -104,7 +104,7 @@ getChangeMeta.GADSdat <- function(GADSdat, changeCol = c("varName", "varLabel", 
 #'
 #'@examples
 #'# Example data set
-#'to be done
+#'#to be done
 #'
 #'@export
 applyChangeMeta <- function(GADSdat, changeTable) {
@@ -178,7 +178,7 @@ check_changeTable <- function(GADSdat, changeTable) {
 #'
 #'@examples
 #'# Example data set
-#'to be done
+#'#to be done
 #'
 #'@export
 changeVarNames <- function(GADSdat, oldNames, newNames) {

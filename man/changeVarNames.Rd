@@ -24,6 +24,6 @@ Applied to a \code{GADSdat} object, this function is a wrapper of \code{\link{ge
 }
 \examples{
 # Example data set
-to be done
+#to be done
 
 }

@@ -20,6 +20,6 @@ Missings are imported as their values via \code{\link{import_spss}}. Using the v
 }
 \examples{
 # Example data set
-to be done
+#to be done
 
 }

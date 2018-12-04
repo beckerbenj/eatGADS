@@ -22,6 +22,6 @@ Factors are integers with labeled variable levels. \code{import_RDS} extracts th
 }
 \examples{
 # Example data set
-to be done
+# to be done
 
 }

@@ -33,7 +33,7 @@ label_out1 <- data.frame(varName = c("VAR1", "VAR2", "VAR3"),
                           class = c("labeled", "labeled", NA),
                           stringsAsFactors = FALSE)
 label_out2 <- data.frame(varName = c("VAR1", "VAR2"), value = c(1, 2),
-                         valLabel = c("One", "Two"), missings = c(NA, NA), stringsAsFactors = FALSE)
+                         valLabel = c("One", "Two"), missings = c("valid", "valid"), stringsAsFactors = FALSE)
 label_out_all <- merge(label_out1, label_out2, by = "varName", all = TRUE)
 ##
 class_test <- rawDat$VAR3
@@ -62,13 +62,13 @@ test_that("Variable remains even when no attributes are present", {
 ######### Attribute extracting on value level
 # string_test <- load_spss(file = "c:/Benjamin_Becker/02_Repositories/packages/eatGADS/tests/testthat/helper_spss_exceptions.sav")
 string_test <- suppressWarnings(load_spss("helper_spss_exceptions.sav"))
-test_that("Value label of single variable extracted correctly for SPSS type variables", {
+test_that("Value label of single variable extracted for SPSS types", {
   expect_equal(extract_value_level(rawDat$VAR1, "VAR1"),
-               data.frame(varName = "VAR1", value = 1, valLabel = "One", missings = NA, stringsAsFactors = FALSE))
+               data.frame(varName = "VAR1", value = 1, valLabel = "One", missings = "valid", stringsAsFactors = FALSE))
   expect_warning(extract_value_level(string_test$string_var, "test"),
                  "Some or all values for test cannot be coerced to numeric and are therefore changed to NA.")
   expect_equal(extract_value_level(string_test$string_var, "string_var", labeledStrings = TRUE),
-               data.frame(varName = "string_var", value = c("a", "99"), valLabel = c("alpha", "99"), missings = NA, stringsAsFactors = FALSE))
+               data.frame(varName = "string_var", value = c("a", "99"), valLabel = c("alpha", "99"), missings = "valid", stringsAsFactors = FALSE))
 })
 
 test_that("Backward compatability to older haven classes", {
@@ -76,14 +76,14 @@ test_that("Backward compatability to older haven classes", {
   expect_warning(extract_variable_level(rawDat),
                  "You are using an old version of haven. Please download the current version from GitHub. \n Correct importing from SPSS-files can not be guaranteed.")
   expect_equal(extract_value_level(rawDat$VAR1, "VAR1"),
-               data.frame(varName = "VAR1", value = 1, valLabel = "One", missings = NA, stringsAsFactors = FALSE))
+               data.frame(varName = "VAR1", value = 1, valLabel = "One", missings = "valid", stringsAsFactors = FALSE))
 })
 
 test_that("Value label of single variable extracted correctly for R type variables", {
   expect_equal(extract_value_level(c(1, 2), "VAR1"), NULL)
   expect_equal(extract_value_level(c("a", "b"), "VAR1"), NULL)
   expect_equal(extract_value_level(factor(c("a", "b"), levels = c("a", "b")), "fac_var"),
-               data.frame(varName = rep("fac_var", 2), value = c(1, 2), valLabel = c("a", "b"), missings = NA_character_, stringsAsFactors = FALSE))
+               data.frame(varName = rep("fac_var", 2), value = c(1, 2), valLabel = c("a", "b"), missings = c("valid", "valid"), stringsAsFactors = FALSE))
 })
 
 
@@ -104,9 +104,9 @@ test_that("All labels extracted correctly ", {
 rawDat_missings <- haven::read_spss("helper_spss_missings.sav", user_na = TRUE)
 
 label_miss <- data.frame(varName = rep("VAR1", 3), value = c(-99, -96, 1),
-                        valLabel = c("By design", "Omission", "One"), missings = c("miss", "miss", NA), stringsAsFactors = FALSE)
+                        valLabel = c("By design", "Omission", "One"), missings = c("miss", "miss", "valid"), stringsAsFactors = FALSE)
 label_miss2 <- data.frame(varName = rep("VAR2", 2), value = c(-96, -99),
-                         valLabel = c("missing", NA), missings = c(NA, "miss"), stringsAsFactors = FALSE)
+                         valLabel = c("missing", NA), missings = c("valid", "miss"), stringsAsFactors = FALSE)
 # value labels or empirical values are used correctly for missing code generation
 label_miss3 <- data.frame(varName = rep("VAR3", 2), value = c(-99, -98),
                           valLabel = c("missing", NA), missings = c("miss", "miss"), stringsAsFactors = FALSE)
@@ -163,6 +163,7 @@ test_that("Data frames directly from R are imported correctly", {
 
 
 ###### check_GADSdat
+# testM <- import_spss("c:/Benjamin_Becker/02_Repositories/packages/eatGADS/tests/testthat/helper_spss_missings.sav")
 testM <- import_spss("helper_spss_missings.sav")
 
 test_that("Object validater for GADSdat objects",{

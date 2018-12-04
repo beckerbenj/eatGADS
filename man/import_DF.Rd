@@ -22,6 +22,6 @@ Factors are integers with labeled variable levels. \code{import_DF} extracts the
 }
 \examples{
 # Example data set
-to be done
+# to be done
 
 }

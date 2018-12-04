@@ -27,6 +27,6 @@ The function compares value labels \code{"valLabels"} and missing codes \code{"m
 }
 \examples{
 # Example data set
-to be done
+#to be done
 
 }

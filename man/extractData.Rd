@@ -24,6 +24,6 @@ A \code{GADSdat} object includes actual data and the corresponding meta data inf
 }
 \examples{
 # Example data set
-to be done
+#to be done
 
 }

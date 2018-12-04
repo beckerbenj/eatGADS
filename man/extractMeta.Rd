@@ -22,6 +22,6 @@ Metainformation is stored tidily in a GADSdat and can be extracted via extractMe
 }
 \examples{
 # Example data set
-to be done
+#to be done
 
 }

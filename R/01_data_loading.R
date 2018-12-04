@@ -15,7 +15,7 @@
 #'
 #'@examples
 #'# Example data set
-#'to be done
+#'# to be done
 #'
 #'@export
 import_spss <- function(filePath, checkVarNames = TRUE, labeledStrings = FALSE) {
@@ -39,7 +39,7 @@ import_spss <- function(filePath, checkVarNames = TRUE, labeledStrings = FALSE) 
 #'
 #'@examples
 #'# Example data set
-#'to be done
+#'# to be done
 #'
 #'@export
 import_RDS <- function(filePath, checkVarNames = TRUE) {
@@ -63,7 +63,7 @@ import_RDS <- function(filePath, checkVarNames = TRUE) {
 #'
 #'@examples
 #'# Example data set
-#'to be done
+#'# to be done
 #'
 #'@export
 import_DF <- function(df, checkVarNames = TRUE) {

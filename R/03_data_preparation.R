@@ -13,7 +13,7 @@
 #'
 #'@examples
 #'# Example data set
-#'to be done
+#'#to be done
 #'
 #'@export
 mergeLabels <- function(...) {

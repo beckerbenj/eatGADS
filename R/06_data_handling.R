@@ -14,7 +14,7 @@
 #'
 #'@examples
 #'# Example data set
-#'to be done
+#'#to be done
 #'
 #'@export
 extractData <- function(GADSdat, convertMiss = TRUE, convertLabels = "character") {
@@ -60,7 +60,7 @@ labels2values <- function(dat, labels, convertLabels) {
 check_labels <- function(varName, dat, labels) {
   real_values <- na_omit(unique(dat[[varName]]))
   labeled_values <- na_omit(labels[labels$varName == varName, "value"])
-  labeled_values_noMiss <- na_omit(labels[labels$varName == varName & is.na(labels$missings), "value"])
+  labeled_values_noMiss <- na_omit(labels[labels$varName == varName & labels$missings == "valid", "value"])
   ## either all labeled
   if(all(real_values %in% labeled_values)) return()
   ## or no labels except missings
@@ -92,7 +92,7 @@ na_omit <- function(vec) {
 #'
 #'@examples
 #'# Example data set
-#'to be done
+#'#to be done
 #'
 #'@export
 miss2NA <- function(GADSdat) {
@@ -138,7 +138,7 @@ recodeVar <- function(var, labs){
 #'
 #'@examples
 #'# Example data set
-#'to be done
+#'#to be done
 #'
 #'@export
 extractMeta <- function(GADS_object, vars) {
