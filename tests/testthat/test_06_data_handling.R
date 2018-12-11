@@ -23,6 +23,7 @@ test_that("Extract Metainformation", {
   out <- extractMeta(testM, c("VAR1", "VAR2"))
   expect_equal(out, expected)
   expect_error(extractMeta(testM, "var4"))
+  expect_equal(extractMeta(testM), testM$labels)
 })
 
 # for further class
@@ -31,6 +32,7 @@ test_that("Extract Meta from labels DF", {
   out <- extractMeta(expected_labels, c("ID1", "V1"))$data_table
   expect_error(extractMeta(expected_labels[, -1], c("ID1", "V1")))
   expect_error(extractMeta(expected_labels, c("ID1", "v1")))
+  expect_equal(extractMeta(expected_labels), expected_labels)
 })
 
 # for further class
@@ -39,7 +41,9 @@ test_that("Extract Meta from all_GADSdat", {
   out <- extractMeta(expected_bigList, c("ID1", "V1"))$data_table
   expect_error(extractMeta(expected_bigList[, -1], c("ID1", "V1")))
   expect_error(extractMeta(expected_bigList, c("ID1", "v1")))
+  expect_equal(extractMeta(expected_bigList), expected_bigList$labels)
 })
+
 
 ######## extractData
 testM2 <- testM

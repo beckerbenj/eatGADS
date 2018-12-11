@@ -4,18 +4,18 @@
 \alias{extractMeta}
 \title{Get Metainformation and Labels}
 \usage{
-extractMeta(GADS_object, vars)
+extractMeta(GADS_object, vars = NULL)
 }
 \arguments{
-\item{vars}{A character vector containing variable names.}
+\item{vars}{A character vector containing variable names. If \code{NULL} (default), alle available metainformation is returned.}
 
-\item{GADSdat}{A \code{GADSdat} object.}
+\item{GADSdat_object}{A \code{GADSdat} object.}
 }
 \value{
 Returns a long format data frame with meta information.
 }
 \description{
-Exctrat metainformation, variable and values labels from GADSdat.
+Exctrat metainformation, variable and values labels from \code{GADSdat}.
 }
 \details{
 Metainformation is stored tidily in a GADSdat and can be extracted via extractMeta for a single or multiple variables.

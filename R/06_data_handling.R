@@ -127,12 +127,12 @@ recodeVar <- function(var, labs){
 #############################################################################
 #' Get Metainformation and Labels
 #'
-#' Exctrat metainformation, variable and values labels from GADSdat.
+#' Exctrat metainformation, variable and values labels from \code{GADSdat}.
 #'
 #' Metainformation is stored tidily in a GADSdat and can be extracted via extractMeta for a single or multiple variables.
 #'
-#'@param GADSdat A \code{GADSdat} object.
-#'@param vars A character vector containing variable names.
+#'@param GADSdat_object A \code{GADSdat} object.
+#'@param vars A character vector containing variable names. If \code{NULL} (default), alle available metainformation is returned.
 #'
 #'@return Returns a long format data frame with meta information.
 #'
@@ -141,24 +141,27 @@ recodeVar <- function(var, labs){
 #'#to be done
 #'
 #'@export
-extractMeta <- function(GADS_object, vars) {
+extractMeta <- function(GADS_object, vars = NULL) {
   UseMethod("extractMeta")
 }
 #'@export
-extractMeta.GADSdat <- function(GADS_object, vars){
+extractMeta.GADSdat <- function(GADS_object, vars = NULL){
   check_GADSdat(GADS_object)
+  if(is.null(vars)) return(GADS_object$labels)
   if(!all(vars %in% GADS_object$labels$varName)) stop("At least one of vars is not a variable in the GADSdat.", call. = FALSE)
   GADS_object$labels[GADS_object$labels$varName %in% vars, ]
 }
 #'@export
-extractMeta.all_GADSdat <- function(GADS_object, vars){
+extractMeta.all_GADSdat <- function(GADS_object, vars = NULL){
   check_all_GADSdat(GADS_object)
+  if(is.null(vars)) return(GADS_object$labels)
   if(!all(vars %in% GADS_object$allLabels$varName)) stop("At least one of vars is not a variable in the all_GADSdat.", call. = FALSE)
   GADS_object$labels[GADS_object$labels$varName %in% vars, ]
 }
 ## Version for labels data frame or changeTable (if more functions for changeTables are implemented add it as an own S3 class)
 #'@export
-extractMeta.data.frame <- function(GADS_object, vars){
+extractMeta.data.frame <- function(GADS_object, vars = NULL){
+  if(is.null(vars)) return(GADS_object)
   legal_names_labels <- c("varName", "varLabel", "format", "display_width", "class", "value", "valLabel", "missings", "data_table")
   legal_names_changeTable <- paste(legal_names_labels, "_new", sep = "")
   legal_names <- c(legal_names_labels, legal_names_changeTable)
