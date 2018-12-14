@@ -9,9 +9,9 @@ import_spss(filePath, checkVarNames = TRUE, labeledStrings = FALSE)
 \arguments{
 \item{filePath}{Source file location, ending on \code{.sav}.}
 
-\item{checkVarnames}{Should variable names be checked for vioalitions of for SQLite and R naming rules?}
+\item{checkVarNames}{Should variable names be checked for vioalitions of for SQLite and R naming rules?}
 
-\item{filePath}{Should strings as labeled values be allowed? This possibly corrupts all labeled values.}
+\item{labeledStrings}{Should strings as labeled values be allowed? This possibly corrupts all labeled values.}
 }
 \value{
 Returns a list with the actual data \code{dat} and a data frame with all meta information in long format \code{labels}.

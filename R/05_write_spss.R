@@ -7,8 +7,7 @@
 #'
 #' ...
 #'
-#'@param df Data frame.
-#'@param filePath Path of the existing db file.
+#'@param GADSdat Data frame.
 #'@param filePath Path of sav file to write.
 #'
 #'@return Writes sav-file, returns nothing.
@@ -17,12 +16,18 @@
 #'# # See vignette.
 #'
 #'@export
-writeDB_SPSS <- function(df, label_df, filePath) {
+write_spss <- function(GADSdat, filePath) {
+  UseMethod("write_spss")
+}
+
+#'@export
+write_spss.GADSdat <- function(GADSdat, filePath) {
   # 1) check input
+  check_GADSdat(GADSdat)
   # currently no checks
 
   # 2) add labels to df
-  df <- addLabels(df = df, label_df = label_df)
+  df <- addLabels(df = GADSdat$dat, label_df = GADSdat$labels)
   #browser()
   # 3) write spss-file
   haven::write_sav(df, path = filePath)

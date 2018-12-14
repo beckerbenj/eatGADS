@@ -45,7 +45,9 @@ labels2values <- function(dat, labels, convertLabels) {
   for(i in seq(nrow(change_labels))) {
     curRow <- change_labels[i, , drop = FALSE]
     if(!is.na(curRow$valLabel)) {
+      # so far fastest: maybe car? mh...
       dat[which(dat[, curRow$varName] == curRow$value), curRow$varName] <- curRow$valLabel
+      # dat[, curRow$varName] <- ifelse(dat[, curRow$varName] == curRow$value, curRow$valLabel, dat[, curRow$varName])
       changed_variables <- unique(c(curRow$varName, changed_variables))
     }
   }
@@ -131,7 +133,7 @@ recodeVar <- function(var, labs){
 #'
 #' Metainformation is stored tidily in a GADSdat and can be extracted via extractMeta for a single or multiple variables.
 #'
-#'@param GADSdat_object A \code{GADSdat} object.
+#'@param GADS_object A \code{GADSdat} object.
 #'@param vars A character vector containing variable names. If \code{NULL} (default), alle available metainformation is returned.
 #'
 #'@return Returns a long format data frame with meta information.
@@ -147,29 +149,31 @@ extractMeta <- function(GADS_object, vars = NULL) {
 #'@export
 extractMeta.GADSdat <- function(GADS_object, vars = NULL){
   check_GADSdat(GADS_object)
-  if(is.null(vars)) return(GADS_object$labels)
-  if(!all(vars %in% GADS_object$labels$varName)) stop("At least one of vars is not a variable in the GADSdat.", call. = FALSE)
-  GADS_object$labels[GADS_object$labels$varName %in% vars, ]
+  extractMeta_helper(labels = GADS_object$labels, vars = vars)
 }
 #'@export
 extractMeta.all_GADSdat <- function(GADS_object, vars = NULL){
   check_all_GADSdat(GADS_object)
-  if(is.null(vars)) return(GADS_object$labels)
-  if(!all(vars %in% GADS_object$allLabels$varName)) stop("At least one of vars is not a variable in the all_GADSdat.", call. = FALSE)
-  GADS_object$labels[GADS_object$labels$varName %in% vars, ]
+  extractMeta_helper(labels = GADS_object$allLabels, vars = vars)
 }
 ## Version for labels data frame or changeTable (if more functions for changeTables are implemented add it as an own S3 class)
 #'@export
 extractMeta.data.frame <- function(GADS_object, vars = NULL){
-  if(is.null(vars)) return(GADS_object)
   legal_names_labels <- c("varName", "varLabel", "format", "display_width", "class", "value", "valLabel", "missings", "data_table")
   legal_names_changeTable <- paste(legal_names_labels, "_new", sep = "")
   legal_names <- c(legal_names_labels, legal_names_changeTable)
   if(!all(names(GADS_object) %in% legal_names)) {
     stop("GADS_object has to be of type GADSdat, all_GADSdat or has to be a labels data frame created from GADS import functions.")
   }
-  if(!all(vars %in% GADS_object$varName)) stop("At least one of vars is not a variable in the labels data frame.", call. = FALSE)
-  GADS_object[GADS_object$varName %in% vars, ]
+  extractMeta_helper(labels = GADS_object, vars = vars)
+}
+
+## common helper function
+extractMeta_helper <- function(vars, labels) {
+  if(is.null(vars)) return(labels)
+  misMatches <- vars[!vars %in% labels$varName]
+  if(length(misMatches) > 0) stop("The following vars are not a variable in the GADSdat:\n", paste(misMatches, collapse = ", "), call. = FALSE)
+  labels[labels$varName %in% vars, ]
 }
 
 

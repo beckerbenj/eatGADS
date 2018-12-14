@@ -7,9 +7,9 @@
 extractMeta(GADS_object, vars = NULL)
 }
 \arguments{
-\item{vars}{A character vector containing variable names. If \code{NULL} (default), alle available metainformation is returned.}
+\item{GADS_object}{A \code{GADSdat} object.}
 
-\item{GADSdat_object}{A \code{GADSdat} object.}
+\item{vars}{A character vector containing variable names. If \code{NULL} (default), alle available metainformation is returned.}
 }
 \value{
 Returns a long format data frame with meta information.
