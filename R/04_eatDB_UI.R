@@ -101,5 +101,45 @@ getGADS <- function(vSelect = NULL, filePath) {
 }
 
 
+#### Get data from Gads fast
+#############################################################################
+#' Get data from GADS data base fast from server directory.
+#'
+#' Extracts variables from a GADS data base. Uses a local temporary directory to speed up loading the GADS from a server.
+#'
+#' See createDB and dbPull for further explanation of the query and merging processes.
+#'
+#'@param vSelect Variables
+#'@param filePath Path of the existing db file.
+#'@param tempPath Local directory in which the dataBase can temporarily be stored.
+#'
+#'@return Returns a GADSdat object.
+#'
+#'@examples
+#'# See vignette.
+#'
+#'@export
+getGADS_fast <- function(vSelect = NULL, filePath, tempPath) {
+  # checks for tempPath
+  if(!is.character(tempPath) || length(tempPath) != 1) stop("tempPath is not a character vector of length 1.")
+  if(!file.exists(tempPath)) stop("tempPath is not an existing directory.")
+  if(file.access(tempPath, mode = 2) != 0) stop("User has no writing permission for tempPath.")
 
+  # create copy
+  cat("Copy file to local directory...\n")
+  fileName <- eatTools::halveString(filePath, "/", first = FALSE)[[2]]
+  tempFile <- paste(tempPath, fileName, sep = "/")
+  if(file.exists(tempFile)) stop(tempFile, "is an existing file and can not be used as local copy.")
+  file.copy(from = filePath, to = tempFile, overwrite = FALSE, recursive = FALSE)
+  # remove on exit
+  on.exit(file.remove(tempFile))
+
+  #
+  cat("Pull data from GADS db...\n")
+  GADSdat <- getGADS(vSelect = vSelect, filePath = tempFile)
+  # remove File
+  cat("Remove temporary data base...\n")
+  #
+  GADSdat
+}
 

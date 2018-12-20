@@ -39,7 +39,6 @@ write_spss.GADSdat <- function(GADSdat, filePath) {
 addLabels <- function(df, label_df) {
   for(n in names(df)) {
     single_label_df <- label_df[label_df$varName == n, ]
-    #browser()
     # add labels if any rows in label data frame
     if(nrow(single_label_df) > 0) {
       attributes(df[, n]) <- addLabels_single(label_df = single_label_df)
@@ -55,12 +54,13 @@ addLabels_single <- function(label_df) {
   out[["label"]] <- unique(label_df[, "varLabel"])
   out[["format.spss"]] <- unique(label_df[, "format"])
   out[["display_width"]] <- unique(label_df[, "display_width"])
-  out[["class"]] <- unique(label_df[, "class"])
+  labeled <- unique(label_df[, "labeled"])
   # check
   unique_attr <- unlist(lapply(out, length))
   stopifnot(all(unique_attr)  <= 1)
   # out[["class"]] <- strsplit(out[["class"]], split = ", ")[[1]]
-  if(identical(out[["class"]], "labeled")) out[["class"]]<- c("haven_labelled_spss", "haven_labelled")
+  if(identical(labeled, "yes")) out[["class"]] <- c("haven_labelled_spss", "haven_labelled")
+  if(identical(labeled, "no")) out[["class"]] <- NA_character_
 
   # missing labels, if any
   miss_values <- label_df[which(label_df$missings == "miss"), "value"]

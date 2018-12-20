@@ -5,7 +5,7 @@
 \title{Extract table for Meta Data Changes.}
 \usage{
 getChangeMeta(GADSdat, changeCol = c("varName", "varLabel", "format",
-  "display_width", "class", "value", "valLabel", "missings"))
+  "display_width", "labeled", "value", "valLabel", "missings"))
 }
 \arguments{
 \item{GADSdat}{\code{GADSdat} object imported via eatGADS.}

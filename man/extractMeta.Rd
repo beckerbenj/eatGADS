@@ -15,7 +15,7 @@ extractMeta(GADS_object, vars = NULL)
 Returns a long format data frame with meta information.
 }
 \description{
-Exctrat metainformation, variable and values labels from \code{GADSdat}.
+Exctrat metainformation, variable and values labels from an \code{eatGADS} object with meta information. This can be a \code{GADSdat}, an \code{all_GADSdat}, a labels \code{data.frame}, or the path to an existing data base.
 }
 \details{
 Metainformation is stored tidily in a GADSdat and can be extracted via extractMeta for a single or multiple variables.

@@ -73,13 +73,13 @@ insert_string <- function(df, rows, col, string) {
 #'#to be done
 #'
 #'@export
-getChangeMeta <- function(GADSdat, changeCol = c("varName", "varLabel", "format", "display_width", "class", "value", "valLabel", "missings")) {
+getChangeMeta <- function(GADSdat, changeCol = c("varName", "varLabel", "format", "display_width", "labeled", "value", "valLabel", "missings")) {
   UseMethod("getChangeMeta")
 }
 
 #'@export
 getChangeMeta.GADSdat <- function(GADSdat, changeCol = c("varName", "varLabel", "format", "display_width",
-                                                         "class", "valLabel", "missings")) {
+                                                         "labeled", "valLabel", "missings")) {
   check_GADSdat(GADSdat)
   if("value" %in% changeCol) stop("Changes to values are currently not supported. Remove 'value' from changeCol.")
   if(!all(changeCol %in% names(GADSdat$labels))) stop("At least on variable name supplied in changeCol is not an actual column of the meta data table.", call. = FALSE)

@@ -18,11 +18,12 @@ extract_variable_level.savDat<- function(rawDat) {
   if(any(grepl("^labelled_spss", varClass))) {
     warning("You are using an old version of haven. Please download the current version from GitHub. \n Correct importing from SPSS-files can not be guaranteed.", call. = FALSE)
   }
-  # internal convention: all special labeled haven classes are internally represented as "labeled"
-  varClass[!is.na(varClass)] <- "labeled"
+  # internal convention: all special labeled haven classes are internally represented as "yes" in variable "labeled", all other as "no"
+  varClass[!is.na(varClass)] <- "yes"
+  varClass[is.na(varClass)] <- "no"
   varLabel_df <- data.frame(names(rawDat), varLabels, varFormat, varWidth, varClass, stringsAsFactors = FALSE)
   # names
-  names(varLabel_df) <- c("varName", "varLabel", "format", "display_width", "class")
+  names(varLabel_df) <- c("varName", "varLabel", "format", "display_width", "labeled")
   rownames(varLabel_df) <- NULL
 
   issue_havenBUG_warning(varLabel_df)
@@ -34,8 +35,9 @@ extract_variable_level.savDat<- function(rawDat) {
 extract_variable_level.data.frame <- function(rawDat) {
   # is factor variable to add?
   varClass <- unlist(lapply(rawDat, extract_attribute, attr_name = "class"))
-  varClass[!is.na(varClass)] <- "labeled"
-  data.frame(varName = names(rawDat), class = varClass, stringsAsFactors = FALSE)
+  varClass[!is.na(varClass)] <- "yes"
+  varClass[is.na(varClass)] <- "no"
+  data.frame(varName = names(rawDat), labeled = varClass, stringsAsFactors = FALSE)
 }
 
 
@@ -146,7 +148,7 @@ issue_havenBUG_warning <- function(varLabel_df) {
   split_string <- strsplit(varLabel_df$format, "\\.")
   split_string <- unlist(lapply(split_string, function(x) x[[1]]))
   spss_length <- as.numeric(eatTools::removeNonNumeric(split_string))
-  bug_vars <- grepl("^A", varLabel_df$format) & !is.na(varLabel_df$class)
+  bug_vars <- grepl("^A", varLabel_df$format) & varLabel_df$labeled == "yes"
   # for A9 only missing labels are affected, from A10 all labels are affected!
   if(any(bug_vars)) {
     warning("The following variables are character variables (Format: A8 etc.) and probably have labels. These labels, including missing labels, might have been corrputed or lost due to a bug in haven: \n ", paste(varLabel_df[bug_vars, "varName"], collapse = ", "), call. = FALSE)

@@ -129,7 +129,7 @@ recodeVar <- function(var, labs){
 #############################################################################
 #' Get Metainformation and Labels
 #'
-#' Exctrat metainformation, variable and values labels from \code{GADSdat}.
+#' Exctrat metainformation, variable and values labels from an \code{eatGADS} object with meta information. This can be a \code{GADSdat}, an \code{all_GADSdat}, a labels \code{data.frame}, or the path to an existing data base.
 #'
 #' Metainformation is stored tidily in a GADSdat and can be extracted via extractMeta for a single or multiple variables.
 #'
@@ -159,7 +159,7 @@ extractMeta.all_GADSdat <- function(GADS_object, vars = NULL){
 ## Version for labels data frame or changeTable (if more functions for changeTables are implemented add it as an own S3 class)
 #'@export
 extractMeta.data.frame <- function(GADS_object, vars = NULL){
-  legal_names_labels <- c("varName", "varLabel", "format", "display_width", "class", "value", "valLabel", "missings", "data_table")
+  legal_names_labels <- c("varName", "varLabel", "format", "display_width", "labeled", "value", "valLabel", "missings", "data_table")
   legal_names_changeTable <- paste(legal_names_labels, "_new", sep = "")
   legal_names <- c(legal_names_labels, legal_names_changeTable)
   if(!all(names(GADS_object) %in% legal_names)) {
@@ -167,6 +167,17 @@ extractMeta.data.frame <- function(GADS_object, vars = NULL){
   }
   extractMeta_helper(labels = GADS_object, vars = vars)
 }
+#'@export
+extractMeta.character <- function(GADS_object, vars = NULL){
+  if(length(GADS_object) != 1) stop("GADS_object is not a character of length 1.")
+  # checks for filePath are in eatDB
+  labs <- labelsGADS(GADS_object)
+  extractMeta.data.frame(GADS_object = labs, vars = vars)
+}
+
+
+
+
 
 ## common helper function
 extractMeta_helper <- function(vars, labels) {

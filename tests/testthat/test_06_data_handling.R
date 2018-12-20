@@ -45,6 +45,16 @@ test_that("Extract Meta from all_GADSdat", {
   expect_equal(extractMeta(expected_bigList), expected_bigList$allLabels)
 })
 
+# for further class
+test_that("Extract Meta from DB path", {
+  expect_error(extractMeta(c("helper_dataBase.db", "helper_dataBase.db"), c("ID1", "V1")))
+  expected <- c("df1", "df1", "df2")
+  out <- extractMeta("helper_dataBase.db", c("ID1", "V1"))$data_table
+  expect_error(extractMeta(expected_bigList[, -1], c("ID1", "V1")))
+  expect_error(extractMeta(expected_bigList, c("ID1", "v1")))
+  expect_equal(extractMeta(expected_bigList), expected_bigList$allLabels)
+})
+
 
 ######## extractData
 testM2 <- testM

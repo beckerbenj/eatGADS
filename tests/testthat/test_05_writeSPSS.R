@@ -2,7 +2,8 @@
 
 context("Write SPSS files")
 
-# load test data
+### load test data
+# df <- getGADS(filePath = "c:/Benjamin_Becker/02_Repositories/packages/eatGADS/tests/testthat/helper_database.db")
 df <- getGADS(filePath = "helper_database.db")
 # label_df <- labelsGADS(filePath = "c:/Benjamin_Becker/02_Repositories/packages/eatGADS/tests/testthat/helper_database.db")
 label_df <- labelsGADS(filePath = "helper_database.db")

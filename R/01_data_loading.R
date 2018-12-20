@@ -143,7 +143,7 @@ transf_names <- function(vec_name) {
 
 # 02.2) extract labels ---------------------------------------------------------
 extract_labels <- function(rawDat, labeledStrings) {
-  attr_vec <- c("varName", "varLabel", "format", "display_width", "class", "value", "valLabel", "missings")
+  attr_vec <- c("varName", "varLabel", "format", "display_width", "labeled", "value", "valLabel", "missings")
 
   label_df <- extract_variable_level(rawDat = rawDat)
   val_labels <- call_extract_values(rawDat = rawDat, labeledStrings = labeledStrings)

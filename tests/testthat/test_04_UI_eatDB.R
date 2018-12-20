@@ -46,4 +46,13 @@ test_that("GADS DB get one variable", {
   expect_equal(out$labels, expected_labels[1, -9])
 })
 
+test_that("Fast getting GADSdat", {
+  filePath <- paste(getwd(), "helper_dataBase.db", sep = "/")
+  sink("aux")
+  out <- eatGADS:::getGADS_fast(vSelect = "ID1", filePath = filePath, tempPath = "C:/Benjamin_Becker")
+  sink()
+  expect_equal(out$dat, expected_ID2)
+  expect_equal(out$labels, expected_labels[1, -9])
+  expect_error(getGADS_fast(vSelect = "ID1", filePath = filePath, tempPath = "C:/"), "User has no writing permission for tempPath.")
+})
 

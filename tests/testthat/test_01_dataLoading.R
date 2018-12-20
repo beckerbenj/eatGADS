@@ -30,7 +30,7 @@ label_out1 <- data.frame(varName = c("VAR1", "VAR2", "VAR3"),
                           varLabel = c("Variable 1", "Variable 2", "Variable 3"),
                           format = c("F8.2", "F8.0", "A8"),
                           display_width = c(NA, 10, NA),
-                          class = c("labeled", "labeled", NA),
+                          labeled = c("yes", "yes", "no"),
                           stringsAsFactors = FALSE)
 label_out2 <- data.frame(varName = c("VAR1", "VAR2"), value = c(1, 2),
                          valLabel = c("One", "Two"), missings = c("valid", "valid"), stringsAsFactors = FALSE)
@@ -54,7 +54,7 @@ rawDat_exc <- rawDat
 attributes(rawDat_exc[[3]]) <- NULL
 test_that("Variable remains even when no attributes are present", {
   label_out_exc <- label_out1
-  label_out_exc[3, -1] <- NA
+  label_out_exc[3, c(-1, -5)] <- NA
   expect_equal(extract_variable_level(rawDat_exc), label_out_exc)
 })
 
@@ -140,7 +140,7 @@ test_that("Order of variables in label df is retained", {
 })
 
 test_that("Columns are added if not used for data for label df", {
-  attr_vec <- c("varName", "varLabel", "format", "display_width", "class", "value", "valLabel", "missings")
+  attr_vec <- c("varName", "varLabel", "format", "display_width", "labeled", "value", "valLabel", "missings")
   expect_identical(names(exceptions$labels), attr_vec)
 })
 
