@@ -23,3 +23,12 @@ test_that("Adding data frame identifier", {
   expect_identical(add_DFname(df1$dat, "df1"), expect)
 })
 
+
+test_that("Check manually created all_GADSdat objects", {
+  expected_bigList2 <- expected_bigList
+  names(expected_bigList2$datList$df1) <- c("ID1", "X1")
+  expect_error(check_all_GADSdat(expected_bigList2))
+  expected_bigList$allLabels <- expected_bigList$allLabels[, -ncol(expected_bigList$allLabels)]
+  expect_error(eatGADS:::check_all_GADSdat(expected_bigList), "data_table column is missing in labels data frame.")
+})
+

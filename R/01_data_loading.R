@@ -121,6 +121,9 @@ check_GADSdat <- function(GADSdat) {
   if(!identical(names(GADSdat), c("dat", "labels"))) stop("List elements of a GADSdat object have to be 'dat' and 'labels'", call. = FALSE)
   if(!is.data.frame(GADSdat$dat)) stop("dat element has to be a data frame", call. = FALSE)
   if(!is.data.frame(GADSdat$labels)) stop("labels element has to be a data frame", call. = FALSE)
+  if(!identical(names(GADSdat$labels), c("varName", "varLabel", "format", "display_width", "labeled", "value", "valLabel", "missings"))) {
+    stop("Illegal column names in labels data frame.")
+  }
 
   # internals
   if(!(all(unique(GADSdat$labels$varName) %in% names(GADSdat$dat)) && all(names(GADSdat$dat) %in% unique(GADSdat$labels$varName)))) {

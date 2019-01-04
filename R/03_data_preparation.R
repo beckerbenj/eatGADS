@@ -64,9 +64,17 @@ check_all_GADSdat <- function(all_GADSdat) {
   if(!is.data.frame(all_GADSdat$allLabels)) stop("labels element has to be a data frame", call. = FALSE)
 
   # internals
-  varNames_labels <- unique(unlist(lapply(all_GADSdat$dat, names)))
-  if(!identical(unique(all_GADSdat$allLabels$varName), varNames_labels)) {
-    stop("Illegal names or order of names in label data frame. Make sure to use the import functions to create GADSdata objects.", call. = FALSE)
+  dats <- all_GADSdat$datList
+  labs <- all_GADSdat$allLabels
+  if(!"data_table" %in% names(labs)) stop("data_table column is missing in labels data frame.")
+  for(i in names(dats)) {
+    temp_gads <- new_GADSdat(dat = dats[[i]], labels = labs[labs[, "data_table"] == i, names(labs) != "data_table"])
+    check_GADSdat(temp_gads)
   }
+
+  #varNames_labels <- unique(unlist(lapply(all_GADSdat$dat, names)))
+  #if(!identical(unique(all_GADSdat$allLabels$varName), varNames_labels)) {
+   # stop("Illegal names or order of names in label data frame. Make sure to use the import functions to create GADSdata objects.", call. = FALSE)
+  #}
 }
 
