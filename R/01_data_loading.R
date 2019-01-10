@@ -67,6 +67,7 @@ import_RDS <- function(filePath, checkVarNames = TRUE) {
 #'
 #'@export
 import_DF <- function(df, checkVarNames = TRUE) {
+  if(!is.data.frame(df)) stop("df needs to be a data frame.")
   out <- prepare_labels(rawDat = df, checkVarNames = checkVarNames, labeledStrings = FALSE)
   out
 }
