@@ -137,13 +137,16 @@ check_GADSdat <- function(GADSdat) {
 # function for preparing of variable names (to be in line with sqlite rules)
 transf_names <- function(vec_name) {
   NewName <- vec_name
-  if(identical(vec_name, "group")) NewName <- "groupVar"
+  if(any(grepl(paste0("^", vec_name, "$"),  sqlite_keywords, ignore.case = TRUE))) {
+    NewName <- paste0(vec_name, "Var")
+  }
   if(grepl("\\.", vec_name))       NewName <- gsub("\\.", "_", vec_name)
   NewName <- make.names(NewName)
 
   if(!identical(NewName, vec_name)) message(paste(vec_name, "has been renamed to", NewName))
   NewName
 }
+
 
 # 02.2) extract labels ---------------------------------------------------------
 extract_labels <- function(rawDat, labeledStrings) {

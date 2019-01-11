@@ -102,14 +102,6 @@ newDat <- df1$dat
 newDat$v3 <- c(4, 5)
 newDat$V1 <- NULL
 
-test_that("Check new meta helper", {
-  # if not changes
-  expect_message(check_new_meta(df1, check_GADSdat), "Meta data and GADSdat object still fit. No changes have been made to meta data.")
-  expect_equal(suppressMessages(check_new_meta(df1, check_GADSdat)), quote(return(mod_GADSdat)))
-  # if changes
-  other_GADSdat <- new_GADSdat(dat = newDat, labels = df1$labels)
-  expect_equal(check_new_meta(other_GADSdat, check_GADSdat), "")
-})
 
 test_that("Remove rows meta helper", {
   expect_message(remove_rows_meta(df1$labels, names(newDat)), "Removing the following rows from meta data: V1")
@@ -152,3 +144,31 @@ test_that("Update Meta all_GADSdat", {
   expect_equal(changes_out$allLabels$varName, c("ID1", "v3", "ID1", "V2", "v5", "v5"))
 })
 
+
+### Check VarNames
+dot_df <- import_DF(iris, checkVarNames = FALSE)
+
+test_that("Check varNames", {
+  # if no changes
+  expect_equal(checkVarNames(df1), df1)
+  # if changes
+  expect_message(checkVarNames(dot_df))
+  changed_df <- suppressMessages(checkVarNames(dot_df))
+  imported_df <- suppressMessages(import_DF(iris))
+  expect_equal(changed_df, imported_df)
+})
+
+
+test_that("Check varNames all_GADSdat", {
+  # if no changes
+  expect_equal(checkVarNames(expected_bigList), expected_bigList)
+  # if changes
+  names(expected_bigList$datList$df1)[1] <- "group"
+  names(expected_bigList$datList$df2)[1] <- "group"
+  expected_bigList$allLabels[expected_bigList$allLabels$varName == "ID1", "varName"] <- "group"
+
+  expect_message(checkVarNames(expected_bigList))
+  #changed_df <- suppressMessages(checkVarNames(expected_bigList))
+  #imported_df <- suppressMessages(import_DF(iris))
+  #expect_equal(changed_df, imported_df)
+})

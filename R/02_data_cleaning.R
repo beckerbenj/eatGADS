@@ -262,7 +262,7 @@ remove_rows_meta <- function(labels, allNames) {
     message("No rows removed from meta data.")
     return(labels)
   }
-  message("Removing the following rows from meta data: ", old_vars)
+  message("Removing the following rows from meta data: ", paste(old_vars, collapse = ", "))
   labels[!labels[, "varName"] %in% old_vars, ]
 }
 
@@ -273,25 +273,50 @@ add_rows_meta <- function(labels, newDat) {
     message("No rows added to meta data.")
     return(new_GADSdat(dat = data.frame(), labels = data.frame()))
   }
-  message("Adding meta data for the following variables: ", new_vars)
+  message("Adding meta data for the following variables: ", paste(new_vars, collapse = ", "))
   addDat <- newDat[, new_vars, drop = FALSE]
   import_DF(addDat)
 }
 
 
 
-######### Archiv
-### 1) check whether anything has changed and/or the meta data has to be changed
-check_new_meta <- function(mod_GADSdat, check_fun) {
-  mod_test <- tryCatch(check_fun(mod_GADSdat), error = function(x) return(TRUE))
-  if(!identical(mod_test, TRUE)) {
-    message("Meta data and GADSdat object still fit. No changes have been made to meta data.")
-    return(quote(return(mod_GADSdat)))
-  }
-  return(quote(""))
+#### Check Names
+#############################################################################
+#' Check names for SQLite conventions.
+#'
+#' Applies variable names changes to \code{GADSdat} or \code{all_GADSdat} objects.
+#'
+#' tbd.
+#'
+#'@param GADSdat \code{GADSdat} or \code{all_GADSdat} object imported via eatGADS.
+#'
+#'@return Returns the original object with updated variable names.
+#'
+#'@examples
+#'# Example data set
+#'#to be done
+#'
+#'@export
+checkVarNames <- function(GADSdat) {
+  UseMethod("checkVarNames")
 }
-# mod_GADSdat <- new_GADSdat(newDat, labels)
-# check_out <- check_new_meta(mod_GADSdat, check_fun = check_GADSdat)
-# eval(check_out)
+#'@export
+checkVarNames.GADSdat <- function(GADSdat) {
+  check_GADSdat(GADSdat)
+  GADSdat[["labels"]][, "varName"] <- sapply(GADSdat[["labels"]][, "varName"], transf_names)
+  names(GADSdat[["dat"]]) <- sapply(names(GADSdat[["dat"]]), transf_names)
+  GADSdat
+}
+#'@export
+checkVarNames.all_GADSdat <- function(GADSdat) {
+  check_all_GADSdat(GADSdat)
+  GADSdat[["allLabels"]][, "varName"] <- sapply(GADSdat[["allLabels"]][, "varName"], transf_names)
+  GADSdat[["datList"]] <- lapply(GADSdat[["datList"]], function(df) {
+    names(df) <- sapply(names(df), transf_names)
+    df
+  })
+  GADSdat
+}
+
 
 
