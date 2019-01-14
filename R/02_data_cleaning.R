@@ -27,18 +27,18 @@ checkMissings.GADSdat <- function(GADSdat, missingLabel = "missing", addMissingC
   check_GADSdat(GADSdat)
   labels <- GADSdat$labels
 
-  missCode_rows_fail <- which(grepl(missingLabel, labels$valLabel) & is.na(labels$missings))
+  missCode_rows_fail <- which(grepl(missingLabel, labels$valLabel) & (is.na(labels$missings) | labels$missings == "valid"))
   missLabel_rows_fail <- which(labels$missings == "miss" & !grepl(missingLabel, labels$valLabel))
 
   ## Which variables are affected, how many adjustments are performed
   if(length(missCode_rows_fail) > 0) {
-    message("The following variables have value labels including the term 'missing' which are not coded as missing:\n",
+    message("The following variables have value labels including the term '", missingLabel ,"' which are not coded as missing:\n",
             paste(unique(labels[missCode_rows_fail, "varName"]), collapse = ", "))
     if(identical(addMissingCode, TRUE)) labels <- insert_string(df = labels, rows = missCode_rows_fail, col = "missings", string = "miss")
   }
 
   if(length(missLabel_rows_fail) > 0) {
-    message("The following variables have values coded as missing but value label does not include the term 'missing':\n",
+    message("The following variables have values coded as missing but value label does not include the term '", missingLabel ,"':\n",
             paste(unique(labels[missLabel_rows_fail, "varName"]), collapse = ", "))
     if(identical(addMissingLabel, TRUE)) labels <- insert_string(df = labels, rows = missLabel_rows_fail, col = "valLabel", string = "generic missing")
   }

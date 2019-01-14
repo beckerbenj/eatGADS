@@ -10,7 +10,11 @@ load(file = "helper_data.rda")
 df4 <- df3 <- df1
 df3$labels[1, "missings"] <- "miss"
 df4$labels[2, "valLabel"] <- "missing"
-
+df4$labels[3, ] <- df4$labels[2, ]
+# wrong valid value
+df4$labels[3, "value"] <- -99
+df4$labels[3, "valLabel"] <- "missing by design"
+df4$labels[3, "missings"] <- "valid"
 
 test_that("Missing checks raise no false alarms", {
   expect_equal(df1, checkMissings(df1))
@@ -31,8 +35,9 @@ test_that("Missing codes are correctly checked and added", {
                  "The following variables have value labels including the term 'missing' which are not coded as missing:\nV1")
   all_messages <- capture_messages(checkMissings(df4))
   expect_equal(all_messages[2],
-               "'miss' is inserted into column missings for 1 rows.\n")
+               "'miss' is inserted into column missings for 2 rows.\n")
   expect_equal(checkMissings(df4)$labels[2, "missings"], "miss")
+  expect_equal(checkMissings(df4)$labels[3, "missings"], "miss")
 })
 
 
