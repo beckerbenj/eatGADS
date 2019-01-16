@@ -44,45 +44,67 @@ test_that("Missing codes are correctly checked and added", {
 ### Meta changes
 # dfSAV <- import_spss(file = "c:/Benjamin_Becker/02_Repositories/packages/eatGADS/tests/testthat/helper_spss_missings.sav")
 dfSAV <- import_spss(file = "helper_spss_missings.sav")
-changes <- getChangeMeta(dfSAV, c("varName", "valLabel"))
-changes_var <- changes_val <- changes
+changes_var <- getChangeMeta(dfSAV)
+changes_val <- getChangeMeta(dfSAV, level = "value")
 
-test_that("Extract meta change table", {
-  out <- c(names(df1$labels), "varName_new", "varLabel_new", "valLabel_new")
-  expect_equal(names(getChangeMeta(df1, changeCol = c("varName", "varLabel", "valLabel"))), out)
-  expect_equal(dim(getChangeMeta(df1)), c(2, 15))
-  expect_error(getChangeMeta(df1, changeCol = c("varName", "value")))
-  expect_error(getChangeMeta(df1, changeCol = c("varName", "vallabel")),
-               "At least on variable name supplied in changeCol is not an actual column of the meta data table.")
+test_that("Extract variable level meta change table", {
+  out <- c(names(df1$labels)[1:5], paste0(names(df1$labels)[1:5], "_new"))
+  expect_equal(names(getChangeMeta(df1)), out)
+  expect_equal(dim(getChangeMeta(df1)), c(2, 10))
+  names(changes_var)[8] <- "lala_new"
+  expect_error(check_varChanges(changes_var), "Irregular column names in changeTable.")
+})
+
+test_that("Extract value level meta change table", {
+  out <- c("varName", "value", "valLabel", "missings", "value_new", "valLabel_new", "missings_new")
+  expect_equal(names(getChangeMeta(df1, level = "value")), out)
+  expect_equal(dim(getChangeMeta(df1, level = "value")), c(2, 7))
+  expect_equal(dim(changes_val), c(7, 7))
+  expect_silent(check_valChanges(changes_val))
+  changes_val2 <- changes_val3 <- changes_val
+  names(changes_val2)[7] <- "vab_new"
+  changes_val3$missings_new <- "test"
+  changes_val$value_new <- "test"
+
+  expect_error(check_valChanges(changes_val2), "Irregular column names in changeTable.")
+  expect_error(check_valChanges(changes_val3), "Irregular values in 'missings_new' column.")
+  expect_error(check_valChanges(changes_val), "String values can not be given value labels.")
 })
 
 test_that("Check changeTable function", {
-  changes5 <- changes4 <- changes2 <- changes3 <- changes
-  changes2[, "some_changes"] <- NA
-  changes3[, "value_new"] <- NA
-  changes4[1, "varLabel"] <- "sth"
-  changes5[1, "varLabel_new"] <- "sth"
-  expect_error(applyChangeMeta(dfSAV, changes2), "Illegal additional column names in changeTable.")
-  expect_error(applyChangeMeta(dfSAV, changes3), "Illegal additional column names in changeTable.")
-  expect_error(applyChangeMeta(dfSAV, changes4), "GADSdat and changeTable are not compatible. Columns without '_new' should not be changed in the changeTable.")
-  expect_error(applyChangeMeta(dfSAV, changes5), "Variable VAR1 has varying changes on variable level.")
+  changes_var1 <- changes_var
+  changes_var1[1, "varLabel"] <- "sth"
+  changes_val1 <- changes_val
+  changes_val1[1, "varName"] <- "sth"
+
+  expect_error(check_changeTable(dfSAV, changes_var1), "GADSdat and changeTable are not compatible. Columns without '_new' should not be changed in the changeTable.")
+  expect_error(check_changeTable(dfSAV, changes_val1), "GADSdat and changeTable are not compatible. Columns without '_new' should not be changed in the changeTable.")
+  expect_silent(check_changeTable(dfSAV, changes_var))
+  expect_silent(check_changeTable(dfSAV, changes_val))
 })
 
 test_that("Changes to GADSdat on variable level", {
-  changes_var[1:3, "varName_new"] <- "new1"
-  g1 <- applyChangeMeta(dfSAV, changes_var)
+  # varName
+  changes_var[1, "varName_new"] <- "new1"
+  g1 <- applyChangeMeta(changes_var, dfSAV)
   expect_equal(g1$labels[, -1], dfSAV$labels[, -1])
   expect_equal(g1$labels$varName, c(rep("new1", 3), rep("VAR2", 2), rep("VAR3", 2)))
   expect_equal(names(g1$dat), c("new1", "VAR2", "VAR3"))
+  # others
+  changes_var[2, "varLabel_new"] <- "new1"
+  g2 <- applyChangeMeta(changes_var, dfSAV)
+  expect_equal(g2$labels$varLabel, c(rep("Variable 1", 3), rep("new1", 2), rep("Variable 3", 2)))
 })
 
 test_that("Changes to GADSdat on value level", {
   changes_val[1, "valLabel_new"] <- "new_miss"
   changes_val[2, "valLabel_new"] <- "new_miss2"
-  g2 <- applyChangeMeta(dfSAV, changes_val)
+  g2 <- applyChangeMeta(changes_val, dfSAV)
   expect_equal(g2$labels[, -7], dfSAV$labels[, -7])
   expect_equal(g2$labels$valLabel, c("new_miss", "new_miss2", "One", "missing", NA, "missing", NA))
   expect_equal(names(g2$dat), names(dfSAV$dat))
+  changes_val[4, "value_new"] <- 5
+  expect_error(applyChangeMeta(changes_val, dfSAV), "Changes to values are not implemented yet.")
 })
 
 

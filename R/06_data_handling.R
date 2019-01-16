@@ -30,20 +30,24 @@ extractData.GADSdat <- function(GADSdat, convertMiss = TRUE, convertLabels = "ch
   ## missings
   if(identical(convertMiss, TRUE)) dat <- miss2NA(GADSdat)
   ## labels
-  dat <- labels2values(dat = dat, labels = labels, convertLabels = convertLabels)
+  dat <- labels2values(dat = dat, labels = labels, convertLabels = convertLabels, convertMiss = convertMiss)
   dat
 }
 
 # converts labels to values
-labels2values <- function(dat, labels, convertLabels) {
+labels2values <- function(dat, labels, convertLabels, convertMiss) {
   if(identical(convertLabels, "numeric")) return(dat)
   # check value labels, remove incomplete labels from insertion to protect variables
-  drop_labels <- unlist(lapply(unique(labels$varName), check_labels, dat = dat, labels = labels))
+  drop_labels <- unlist(lapply(unique(labels$varName), check_labels, dat = dat, labels = labels, convertMiss = convertMiss))
   # convert labels into values
   changed_variables <- character(0)
   change_labels <- labels[!labels$varName %in% drop_labels, ]
+  # early return, if no values are to be recoded
+  if(nrow(change_labels) == 0) return(dat)
+  # recode values
   for(i in seq(nrow(change_labels))) {
     curRow <- change_labels[i, , drop = FALSE]
+    #browser()
     if(!is.na(curRow$valLabel)) {
       # so far fastest: maybe car? mh...
       dat[which(dat[, curRow$varName] == curRow$value), curRow$varName] <- curRow$valLabel
@@ -59,16 +63,19 @@ labels2values <- function(dat, labels, convertLabels) {
 }
 
 # check if variable is correctly labeled, issues warning
-check_labels <- function(varName, dat, labels) {
+check_labels <- function(varName, dat, labels, convertMiss) {
+  # if(varName == "VAR3") browser()
   real_values <- na_omit(unique(dat[[varName]]))
   labeled_values <- na_omit(labels[labels$varName == varName, "value"])
-  labeled_values_noMiss <- na_omit(labels[labels$varName == varName & labels$missings == "valid", "value"])
   ## either all labeled
   if(all(real_values %in% labeled_values)) return()
-  ## or no labels except missings
-  if(length(labeled_values_noMiss) == 0) return()
+  ## or no labels except missings (if missings are recoded, else this is irrelevant)
+  if(identical(convertMiss, TRUE)) {
+    labeled_values <- na_omit(labels[labels$varName == varName & labels$missings == "valid", "value"])
+    if(length(labeled_values) == 0) return(varName)
+  }
   warning("Variable ", varName, " is partially labeled. Value labels will be dropped for this variable variable.\n",
-          "Labeled values are: ", paste(labeled_values_noMiss, collapse = ", "), call. = FALSE)
+          "Labeled values are: ", paste(labeled_values, collapse = ", "), call. = FALSE)
 
   varName
   #warning("Variable ", varName, " is partially labeled. Value labels will be dropped for this variable variable.\nExisting values are: ",

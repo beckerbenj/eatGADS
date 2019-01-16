@@ -4,22 +4,21 @@
 \alias{getChangeMeta}
 \title{Extract table for Meta Data Changes.}
 \usage{
-getChangeMeta(GADSdat, changeCol = c("varName", "varLabel", "format",
-  "display_width", "labeled", "value", "valLabel", "missings"))
+getChangeMeta(GADSdat, level = "variable")
 }
 \arguments{
 \item{GADSdat}{\code{GADSdat} object imported via eatGADS.}
 
-\item{changeCol}{Names of columns on which changes are to be specified.}
+\item{level}{\code{variable} or \code{value}.}
 }
 \value{
-Returns the complete meta data sheet with additional columns for changes in meta data.
+Returns the meta data sheet for all variables including the corresponding change columns.
 }
 \description{
-Function to obtain a data frame from a \code{GADSdat} object for meta data changes.
+Function to obtain a data frame from a \code{GADSdat} object for for changes to meta data on variable or on value level.
 }
 \details{
-Changes to values are currently not supported.
+Changes on variable level include variable names (\code{varName}), to variable labels (\code{varLabel}), SPSS format ((\code{format})) and display width (\code{display_width}). Changes on value level include values (\code{value}), to value labels (\code{valLabel}) and missing codes (\code{missings}).
 }
 \examples{
 # Example data set

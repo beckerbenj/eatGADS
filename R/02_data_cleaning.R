@@ -55,39 +55,82 @@ insert_string <- function(df, rows, col, string) {
 
 
 
-#### Extract Change Meta data
+#### Extract Change Meta data on Variable Level
 #############################################################################
 #' Extract table for Meta Data Changes.
 #'
-#' Function to obtain a data frame from a \code{GADSdat} object for meta data changes.
+#' Function to obtain a data frame from a \code{GADSdat} object for for changes to meta data on variable or on value level.
 #'
-#' Changes to values are currently not supported.
+#' Changes on variable level include variable names (\code{varName}), to variable labels (\code{varLabel}), SPSS format ((\code{format})) and display width (\code{display_width}). Changes on value level include values (\code{value}), to value labels (\code{valLabel}) and missing codes (\code{missings}).
 #'
 #'@param GADSdat \code{GADSdat} object imported via eatGADS.
-#'@param changeCol Names of columns on which changes are to be specified.
+#'@param level \code{variable} or \code{value}.
 #'
-#'@return Returns the complete meta data sheet with additional columns for changes in meta data.
+#'@return Returns the meta data sheet for all variables including the corresponding change columns.
 #'
 #'@examples
 #'# Example data set
 #'#to be done
 #'
 #'@export
-getChangeMeta <- function(GADSdat, changeCol = c("varName", "varLabel", "format", "display_width", "labeled", "value", "valLabel", "missings")) {
+getChangeMeta <- function(GADSdat, level = "variable") {
   UseMethod("getChangeMeta")
 }
 
 #'@export
-getChangeMeta.GADSdat <- function(GADSdat, changeCol = c("varName", "varLabel", "format", "display_width",
-                                                         "labeled", "valLabel", "missings")) {
+getChangeMeta.GADSdat <- function(GADSdat, level = "variable") {
   check_GADSdat(GADSdat)
-  if("value" %in% changeCol) stop("Changes to values are currently not supported. Remove 'value' from changeCol.")
-  if(!all(changeCol %in% names(GADSdat$labels))) stop("At least on variable name supplied in changeCol is not an actual column of the meta data table.", call. = FALSE)
-  newCols <- paste(changeCol, "_new", sep = "")
-  labels <- GADSdat$labels
-  for(n in newCols) labels[, n] <- NA
-  labels
+  labels <- GADSdat[["labels"]]
+  if(identical(level, "variable")) {
+    oldCols <- c("varName", "varLabel", "format", "display_width", "labeled")
+    newCols <- paste0(oldCols, "_new")
+    for(n in newCols) labels[, n] <- NA
+    change_sheet <- unique(labels[, c(oldCols, newCols)])
+    return(new_varChanges(change_sheet))
+  }
+  if(identical(level, "value")) {
+    oldCols <- c("value", "valLabel", "missings")
+    newCols <- paste0(oldCols, "_new")
+    for(n in newCols) labels[, n] <- NA
+    change_sheet <- labels[, c("varName", oldCols, newCols)]
+    return(new_valChanges(change_sheet))
+  }
+  stop("Invalid level argument.")
 }
+
+new_varChanges <- function(df) {
+  stopifnot(is.data.frame(df))
+  structure(df, class = c("varChanges", "data.frame"))
+}
+check_varChanges <- function(changeTable) {
+  if(!is.data.frame(changeTable)) stop("changeTable is not a data.frame.")
+  colNames <- c("varName", "varLabel", "format", "display_width", "labeled")
+  colNames <- c(colNames, paste0(colNames, "_new"))
+  if(any(!names(changeTable) %in% colNames)) stop("Irregular column names in changeTable.")
+  # tbd: content checks for format and display width
+  return()
+}
+
+new_valChanges <- function(df) {
+  stopifnot(is.data.frame(df))
+  structure(df, class = c("valChanges", "data.frame"))
+}
+check_valChanges <- function(changeTable) {
+  if(!is.data.frame(changeTable)) stop("changeTable is not a data.frame.")
+  # Columns
+  oldCols <- c("value", "valLabel", "missings")
+  newCols <- paste0(oldCols, "_new")
+  colNames <- c("varName", oldCols, newCols)
+  if(any(!names(changeTable) %in% colNames)) stop("Irregular column names in changeTable.")
+  # Values in columns
+  if(!all(changeTable[, "missings_new"] %in% c("miss", "valid") | is.na(changeTable[, "missings_new"]))) {
+    stop("Irregular values in 'missings_new' column.")
+  }
+  if(is.character(changeTable[, "value_new"])) stop("String values can not be given value labels.")
+  return()
+}
+
+
 
 #### Apply Change Meta data
 #############################################################################
@@ -97,8 +140,8 @@ getChangeMeta.GADSdat <- function(GADSdat, changeCol = c("varName", "varLabel", 
 #'
 #' Values for which the change columns contain \code{NA} remain unchanged. Changes to values are currently not supported.
 #'
-#'@param GADSdat GADSdat object imported via eatGADS.
 #'@param changeTable Change table as provided by \code{\link{getChangeMeta}}.
+#'@param GADSdat GADSdat object imported via eatGADS.
 #'
 #'@return Returns the modified \code{GADSdat} object.
 #'
@@ -107,57 +150,71 @@ getChangeMeta.GADSdat <- function(GADSdat, changeCol = c("varName", "varLabel", 
 #'#to be done
 #'
 #'@export
-applyChangeMeta <- function(GADSdat, changeTable) {
+applyChangeMeta <- function(changeTable, GADSdat) {
   UseMethod("applyChangeMeta")
 }
 
 #'@export
-applyChangeMeta.GADSdat <- function(GADSdat, changeTable) {
+applyChangeMeta.varChanges <- function(changeTable, GADSdat) {
   check_GADSdat(GADSdat)
+  check_varChanges(changeTable)
   check_changeTable(GADSdat, changeTable)
-
   dat <- GADSdat$dat
   labels <- GADSdat$labels
-
-  # 01) variable names (changes in data and in meta data)
-  changeNameDF <- unique(changeTable[!is.na(changeTable[, "varName_new"]), c("varName", "varName_new")])
-  if(any(!changeNameDF$varName %in% names(dat))) stop("varName in the changeTable is not a real variable name.")
+  # 01)  for all but varNames
+  simple_change_vars <- setdiff(grep("_new", names(changeTable), value = TRUE), c("varName", "varName_new"))
+  simpleChanges <- changeTable[, c("varName", simple_change_vars), drop = FALSE]
+  # loop over variable names and column names, overwrite if not NA
+  for(i in simpleChanges[, "varName"]) {
+    simpleChange <- simpleChanges[simpleChanges[, "varName"] == i, ]
+    for(k in simple_change_vars) {
+      oldName <- strsplit(k, "_")[[1]][1]
+      if(!is.na(simpleChange[, k])) labels[labels[, "varName"] == i, oldName] <- simpleChange[, k]
+    }
+  }
+  # 02) variable names (changes in data and in meta data)
+  changeNameDF <- changeTable[!is.na(changeTable[, "varName_new"]), c("varName", "varName_new")]
   for(i in changeNameDF[, "varName"]) {
     names(dat)[names(dat) == i] <- changeNameDF[changeNameDF$varName == i, "varName_new"]
     labels[labels$varName == i, "varName"] <- changeNameDF[changeNameDF$varName == i, "varName_new"]
   }
 
-  # optional: function for value recoding if needed
-  # 02)  for all but varNames and values (changes only in meta data)
-  change_vars <- grep("_new", names(changeTable), value = TRUE)
-  simpleChanges <- changeTable[, change_vars[!change_vars %in% c("varName_new")], drop = FALSE]
-  # NA in changeTable: value is kept; otherwise changed
-  for(i in names(simpleChanges)) {
-    oldName <- strsplit(i, "_")[[1]][1]
-    labels[, oldName] <- ifelse(is.na(simpleChanges[, i]), yes = labels[, oldName], no = simpleChanges[, i])
-  }
+  new_GADSdat(dat = dat, labels = labels)
+}
 
+#'@export
+applyChangeMeta.valChanges <- function(changeTable, GADSdat) {
+  check_GADSdat(GADSdat)
+  check_valChanges(changeTable)
+  check_changeTable(GADSdat, changeTable)
+  dat <- GADSdat$dat
+  labels <- GADSdat$labels
+  # 01) values
+  if(sum(!is.na(changeTable[, "value_new"])) > 0) stop("Changes to values are not implemented yet.")
+  # 02) valueLabels und missings
+  simple_change_vars <- c("valLabel_new", "missings_new")
+  simpleChanges <- changeTable[, c("varName", simple_change_vars), drop = FALSE]
+  # loop over rows and column names, overwrite if not NA
+  for(i in seq(nrow(simpleChanges))) {
+    simpleChange <- simpleChanges[i, ]
+    for(k in simple_change_vars) {
+      oldName <- strsplit(k, "_")[[1]][1]
+      if(!is.na(simpleChange[, k])) labels[i, oldName] <- simpleChange[, k]
+    }
+  }
   new_GADSdat(dat = dat, labels = labels)
 }
 
 
 # check change Table, also in relation to GADSdat object
 check_changeTable <- function(GADSdat, changeTable) {
-  if(!is.data.frame(changeTable)) stop("changeTable is not a data.frame.")
-  oldChangeTable <- changeTable[, seq(ncol(GADSdat$labels))]
-  newChangeTable <- changeTable[, (ncol(GADSdat$labels)+1):ncol(changeTable), drop = FALSE]
+  newVars <- grep("_new", names(changeTable), value = TRUE)
+  oldVars <- setdiff(names(changeTable), newVars)
+  oldDat <- unique(GADSdat$labels[, oldVars])
+  newDat <- unique(changeTable[, oldVars])
+  class(newDat) <- "data.frame"
 
-  if(!identical(GADSdat$labels, oldChangeTable)) stop("GADSdat and changeTable are not compatible. Columns without '_new' should not be changed in the changeTable.", call. = FALSE)
-
-  if(any(!grepl("_new", names(newChangeTable)))) stop("Illegal additional column names in changeTable.", call. = FALSE)
-  if("value_new" %in% names(newChangeTable)) stop("Illegal additional column names in changeTable.", call. = FALSE)
-
-  varLevel_vars <- names(newChangeTable[!grepl("valLabel|missings", names(newChangeTable))])
-  for(i in unique(changeTable$varName)) {
-    varLevel_df <- changeTable[changeTable$varName == i, varLevel_vars, drop = FALSE]
-    varLevel_df <- unique(varLevel_df)
-    if(nrow(varLevel_df) > 1) stop("Variable ", i, " has varying changes on variable level.", call. = FALSE)
-  }
+  if(!identical(oldDat, newDat)) stop("GADSdat and changeTable are not compatible. Columns without '_new' should not be changed in the changeTable.", call. = FALSE)
   return()
 }
 
@@ -190,7 +247,7 @@ changeVarNames.GADSdat <- function(GADSdat, oldNames, newNames) {
   if(length(oldNames) != length(newNames)) stop("oldNames and newNames are not of identical length.", call. = FALSE)
   if(!(is.character(oldNames) && is.character(newNames))) stop("oldNames and newNames are not character vectors.", call. = FALSE)
   if(any(!oldNames %in% names(GADSdat$dat))) stop("varName in oldNames is not a real variable name.", call. = FALSE)
-  changeTable <- getChangeMeta(GADSdat, changeCol = "varName")
+  changeTable <- getChangeMeta(GADSdat, level = "variable")
   for(i in seq_along(oldNames)) {
     changeTable[changeTable$varName == oldNames[i], "varName_new"] <- newNames[i]
   }
