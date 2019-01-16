@@ -75,6 +75,7 @@ test_that("Extract data", {
   expect_equal(out[, 1], c(1, NA, NA, 2))
   out2 <- suppressWarnings(extractData(testM, convertMiss = FALSE))
   expect_equal(out2[, 1], c(1, -99, -96, 2))
+  expect_equal(typeof(out$VAR3), "double") ## tests if only missing codes are given, variable is nonetheless transformed to character
 })
 
 test_that("Extract data for strings", {

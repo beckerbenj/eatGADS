@@ -4,12 +4,12 @@
 \alias{applyChangeMeta}
 \title{Apply Meta Data Changes.}
 \usage{
-applyChangeMeta(GADSdat, changeTable)
+applyChangeMeta(changeTable, GADSdat)
 }
 \arguments{
-\item{GADSdat}{GADSdat object imported via eatGADS.}
-
 \item{changeTable}{Change table as provided by \code{\link{getChangeMeta}}.}
+
+\item{GADSdat}{GADSdat object imported via eatGADS.}
 }
 \value{
 Returns the modified \code{GADSdat} object.
