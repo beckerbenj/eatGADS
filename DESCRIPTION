@@ -1,6 +1,6 @@
 Package: eatGADS
 Title: Normalizing, Subsetting and Reshaping Hierarchical Data
-Version: 0.3.0
+Version: 0.3.1
 Authors@R: person("Benjamin", "Becker", email = "b.becker@iqb.hu.berlin.de", role = c("aut", "cre"))
 Description: Using data bases to store IQB GADS data.
 Depends: R (>= 3.0.0), eatDB (>= 0.1.6)
@@ -9,5 +9,5 @@ License: MIT
 Encoding: UTF-8
 LazyData: true
 Suggests: testthat
-Remotes: beckerbenj/eatDB, tidyverse/haven, weirichs/eatTools 
+Remotes: beckerbenj/eatDB, weirichs/eatTools 
 RoxygenNote: 6.1.1
