@@ -68,9 +68,12 @@ test_that("Value label of single variable extracted for SPSS types", {
                data.frame(varName = "VAR1", value = 1, valLabel = "One", missings = "valid", stringsAsFactors = FALSE))
   expect_warning(extract_value_level(string_test$string_var, "test"),
                  "Some or all values for test cannot be coerced to numeric and are therefore changed to NA.")
+  labeled_string_with_warning <- suppressWarnings(extract_value_level(string_test$string_var, "test"))
+  expect_equal(labeled_string_with_warning[ ,"value"], c(NA, 99))
   expect_equal(extract_value_level(string_test$string_var, "string_var", labeledStrings = TRUE),
                data.frame(varName = "string_var", value = c("a", "99"), valLabel = c("alpha", "99"), missings = "valid", stringsAsFactors = FALSE))
 })
+
 
 test_that("Backward compatability to older haven classes", {
   class(rawDat$VAR1) <- "labelled_spss"

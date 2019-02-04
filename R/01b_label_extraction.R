@@ -90,7 +90,7 @@ extract_value_level.haven_labelled <- function(var, varName, labeledStrings = FA
   # default behavior: transform value labels to numeric if possible, change values to NA for string values
   values <- attr(var, "labels")
   if(identical(labeledStrings, FALSE)) {
-    eatTools::catch_asNumericIfPossible(x = values, warn = paste("Some or all values for ", varName,
+    values <- eatTools::catch_asNumericIfPossible(x = values, warn = paste("Some or all values for ", varName,
                                         " cannot be coerced to numeric and are therefore changed to NA. \n", sep = ""),
                                         maintain.factor.scores = TRUE, force.string = TRUE, transform.factors = TRUE)
   }
@@ -157,11 +157,11 @@ issue_havenBUG_warning <- function(varLabel_df) {
 }
 
 checkValues_havenBug <- function(values, varName) {
-  corrupted_values <- values %in% "" | is.na(values)
-  if(any(corrupted_values)) {
+  corrupted_values <- values[values %in% "" | is.na(values)]
+  if(length(corrupted_values) > 0) {
     warning("Corrupted missing values haven been found in variable ", varName,
-            " and are dropped. Contact package author for further information.", call. = FALSE)
-    values <- values[!corrupted_values]
+            " and are dropped. Contact package author for further information. The affected values are:", corrupted_values, call. = FALSE)
+    values <- values[!values %in% corrupted_values]
   }
   values
 }
