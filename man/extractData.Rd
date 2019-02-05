@@ -4,7 +4,8 @@
 \alias{extractData}
 \title{Extract Data}
 \usage{
-extractData(GADSdat, convertMiss = TRUE, convertLabels = "character")
+extractData(GADSdat, convertMiss = TRUE, convertLabels = "character",
+  dropPartialLabels = TRUE, convertVariables)
 }
 \arguments{
 \item{GADSdat}{A \code{GADSdat} object.}
@@ -12,6 +13,10 @@ extractData(GADSdat, convertMiss = TRUE, convertLabels = "character")
 \item{convertMiss}{Should values labeled as missings be recoded to \code{NA}?}
 
 \item{convertLabels}{If \code{"numeric"}, values remain as numerics. If \code{"factor"} or \code{"character"}, values are recoded to their labels. Corresponding variable type is applied.}
+
+\item{dropPartialLabels}{Should partially complete labels be dropped? Often, this is the desired behaviour.}
+
+\item{convertVariables}{Character vector of variables names, which labels should be applied to. If not specified, value labels are applied to all variables.}
 }
 \value{
 Returns a data frame.

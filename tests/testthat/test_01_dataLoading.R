@@ -121,6 +121,17 @@ test_that("Missings of single variable extracted correctly ", {
   expect_equal(extract_value_level(rawDat_missings[, 3, drop = T], "VAR3"), label_miss3)
 })
 
+string_miss <- haven::labelled_spss(c("a", "b"), labels = c(b = "2"), na_values = c(0, "a"))
+string_miss_labs <- data.frame(varName = "x", value = 2, valLabel = "b")
+
+test_that("Missing codes for string values ", {
+  expect_warning(extract_Miss_SPSS(string_miss, "x", label_df = string_miss_labs, labeledStrings = FALSE),
+                 "Some or all missing codes for x cannot be coerced to numeric and are therefore changed to NA.")
+  expect_equal(suppressWarnings(extract_Miss_SPSS(string_miss, "x", label_df = string_miss_labs, labeledStrings = FALSE))[, "value"], c(2, 0, NA))
+  expect_equal(extract_Miss_SPSS(string_miss, "x", label_df = string_miss_labs, labeledStrings = TRUE)[, "value"], c(2, 0, "a"))
+})
+
+
 test_that("Haven missing lavel bug precautions", {
   expect_warning(checkValues_havenBug(c("", "la"), varName = "test"))
   expect_warning(checkValues_havenBug(c(NA, "la"), varName = "test"))
@@ -151,8 +162,9 @@ test_that("Columns are added if not used for data for label df", {
 ### haven bug warning
 test_that("Warning for long labeled characters and haven bug", {
   warns <- capture_warnings(import_spss("helper_spss_havenbug.sav"))
+  warns <- capture_warnings(import_spss("c:/Benjamin_Becker/02_Repositories/packages/eatGADS/tests/testthat/helper_spss_havenbug.sav"))
   expect_equal(warns[[1]],
-                 paste("The following variables are character variables (Format: A8 etc.) and probably have labels. These labels, including missing labels, might have been corrputed or lost due to a bug in haven: \n v2, v3"))
+                 paste("The following variables are character variables (Format: A8 etc.) and probably have labels. These labels, including missing labels, might have been corrputed or lost due to a bug in haven: \n v2, v3, v4"))
 })
 
 ###### test import from R data frame

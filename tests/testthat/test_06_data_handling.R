@@ -91,4 +91,33 @@ test_that("Extract data for strings into factors", {
   expect_equal(out$Var_char2, as.factor(c("b_value", "b_value", "b_value", "b_value")))
 })
 
+mixed_values <- new_GADSdat(dat = data.frame(x = 0, y = "a", stringsAsFactors = FALSE),
+                            labels = data.frame(varName = c("x", "y"),
+                                varLabel = NA,
+                                format = NA,
+                                display_width = NA,
+                                labeled = c("yes", "yes"),
+                                value = c(0, "a"),
+                                valLabel = c("lab", "lab"),
+                                missings = NA, stringsAsFactors = FALSE))
+
+test_that("Numerics are kept numeric with extract data", {
+  expect_equal(extractData(mixed_values), data.frame(x = "lab", y = "lab", stringsAsFactors = FALSE))
+  mixed_values$labels$valLabel <- c(99, 99)
+  expect_equal(extractData(mixed_values), data.frame(x = 99, y = "99", stringsAsFactors = FALSE))
+})
+
+test_that("ExtractData with DropPartialLabels = TRUE", {
+  out <- extractData(testM, dropPartialLabels = FALSE)
+  expect_equal(out$VAR1, c("One", NA, NA, 2))
+  expect_equal(out$VAR2, c("1", "1", "1", "1"))
+})
+
+test_that("ExtractData with some variables labels applied to (convertVariables argument)", {
+  out <- suppressWarnings(extractData(testM, convertVariables = c("VAR2", "VAR3")))
+  expect_equal(out$VAR1, c(1, NA, NA, 2))
+  expect_error(extractData(testM, convertVariables = c()))
+})
+
+
 

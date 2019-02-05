@@ -101,7 +101,7 @@ extract_value_level.haven_labelled <- function(var, varName, labeledStrings = FA
                    stringsAsFactors = FALSE)
 
   ## extract missings and add as extra label
-  df <- extract_Miss_SPSS(var = var, varName = varName, label_df = df)
+  df <- extract_Miss_SPSS(var = var, varName = varName, label_df = df, labeledStrings = labeledStrings)
 
   rownames(df) <- NULL
   df
@@ -115,7 +115,7 @@ extract_value_level.labelled_spss <- function(var, varName, labeledStrings = FAL
 }
 
 # extract if label is label for missing values
-extract_Miss_SPSS <- function(var, varName, label_df) {
+extract_Miss_SPSS <- function(var, varName, label_df, labeledStrings) {
   # if(varName =="Pfluus03a") browser()
   na_range <- attr(var, "na_range")
   na_value <- attr(var, "na_value")
@@ -126,6 +126,11 @@ extract_Miss_SPSS <- function(var, varName, label_df) {
 
   values <- c(na_value, na_range_used)
   values <- checkValues_havenBug(values, varName = varName)
+  if(identical(labeledStrings, FALSE)) {
+    values <- eatTools::catch_asNumericIfPossible(x = values, warn = paste("Some or all missing codes for ", varName,
+                                                                           " cannot be coerced to numeric and are therefore changed to NA. \n", sep = ""),
+                                                  maintain.factor.scores = TRUE, force.string = TRUE, transform.factors = TRUE)
+  }
 
   # add missing code for existing values
   label_df[, "missings"] <- ifelse(label_df$value %in% values, "miss", "valid")

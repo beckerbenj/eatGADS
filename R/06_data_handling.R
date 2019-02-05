@@ -9,6 +9,8 @@
 #'@param GADSdat A \code{GADSdat} object.
 #'@param convertMiss Should values labeled as missings be recoded to \code{NA}?
 #'@param convertLabels If \code{"numeric"}, values remain as numerics. If \code{"factor"} or \code{"character"}, values are recoded to their labels. Corresponding variable type is applied.
+#'@param dropPartialLabels Should partially complete labels be dropped? Often, this is the desired behaviour.
+#'@param convertVariables Character vector of variables names, which labels should be applied to. If not specified, value labels are applied to all variables.
 #'
 #'@return Returns a data frame.
 #'
@@ -17,12 +19,12 @@
 #'#to be done
 #'
 #'@export
-extractData <- function(GADSdat, convertMiss = TRUE, convertLabels = "character") {
+extractData <- function(GADSdat, convertMiss = TRUE, convertLabels = "character", dropPartialLabels = TRUE, convertVariables) {
   UseMethod("extractData")
 }
 
 #'@export
-extractData.GADSdat <- function(GADSdat, convertMiss = TRUE, convertLabels = "character") {
+extractData.GADSdat <- function(GADSdat, convertMiss = TRUE, convertLabels = "character", dropPartialLabels = TRUE, convertVariables) {
   check_GADSdat(GADSdat)
   if(!convertLabels %in% c("character", "factor", "numeric") && length(convertLabels) == 1) stop("Argument convertLabels incorrectly specified.")
   dat <- GADSdat$dat
@@ -30,18 +32,25 @@ extractData.GADSdat <- function(GADSdat, convertMiss = TRUE, convertLabels = "ch
   ## missings
   if(identical(convertMiss, TRUE)) dat <- miss2NA(GADSdat)
   ## labels
-  dat <- labels2values(dat = dat, labels = labels, convertLabels = convertLabels, convertMiss = convertMiss)
+  dat <- labels2values(dat = dat, labels = labels, convertLabels = convertLabels, convertMiss = convertMiss,
+                       dropPartialLabels = dropPartialLabels, convertVariables = convertVariables)
   dat
 }
 
 # converts labels to values
-labels2values <- function(dat, labels, convertLabels, convertMiss) {
+labels2values <- function(dat, labels, convertLabels, convertMiss, dropPartialLabels, convertVariables) {
   if(identical(convertLabels, "numeric")) return(dat)
+  # Which variables should their value labels be applied to?
+  if(missing(convertVariables)) convertVariables <- names(dat)
+  stopifnot(is.character(convertVariables) && length(convertVariables) > 0)
+  change_labels <- labels[labels[, "varName"] %in% convertVariables, ]
   # check value labels, remove incomplete labels from insertion to protect variables
-  drop_labels <- unlist(lapply(unique(labels$varName), check_labels, dat = dat, labels = labels, convertMiss = convertMiss))
+  if(identical(dropPartialLabels, TRUE)) {
+    drop_labels <- unlist(lapply(unique(labels$varName), check_labels, dat = dat, labels = labels, convertMiss = convertMiss))
+    change_labels <- labels[!labels$varName %in% drop_labels, ]
+  }
   # convert labels into values
   changed_variables <- character(0)
-  change_labels <- labels[!labels$varName %in% drop_labels, ]
   # early return, if no values are to be recoded
   if(nrow(change_labels) == 0) return(dat)
   # recode values
@@ -49,6 +58,8 @@ labels2values <- function(dat, labels, convertLabels, convertMiss) {
     curRow <- change_labels[i, , drop = FALSE]
     #browser()
     if(!is.na(curRow$valLabel)) {
+      ## preserve numeric type of variable if possible (although not sure whether this could realistically be the case...)
+      curRow$valLabel <- suppressWarnings(eatTools::asNumericIfPossible(curRow$valLabel, force.string = FALSE))
       # so far fastest: maybe car? mh...
       dat[which(dat[, curRow$varName] == curRow$value), curRow$varName] <- curRow$valLabel
       # dat[, curRow$varName] <- ifelse(dat[, curRow$varName] == curRow$value, curRow$valLabel, dat[, curRow$varName])
