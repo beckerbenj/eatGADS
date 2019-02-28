@@ -135,7 +135,7 @@ extract_Miss_SPSS <- function(var, varName, label_df, labeledStrings) {
   # add missing code for existing values
   label_df[, "missings"] <- ifelse(label_df$value %in% values, "miss", "valid")
 
-  # add values with missing codes if necessary
+  # add values with missing codes if necessary (note: if values are na_range, these values will not be added!!!! this behavior could be changed in the future)
   add_values <- values[!values %in% label_df$value]
   if(length(add_values) >= 1) {
     add_df <- data.frame(varName = varName, value = add_values, missings = "miss", stringsAsFactors = FALSE)
@@ -156,7 +156,7 @@ issue_havenBUG_warning <- function(varLabel_df) {
   bug_vars <- grepl("^A", varLabel_df$format) & varLabel_df$labeled == "yes"
   # for A9 only missing labels are affected, from A10 all labels are affected!
   if(any(bug_vars)) {
-    warning("The following variables are character variables (Format: A8 etc.) and probably have labels. These labels, including missing labels, might have been corrputed or lost due to a bug in haven: \n ", paste(varLabel_df[bug_vars, "varName"], collapse = ", "), call. = FALSE)
+    warning("Due to a bug in haven, missing codes of character variables can be lost. Checking missing codes via checkMissings is recommended. The following variables might be affected: \n ", paste(varLabel_df[bug_vars, "varName"], collapse = ", "), call. = FALSE)
   }
   return(NULL)
 }

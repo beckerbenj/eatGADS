@@ -5,7 +5,7 @@
 \title{Check and Adjust Missing Coding}
 \usage{
 checkMissings(GADSdat, missingLabel = "missing", addMissingCode = TRUE,
-  addMissingLabel = TRUE)
+  addMissingLabel = FALSE)
 }
 \arguments{
 \item{GADSdat}{\code{GADSdat} object imported via \code{eatGADS}.}
@@ -14,7 +14,7 @@ checkMissings(GADSdat, missingLabel = "missing", addMissingCode = TRUE,
 
 \item{addMissingCode}{If \code{TRUE}, missing codes are added according to occurence of \code{"missingLabel"} in \code{"valLabel"}.}
 
-\item{addMissingLabel}{If \code{TRUE}, \code{"generic missing"} is added according to occurence of \code{"mis"} in \code{"missings"}.}
+\item{addMissingLabel}{If \code{TRUE}, \code{"generic missing"} is added according to occurence of \code{"mis"} in \code{"missings"}. As often various value labels for missings are used, this argument should be used with great care.}
 }
 \value{
 Returns a GADSdat object.

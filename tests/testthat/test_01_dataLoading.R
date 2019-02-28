@@ -160,11 +160,16 @@ test_that("Columns are added if not used for data for label df", {
 })
 
 ### haven bug warning
-test_that("Warning for long labeled characters and haven bug", {
+test_that("Haven bug for value labels of long string variables does no longer exist", {
+  out <- suppressWarnings(import_spss("helper_spss_havenbug.sav"))
+  expect_equal(out$labels$valLabel, rep(c("one", "missing"), 4))
+})
+
+test_that("Warning for haven bug causing loss of missing codes for long strings", {
   warns <- capture_warnings(import_spss("helper_spss_havenbug.sav"))
-  warns <- capture_warnings(import_spss("c:/Benjamin_Becker/02_Repositories/packages/eatGADS/tests/testthat/helper_spss_havenbug.sav"))
+  # warns <- capture_warnings(import_spss("c:/Benjamin_Becker/02_Repositories/packages/eatGADS/tests/testthat/helper_spss_havenbug.sav"))
   expect_equal(warns[[1]],
-                 paste("The following variables are character variables (Format: A8 etc.) and probably have labels. These labels, including missing labels, might have been corrputed or lost due to a bug in haven: \n v2, v3, v4"))
+                 paste("Due to a bug in haven, missing codes of character variables can be lost. Checking missing codes via checkMissings is recommended. The following variables might be affected: \n v2, v3, v4"))
 })
 
 ###### test import from R data frame
@@ -183,8 +188,12 @@ test_that("Data frames directly from R are imported correctly", {
 testM <- import_spss("helper_spss_missings.sav")
 
 test_that("Object validater for GADSdat objects",{
+  testM2 <- testM
   testM$dat[, "newVar"] <- NA
-  expect_error(check_GADSdat(testM), "Illegal names or order of names in label data frame. Make sure to use the import functions to create GADSdata objects.")
+  expect_error(check_GADSdat(testM), "The following variables are in the data but do not have meta data: newVar")
+  testM2$labels[7, "varName"] <- "newVar"
+  expect_error(check_GADSdat(testM2), "The following variables have meta data but are not in the actual data: newVar")
+
 })
 
 

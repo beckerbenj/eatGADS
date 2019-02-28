@@ -9,7 +9,7 @@
 #'@param GADSdat \code{GADSdat} object imported via \code{eatGADS}.
 #'@param missingLabel Single string indicating how missing labels are commonly named in the value labels.
 #'@param addMissingCode If \code{TRUE}, missing codes are added according to occurence of \code{"missingLabel"} in \code{"valLabel"}.
-#'@param addMissingLabel If \code{TRUE}, \code{"generic missing"} is added according to occurence of \code{"mis"} in \code{"missings"}.
+#'@param addMissingLabel If \code{TRUE}, \code{"generic missing"} is added according to occurence of \code{"mis"} in \code{"missings"}. As often various value labels for missings are used, this argument should be used with great care.
 #'
 #'@return Returns a GADSdat object.
 #'
@@ -18,7 +18,7 @@
 #'#to be done
 #'
 #'@export
-checkMissings <- function(GADSdat, missingLabel = "missing", addMissingCode = TRUE, addMissingLabel = TRUE) {
+checkMissings <- function(GADSdat, missingLabel = "missing", addMissingCode = TRUE, addMissingLabel = FALSE) {
   UseMethod("checkMissings")
 }
 
@@ -241,12 +241,21 @@ check_changeTable <- function(GADSdat, changeTable) {
 changeVarNames <- function(GADSdat, oldNames, newNames) {
   UseMethod("changeVarNames")
 }
-
+#### Note: changeVarNames.all_GADSdat could be blueprint for other changes on all_GADSdat level!
+#'@export
+changeVarNames.all_GADSdat <- function(GADSdat, oldNames, newNames) {
+  changeDF <- data.frame(oldNames = oldNames, newNames = newNames, stringsAsFactors = FALSE)
+  out <- list()
+  for(i in names(GADSdat[["datList"]])) {
+    GADSdat_single <- extractGADSdat(GADSdat, name = i)
+    changeDF_single <- changeDF[changeDF$oldNames %in% names(GADSdat[["datList"]][[i]]), ]
+    out[[i]] <- changeVarNames(GADSdat = GADSdat_single, oldNames = changeDF_single[["oldNames"]], newNames = changeDF_single[["newNames"]])
+  }
+  do.call(mergeLabels, out)
+}
 #'@export
 changeVarNames.GADSdat <- function(GADSdat, oldNames, newNames) {
-  if(length(oldNames) != length(newNames)) stop("oldNames and newNames are not of identical length.", call. = FALSE)
-  if(!(is.character(oldNames) && is.character(newNames))) stop("oldNames and newNames are not character vectors.", call. = FALSE)
-  if(any(!oldNames %in% names(GADSdat$dat))) stop("varName in oldNames is not a real variable name.", call. = FALSE)
+  checkNamesVectors(oldNames = oldNames, newNames = newNames, dat = GADSdat[["dat"]])
   changeTable <- getChangeMeta(GADSdat, level = "variable")
   for(i in seq_along(oldNames)) {
     changeTable[changeTable$varName == oldNames[i], "varName_new"] <- newNames[i]
@@ -255,6 +264,12 @@ changeVarNames.GADSdat <- function(GADSdat, oldNames, newNames) {
 }
 
 
+checkNamesVectors <- function(oldNames, newNames, dat) {
+  if(length(oldNames) != length(newNames)) stop("oldNames and newNames are not of identical length.", call. = FALSE)
+  if(!(is.character(oldNames) && is.character(newNames))) stop("oldNames and newNames are not character vectors.", call. = FALSE)
+  if(any(!oldNames %in% names(dat))) stop("varName in oldNames is not a real variable name.", call. = FALSE)
+  return()
+}
 
 #### Update Meta
 #############################################################################

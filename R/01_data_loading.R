@@ -127,9 +127,10 @@ check_GADSdat <- function(GADSdat) {
   }
 
   # internals
-  if(!(all(unique(GADSdat$labels$varName) %in% names(GADSdat$dat)) && all(names(GADSdat$dat) %in% unique(GADSdat$labels$varName)))) {
-    stop("Illegal names or order of names in label data frame. Make sure to use the import functions to create GADSdata objects.", call. = FALSE)
-  }
+  only_in_labels <- setdiff(unique(GADSdat$labels$varName), names(GADSdat$dat))
+  only_in_dat <- setdiff(names(GADSdat$dat), unique(GADSdat$labels$varName))
+  if(length(only_in_labels) > 0) stop("The following variables have meta data but are not in the actual data: ", only_in_labels, call. = FALSE)
+  if(length(only_in_dat) > 0) stop("The following variables are in the data but do not have meta data: ", only_in_dat, call. = FALSE)
 }
 
 
