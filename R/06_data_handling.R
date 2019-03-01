@@ -43,11 +43,11 @@ labels2values <- function(dat, labels, convertLabels, convertMiss, dropPartialLa
   # Which variables should their value labels be applied to?
   if(missing(convertVariables)) convertVariables <- names(dat)
   stopifnot(is.character(convertVariables) && length(convertVariables) > 0)
-  change_labels <- labels[labels[, "varName"] %in% convertVariables, ]
+  change_labels <- labels[labels[, "varName"] %in% convertVariables, ]    # careful, from here use only change_labels!
   # check value labels, remove incomplete labels from insertion to protect variables
   if(identical(dropPartialLabels, TRUE)) {
     drop_labels <- unlist(lapply(unique(labels$varName), check_labels, dat = dat, labels = labels, convertMiss = convertMiss))
-    change_labels <- labels[!labels$varName %in% drop_labels, ]
+    change_labels <- change_labels[!change_labels$varName %in% drop_labels, ]
   }
   # convert labels into values
   changed_variables <- character(0)

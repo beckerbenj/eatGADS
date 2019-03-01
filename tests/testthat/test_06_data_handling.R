@@ -114,9 +114,21 @@ test_that("ExtractData with DropPartialLabels = TRUE", {
 })
 
 test_that("ExtractData with some variables labels applied to (convertVariables argument)", {
+  # Missing labels (but no variables in the data that show the 'no-conversion'!)
   out <- suppressWarnings(extractData(testM, convertVariables = c("VAR2", "VAR3")))
   expect_equal(out$VAR1, c(1, NA, NA, 2))
   expect_error(extractData(testM, convertVariables = c()))
+
+  # Two variables with value labels without missings
+  label_df <- data.frame(a = c("one", "two"),
+                         b = c("three", "four"))
+  label_df <- import_DF(label_df)
+  expect_equal(extractData(label_df, convertLabels = "character", convertVariables = "a"),
+               data.frame(a = c("one", "two"),
+                          b = c(2, 1), stringsAsFactors = FALSE))
+  expect_equal(extractData(label_df, convertLabels = "factor", convertVariables = "a"),
+               data.frame(a = c("one", "two"),
+                          b = c(2, 1), stringsAsFactors = TRUE))
 })
 
 
