@@ -4,17 +4,19 @@
 \alias{getTrendGADS}
 \title{Get data for trend reports.}
 \usage{
-getTrendGADS(vSelect = NULL, filePath1, filePath2, lePath = NULL,
-  years)
+getTrendGADS(filePath1, filePath2, lePath = NULL, vSelect = NULL,
+  leSelect = NULL, years)
 }
 \arguments{
-\item{vSelect}{Variables}
-
 \item{filePath1}{Path of the first GADS db file.}
 
 \item{filePath2}{Path of the second GADS db file.}
 
 \item{lePath}{Path of the linking error db file. If NULL, no linking errors are added to the data.}
+
+\item{vSelect}{Variables from both GADS to be selected (as character vector).}
+
+\item{leSelect}{Names of linking errors to be selected (as character vector).}
 
 \item{years}{A numeric vector of length 2. The first year corresponds to filePath1, the second year to filePath2.}
 }

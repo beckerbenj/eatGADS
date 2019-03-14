@@ -1,33 +1,4 @@
 
-#### Create Linking Error data base
-#############################################################################
-#' Create data base for Linking Errors.
-#'
-#' Create a data base that includes linking errors for trend reports.
-#'
-#' Creates a single data table (with meta data) including the linking errors which are later used in \code{\link{getTrendGADS}}.
-#'
-#'@param LEs GADSdat object with linking errors.
-#'@param IDvars Primary keys in the data frame.
-#'@param filePath Path of the existing db file.
-#'
-#'@return Create a data base.
-#'
-#'@examples
-#'# See vignette.
-#'
-#'@export
-createLEs <- function(LEs, IDvars, filePath) {
-  UseMethod("createLEs")
-}
-#'@export
-createLEs.GADSdat <- function(LEs, IDvars, filePath) {
-  pkList <- list(LEs = IDvars)
-  eatDB::createDB(dfList = list(LEs = LEs$dat), pkList = pkList, metaData = LEs$labels, filePath = filePath)
-}
-
-
-
 #### Get data from two Gads and Linking Errors
 #############################################################################
 #' Get data for trend reports.
@@ -36,10 +7,11 @@ createLEs.GADSdat <- function(LEs, IDvars, filePath) {
 #'
 #' This function extracts data from two GADS data bases and a linking error data base. The data is merged and can further be used via \code{\link{extractData}}. See createDB and dbPull for further explanation of the query and merging processes.
 #'
-#'@param vSelect Variables
 #'@param filePath1 Path of the first GADS db file.
 #'@param filePath2 Path of the second GADS db file.
 #'@param lePath Path of the linking error db file. If NULL, no linking errors are added to the data.
+#'@param vSelect Variables from both GADS to be selected (as character vector).
+#'@param leSelect Names of linking errors to be selected (as character vector).
 #'@param years A numeric vector of length 2. The first year corresponds to filePath1, the second year to filePath2.
 #'
 #'@return Returns a GADSdat object.
@@ -48,7 +20,7 @@ createLEs.GADSdat <- function(LEs, IDvars, filePath) {
 #'# See vignette.
 #'
 #'@export
-getTrendGADS <- function(vSelect = NULL, filePath1, filePath2, lePath = NULL, years) {
+getTrendGADS <- function(filePath1, filePath2, lePath = NULL, vSelect = NULL, leSelect = NULL, years) {
   # Check for uniqueness of data bases used
   if(is.null(lePath)) {
     if(length(unique(c(filePath1, filePath2))) != 2) stop("All file arguments have to point to different files.")
@@ -69,19 +41,15 @@ getTrendGADS <- function(vSelect = NULL, filePath1, filePath2, lePath = NULL, ye
   g_dat <- rbind(g1[["dat"]], g2[["dat"]])
   label_list <- lapply(list(g1, g2), function(x) x$labels)
   l_dat <- merge_labels_dfs(label_list, name = years)
-  g <- new_GADSdat(dat = g_dat, labels = l_dat)
+  gads_trend <- new_GADSdat(dat = g_dat, labels = l_dat)
 
   # add linking errors (tbd!!!!!!)
   if(!is.null(lePath)) {
-    les <- getGADS(filePath = lePath)
-    les[["labels"]][, "data_table"] <- "LEs"
-    le_keys <- eatDB::dbKeys(lePath)[["pkList"]][[1]]
-    old_g <- g
-    # if(identical(years, c(2010, 2015))) browser()
-    g[["dat"]] <- merge(g[["dat"]], les[["dat"]], by = le_keys)
-    g[["labels"]] <- rbind(g[["labels"]], les[["labels"]])
+    les <- getGADS(filePath = lePath, vSelect = leSelect)
+    le_keys <- eatDB::dbKeys(lePath)[["pkList"]]
+    gads_trend <- merge_LEs(gads_trend = gads_trend, les = les, le_keys = le_keys)
   }
-  g
+  gads_trend
 }
 
 ## Check compatability of trend data bases
@@ -107,4 +75,40 @@ add_year <- function(GADSdat, year) {
   GADSdat
 
 }
+
+merge_LEs <- function(gads_trend, les, le_keys) {
+  les[["labels"]][, "data_table"] <- "LEs"
+  le_keys <- unique(unlist(le_keys))
+  curr_le_keys <- le_keys[le_keys %in% names(les[["dat"]])]
+  old_g <- gads_trend
+  # if(identical(years, c(2010, 2015))) browser()
+  if(any(!curr_le_keys %in% names(gads_trend[["dat"]]))) stop("Incorrect linking error variables specified for GADS data.")
+  gads_trend[["dat"]] <- merge(gads_trend[["dat"]], les[["dat"]], by = curr_le_keys)
+  gads_trend[["labels"]] <- rbind(gads_trend[["labels"]], les[["labels"]])
+  gads_trend
+}
+
+
+#### Checks structure of trend gads and linking errors
+#############################################################################
+#' Checks structure of trend gads and linking errors.
+#'
+#' tbd
+#'
+#' tbd
+#'
+#'@param filePath1 Path of the first GADS db file.
+#'@param filePath2 Path of the second GADS db file.
+#'@param lePath Path of the linking error db file. If NULL, no linking errors are added to the data.
+#'
+#'@return Create a data base.
+#'
+#'@examples
+#'# See vignette.
+#'
+#'@export
+checkTrendStructure <- function(all_GADSdat, pkList, fkList, filePath) {
+  # tbd
+}
+
 

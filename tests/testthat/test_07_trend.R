@@ -13,15 +13,6 @@ test_that("Check trend GADS", {
 })
 
 
-### LE data base
-les <- data.frame(comp = c(1:2, 1:2),
-                  domain = c("reading", "reading", "math", "math"),
-                  leScore = c(1.2, 1.3, 0.9, 0.8))
-les <- import_DF(les)
-test_that("Create linking error data base", {
-  expect_message(createLEs(LEs = les, IDvars = c("comp", "domain"), filePath = ":memory:"), "filePath points to work memory")
-})
-
 
 ### trend gads without LEs
 test_that("Extract trend GADS", {
@@ -35,11 +26,31 @@ test_that("Extract trend GADS", {
   expect_equal(out$labels$data_table, c(rep(2012, 4), rep(2018, 4)))
 })
 
+### merging linking errors
+test_that("Mering linking errors", {
+  gads_trend <- getTrendGADS(filePath1 = "helper_dataBase.db", filePath2 = "helper_dataBase2.db", years = c(2012, 2018))
+  les <- import_DF(data.frame(ID1 = 1:2, le = c(1.1, 0.9), comp = 1:2))
+  les2 <- import_DF(data.frame(ID1 = c(1, 2, 1), le = c(1.1, 0.9, 1.3), comp = 1:3))
+  les3 <- import_DF(data.frame(ID1 = c(1, 2, 1), le = c(1.1, 0.9, 1.3), V2 = c(4, NA, 8)))
+
+  expect_error(merge_LEs(gads_trend = gads_trend, les = les2, le_keys = c("ID1", "comp")))
+
+  out_single <- merge_LEs(gads_trend = gads_trend, les = les, le_keys = "ID1")
+  expect_equal(out_single$dat$le, c(rep(1.1, 4), rep(0.9, 2)))
+  expect_equal(out_single$labels$data_table[9:10],  rep("LEs", 2))
+
+  # expect_error(merge_LEs(gads_trend = gads_trend, les = les3, le_keys = c("ID1"))) ### desired, but difficult to realize
+
+  out_double <- merge_LEs(gads_trend = gads_trend, les = les3, le_keys = c("ID1", "V2"))
+  expect_equal(out_single$dat$le, c(rep(1.1, 4), rep(0.9, 2)))
+  expect_equal(out_single$labels$data_table[9:10],  rep("LEs", 2))
+})
 
 
 ### trend gads with LEs
 test_that("Extract trend GADS", {
-  out <- getTrendGADS(filePath1 = "C:/Benjamin_Becker/02_Repositories/packages/eatGADS/tests/testthat/helper_dataBase.db", filePath2 = "C:/Benjamin_Becker/02_Repositories/packages/eatGADS/tests/testthat/helper_dataBase2.db", years = c(2012, 2018), lePath = "c:/Benjamin_Becker/02_Repositories/packages/eatGADS/tests/testthat/helper_le_dataBase.db")
+  # out <- getTrendGADS(filePath1 = "C:/Benjamin_Becker/02_Repositories/packages/eatGADS/tests/testthat/helper_dataBase.db", filePath2 = "C:/Benjamin_Becker/02_Repositories/packages/eatGADS/tests/testthat/helper_dataBase2.db", years = c(2012, 2018), lePath = "c:/Benjamin_Becker/02_Repositories/packages/eatGADS/tests/testthat/helper_le_dataBase.db")
+  out <- getTrendGADS(filePath1 = "helper_dataBase.db", filePath2 = "helper_dataBase2.db", years = c(2012, 2018), lePath = "helper_le_dataBase.db")
   expect_equal(out$dat$year, c(2012, 2012, 2018, 2018, 2012, 2018))
   expect_equal(dim(out$dat), c(6, 5))
   expect_equal(dim(out$labels), c(10, 9))
