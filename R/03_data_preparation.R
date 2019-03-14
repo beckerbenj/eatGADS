@@ -35,9 +35,7 @@ mergeLabels.GADSdat <- function(...) {
   label_list <- lapply(l, function(x) x$labels)
 
   # 3) add data frame identifier and create single long format df, drop duplicate rows
-  label_list <- Map(add_DFname, df = label_list, name = names(label_list))
-  label_df <- do.call(rbind, label_list)
-  rownames(label_df) <- NULL
+  label_df <- merge_labels_dfs(label_list)
 
   # output: list of data frames ready for data base creation, and data frame with labels
   new_all_GADSdat(datList = dat_list, allLabels = label_df)
@@ -46,6 +44,13 @@ mergeLabels.GADSdat <- function(...) {
 # 03)  add data frame identifier ---------------------------------------------------------
 add_DFname <- function(df, name) {
   data.frame(df, data_table = rep(name, nrow(df)), stringsAsFactors = FALSE)
+}
+
+merge_labels_dfs <- function(label_list, name = names(label_list)) {
+  label_list <- Map(add_DFname, df = label_list, name = name)
+  label_df <- do.call(rbind, label_list)
+  rownames(label_df) <- NULL
+  label_df
 }
 
 

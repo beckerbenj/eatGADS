@@ -26,7 +26,12 @@ createGADS <- function(allList, pkList, fkList, filePath) {
 createGADS.all_GADSdat <- function(allList, pkList, fkList, filePath) {
   eatDB::createDB(dfList = allList$datList, pkList = pkList, fkList = fkList, metaData = allList$allLabels, filePath = filePath)
 }
-
+#'@export
+createGADS.GADSdat <- function(allList, pkList, filePath) {
+  allList_dat <- list(allList$dat)
+  names(allList_dat) <- names(pkList)
+  eatDB::createDB(dfList = allList_dat, pkList = pkList, metaData = allList$labels, filePath = filePath)
+}
 
 
 #### Get Names from GADS
@@ -142,4 +147,6 @@ getGADS_fast <- function(vSelect = NULL, filePath, tempPath) {
   #
   GADSdat
 }
+
+
 
