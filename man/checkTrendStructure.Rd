@@ -4,7 +4,7 @@
 \alias{checkTrendStructure}
 \title{Checks structure of trend gads and linking errors.}
 \usage{
-checkTrendStructure(all_GADSdat, pkList, fkList, filePath)
+checkTrendStructure(filePath1, filePath2, lePath)
 }
 \arguments{
 \item{filePath1}{Path of the first GADS db file.}

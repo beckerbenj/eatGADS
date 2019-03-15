@@ -124,27 +124,26 @@ getGADS <- function(vSelect = NULL, filePath) {
 #'# See vignette.
 #'
 #'@export
-getGADS_fast <- function(vSelect = NULL, filePath, tempPath) {
+getGADS_fast <- function(vSelect = NULL, filePath, tempPath = tempdir()) {
   # checks for tempPath
   if(!is.character(tempPath) || length(tempPath) != 1) stop("tempPath is not a character vector of length 1.")
   if(!file.exists(tempPath)) stop("tempPath is not an existing directory.")
   if(file.access(tempPath, mode = 2) != 0) stop("User has no writing permission for tempPath.")
 
-  # create copy
-  cat("Copy file to local directory...\n")
   fileName <- eatTools::halveString(filePath, "/", first = FALSE)[[2]]
+  tempFile <- file.path(tempPath, fileName)
   tempFile <- paste(tempPath, fileName, sep = "/")
-  if(file.exists(tempFile)) stop(tempFile, "is an existing file and can not be used as local copy.")
-  file.copy(from = filePath, to = tempFile, overwrite = FALSE, recursive = FALSE)
-  # remove on exit
-  on.exit(file.remove(tempFile))
+  # if (length(vSelect) >10)browser()
+  # create copy
+  if(!file.exists(tempFile)) {
+    cat("Copy file to local directory...\n")
+    if(file.exists(tempFile)) stop(tempFile, "is an existing file and can not be used as local copy.")
+    file.copy(from = filePath, to = tempFile, overwrite = FALSE, recursive = FALSE)
+  } else cat("Using cached data base...\n")
 
   #
   cat("Pull data from GADS db...\n")
   GADSdat <- getGADS(vSelect = vSelect, filePath = tempFile)
-  # remove File
-  cat("Remove temporary data base...\n")
-  #
   GADSdat
 }
 

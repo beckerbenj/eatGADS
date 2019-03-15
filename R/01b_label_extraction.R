@@ -33,11 +33,14 @@ extract_variable_level.savDat<- function(rawDat) {
 
 #'@export
 extract_variable_level.data.frame <- function(rawDat) {
-  # is factor variable to add?
   varClass <- unlist(lapply(rawDat, extract_attribute, attr_name = "class"))
+  varLabels <- unlist(lapply(rawDat, extract_attribute, attr_name = "label"))
+  ## class labelled currently only partially supported, issue warning for value labels
+  no_of_value_labels_labelled <- sum(!is.na(unlist(lapply(rawDat, extract_attribute, attr_name = "label"))))
+  if(no_of_value_labels_labelled > 0) warning("Value labels are given probably in class labelled and are not imported!")
   varClass[!is.na(varClass)] <- "yes"
   varClass[is.na(varClass)] <- "no"
-  data.frame(varName = names(rawDat), labeled = varClass, stringsAsFactors = FALSE)
+  data.frame(varName = names(rawDat), varLabel = varLabels, labeled = varClass, stringsAsFactors = FALSE)
 }
 
 

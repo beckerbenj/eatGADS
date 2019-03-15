@@ -19,7 +19,9 @@ test_that("Extract trend GADS", {
   # out <- getTrendGADS(filePath1 = "C:/Benjamin_Becker/02_Repositories/packages/eatGADS/tests/testthat/helper_dataBase.db", filePath2 = "C:/Benjamin_Becker/02_Repositories/packages/eatGADS/tests/testthat/helper_dataBase2.db", years = c(2012, 2018))
   expect_error(out <- getTrendGADS(filePath1 = "helper_dataBase.db", filePath2 = "helper_dataBase.db", years = c(2012, 2018)), "All file arguments have to point to different files.")
   expect_error(out <- getTrendGADS(filePath1 = "helper_dataBase.db", filePath2 = "helper_dataBase2.db", years = 2012), "years has to be a numeric vector of length 2.")
+  sink("aux")
   out <- getTrendGADS(filePath1 = "helper_dataBase.db", filePath2 = "helper_dataBase2.db", years = c(2012, 2018))
+  sink()
   expect_equal(out$dat$year, c(rep(2012, 3), rep(2018, 3)))
   expect_equal(dim(out$dat), c(6, 4))
   expect_equal(dim(out$labels), c(8, 9))
@@ -28,7 +30,9 @@ test_that("Extract trend GADS", {
 
 ### merging linking errors
 test_that("Mering linking errors", {
+  sink("aux")
   gads_trend <- getTrendGADS(filePath1 = "helper_dataBase.db", filePath2 = "helper_dataBase2.db", years = c(2012, 2018))
+  sink()
   les <- import_DF(data.frame(ID1 = 1:2, le = c(1.1, 0.9), comp = 1:2))
   les2 <- import_DF(data.frame(ID1 = c(1, 2, 1), le = c(1.1, 0.9, 1.3), comp = 1:3))
   les3 <- import_DF(data.frame(ID1 = c(1, 2, 1), le = c(1.1, 0.9, 1.3), V2 = c(4, NA, 8)))
@@ -50,7 +54,9 @@ test_that("Mering linking errors", {
 ### trend gads with LEs
 test_that("Extract trend GADS", {
   # out <- getTrendGADS(filePath1 = "C:/Benjamin_Becker/02_Repositories/packages/eatGADS/tests/testthat/helper_dataBase.db", filePath2 = "C:/Benjamin_Becker/02_Repositories/packages/eatGADS/tests/testthat/helper_dataBase2.db", years = c(2012, 2018), lePath = "c:/Benjamin_Becker/02_Repositories/packages/eatGADS/tests/testthat/helper_le_dataBase.db")
+  sink("aux")
   out <- getTrendGADS(filePath1 = "helper_dataBase.db", filePath2 = "helper_dataBase2.db", years = c(2012, 2018), lePath = "helper_le_dataBase.db")
+  sink()
   expect_equal(out$dat$year, c(2012, 2012, 2018, 2018, 2012, 2018))
   expect_equal(dim(out$dat), c(6, 5))
   expect_equal(dim(out$labels), c(10, 9))

@@ -4,7 +4,7 @@
 \alias{getGADS_fast}
 \title{Get data from GADS data base fast from server directory.}
 \usage{
-getGADS_fast(vSelect = NULL, filePath, tempPath)
+getGADS_fast(vSelect = NULL, filePath, tempPath = tempdir())
 }
 \arguments{
 \item{vSelect}{Variables}

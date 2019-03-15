@@ -5,7 +5,7 @@
 \title{Get data for trend reports.}
 \usage{
 getTrendGADS(filePath1, filePath2, lePath = NULL, vSelect = NULL,
-  leSelect = NULL, years)
+  leSelect = NULL, years, tempPath = tempdir())
 }
 \arguments{
 \item{filePath1}{Path of the first GADS db file.}
@@ -19,15 +19,17 @@ getTrendGADS(filePath1, filePath2, lePath = NULL, vSelect = NULL,
 \item{leSelect}{Names of linking errors to be selected (as character vector).}
 
 \item{years}{A numeric vector of length 2. The first year corresponds to filePath1, the second year to filePath2.}
+
+\item{tempPath}{The directory, in which both GADS will be temporarily stored. Using the default is heavily recommended.}
 }
 \value{
 Returns a GADSdat object.
 }
 \description{
-Extracts variables from a two GADS data base and a linking error data base.
+Extracts variables from a two GADS data base and a linking error data base. Data can then be extracted from the \code{GADSdat} object via \code{\link{extractData}}. For extracting meta data from a db file or the \code{GADSdat} object see \code{\link{extractMeta}}.
 }
 \details{
-This function extracts data from two GADS data bases and a linking error data base. The data is merged and can further be used via \code{\link{extractData}}. See createDB and dbPull for further explanation of the query and merging processes.
+This function extracts data from two GADS data bases and a linking error data base. All data bases have to be created via \code{\link{createGADS}}. The two GADS are joined via \code{rbind} and a variable \code{year} is added, corresponding to the argument \code{years}. If \code{lePath} is specified, linking errors are also extracted and then merged to the GADS data. Make sure to also extract the key variables necessary for merging the linkning errors (the domain variable for all linking errors, additionally the competence level variable for linking errors for competence levels). The \code{GADSdat} object can then further be used via \code{\link{extractData}}. See \code{\link[eatDB]{createDB}} and \code{\link[eatDB]{dbPull}} for further explanation of the querying and merging processes.
 }
 \examples{
 # See vignette.

@@ -30,7 +30,7 @@ import_spss <- function(filePath, checkVarNames = TRUE, labeledStrings = FALSE) 
 #'
 #' Function to import \code{.RDS} files while extracting value labels from factors.
 #'
-#' Factors are integers with labeled variable levels. \code{import_RDS} extracts these labels and stores them in a seperate meta data data.frame. See \code{\link{import_SPSS}} for detailed information.
+#' Factors are integers with labeled variable levels. \code{import_RDS} extracts these labels and stores them in a seperate meta data data.frame. See \code{\link{import_spss}} for detailed information.
 #'
 #'@param filePath Source file location, ending on \code{.RDS}.
 #'@param checkVarNames Should variable names be checked for vioalitions of for SQLite and R naming rules?
@@ -54,7 +54,7 @@ import_RDS <- function(filePath, checkVarNames = TRUE) {
 #'
 #' Function to import a \code{data.frame} object for use in \code{eatGADS} while extracting value labels from factors.
 #'
-#' Factors are integers with labeled variable levels. \code{import_DF} extracts these labels and stores them in a seperate meta data data.frame. See \code{\link{import_SPSS}} for detailed information.
+#' Factors are integers with labeled variable levels. \code{import_DF} extracts these labels and stores them in a seperate meta data data.frame. See \code{\link{import_spss}} for detailed information.
 #'
 #'@param df A data frame.
 #'@param checkVarNames Should variable names be checked for vioalitions of for SQLite and R naming rules?

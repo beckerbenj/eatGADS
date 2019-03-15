@@ -2,9 +2,9 @@
 #############################################################################
 #' Extract Data
 #'
-#' Extract data.frame from a \code{GADSdat} object for analyses in R.
+#' Extract data.frame from a \code{GADSdat} object for analyses in R. For extracting meta data see \code{\link{extractMeta}}.
 #'
-#' A \code{GADSdat} object includes actual data and the corresponding meta data information. extractData extracts the data and applies relevant meta information (missing conversion, value labels), so the data can be used for analyses in R. Careful: If factors are extracted, the underlying integers will not equal the original underlying integers and \code{as.numeric} will probably yield undesired results.
+#' A \code{GADSdat} object includes actual data (\code{GADSdat$dat}) and the corresponding meta data information (\code{GADSdat$labels}). \code{extractData} extracts the data and applies relevant meta information (missing conversion, value labels), so the data can be used for analyses in R. Careful: If factors are extracted, the underlying integers will not equal the original underlying integers and \code{as.numeric} will probably yield undesired results.
 #'
 #'@param GADSdat A \code{GADSdat} object.
 #'@param convertMiss Should values labeled as missings be recoded to \code{NA}?
