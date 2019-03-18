@@ -47,8 +47,9 @@ createGADS.GADSdat <- function(allList, pkList, filePath) {
 #'@return Returns a named list of variable names per data table.
 #'
 #'@examples
-#'# not run:
-#'# dbNames(filePath = "exampleDB.db")
+#'\dontrun{
+#'varNames <- namesGADS("t:/_R_Tutorials/R_Workshops/04_eatPakete/minigads_2010.db")
+#'}
 #'
 #'@export
 namesGADS <- function(filePath) {
@@ -70,8 +71,10 @@ namesGADS <- function(filePath) {
 #'@return Returns a long format data frame including variable names, labels, values, value labels and missing labels.
 #'
 #'@examples
-#'# not run
-#'# labelsGADS(filePath = "example.db")
+#'\dontrun{
+#'metaData <- labelsGADS("t:/_R_Tutorials/R_Workshops/04_eatPakete/minigads_2010.db")
+#'View(metaData)
+#'}
 #'
 #'@export
 labelsGADS <- function(filePath) {
@@ -83,9 +86,9 @@ labelsGADS <- function(filePath) {
 #############################################################################
 #' Get data from GADS data base.
 #'
-#' Extracts variables from a GADS data base.
+#'Extracts variables from a GADS data base. Only the specified variables are extracted. Note that this selection determines the format of the \code{data.frame} that is extracted.
 #'
-#' See createDB and dbPull for further explanation of the query and merging processes.
+#' See \code{\link{createDB}} and \code{\link{dbPull}} for further explanation of the query and merging processes.
 #'
 #'@param vSelect Variables
 #'@param filePath Path of the existing db file.
@@ -93,7 +96,14 @@ labelsGADS <- function(filePath) {
 #'@return Returns a GADSdat object.
 #'
 #'@examples
-#'# See vignette.
+#'\dontrun{
+#'gads10 <- getGADS(vSelect = c("idstud", "wgt", "jkzone", "jkrep", "imp", "domain", "score"),
+#'                  filePath = "t:/_R_Tutorials/R_Workshops/04_eatPakete/minigads_2010.db")
+#'# View Meta Data
+#'metaData <- extractMeta(gads10)
+#'# Extract Data for Analysis
+#'dat <- extractData(gads10)
+#'}
 #'
 #'@export
 getGADS <- function(vSelect = NULL, filePath) {
@@ -110,18 +120,25 @@ getGADS <- function(vSelect = NULL, filePath) {
 #############################################################################
 #' Get data from GADS data base fast from server directory.
 #'
-#' Extracts variables from a GADS data base. Uses a local temporary directory to speed up loading the GADS from a server.
+#' Extracts variables from a GADS data base. Only the specified variables are extracted. Note that this selection determines the format of the \code{data.frame} that is extracted. Uses a local temporary directory to speed up loading the GADS from a server.
 #'
-#' See createDB and dbPull for further explanation of the query and merging processes.
+#' A random temporary directory is used for caching the data base and should be removed, when the computer is restarted. See \code{\link{createDB}} and \code{\link{dbPull}} for further explanation of the query and merging processes.
 #'
 #'@param vSelect Variables
 #'@param filePath Path of the existing db file.
-#'@param tempPath Local directory in which the dataBase can temporarily be stored.
+#'@param tempPath Local directory in which the dataBase can temporarily be stored. Using the default is recommended.
 #'
 #'@return Returns a GADSdat object.
 #'
 #'@examples
-#'# See vignette.
+#'\dontrun{
+#'gads10 <- getGADS_fast(vSelect = c("idstud", "wgt", "jkzone", "jkrep", "imp", "domain", "score"),
+#'                       filePath = "t:/_R_Tutorials/R_Workshops/04_eatPakete/minigads_2010.db")
+#'# View Meta Data
+#'metaData <- extractMeta(gads10)
+#'# Extract Data for Analysis
+#'dat <- extractData(gads10)
+#'}
 #'
 #'@export
 getGADS_fast <- function(vSelect = NULL, filePath, tempPath = tempdir()) {

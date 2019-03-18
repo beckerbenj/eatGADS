@@ -19,7 +19,9 @@ Returns the variable and value labels of all variables in the GADS
 Variable, value and missing labels as stored in the original SPSS-files and factors from R files are converted to long format for storage in the data base. labelsGADS returns them as a long format data frame.
 }
 \examples{
-# not run
-# labelsGADS(filePath = "example.db")
+\dontrun{
+metaData <- labelsGADS("t:/_R_Tutorials/R_Workshops/04_eatPakete/minigads_2010.db")
+View(metaData)
+}
 
 }

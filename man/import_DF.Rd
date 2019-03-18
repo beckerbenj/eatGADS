@@ -21,7 +21,12 @@ Function to import a \code{data.frame} object for use in \code{eatGADS} while ex
 Factors are integers with labeled variable levels. \code{import_DF} extracts these labels and stores them in a seperate meta data data.frame. See \code{\link{import_spss}} for detailed information.
 }
 \examples{
-# Example data set
-# to be done
+dat <- import_DF(iris, checkVarNames = FALSE)
+
+# Inspect Meta data
+extractMeta(dat)
+
+# Extract Data
+dat <- extractData(dat, convertLabels = "character")
 
 }

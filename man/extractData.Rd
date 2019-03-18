@@ -28,7 +28,18 @@ Extract data.frame from a \code{GADSdat} object for analyses in R. For extractin
 A \code{GADSdat} object includes actual data (\code{GADSdat$dat}) and the corresponding meta data information (\code{GADSdat$labels}). \code{extractData} extracts the data and applies relevant meta information (missing conversion, value labels), so the data can be used for analyses in R. Careful: If factors are extracted, the underlying integers will not equal the original underlying integers and \code{as.numeric} will probably yield undesired results.
 }
 \examples{
-# Example data set
-#to be done
+\dontrun{
+gads10 <- getGADS(vSelect = c("idstud", "wgt", "jkzone", "jkrep", "imp", "domain", "score"),
+                 filePath = "t:/_R_Tutorials/R_Workshops/04_eatPakete/minigads_2010.db")
+
+# Extract Data for Analysis
+dat <- extractData(gads10)
+
+# convert labeled variables to factors
+dat <- extractData(gads10, convertLabels = "factor")
+
+# convert only some variables to factor
+dat <- extractData(gads10, convertLabels = "factor", convertVariables = c("domain"))
+}
 
 }

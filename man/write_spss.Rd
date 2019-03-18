@@ -15,12 +15,12 @@ write_spss(GADSdat, filePath)
 Writes sav-file, returns nothing.
 }
 \description{
-Function to write data frame with labels for values and variables to SPSS-file.
+Preliminary Version! Function to write data frame with labels for values and variables to SPSS-file.
 }
 \details{
 ...
 }
 \examples{
-# # See vignette.
+# tbd
 
 }

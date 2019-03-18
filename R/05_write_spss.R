@@ -3,7 +3,7 @@
 #############################################################################
 #' Write data frame to sav file
 #'
-#' Function to write data frame with labels for values and variables to SPSS-file.
+#' Preliminary Version! Function to write data frame with labels for values and variables to SPSS-file.
 #'
 #' ...
 #'
@@ -13,7 +13,7 @@
 #'@return Writes sav-file, returns nothing.
 #'
 #'@examples
-#'# # See vignette.
+#'# tbd
 #'
 #'@export
 write_spss <- function(GADSdat, filePath) {

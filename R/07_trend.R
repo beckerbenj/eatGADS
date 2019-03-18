@@ -18,7 +18,14 @@
 #'@return Returns a GADSdat object.
 #'
 #'@examples
-#'# See vignette.
+#'\dontrun{
+#'trend_gads <- getTrendGADS(filePath1 = "t:/_R_Tutorials/R_Workshops/04_eatPakete/minigads_2010.db",
+#'                           filePath2 = "t:/_R_Tutorials/R_Workshops/04_eatPakete/minigads_2015.db",
+#'                           lePath = "t:/_R_Tutorials/R_Workshops/04_eatPakete/les_2010_2015.db",
+#'                           years = c(2010, 2015),
+#'                           vSelect = c("idstud", "wgt", "jkzone", "jkrep", "imp", "domain", "score"),
+#'                           leSelect = c("leScore", "domain"))
+#'}
 #'
 #'@export
 getTrendGADS <- function(filePath1, filePath2, lePath = NULL, vSelect = NULL, leSelect = NULL, years, tempPath = tempdir()) {

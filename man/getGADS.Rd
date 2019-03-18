@@ -15,12 +15,19 @@ getGADS(vSelect = NULL, filePath)
 Returns a GADSdat object.
 }
 \description{
-Extracts variables from a GADS data base.
+Extracts variables from a GADS data base. Only the specified variables are extracted. Note that this selection determines the format of the \code{data.frame} that is extracted.
 }
 \details{
-See createDB and dbPull for further explanation of the query and merging processes.
+See \code{\link{createDB}} and \code{\link{dbPull}} for further explanation of the query and merging processes.
 }
 \examples{
-# See vignette.
+\dontrun{
+gads10 <- getGADS(vSelect = c("idstud", "wgt", "jkzone", "jkrep", "imp", "domain", "score"),
+                 filePath = "t:/_R_Tutorials/R_Workshops/04_eatPakete/minigads_2010.db")
+# View Meta Data
+metaData <- extractMeta(gads10)
+# Extract Data for Analysis
+dat <- extractData(gads10)
+}
 
 }

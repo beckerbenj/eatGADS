@@ -15,8 +15,19 @@
 #'@return Returns a data frame.
 #'
 #'@examples
-#'# Example data set
-#'#to be done
+#'\dontrun{
+#'gads10 <- getGADS(vSelect = c("idstud", "wgt", "jkzone", "jkrep", "imp", "domain", "score"),
+#'                  filePath = "t:/_R_Tutorials/R_Workshops/04_eatPakete/minigads_2010.db")
+#'
+#'# Extract Data for Analysis
+#'dat <- extractData(gads10)
+#'
+#'# convert labeled variables to factors
+#'dat <- extractData(gads10, convertLabels = "factor")
+#'
+#'# convert only some variables to factor
+#'dat <- extractData(gads10, convertLabels = "factor", convertVariables = c("domain"))
+#'}
 #'
 #'@export
 extractData <- function(GADSdat, convertMiss = TRUE, convertLabels = "character", dropPartialLabels = TRUE, convertVariables) {
@@ -151,46 +162,53 @@ recodeVar <- function(var, labs){
 #'
 #' Metainformation is stored tidily in a GADSdat and can be extracted via extractMeta for a single or multiple variables.
 #'
-#'@param GADS_object A \code{GADSdat} object.
+#'@param GADSobject A \code{GADSdat} object.
 #'@param vars A character vector containing variable names. If \code{NULL} (default), alle available metainformation is returned.
 #'
 #'@return Returns a long format data frame with meta information.
 #'
 #'@examples
-#'# Example data set
-#'#to be done
+#'\dontrun{
+#'# Extract Meta data from data base
+#'metaData <- extractMeta(GADSobject = "t:/_R_Tutorials/R_Workshops/04_eatPakete/minigads_2010.db", vars = "domain")
+#'
+#'# Extract Meta data from loaded GADS
+#'gads10 <- getGADS(vSelect = c("idstud", "wgt", "jkzone", "jkrep", "imp", "domain", "score"),
+#'                  filePath = "t:/_R_Tutorials/R_Workshops/04_eatPakete/minigads_2010.db")
+#'metaData <- extractMeta(gads10, vars = "domain")
+#'}
 #'
 #'@export
-extractMeta <- function(GADS_object, vars = NULL) {
+extractMeta <- function(GADSobject, vars = NULL) {
   UseMethod("extractMeta")
 }
 #'@export
-extractMeta.GADSdat <- function(GADS_object, vars = NULL){
-  check_GADSdat(GADS_object)
-  extractMeta_helper(labels = GADS_object$labels, vars = vars)
+extractMeta.GADSdat <- function(GADSobject, vars = NULL){
+  check_GADSdat(GADSobject)
+  extractMeta_helper(labels = GADSobject$labels, vars = vars)
 }
 #'@export
-extractMeta.all_GADSdat <- function(GADS_object, vars = NULL){
-  check_all_GADSdat(GADS_object)
-  extractMeta_helper(labels = GADS_object$allLabels, vars = vars)
+extractMeta.all_GADSdat <- function(GADSobject, vars = NULL){
+  check_all_GADSdat(GADSobject)
+  extractMeta_helper(labels = GADSobject$allLabels, vars = vars)
 }
 ## Version for labels data frame or changeTable (if more functions for changeTables are implemented add it as an own S3 class)
 #'@export
-extractMeta.data.frame <- function(GADS_object, vars = NULL){
+extractMeta.data.frame <- function(GADSobject, vars = NULL){
   legal_names_labels <- c("varName", "varLabel", "format", "display_width", "labeled", "value", "valLabel", "missings", "data_table")
   legal_names_changeTable <- paste(legal_names_labels, "_new", sep = "")
   legal_names <- c(legal_names_labels, legal_names_changeTable)
-  if(!all(names(GADS_object) %in% legal_names)) {
+  if(!all(names(GADSobject) %in% legal_names)) {
     stop("GADS_object has to be of type GADSdat, all_GADSdat or has to be a labels data frame created from GADS import functions.")
   }
-  extractMeta_helper(labels = GADS_object, vars = vars)
+  extractMeta_helper(labels = GADSobject, vars = vars)
 }
 #'@export
-extractMeta.character <- function(GADS_object, vars = NULL){
-  if(length(GADS_object) != 1) stop("GADS_object is not a character of length 1.")
+extractMeta.character <- function(GADSobject, vars = NULL){
+  if(length(GADSobject) != 1) stop("GADS_object is not a character of length 1.")
   # checks for filePath are in eatDB
-  labs <- labelsGADS(GADS_object)
-  extractMeta.data.frame(GADS_object = labs, vars = vars)
+  labs <- labelsGADS(GADSobject)
+  extractMeta.data.frame(GADSobject = labs, vars = vars)
 }
 
 

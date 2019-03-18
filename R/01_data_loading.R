@@ -14,8 +14,16 @@
 #'@return Returns a list with the actual data \code{dat} and a data frame with all meta information in long format \code{labels}.
 #'
 #'@examples
-#'# Example data set
-#'# to be done
+#'\dontrun{
+#'dat <- import_spss("t:/_R_Tutorials/R_Workshops/01_Allgemeine Einfuehrung/IQB-LV-2011_SchuelerInnen-Eltern_CF.sav",
+#'                   checkVarNames = FALSE)
+#'
+#'# Inspect Meta data
+#'extractMeta(dat)
+#'
+#'# Extract Data
+#'dat <- extractData(dat, convertLabels = "character")
+#'}
 #'
 #'@export
 import_spss <- function(filePath, checkVarNames = TRUE, labeledStrings = FALSE) {
@@ -26,20 +34,17 @@ import_spss <- function(filePath, checkVarNames = TRUE, labeledStrings = FALSE) 
 
 #### Import RDS
 #############################################################################
-#' Import R data
+#' Import RDS object
 #'
 #' Function to import \code{.RDS} files while extracting value labels from factors.
 #'
-#' Factors are integers with labeled variable levels. \code{import_RDS} extracts these labels and stores them in a seperate meta data data.frame. See \code{\link{import_spss}} for detailed information.
+#' Factors are integers with labeled variable levels. \code{import_RDS} extracts these labels and stores them in a seperate meta data data.frame. See \code{\link{import_DF}} for detailed information.
 #'
 #'@param filePath Source file location, ending on \code{.RDS}.
 #'@param checkVarNames Should variable names be checked for vioalitions of for SQLite and R naming rules?
 #'
 #'@return Returns a list with the actual data \code{dat} and a data frame with all meta information in long format \code{labels}.
 #'
-#'@examples
-#'# Example data set
-#'# to be done
 #'
 #'@export
 import_RDS <- function(filePath, checkVarNames = TRUE) {
@@ -62,8 +67,13 @@ import_RDS <- function(filePath, checkVarNames = TRUE) {
 #'@return Returns a list with the actual data \code{dat} and a data frame with all meta information in long format \code{labels}.
 #'
 #'@examples
-#'# Example data set
-#'# to be done
+#'dat <- import_DF(iris, checkVarNames = FALSE)
+#'
+#'# Inspect Meta data
+#'extractMeta(dat)
+#'
+#'# Extract Data
+#'dat <- extractData(dat, convertLabels = "character")
 #'
 #'@export
 import_DF <- function(df, checkVarNames = TRUE) {

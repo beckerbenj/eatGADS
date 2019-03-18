@@ -19,7 +19,8 @@ Returns a list of all variable names included in the GADS data base.
 Extracts names of all variables included in the relational data base, structured as list with the individual data tables as list elements.
 }
 \examples{
-# not run:
-# dbNames(filePath = "exampleDB.db")
+\dontrun{
+varNames <- namesGADS("t:/_R_Tutorials/R_Workshops/04_eatPakete/minigads_2010.db")
+}
 
 }

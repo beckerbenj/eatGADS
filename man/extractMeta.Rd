@@ -4,10 +4,10 @@
 \alias{extractMeta}
 \title{Get Metainformation and Labels}
 \usage{
-extractMeta(GADS_object, vars = NULL)
+extractMeta(GADSobject, vars = NULL)
 }
 \arguments{
-\item{GADS_object}{A \code{GADSdat} object.}
+\item{GADSobject}{A \code{GADSdat} object.}
 
 \item{vars}{A character vector containing variable names. If \code{NULL} (default), alle available metainformation is returned.}
 }
@@ -21,7 +21,14 @@ Exctrat metainformation, variable and values labels from an \code{eatGADS} objec
 Metainformation is stored tidily in a GADSdat and can be extracted via extractMeta for a single or multiple variables.
 }
 \examples{
-# Example data set
-#to be done
+\dontrun{
+# Extract Meta data from data base
+metaData <- extractMeta(GADSobject = "t:/_R_Tutorials/R_Workshops/04_eatPakete/minigads_2010.db", vars = "domain")
+
+# Extract Meta data from loaded GADS
+gads10 <- getGADS(vSelect = c("idstud", "wgt", "jkzone", "jkrep", "imp", "domain", "score"),
+                 filePath = "t:/_R_Tutorials/R_Workshops/04_eatPakete/minigads_2010.db")
+metaData <- extractMeta(gads10, vars = "domain")
+}
 
 }
