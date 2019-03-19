@@ -17,7 +17,7 @@ getGADS_fast(vSelect = NULL, filePath, tempPath = tempdir())
 Returns a GADSdat object.
 }
 \description{
-Extracts variables from a GADS data base. Only the specified variables are extracted. Note that this selection determines the format of the \code{data.frame} that is extracted. Uses a local temporary directory to speed up loading the GADS from a server.
+Extracts variables from a GADS data base. Only the specified variables are extracted. Note that this selection determines the format of the \code{data.frame} that is extracted. CAREFUL: This function uses a local temporary directory to speed up loading the GADS from a server and caches the data base locally for a running windows session. Use \code{\link{clean_cache}} to clean up this temporary directory before terminating the running \code{R} session.
 }
 \details{
 A random temporary directory is used for caching the data base and should be removed, when the computer is restarted. See \code{\link{createDB}} and \code{\link{dbPull}} for further explanation of the query and merging processes.

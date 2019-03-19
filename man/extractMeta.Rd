@@ -2,23 +2,23 @@
 % Please edit documentation in R/06_data_handling.R
 \name{extractMeta}
 \alias{extractMeta}
-\title{Get Metainformation and Labels}
+\title{Get Meta Data}
 \usage{
 extractMeta(GADSobject, vars = NULL)
 }
 \arguments{
 \item{GADSobject}{A \code{GADSdat} object.}
 
-\item{vars}{A character vector containing variable names. If \code{NULL} (default), alle available metainformation is returned.}
+\item{vars}{A character vector containing variable names. If \code{NULL} (default), all available metainformation is returned.}
 }
 \value{
 Returns a long format data frame with meta information.
 }
 \description{
-Exctrat metainformation, variable and values labels from an \code{eatGADS} object with meta information. This can be a \code{GADSdat}, an \code{all_GADSdat}, a labels \code{data.frame}, or the path to an existing data base.
+Exctrat meta data (e.g. variable and values labels) from an \code{eatGADS} object. This can be a \code{GADSdat}, an \code{all_GADSdat}, a labels \code{data.frame}, or the path to an existing data base.
 }
 \details{
-Metainformation is stored tidily in a GADSdat and can be extracted via extractMeta for a single or multiple variables.
+Meta data is stored tidily in all GADS objects as a separate long format data frame. This information can be extracted for a single or multiple variables.
 }
 \examples{
 \dontrun{

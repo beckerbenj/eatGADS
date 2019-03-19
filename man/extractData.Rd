@@ -10,22 +10,22 @@ extractData(GADSdat, convertMiss = TRUE, convertLabels = "character",
 \arguments{
 \item{GADSdat}{A \code{GADSdat} object.}
 
-\item{convertMiss}{Should values labeled as missings be recoded to \code{NA}?}
+\item{convertMiss}{Should values coded as missings be recoded to \code{NA}?}
 
 \item{convertLabels}{If \code{"numeric"}, values remain as numerics. If \code{"factor"} or \code{"character"}, values are recoded to their labels. Corresponding variable type is applied.}
 
-\item{dropPartialLabels}{Should partially complete labels be dropped? Often, this is the desired behaviour.}
+\item{dropPartialLabels}{Should value labels for partially labelled variables be dropped? Most of the time, \code{TRUE} will be the desired behaviour.}
 
-\item{convertVariables}{Character vector of variables names, which labels should be applied to. If not specified, value labels are applied to all variables.}
+\item{convertVariables}{Character vector of variables names, which labels should be applied to. If not specified (default), value labels are applied to all variables for which labels are available.}
 }
 \value{
 Returns a data frame.
 }
 \description{
-Extract data.frame from a \code{GADSdat} object for analyses in R. For extracting meta data see \code{\link{extractMeta}}.
+Extract \code{data.frame} from a \code{GADSdat} object for analyses in \code{R}. For extracting meta data see \code{\link{extractMeta}}.
 }
 \details{
-A \code{GADSdat} object includes actual data (\code{GADSdat$dat}) and the corresponding meta data information (\code{GADSdat$labels}). \code{extractData} extracts the data and applies relevant meta information (missing conversion, value labels), so the data can be used for analyses in R. Careful: If factors are extracted, the underlying integers will not equal the original underlying integers and \code{as.numeric} will probably yield undesired results.
+A \code{GADSdat} object includes actual data (\code{GADSdat$dat}) and the corresponding meta data information (\code{GADSdat$labels}). \code{extractData} extracts the data and applies relevant meta data (missing conversion, value labels), so the data can be used for analyses in \code{R}. Careful: If factors are extracted, the underlying integers will not be equal to the original underlying integers and \code{as.numeric} will probably yield undesired results.
 }
 \examples{
 \dontrun{

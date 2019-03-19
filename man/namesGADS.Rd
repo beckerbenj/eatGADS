@@ -16,11 +16,18 @@ Returns a named list of variable names per data table.
 Returns a list of all variable names included in the GADS data base.
 }
 \details{
-Extracts names of all variables included in the relational data base, structured as list with the individual data tables as list elements.
+Extracts names of all variables included in the relational data base, structured as a list with the individual data tables as list elements.
 }
 \examples{
 \dontrun{
 varNames <- namesGADS("t:/_R_Tutorials/R_Workshops/04_eatPakete/minigads_2010.db")
+
+# all variable names sorted by data table
+varNames
+
+# variables in a specific data table
+varNames$allDat
+
 }
 
 }

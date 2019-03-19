@@ -2,15 +2,15 @@
 #############################################################################
 #' Extract Data
 #'
-#' Extract data.frame from a \code{GADSdat} object for analyses in R. For extracting meta data see \code{\link{extractMeta}}.
+#' Extract \code{data.frame} from a \code{GADSdat} object for analyses in \code{R}. For extracting meta data see \code{\link{extractMeta}}.
 #'
-#' A \code{GADSdat} object includes actual data (\code{GADSdat$dat}) and the corresponding meta data information (\code{GADSdat$labels}). \code{extractData} extracts the data and applies relevant meta information (missing conversion, value labels), so the data can be used for analyses in R. Careful: If factors are extracted, the underlying integers will not equal the original underlying integers and \code{as.numeric} will probably yield undesired results.
+#' A \code{GADSdat} object includes actual data (\code{GADSdat$dat}) and the corresponding meta data information (\code{GADSdat$labels}). \code{extractData} extracts the data and applies relevant meta data (missing conversion, value labels), so the data can be used for analyses in \code{R}. Careful: If factors are extracted, the underlying integers will not be equal to the original underlying integers and \code{as.numeric} will probably yield undesired results.
 #'
 #'@param GADSdat A \code{GADSdat} object.
-#'@param convertMiss Should values labeled as missings be recoded to \code{NA}?
+#'@param convertMiss Should values coded as missings be recoded to \code{NA}?
 #'@param convertLabels If \code{"numeric"}, values remain as numerics. If \code{"factor"} or \code{"character"}, values are recoded to their labels. Corresponding variable type is applied.
-#'@param dropPartialLabels Should partially complete labels be dropped? Often, this is the desired behaviour.
-#'@param convertVariables Character vector of variables names, which labels should be applied to. If not specified, value labels are applied to all variables.
+#'@param dropPartialLabels Should value labels for partially labelled variables be dropped? Most of the time, \code{TRUE} will be the desired behaviour.
+#'@param convertVariables Character vector of variables names, which labels should be applied to. If not specified (default), value labels are applied to all variables for which labels are available.
 #'
 #'@return Returns a data frame.
 #'
@@ -156,14 +156,14 @@ recodeVar <- function(var, labs){
 
 #### Get Metainformation
 #############################################################################
-#' Get Metainformation and Labels
+#' Get Meta Data
 #'
-#' Exctrat metainformation, variable and values labels from an \code{eatGADS} object with meta information. This can be a \code{GADSdat}, an \code{all_GADSdat}, a labels \code{data.frame}, or the path to an existing data base.
+#' Exctrat meta data (e.g. variable and values labels) from an \code{eatGADS} object. This can be a \code{GADSdat}, an \code{all_GADSdat}, a labels \code{data.frame}, or the path to an existing data base.
 #'
-#' Metainformation is stored tidily in a GADSdat and can be extracted via extractMeta for a single or multiple variables.
+#' Meta data is stored tidily in all GADS objects as a separate long format data frame. This information can be extracted for a single or multiple variables.
 #'
 #'@param GADSobject A \code{GADSdat} object.
-#'@param vars A character vector containing variable names. If \code{NULL} (default), alle available metainformation is returned.
+#'@param vars A character vector containing variable names. If \code{NULL} (default), all available metainformation is returned.
 #'
 #'@return Returns a long format data frame with meta information.
 #'

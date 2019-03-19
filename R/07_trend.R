@@ -3,16 +3,17 @@
 #############################################################################
 #' Get data for trend reports.
 #'
-#' Extracts variables from a two GADS data base and a linking error data base. Data can then be extracted from the \code{GADSdat} object via \code{\link{extractData}}. For extracting meta data from a db file or the \code{GADSdat} object see \code{\link{extractMeta}}.
+#' Extracts variables from two GADS data bases and a linking error data base. Data can then be extracted from the \code{GADSdat} object via \code{\link{extractData}}. For extracting meta data from a db file or a \code{GADSdat} object see \code{\link{extractMeta}}.
 #'
-#' This function extracts data from two GADS data bases and a linking error data base. All data bases have to be created via \code{\link{createGADS}}. The two GADS are joined via \code{rbind} and a variable \code{year} is added, corresponding to the argument \code{years}. If \code{lePath} is specified, linking errors are also extracted and then merged to the GADS data. Make sure to also extract the key variables necessary for merging the linkning errors (the domain variable for all linking errors, additionally the competence level variable for linking errors for competence levels). The \code{GADSdat} object can then further be used via \code{\link{extractData}}. See \code{\link[eatDB]{createDB}} and \code{\link[eatDB]{dbPull}} for further explanation of the querying and merging processes.
+#' This function extracts data from two GADS data bases and a linking error data base. All data bases have to be created via \code{\link{createGADS}}. The two GADS are joined via \code{rbind} and a variable \code{year} is added, corresponding to the argument \code{years}. If \code{lePath} is specified, linking errors are also extracted and then merged to the GADS data. Make sure to also extract the key variables necessary for merging the linking errors (the domain variable for all linking errors, additionally the competence level variable for linking errors for competence levels). The \code{GADSdat} object can then further be used via \code{\link{extractData}}. See \code{\link[eatDB]{createDB}} and \code{\link[eatDB]{dbPull}} for further explanation of the querying and merging processes. To speed up the data loading, \code{\link{getGADS_fast}} can be used. In this case, use \code{\link{clean_cache}} to clean up this temporary directory before terminating the running \code{R} session.
 #'
 #'@param filePath1 Path of the first GADS db file.
 #'@param filePath2 Path of the second GADS db file.
 #'@param lePath Path of the linking error db file. If NULL, no linking errors are added to the data.
 #'@param vSelect Variables from both GADS to be selected (as character vector).
 #'@param leSelect Names of linking errors to be selected (as character vector).
-#'@param years A numeric vector of length 2. The first year corresponds to filePath1, the second year to filePath2.
+#'@param years A numeric vector of length 2. The first elements corresponds to filePath1, the second element to filePath2.
+#'@param fast Should \code{\link{getGADS_fast}} be used for data loading instead of \code{\link{getGADS}}? Using the default is heavily recommended.
 #'@param tempPath The directory, in which both GADS will be temporarily stored. Using the default is heavily recommended.
 #'
 #'@return Returns a GADSdat object.
@@ -25,10 +26,17 @@
 #'                           years = c(2010, 2015),
 #'                           vSelect = c("idstud", "wgt", "jkzone", "jkrep", "imp", "domain", "score"),
 #'                           leSelect = c("leScore", "domain"))
+#'
+#'# Extract Data
+#'dat <- extractData(trend_gads)
+#'
+#'# Extract Meta Data
+#'extractMeta(trend_gads)
+#'
 #'}
 #'
 #'@export
-getTrendGADS <- function(filePath1, filePath2, lePath = NULL, vSelect = NULL, leSelect = NULL, years, tempPath = tempdir()) {
+getTrendGADS <- function(filePath1, filePath2, lePath = NULL, vSelect = NULL, leSelect = NULL, years, fast = FALSE, tempPath = tempdir()) {
   # Check for uniqueness of data bases used
   if(is.null(lePath)) {
     if(length(unique(c(filePath1, filePath2))) != 2) stop("All file arguments have to point to different files.")
@@ -39,9 +47,13 @@ getTrendGADS <- function(filePath1, filePath2, lePath = NULL, vSelect = NULL, le
   # check if vSelect in both GADS
   checkTrendGADS(filePath1 = filePath1, filePath2 = filePath2)
 
-  # load both
-  g1 <- getGADS_fast(vSelect = vSelect, filePath = filePath1, tempPath = tempPath)
-  g2 <- getGADS_fast(vSelect = vSelect, filePath = filePath2, tempPath = tempPath)
+  if(!identical(fast, TRUE)) {
+    g1 <- getGADS(vSelect = vSelect, filePath = filePath1)
+    g2 <- getGADS(vSelect = vSelect, filePath = filePath2)
+  } else {
+    g1 <- getGADS_fast(vSelect = vSelect, filePath = filePath1, tempPath = tempPath)
+    g2 <- getGADS_fast(vSelect = vSelect, filePath = filePath2, tempPath = tempPath)
+  }
 
   # rbind, add year
   g1 <- add_year(g1, years[1])
