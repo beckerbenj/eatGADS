@@ -1,8 +1,8 @@
 Package: eatGADS
-Title: Normalizing, Subsetting and Reshaping Hierarchical Data
-Version: 0.4.5
+Title: Data management of hierarchical SPSS files via R and SQLite
+Version: 0.4.6
 Authors@R: person("Benjamin", "Becker", email = "b.becker@iqb.hu.berlin.de", role = c("aut", "cre"))
-Description: Using data bases to store IQB GADS data.
+Description: Importing SPSS data, handling of SPSS meta data and storage of hierarchical data in SQLite data bases.
 Depends: R (>= 3.0.0), eatDB (>= 0.1.9)
 Imports: haven (>= 2.1.0), plyr, devtools, eatTools (>= 0.1.13)
 License: MIT
