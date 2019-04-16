@@ -127,9 +127,9 @@ getGADS <- function(vSelect = NULL, filePath) {
 #############################################################################
 #' Get data from GADS data base fast from server directory.
 #'
-#' Extracts variables from a GADS data base. Only the specified variables are extracted. Note that this selection determines the format of the \code{data.frame} that is extracted. CAREFUL: This function uses a local temporary directory to speed up loading the GADS from a server and caches the data base locally for a running windows session. Use \code{\link{clean_cache}} to clean up this temporary directory before terminating the running \code{R} session.
+#' Extracts variables from a GADS data base. Only the specified variables are extracted. Note that this selection determines the format of the \code{data.frame} that is extracted. CAREFUL: This function uses a local temporary directory to speed up loading the GADS from a server and caches the data base locally for a running R session. The temporary data base is removed automatically when the running \code{R} session is terminated.
 #'
-#' A random temporary directory is used for caching the data base and should be removed, when the computer is restarted. See \code{\link{createDB}} and \code{\link{dbPull}} for further explanation of the query and merging processes.
+#' A random temporary directory is used for caching the data base and is removed, when the R sessions terminates. See \code{\link{createDB}} and \code{\link{dbPull}} for further explanation of the query and merging processes.
 #'
 #'@param vSelect Variables
 #'@param filePath Path of the existing db file.
@@ -156,14 +156,23 @@ getGADS_fast <- function(vSelect = NULL, filePath, tempPath = tempdir()) {
 
   fileName <- eatTools::halveString(filePath, "/", first = FALSE)[[2]]
   tempFile <- file.path(tempPath, fileName)
-  tempFile <- paste(tempPath, fileName, sep = "/")
   # if (length(vSelect) >10)browser()
   # create copy
   if(!file.exists(tempFile)) {
     cat("Copy file to local directory...\n")
     if(file.exists(tempFile)) stop(tempFile, "is an existing file and can not be used as local copy.")
     file.copy(from = filePath, to = tempFile, overwrite = FALSE, recursive = FALSE)
+
+    ## remove temporary cache if R sessions ends or eatGADS is detached (data security reasons)
+    ## note: most of the time unnecessary, as tempdir is deleted anyway, after R session ends
+    auto_remove_cache <- function(x) {
+      message("File ", tempFile, " was removed.")
+      file.remove(tempFile)
+    }
+    reg.finalizer(e = as.environment("package:eatGADS"), f = auto_remove_cache, onexit = TRUE)
+
   } else cat("Using cached data base...\n")
+
 
   #
   cat("Pull data from GADS db...\n")
@@ -178,9 +187,9 @@ getGADS_fast <- function(vSelect = NULL, filePath, tempPath = tempdir()) {
 #############################################################################
 #' Clean temporary cache.
 #'
-#' Cleans the temporary cache, speficied by tempdir(). This function should always be executed at the end of an \code{\link{R}} session if \code{\link{getGADS_fast}} or \code{\link{getTrendGADS}} with \code{fast = TRUE} has been used.
+#' Deprecated. The cached data base is now cleaned when the R sessions ends automatically.
 #'
-#' tbd
+#' Cleans the temporary cache, speficied by tempdir(). This function should always be executed at the end of an \code{\link{R}} session if \code{\link{getGADS_fast}} or \code{\link{getTrendGADS}} with \code{fast = TRUE} has been used.
 #'
 #'@param tempPath Local directory in which the data base was temporarily be stored.
 #'

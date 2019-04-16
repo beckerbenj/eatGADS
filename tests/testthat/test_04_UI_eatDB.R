@@ -52,12 +52,18 @@ test_that("GADS DB get one variable", {
 })
 
 test_that("Fast getting GADSdat", {
-  filePath <- paste(getwd(), "helper_dataBase.db", sep = "/")
+  filePath <- file.path(getwd(), "helper_dataBase.db")
   sink("aux")
-  out <- eatGADS:::getGADS_fast(vSelect = "ID1", filePath = filePath, tempPath = "C:/Benjamin_Becker")
+  out <- eatGADS:::getGADS_fast(vSelect = "ID1", filePath = filePath)
   sink()
   expect_equal(out$dat, expected_ID2)
   expect_equal(out$labels, expected_labels[1, -9])
   expect_error(getGADS_fast(vSelect = "ID1", filePath = filePath, tempPath = "C:/"), "User has no writing permission for tempPath.")
 })
 
+### test via hand, because package has to be unattached for testing
+# "Automatic File Deletion of Fast getting GADSdat"
+# dat <- getGADS_fast(filePath = "C:/Benjamin_Becker/02_Repositories/packages/eatGADS/tests/testthat/helper_dataBase.db", tempPath = "c:/Benjamin_Becker")
+# dat2 <- getGADS_fast(vSelect = "IDSTUD", filePath = "C:/Benjamin_Becker/02_Repositories/packages/eatGADS/tests/testthat/helper_dataBase.db", tempPath = "c:/Benjamin_Becker")
+# detach("package:eatGADS", unload=TRUE)
+# gc()

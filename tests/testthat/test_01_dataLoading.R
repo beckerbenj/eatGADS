@@ -2,6 +2,7 @@
 context("Load data from SPSS and R for Data Base")
 
 ### Name transformation
+# rawDat_names <- haven::read_spss("c:/Benjamin_Becker/02_Repositories/packages/eatGADS/tests/testthat/helper_spss_names.sav", user_na = TRUE)
 rawDat_names <- haven::read_spss("helper_spss_names.sav", user_na = TRUE)
 
 test_that("Variable name are transformed correctly ", {

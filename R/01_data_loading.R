@@ -152,8 +152,9 @@ transf_names <- function(vec_name) {
   if(any(grepl(paste0("^", vec_name, "$"),  eatDB::sqlite_keywords, ignore.case = TRUE))) {
     NewName <- paste0(vec_name, "Var")
   }
-  if(grepl("\\.", vec_name))       NewName <- gsub("\\.", "_", vec_name)
   NewName <- make.names(NewName)
+  if(grepl("\\.", NewName))       NewName <- gsub("\\.", "_", NewName)
+
 
   if(!identical(NewName, vec_name)) message(paste(vec_name, "has been renamed to", NewName))
   NewName
