@@ -16,7 +16,7 @@ Returns nothing.
 Deprecated. The cached data base is now cleaned when the R sessions ends automatically.
 }
 \details{
-Cleans the temporary cache, speficied by tempdir(). This function should always be executed at the end of an \code{\link{R}} session if \code{\link{getGADS_fast}} or \code{\link{getTrendGADS}} with \code{fast = TRUE} has been used.
+Cleans the temporary cache, speficied by tempdir(). This function should always be executed at the end of an \code{R} session if \code{\link{getGADS_fast}} or \code{\link{getTrendGADS}} with \code{fast = TRUE} has been used.
 }
 \examples{
 \dontrun{

@@ -7,7 +7,7 @@
 #'
 #' Uses createDB from the eatDB package to create a relational data base. For details on how to define keys see the documentation of createDB.
 #'
-#'@param allList An object created via mergeLabels.
+#'@param allList An object created via \code{\link{mergeLabels}}.
 #'@param pkList List of primary keys.
 #'@param fkList List of foreign keys.
 #'@param filePath Path to the db file to write (including name); has to end on '.db'.
@@ -117,11 +117,29 @@ getGADS <- function(vSelect = NULL, filePath) {
   GADSdat <- eatDB::dbPull(vSelect = vSelect, filePath = filePath)
   allLabels <- labelsGADS(filePath = filePath)
   selectLabels <- allLabels[allLabels$varName %in% names(GADSdat), , drop = FALSE]
-  # drop irrelevant data_table column and duplicate meta data from different data tables
-  selectLabels <- unique(selectLabels[, !names(selectLabels) %in% "data_table"])
+
+  # select Meta data from first data table only (only relevant for foreign keys)
+  fk_vars <- unique(unlist(lapply(eatDB::dbKeys(filePath)$fkList, function(fk) fk$Keys)))
+  all_names <- namesGADS(filePath = filePath)
+  for(fk_var in fk_vars) {
+    data_table <- first_list_match(x = fk_var, vec_list = all_names)
+    selectLabels <- drop_duplicate_meta(labels = selectLabels, varName = fk_var, data_table)
+  }
+
+  # drop irrelevant data_table column
+  selectLabels <- selectLabels[, names(selectLabels) != "data_table"]
   new_GADSdat(dat = GADSdat, labels = selectLabels)
 }
 
+drop_duplicate_meta <- function(labels, varName, data_table) {
+  labels[labels$varName != varName | labels$data_table == data_table, ]
+}
+
+first_list_match <- function(x, vec_list) {
+  i <- 1
+  while(!x %in% vec_list[[i]]) i <- i + 1
+  names(vec_list)[i]
+}
 
 #### Get data from Gads fast
 #############################################################################
@@ -189,7 +207,7 @@ getGADS_fast <- function(vSelect = NULL, filePath, tempPath = tempdir()) {
 #'
 #' Deprecated. The cached data base is now cleaned when the R sessions ends automatically.
 #'
-#' Cleans the temporary cache, speficied by tempdir(). This function should always be executed at the end of an \code{\link{R}} session if \code{\link{getGADS_fast}} or \code{\link{getTrendGADS}} with \code{fast = TRUE} has been used.
+#' Cleans the temporary cache, speficied by tempdir(). This function should always be executed at the end of an \code{R} session if \code{\link{getGADS_fast}} or \code{\link{getTrendGADS}} with \code{fast = TRUE} has been used.
 #'
 #'@param tempPath Local directory in which the data base was temporarily be stored.
 #'

@@ -391,4 +391,59 @@ checkVarNames.all_GADSdat <- function(GADSdat) {
 }
 
 
+#### Reuse Meta
+#############################################################################
+#' Use meta data for a variable from another GADSdat.
+#'
+#' Transfer meta information from one GADSdat to another.
+#'
+#' tbd.
+#'
+#'@param GADSdat \code{GADSdat} object imported via eatGADS.
+#'@param varName Name of the variable that should get the new meta data.
+#'@param other_GADSdat \code{GADSdat} object imported via eatGADS including the desired meta information.
+#'@param other_varName Name of the variable that should get the new meta data in the \code{other_GADSdat}.
+#'@param dropMissingLabels Should value labels for missings be transfered to? Relevant for imputed data sets for which missing labels are usually dropped.
+#'
+#'@return Returns the original object with updated meta data.
+#'
+#'@examples
+#'# Example data set
+#'#to be done
+#'
+#'@export
+reuseMeta <- function(GADSdat, varName, other_GADSdat, other_varName = NULL, dropMissingLabels = FALSE) {
+  UseMethod("reuseMeta")
+}
+#'@export
+reuseMeta.GADSdat <- function(GADSdat, varName, other_GADSdat, other_varName = NULL, dropMissingLabels = FALSE) {
+  # extract meta data
+  if(is.null(other_varName)) other_varName <- varName
+  new_meta <- extractMeta(other_GADSdat, other_varName)
+  new_meta[, "varName"] <- varName
 
+  # drop missings
+  if(identical(dropMissingLabels, TRUE)) new_meta <- drop_missing_labels(new_meta)
+
+  # insert new meta information, remove old, sort
+  labels <- GADSdat$labels[GADSdat$labels$varName != varName, ]
+  labels <- rbind(labels, new_meta)
+  labels <- labels[order(match(labels$varName,names(GADSdat$dat))), ]
+  row.names(labels) <- NULL
+
+  new_GADSdat(dat = GADSdat$dat, labels = labels)
+}
+
+# drop missing value labels from meta data for a single variable
+drop_missing_labels <- function(meta) {
+  if(length(unique(meta$varName)) != 1) stop("This function only works for meta information of a single variable.")
+  meta_new <- meta[which(meta$missings == "valid"), ]
+  if(nrow(meta_new) == 0) {
+    meta_new <- meta[1, ]
+    meta_new$missings <- meta_new$valLabel <- NA_character_
+    meta_new$value <- NA_integer_
+    meta_new$labeled <- "no"
+  }
+  row.names(meta_new) <- NULL
+  meta_new
+}

@@ -218,3 +218,39 @@ test_that("Check varNames all_GADSdat", {
   #imported_df <- suppressMessages(import_DF(iris))
   #expect_equal(changed_df, imported_df)
 })
+
+# dfSAV <- import_spss(file = "c:/Benjamin_Becker/02_Repositories/packages/eatGADS/tests/testthat/helper_spss_missings.sav")
+test_that("Drop missing labels from meta", {
+  # if no changes
+  expect_equal(drop_missing_labels(df1$labels[df1$labels$varName == "ID1", ]), df1$labels[df1$labels$varName == "ID1", ])
+  # if changes
+  out <- dfSAV$labels[3, ]
+  row.names(out) <- NULL
+  expect_equal(drop_missing_labels(dfSAV$labels[dfSAV$labels$varName == "VAR1", ]), out)
+  # if no value labels left
+  expect_equal(drop_missing_labels(dfSAV$labels[dfSAV$labels$varName == "VAR3", ]),
+               data.frame(varName = "VAR3", varLabel = "Variable 3", format = "F8.2", display_width = NA_real_, labeled = "no", value = NA_real_, valLabel = NA_character_, missings = NA_character_, stringsAsFactors = FALSE))
+})
+
+
+test_that("Transfer meta information from one GADSdat to another", {
+  dat2 <- import_DF(dfSAV$dat)
+  dat3 <- reuseMeta(dat2, varName = "VAR1", dfSAV)
+  dat3 <- reuseMeta(dat3, varName = "VAR2", dfSAV)
+  dat3 <- reuseMeta(dat3, varName = "VAR3", dfSAV)
+  expect_equal(dfSAV, dat3)
+  dat4 <- changeVarNames(dat2, oldNames = "VAR1", newNames = "v1")
+  dat5 <- reuseMeta(dat4, varName = "v1", dfSAV, other_varName = "VAR1")
+  expect_silent(check_GADSdat(dat5))
+})
+
+
+
+
+
+
+
+
+
+
+

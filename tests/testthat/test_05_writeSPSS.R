@@ -38,7 +38,7 @@ test_that("Variable labels are added correctly to attributes for all variables",
 iris2 <- import_DF(iris)
 expected_Species <- list(label = NA_character_,
                     format.spss = NA_character_,
-                    display_width = NA_character_,
+                    display_width = NA_real_,
                     class = c("haven_labelled_spss", "haven_labelled"),
                     labels = c(setosa = 1, versicolor = 2, virginica = 3))
 

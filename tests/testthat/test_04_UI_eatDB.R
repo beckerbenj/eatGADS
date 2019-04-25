@@ -51,6 +51,19 @@ test_that("GADS DB get one variable", {
   expect_equal(out$labels, expected_labels[1, -9])
 })
 
+test_that("First list match", {
+  all_nam <- namesGADS("helper_dataBase.db")
+  x <- "ID1"
+  expect_equal(first_list_match(x, all_nam), "df1")
+})
+
+test_that("Only first meta data for foreign keys is extracted", {
+  # out1 <- getGADS(filePath = "C:/Benjamin_Becker/02_Repositories/packages/eatGADS/tests/testthat/helper_dataBase.db")
+  out1 <- getGADS(filePath = "helper_dataBase.db")
+  expect_equal(sum(out1$labels$varName == "ID1"), 1)
+})
+
+
 test_that("Fast getting GADSdat", {
   filePath <- file.path(getwd(), "helper_dataBase.db")
   sink("aux")

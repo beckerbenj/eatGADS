@@ -16,7 +16,7 @@ SPSS data can be imported via \code{\link{import_spss}}, \code{R} \code{data.fra
 
 \section{Creating the GADS}{
 
-Hierarcical data sets are combined via \code{\link{mergeLabel}} and the data base is created via \code{\link{createGADS}}. For this, the package \code{eatDB} is utilized. See also \code{\link[eatDB]{createDB}}.
+Hierarcical data sets are combined via \code{\link{mergeLabels}} and the data base is created via \code{\link{createGADS}}. For this, the package \code{eatDB} is utilized. See also \code{\link[eatDB]{createDB}}.
 }
 
 \section{Using the GADS}{

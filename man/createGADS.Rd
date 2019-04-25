@@ -7,7 +7,7 @@
 createGADS(allList, pkList, fkList, filePath)
 }
 \arguments{
-\item{allList}{An object created via mergeLabels.}
+\item{allList}{An object created via \code{\link{mergeLabels}}.}
 
 \item{pkList}{List of primary keys.}
 

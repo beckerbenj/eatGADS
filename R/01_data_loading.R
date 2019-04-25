@@ -174,7 +174,7 @@ extract_labels <- function(rawDat, labeledStrings) {
   # preserve specific format of variables
   label_df[add_vars] <- NA_character_
   if(all(is.na(label_df$value))) label_df$value <- as.integer(label_df$value)
-  if(all(is.na(label_df$display_width))) label_df$display_widt <- as.integer(label_df$display_widt)
+  if(all(is.na(label_df$display_width))) label_df$display_width <- as.integer(label_df$display_width)
 
   label_df[attr_vec]
 }
