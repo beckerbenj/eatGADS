@@ -447,3 +447,49 @@ drop_missing_labels <- function(meta) {
   row.names(meta_new) <- NULL
   meta_new
 }
+
+
+
+#### Merge GADSdat objects
+#############################################################################
+#' Merge two GADSdat objects into a single GADSdat object.
+#'
+#' Is a secure way to merge the data and the meta data of two GADSdat objects. Only a very specific way of merging is possible
+#'
+#' If there are variables duplicate (the variables specified in by are excempt), these variables are removed from y. The data is merged via a full join. The meta data is joined for the remaining variables via rbind.
+#'
+#'@param x \code{GADSdat} object imported via eatGADS.
+#'@param y \code{GADSdat} object imported via eatGADS.
+#'@param by A character vector.
+#'
+#'@return Returns a GADSdat object.
+#'
+#'@examples
+#'# Example data set
+#'#to be done
+#'
+#'@export
+merge.GADSdat <- function(x, y, by) {
+  check_GADSdat(x)
+  check_GADSdat(y)
+  if(!is.character(by)) stop(by, " is not a character vector.")
+  if(!all(by %in% names(x$dat))) stop(by, " is not a variable in x.")
+  if(!all(by %in% names(y$dat))) stop(by, " is not a variable in y.")
+  # drop double variables from y
+  y_vars <- c(by, names(y$dat)[!names(y$dat) %in% names(x$dat)])
+  if(!length(y_vars) > length(by)) stop("y does not contain unique variables.")
+
+  newDat <- merge(x$dat, y$dat[, y_vars], by = by, all = TRUE)
+  newLabels <- rbind(x$labels, y$labels[y$labels$varName %in% y_vars[!y_vars %in% by], ])
+
+  newGADS <- new_GADSdat(dat = newDat, labels = newLabels)
+  check_GADSdat(GADSdat = newGADS)
+  newGADS
+}
+
+
+
+
+
+
+

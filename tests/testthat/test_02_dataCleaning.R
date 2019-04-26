@@ -245,7 +245,18 @@ test_that("Transfer meta information from one GADSdat to another", {
 })
 
 
-
+test_that("Merge to GADSdat objects",{
+  df3 <- df1
+  mod_dat <- df3$dat
+  mod_dat[, "v3"] <- c(8, 7)
+  df3 <- suppressMessages(updateMeta(df3, mod_dat))
+  expect_error(merge(df1, df3, by = 2))
+  expect_error(merge(df1, df3, by = "x2"))
+  expect_error(merge(df1, df1, by = "V1"))
+  out <- merge(df1, df3, by = "V1")
+  expect_equal(out$dat[, 3], c(8, 7))
+  expect_equal(nrow(out$labels), 3)
+})
 
 
 
