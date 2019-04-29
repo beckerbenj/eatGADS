@@ -285,27 +285,10 @@ applyChangeMeta.valChanges <- function(changeTable, GADSdat) {
   dat <- GADSdat$dat
   labels <- GADSdat$labels
   # 01) values in data
-  if(any(!is.na(changeTable[, "value_new"])) && !is.numeric(changeTable[, "value_new"])) stop("value_new is not numeric. See import_spss for further details.")
-  value_df <- changeTable[, c("varName", "value", "value_new")]
-  value_df <- value_df[!is.na(value_df$value_new), ]
-  for(ro in seq_len(nrow(value_df))) {
-    varName <- value_df[ro, "varName"]
-    oldValue <- value_df[ro, "value"]
-    newValue <- value_df[ro, "value_new"]
-    dat[which(dat[, varName] == oldValue), varName] <- newValue
-  }
-
+  dat <- recode_dat(dat = dat, changeTable = changeTable)
   # 02) valueLabels, missings and values in labels
-  simple_change_vars <- c("valLabel_new", "missings_new", "value_new")
-  simpleChanges <- changeTable[, c("varName", simple_change_vars), drop = FALSE]
-  # loop over rows and column names, overwrite if not NA
-  for(i in seq(nrow(simpleChanges))) {
-    simpleChange <- simpleChanges[i, ]
-    for(k in simple_change_vars) {
-      oldName <- strsplit(k, "_")[[1]][1]
-      if(!is.na(simpleChange[, k])) labels[i, oldName] <- simpleChange[, k]
-    }
-  }
+  labels <- recode_labels(labels = labels, changeTable = changeTable)
+
   new_GADSdat(dat = dat, labels = labels)
 }
 
@@ -331,6 +314,35 @@ check_changeTable <- function(GADSdat, changeTable) {
   return()
 }
 
+recode_dat <- function(dat, changeTable) {
+  value_df <- changeTable[!is.na(changeTable$value_new), c("varName", "value", "value_new")]
+  for(nam in unique(value_df[, "varName"])) {
+    single_value_df <- value_df[value_df[, "varName"] == nam, ]
+    # initialize new vector
+    newVec <- dat[, nam]
+    for(ro in seq_len(nrow(single_value_df))) {
+      oldValue <- single_value_df[ro, "value"]
+      newValue <- single_value_df[ro, "value_new"]
+      newVec[which(dat[, nam] == oldValue)] <- newValue
+    }
+    dat[, nam] <- newVec
+  }
+  dat
+}
+
+recode_labels <- function(labels, changeTable) {
+  simple_change_vars <- c("valLabel_new", "missings_new", "value_new")
+  simpleChanges <- changeTable[, c("varName", simple_change_vars), drop = FALSE]
+  # loop over rows and column names, overwrite if not NA
+  for(i in seq(nrow(simpleChanges))) {
+    simpleChange <- simpleChanges[i, ]
+    for(k in simple_change_vars) {
+      oldName <- strsplit(k, "_")[[1]][1]
+      if(!is.na(simpleChange[, k])) labels[i, oldName] <- simpleChange[, k]
+    }
+  }
+  labels
+}
 
 #### Change Variable names
 #############################################################################

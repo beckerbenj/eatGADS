@@ -142,12 +142,32 @@ test_that("Changes to GADSdat on value level", {
   expect_equal(g2$labels[, -7], dfSAV$labels[, -7])
   expect_equal(g2$labels$valLabel, c("new_miss", "new_miss2", "One", "missing", NA, "missing", NA))
   expect_equal(names(g2$dat), names(dfSAV$dat))
+})
+
+test_that("Changes to GADSdat: recoding", {
   changes_val[3, "value_new"] <- 10
   g1 <- applyChangeMeta(changes_val, dfSAV)
   expect_equal(g1$labels$value[3], 10)
   expect_equal(g1$dat[1, 1], 10)
   changes_val[4, "value_new"] <- "test"
   expect_error(applyChangeMeta(changes_val, dfSAV))
+})
+
+test_that("recoding if potential danger of overwriting old values!", {
+  df_rec <- data.frame(v1 = c("x", "y", "z"), b = c("b", "a", "d"))
+  df_rec <- import_DF(df_rec)
+  chang <- getChangeMeta(df_rec, level = "value")
+  chang2 <- chang
+  chang2[, "value_new"] <- c(3, 4, 1, NA, NA, NA)
+  out <-  applyChangeMeta(chang2, df_rec)
+  expect_equal(out$labels$value, c(3, 4, 1, 1, 2, 3))
+  expect_equal(out$dat$v1, c(3, 4, 1))
+  ## partial recoding, multiple variables
+  chang[, "value_new"] <- c(3, NA, 1, 2, 1, 2)
+  out <-  applyChangeMeta(chang, df_rec)
+  expect_equal(out$labels$value, c(3, 2, 1, 2, 1, 2))
+  expect_equal(out$dat$v1, 3:1)
+  expect_equal(out$dat$b, c(1, 2, 2))
 })
 
 test_that("Changes to all_GADSdat on variable level", {
