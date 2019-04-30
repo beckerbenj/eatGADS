@@ -17,7 +17,7 @@
 Returns a GADSdat object.
 }
 \description{
-Is a secure way to merge the data and the meta data of two GADSdat objects. Only a very specific way of merging is possible
+Is a secure way to merge the data and the meta data of two GADSdat objects. Only a very specific way of merging is possible.
 }
 \details{
 If there are variables duplicate (the variables specified in by are excempt), these variables are removed from y. The data is merged via a full join. The meta data is joined for the remaining variables via rbind.

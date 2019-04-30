@@ -4,6 +4,8 @@ context("Trend data bases")
 load(file = "helper_data.rda")
 allList <- mergeLabels(df1 = df1, df2 = df2)
 
+# dfSAV <- import_spss(file = "c:/Benjamin_Becker/02_Repositories/packages/eatGADS/tests/testthat/helper_spss_missings.sav")
+dfSAV <- import_spss(file = "helper_spss_missings.sav")
 
 ### check
 test_that("Check trend GADS", {
@@ -63,3 +65,23 @@ test_that("Extract trend GADS", {
   expect_equal(out$labels$data_table, c(rep(2012, 4), rep(2018, 4), rep("LEs", 2)))
   expect_equal(out$dat$le, c(rep(0.9, 4), rep(1.1, 2)))
 })
+
+
+test_that("compare_meta", {
+  m2 <- m1 <- dfSAV$labels
+  expect_equal(compare_meta(m2, m1), character())
+  m2[3, "value"] <- 2
+  out <- suppressMessages(compare_meta(m2, m1))
+  expect_equal(out, "VAR1")
+  m2 <- m1
+  m2[7, "missings"] <- "valid"
+  m2[4, "valLabel"] <- "test"
+  expect_message(compare_meta(m2, m1), "The following variables have different meta data on value level: VAR2, VAR3")
+  out <- suppressMessages(compare_meta(m2, m1))
+  expect_equal(out, c("VAR2", "VAR3"))
+
+})
+
+
+
+

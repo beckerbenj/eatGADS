@@ -2,25 +2,23 @@
 % Please edit documentation in R/07_trend.R
 \name{checkTrendStructure}
 \alias{checkTrendStructure}
-\title{Checks structure of trend gads and linking errors.}
+\title{Checks compatability of twp GADS data bases.}
 \usage{
-checkTrendStructure(filePath1, filePath2, lePath)
+checkTrendStructure(filePath1, filePath2)
 }
 \arguments{
 \item{filePath1}{Path of the first GADS db file.}
 
 \item{filePath2}{Path of the second GADS db file.}
-
-\item{lePath}{Path of the linking error db file. If NULL, no linking errors are added to the data.}
 }
 \value{
-Create a data base.
+Returns a report list.
 }
 \description{
-tbd
+This function checks if both data bases perform identical joins via foreign keys, if they contain the same variable names and if these variables have the same value labels. Results of this comparison are reported on data table level as messages and as an output list.
 }
 \details{
-tbd
+An error is thrown if the key structure or the data table structure differs between the two data bases. Differences regarding meta data for missing value labels and for variables labels (and formatting) are ignored.
 }
 \examples{
 # See vignette.
