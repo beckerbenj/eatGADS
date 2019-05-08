@@ -161,11 +161,11 @@ compare_meta <- function(meta1, meta2) {
     var_meta2 <- meta2[meta2$varName == nam, c("value", "valLabel", "missings")]
 
     # eliminate all possible irrelevant causes for inequality
-    row.names(var_meta1) <- row.names(var_meta2) <- NULL
     var_meta1 <- var_meta1[order(var_meta1$value), ]
     var_meta2 <- var_meta2[order(var_meta2$value), ]
     var_meta1 <- var_meta1[var_meta1$missings == "valid" | is.na(var_meta1$missings), ]
     var_meta2 <- var_meta2[var_meta2$missings == "valid" | is.na(var_meta2$missings), ]
+    row.names(var_meta1) <- row.names(var_meta2) <- NULL
 
     test_eq <- all.equal(var_meta1, var_meta2)
     if(!identical(test_eq, TRUE)) diff_in_meta <- c(diff_in_meta, nam)

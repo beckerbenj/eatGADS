@@ -5,18 +5,18 @@
 \title{Use meta data for a variable from another GADSdat.}
 \usage{
 reuseMeta(GADSdat, varName, other_GADSdat, other_varName = NULL,
-  dropMissingLabels = FALSE)
+  missingLabels = NULL)
 }
 \arguments{
 \item{GADSdat}{\code{GADSdat} object imported via eatGADS.}
 
 \item{varName}{Name of the variable that should get the new meta data.}
 
-\item{other_GADSdat}{\code{GADSdat} object imported via eatGADS including the desired meta information.}
+\item{other_GADSdat}{\code{GADSdat} object imported via eatGADS including the desired meta information. Can also be a GADS db or an \code{all_GADSdat} object.}
 
 \item{other_varName}{Name of the variable that should get the new meta data in the \code{other_GADSdat}.}
 
-\item{dropMissingLabels}{Should value labels for missings be transfered to? Relevant for imputed data sets for which missing labels are usually dropped.}
+\item{missingLabels}{How should meta data for missing values be treated? If NULL, missings are transfered as all other labels. If "drop", missing labels are dropped (useful for imputed data). If "leave", missing labels remain untouched.}
 }
 \value{
 Returns the original object with updated meta data.

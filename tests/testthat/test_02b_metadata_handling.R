@@ -66,6 +66,17 @@ test_that("Transfer meta information from one GADSdat to another", {
   expect_silent(check_GADSdat(dat5))
 })
 
+test_that("Reuse meta with special missing treatment", {
+  dat2 <- import_DF(dfSAV$dat)
+  expect_error(reuseMeta(dat2, varName = "VAR1", dfSAV, missingLabels = "drp"), "Invalid input for argument missingLabels.")
+  dat3 <- reuseMeta(dat2, varName = "VAR1", dfSAV, missingLabels = "drop")
+  expect_equal(nrow(dat3$labels), 3)
+  expect_equal(dat3$labels[1, "value"], 1)
+  dat2 <- import_DF(dfSAV$dat)
+  dat3 <- reuseMeta(dfSAV, varName = "VAR1", dat2, missingLabels = "leave")
+  expect_equal(nrow(dat3$labels), 6)
+  expect_equal(dat3$labels[1, "value"], -99)
+})
 
 # --------------------------------------------------------------------------------------------------------
 

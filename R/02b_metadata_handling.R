@@ -88,9 +88,9 @@ add_rows_meta <- function(labels, newDat) {
 #'
 #'@param GADSdat \code{GADSdat} object imported via eatGADS.
 #'@param varName Name of the variable that should get the new meta data.
-#'@param other_GADSdat \code{GADSdat} object imported via eatGADS including the desired meta information.
+#'@param other_GADSdat \code{GADSdat} object imported via eatGADS including the desired meta information. Can also be a GADS db or an \code{all_GADSdat} object.
 #'@param other_varName Name of the variable that should get the new meta data in the \code{other_GADSdat}.
-#'@param dropMissingLabels Should value labels for missings be transfered to? Relevant for imputed data sets for which missing labels are usually dropped.
+#'@param missingLabels How should meta data for missing values be treated? If NULL, missings are transfered as all other labels. If "drop", missing labels are dropped (useful for imputed data). If "leave", missing labels remain untouched.
 #'
 #'@return Returns the original object with updated meta data.
 #'
@@ -99,21 +99,32 @@ add_rows_meta <- function(labels, newDat) {
 #'#to be done
 #'
 #'@export
-reuseMeta <- function(GADSdat, varName, other_GADSdat, other_varName = NULL, dropMissingLabels = FALSE) {
+reuseMeta <- function(GADSdat, varName, other_GADSdat, other_varName = NULL, missingLabels = NULL) {
   UseMethod("reuseMeta")
 }
 #'@export
-reuseMeta.GADSdat <- function(GADSdat, varName, other_GADSdat, other_varName = NULL, dropMissingLabels = FALSE) {
+reuseMeta.GADSdat <- function(GADSdat, varName, other_GADSdat, other_varName = NULL, missingLabels = NULL) {
+  if(!is.null(missingLabels) && !missingLabels %in% c("drop", "leave")) stop("Invalid input for argument missingLabels.")
+  if(!varName %in% names(GADSdat$dat)) stop("varName is not a variable in the GADSdat.")
   # extract meta data
   if(is.null(other_varName)) other_varName <- varName
   new_meta <- extractMeta(other_GADSdat, other_varName)
+  # compatability with meta data from all_GADSdat or data base
+  new_meta <- new_meta[, names(new_meta) != "data_table"]
   new_meta[, "varName"] <- varName
 
-  # drop missings
-  if(identical(dropMissingLabels, TRUE)) new_meta <- drop_missing_labels(new_meta)
+  remove_rows <- which(GADSdat$labels$varName == varName)
+
+  # special missing value labels treatment
+  if(identical(missingLabels, "drop")) new_meta <- drop_missing_labels(new_meta)
+  if(identical(missingLabels, "leave")) {
+    new_meta <- drop_missing_labels(new_meta)
+    remove_rows <- which(GADSdat$labels$varName == varName & GADSdat$labels$missings != "miss")
+    if(identical(new_meta$labeled, "no")) new_meta <- new_meta[-1, ]
+  }
 
   # insert new meta information, remove old, sort
-  labels <- GADSdat$labels[GADSdat$labels$varName != varName, ]
+  labels <- GADSdat$labels[-remove_rows, ]
   labels <- rbind(labels, new_meta)
   labels <- labels[order(match(labels$varName,names(GADSdat$dat))), ]
   row.names(labels) <- NULL

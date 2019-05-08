@@ -169,7 +169,7 @@ orderLike.GADSdat <- function(GADSdat, newOrder) {
 }
 
 
-compare_and_order <- function(set1, set2, name1, name2, FUN = warning) {
+compare_and_order <- function(set1, set2, name1 = "set1", name2 = "set2", FUN = warning) {
   not_in_set1 <- setdiff(set2, set1)
   not_in_set2 <- setdiff(set1, set2)
   in_both_ordered <- intersect(set2, set1)
