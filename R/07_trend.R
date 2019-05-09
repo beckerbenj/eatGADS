@@ -3,9 +3,9 @@
 #############################################################################
 #' Get data for trend reports.
 #'
-#' Extracts variables from two GADS data bases and a linking error data base. Data can then be extracted from the \code{GADSdat} object via \code{\link{extractData}}. For extracting meta data from a db file or a \code{GADSdat} object see \code{\link{extractMeta}}.
+#' Extracts variables from two GADS data bases and a linking error data base. Data can then be extracted from the \code{GADSdat} object via \code{\link{extractData}}. For extracting meta data from a db file or a \code{GADSdat} object see \code{\link{extractMeta}}. To speed up the data loading, \code{\link{getGADS_fast}} is used pre default.
 #'
-#' This function extracts data from two GADS data bases and a linking error data base. All data bases have to be created via \code{\link{createGADS}}. The two GADS are joined via \code{rbind} and a variable \code{year} is added, corresponding to the argument \code{years}. If \code{lePath} is specified, linking errors are also extracted and then merged to the GADS data. Make sure to also extract the key variables necessary for merging the linking errors (the domain variable for all linking errors, additionally the competence level variable for linking errors for competence levels). The \code{GADSdat} object can then further be used via \code{\link{extractData}}. See \code{\link[eatDB]{createDB}} and \code{\link[eatDB]{dbPull}} for further explanation of the querying and merging processes. To speed up the data loading, \code{\link{getGADS_fast}} can be used. In this case, use \code{\link{clean_cache}} to clean up this temporary directory before terminating the running \code{R} session.
+#' This function extracts data from two GADS data bases and a linking error data base. All data bases have to be created via \code{\link{createGADS}}. The two GADS are joined via \code{rbind} and a variable \code{year} is added, corresponding to the argument \code{years}. If \code{lePath} is specified, linking errors are also extracted and then merged to the GADS data. Make sure to also extract the key variables necessary for merging the linking errors (the domain variable for all linking errors, additionally the competence level variable for linking errors for competence levels). The \code{GADSdat} object can then further be used via \code{\link{extractData}}. See \code{\link[eatDB]{createDB}} and \code{\link[eatDB]{dbPull}} for further explanation of the querying and merging processes.
 #'
 #'@param filePath1 Path of the first GADS db file.
 #'@param filePath2 Path of the second GADS db file.
@@ -36,7 +36,7 @@
 #'}
 #'
 #'@export
-getTrendGADS <- function(filePath1, filePath2, lePath = NULL, vSelect = NULL, leSelect = NULL, years, fast = FALSE, tempPath = tempdir()) {
+getTrendGADS <- function(filePath1, filePath2, lePath = NULL, vSelect = NULL, leSelect = NULL, years, fast = TRUE, tempPath = tempdir()) {
   # Check for uniqueness of data bases used
   if(is.null(lePath)) {
     if(length(unique(c(filePath1, filePath2))) != 2) stop("All file arguments have to point to different files.")
@@ -47,28 +47,50 @@ getTrendGADS <- function(filePath1, filePath2, lePath = NULL, vSelect = NULL, le
   # check if vSelect in both GADS
   checkTrendGADS(filePath1 = filePath1, filePath2 = filePath2)
 
-  if(!identical(fast, TRUE)) {
-    g1 <- getGADS(vSelect = vSelect, filePath = filePath1)
-    g2 <- getGADS(vSelect = vSelect, filePath = filePath2)
-  } else {
-    g1 <- getGADS_fast(vSelect = vSelect, filePath = filePath1, tempPath = tempPath)
-    g2 <- getGADS_fast(vSelect = vSelect, filePath = filePath2, tempPath = tempPath)
+  # prepare vSelect for GADS (unique variables are allowed!)
+  vSelect1 <- list(in_gads = vSelect)
+  vSelect2 <- list(in_gads = vSelect)
+  if(!is.null(vSelect)) {
+    vSelect1 <- check_vSelect(filePath1, vSelect = vSelect)
+    vSelect2 <- check_vSelect(filePath2, vSelect = vSelect)
+    not_in_both_gads <- intersect(vSelect1$not_in_gads, vSelect2$not_in_gads)
+    if(length(not_in_both_gads) > 0) stop("Variables ", not_in_both_gads, " are in neither of both data bases.")
+    if(!length(vSelect1$in_gads) > 0) stop("No variables from first data base selected.")
+    if(!length(vSelect2$in_gads) > 0) stop("No variables from second data base selected.")
   }
 
-  # rbind, add year
+  if(!identical(fast, TRUE)) {
+    g1 <- getGADS(vSelect = vSelect1$in_gads, filePath = filePath1)
+    g2 <- getGADS(vSelect = vSelect2$in_gads, filePath = filePath2)
+  } else {
+    cat(" -----  Loading first GADS ----- \n")
+    g1 <- getGADS_fast(vSelect = vSelect1$in_gads, filePath = filePath1, tempPath = tempPath)
+    cat(" -----  Loading second GADS ----- \n")
+    g2 <- getGADS_fast(vSelect = vSelect2$in_gads, filePath = filePath2, tempPath = tempPath)
+  }
+
+  # add year
   g1 <- add_year(g1, years[1])
   g2 <- add_year(g2, years[2])
-  g_dat <- rbind(g1[["dat"]], g2[["dat"]])
-  label_list <- lapply(list(g1, g2), function(x) x$labels)
-  l_dat <- merge_labels_dfs(label_list, name = years)
-  gads_trend <- new_GADSdat(dat = g_dat, labels = l_dat)
+
+  gList <- list(g1, g2)
+  names(gList) <- c(paste0("gads", years))
 
   # add linking errors (tbd!!!!!!)
+  LEs <- NULL
   if(!is.null(lePath)) {
     les <- getGADS(filePath = lePath, vSelect = leSelect)
-    le_keys <- eatDB::dbKeys(lePath)[["pkList"]]
-    gads_trend <- merge_LEs(gads_trend = gads_trend, les = les, le_keys = le_keys)
+    #le_keys <- eatDB::dbKeys(lePath)[["pkList"]]
+    #gads_trend <- merge_LEs(gads_trend = gads_trend, les = les, le_keys = le_keys)
+    LEs <- les
+
+    gList <- list(g1, g2, LEs)
+    names(gList) <- c(paste0("gads", years), "LEs")
   }
+
+  gads_trend <- do.call(mergeLabels, gList)
+  class(gads_trend) <- c("trend_GADSdat", "all_GADSdat", "list")
+
   gads_trend
 }
 
@@ -87,11 +109,19 @@ checkTrendGADS <- function(filePath1, filePath2, lePath = NULL) {
   return()
 }
 
+# select variables relevant for each gads
+check_vSelect <- function(filePath, vSelect) {
+  nam <- namesGADS(filePath)
+  in_gads <- intersect(vSelect, unlist(nam))
+  not_in_gads <- setdiff(vSelect, unlist(nam))
+  list(in_gads = in_gads, not_in_gads = not_in_gads)
+}
+
 add_year <- function(GADSdat, year) {
   old_GADSdat <- GADSdat
   GADSdat[["dat"]][, "year"] <- year
   GADSdat <- suppressMessages(updateMeta(old_GADSdat, GADSdat[["dat"]]))
-  GADSdat[["labels"]][GADSdat[["labels"]]$varName == "year", "varLabel"] <- "Trendvariable, indicating the year of the assessment."
+  GADSdat[["labels"]][GADSdat[["labels"]]$varName == "year", "varLabel"] <- "Trendvariable, indicating the year of the assessment"
   GADSdat
 
 }

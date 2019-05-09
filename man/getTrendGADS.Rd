@@ -5,7 +5,7 @@
 \title{Get data for trend reports.}
 \usage{
 getTrendGADS(filePath1, filePath2, lePath = NULL, vSelect = NULL,
-  leSelect = NULL, years, fast = FALSE, tempPath = tempdir())
+  leSelect = NULL, years, fast = TRUE, tempPath = tempdir())
 }
 \arguments{
 \item{filePath1}{Path of the first GADS db file.}
@@ -28,10 +28,10 @@ getTrendGADS(filePath1, filePath2, lePath = NULL, vSelect = NULL,
 Returns a GADSdat object.
 }
 \description{
-Extracts variables from two GADS data bases and a linking error data base. Data can then be extracted from the \code{GADSdat} object via \code{\link{extractData}}. For extracting meta data from a db file or a \code{GADSdat} object see \code{\link{extractMeta}}.
+Extracts variables from two GADS data bases and a linking error data base. Data can then be extracted from the \code{GADSdat} object via \code{\link{extractData}}. For extracting meta data from a db file or a \code{GADSdat} object see \code{\link{extractMeta}}. To speed up the data loading, \code{\link{getGADS_fast}} is used pre default.
 }
 \details{
-This function extracts data from two GADS data bases and a linking error data base. All data bases have to be created via \code{\link{createGADS}}. The two GADS are joined via \code{rbind} and a variable \code{year} is added, corresponding to the argument \code{years}. If \code{lePath} is specified, linking errors are also extracted and then merged to the GADS data. Make sure to also extract the key variables necessary for merging the linking errors (the domain variable for all linking errors, additionally the competence level variable for linking errors for competence levels). The \code{GADSdat} object can then further be used via \code{\link{extractData}}. See \code{\link[eatDB]{createDB}} and \code{\link[eatDB]{dbPull}} for further explanation of the querying and merging processes. To speed up the data loading, \code{\link{getGADS_fast}} can be used. In this case, use \code{\link{clean_cache}} to clean up this temporary directory before terminating the running \code{R} session.
+This function extracts data from two GADS data bases and a linking error data base. All data bases have to be created via \code{\link{createGADS}}. The two GADS are joined via \code{rbind} and a variable \code{year} is added, corresponding to the argument \code{years}. If \code{lePath} is specified, linking errors are also extracted and then merged to the GADS data. Make sure to also extract the key variables necessary for merging the linking errors (the domain variable for all linking errors, additionally the competence level variable for linking errors for competence levels). The \code{GADSdat} object can then further be used via \code{\link{extractData}}. See \code{\link[eatDB]{createDB}} and \code{\link[eatDB]{dbPull}} for further explanation of the querying and merging processes.
 }
 \examples{
 \dontrun{

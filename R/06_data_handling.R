@@ -10,7 +10,7 @@
 #'@param convertMiss Should values coded as missings be recoded to \code{NA}?
 #'@param convertLabels If \code{"numeric"}, values remain as numerics. If \code{"factor"} or \code{"character"}, values are recoded to their labels. Corresponding variable type is applied.
 #'@param dropPartialLabels Should value labels for partially labelled variables be dropped? Most of the time, \code{TRUE} will be the desired behaviour.
-#'@param convertVariables Character vector of variables names, which labels should be applied to. If not specified (default), value labels are applied to all variables for which labels are available.
+#'@param convertVariables Character vector of variables names, which labels should be applied to. If not specified (default), value labels are applied to all variables for which labels are available. Variable names not in the actual GADS are silently dropped.
 #'
 #'@return Returns a data frame.
 #'
@@ -46,6 +46,23 @@ extractData.GADSdat <- function(GADSdat, convertMiss = TRUE, convertLabels = "ch
   dat <- labels2values(dat = dat, labels = labels, convertLabels = convertLabels, convertMiss = convertMiss,
                        dropPartialLabels = dropPartialLabels, convertVariables = convertVariables)
   dat
+}
+
+#'@export
+extractData.trend_GADSdat <- function(GADSdat, convertMiss = TRUE, convertLabels = "character", dropPartialLabels = TRUE, convertVariables) {
+  check_all_GADSdat(GADSdat)
+  gads1 <- extractGADSdat(all_GADSdat = GADSdat, name = names(GADSdat$datList)[1])
+  dat1 <- extractData(gads1, convertMiss = convertMiss, convertLabels = convertLabels,
+                       dropPartialLabels = dropPartialLabels, convertVariables)
+  gads2 <- extractGADSdat(all_GADSdat = GADSdat, name = names(GADSdat$datList)[2])
+  dat2 <- extractData(gads2, convertMiss = convertMiss, convertLabels = convertLabels,
+                      dropPartialLabels = dropPartialLabels, convertVariables)
+  all_dat <- plyr::rbind.fill(dat1, dat2)
+  if(!is.null(GADSdat[["LEs"]])) {
+    # tbd
+  }
+  all_dat <- all_dat[, c(names(all_dat)[names(all_dat) != "year"], "year")]
+  all_dat
 }
 
 # converts labels to values

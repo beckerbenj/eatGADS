@@ -16,7 +16,7 @@ extractData(GADSdat, convertMiss = TRUE, convertLabels = "character",
 
 \item{dropPartialLabels}{Should value labels for partially labelled variables be dropped? Most of the time, \code{TRUE} will be the desired behaviour.}
 
-\item{convertVariables}{Character vector of variables names, which labels should be applied to. If not specified (default), value labels are applied to all variables for which labels are available.}
+\item{convertVariables}{Character vector of variables names, which labels should be applied to. If not specified (default), value labels are applied to all variables for which labels are available. Variable names not in the actual GADS are silently dropped.}
 }
 \value{
 Returns a data frame.
