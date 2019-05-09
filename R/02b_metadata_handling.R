@@ -124,12 +124,15 @@ reuseMeta.GADSdat <- function(GADSdat, varName, other_GADSdat, other_varName = N
   }
 
   # insert new meta information, remove old, sort
-  labels <- GADSdat$labels[-remove_rows, ]
+  labels <- GADSdat$labels
+  if(length(remove_rows) > 0) labels <- labels[-remove_rows, ]
   labels <- rbind(labels, new_meta)
   labels <- labels[order(match(labels$varName,names(GADSdat$dat))), ]
   row.names(labels) <- NULL
 
-  new_GADSdat(dat = GADSdat$dat, labels = labels)
+  out <- new_GADSdat(dat = GADSdat$dat, labels = labels)
+  check_GADSdat(out)
+  out
 }
 
 # drop missing value labels from meta data for a single variable

@@ -78,6 +78,11 @@ test_that("Reuse meta with special missing treatment", {
   expect_equal(dat3$labels[1, "value"], -99)
 })
 
+test_that("Bugfix if only missing rows and missingLabels = leave", {
+  out <- reuseMeta(dfSAV, varName = "VAR3", other_GADSdat = dfSAV, other_varName = "VAR1", missingLabels = "leave")
+  expect_equal(nrow(out$labels), 8)
+})
+
 # --------------------------------------------------------------------------------------------------------
 
 ### Meta changes

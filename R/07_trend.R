@@ -167,6 +167,10 @@ compare_meta <- function(meta1, meta2) {
     var_meta2 <- var_meta2[var_meta2$missings == "valid" | is.na(var_meta2$missings), ]
     row.names(var_meta1) <- row.names(var_meta2) <- NULL
 
+    # treat unlabeled variables as no value labels given
+    if(nrow(var_meta1) == 1 && all(is.na(var_meta1[1, ]))) var_meta1 <- var_meta1[-1, ]
+    if(nrow(var_meta2) == 1 && all(is.na(var_meta2[1, ]))) var_meta2 <- var_meta2[-1, ]
+
     test_eq <- all.equal(var_meta1, var_meta2)
     if(!identical(test_eq, TRUE)) diff_in_meta <- c(diff_in_meta, nam)
   }

@@ -1,6 +1,7 @@
 context("Trend data bases")
 
 # load test data
+# load(file = "c:/Benjamin_Becker/02_Repositories/packages/eatGADS/tests/testthat/helper_data.rda")
 load(file = "helper_data.rda")
 allList <- mergeLabels(df1 = df1, df2 = df2)
 
@@ -82,6 +83,9 @@ test_that("compare_meta", {
 
 })
 
-
+test_that("compare_meta for one with only missing meta data and one no value level meta data", {
+  df1_miss <- reuseMeta(df1, "ID1", dfSAV, "VAR3")
+  expect_equal(compare_meta(df1_miss, df1), character(0))
+})
 
 
