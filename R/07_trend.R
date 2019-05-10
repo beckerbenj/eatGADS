@@ -11,7 +11,6 @@
 #'@param filePath2 Path of the second GADS db file.
 #'@param lePath Path of the linking error db file. If NULL, no linking errors are added to the data.
 #'@param vSelect Variables from both GADS to be selected (as character vector).
-#'@param leSelect Names of linking errors to be selected (as character vector).
 #'@param years A numeric vector of length 2. The first elements corresponds to filePath1, the second element to filePath2.
 #'@param fast Should \code{\link{getGADS_fast}} be used for data loading instead of \code{\link{getGADS}}? Using the default is heavily recommended.
 #'@param tempPath The directory, in which both GADS will be temporarily stored. Using the default is heavily recommended.
@@ -24,8 +23,7 @@
 #'                           filePath2 = "t:/_R_Tutorials/R_Workshops/04_eatPakete/minigads_2015.db",
 #'                           lePath = "t:/_R_Tutorials/R_Workshops/04_eatPakete/les_2010_2015.db",
 #'                           years = c(2010, 2015),
-#'                           vSelect = c("idstud", "wgt", "jkzone", "jkrep", "imp", "domain", "score"),
-#'                           leSelect = c("leScore", "domain"))
+#'                           vSelect = c("idstud", "wgt", "jkzone", "jkrep", "imp", "domain", "score"))
 #'
 #'# Extract Data
 #'dat <- extractData(trend_gads)
@@ -36,7 +34,7 @@
 #'}
 #'
 #'@export
-getTrendGADS <- function(filePath1, filePath2, lePath = NULL, vSelect = NULL, leSelect = NULL, years, fast = TRUE, tempPath = tempdir()) {
+getTrendGADS <- function(filePath1, filePath2, lePath = NULL, vSelect = NULL, years, fast = TRUE, tempPath = tempdir()) {
   # Check for uniqueness of data bases used
   if(is.null(lePath)) {
     if(length(unique(c(filePath1, filePath2))) != 2) stop("All file arguments have to point to different files.")
@@ -45,7 +43,7 @@ getTrendGADS <- function(filePath1, filePath2, lePath = NULL, vSelect = NULL, le
     }
   if(!(length(years) == 2 && as.numeric(years))) stop("years has to be a numeric vector of length 2.")
   # check if vSelect in both GADS
-  checkTrendGADS(filePath1 = filePath1, filePath2 = filePath2)
+  check_keyStrcuture_TrendGADS(filePath1 = filePath1, filePath2 = filePath2)
 
   # prepare vSelect for GADS (unique variables are allowed!)
   vSelect1 <- list(in_gads = vSelect)
@@ -73,20 +71,16 @@ getTrendGADS <- function(filePath1, filePath2, lePath = NULL, vSelect = NULL, le
   g1 <- add_year(g1, years[1])
   g2 <- add_year(g2, years[2])
 
-  gList <- list(g1, g2)
-  names(gList) <- c(paste0("gads", years))
-
-  # add linking errors (tbd!!!!!!)
+  # add linking errors (automatic variable selection)
   LEs <- NULL
   if(!is.null(lePath)) {
-    les <- getGADS(filePath = lePath, vSelect = leSelect)
-    #le_keys <- eatDB::dbKeys(lePath)[["pkList"]]
-    #gads_trend <- merge_LEs(gads_trend = gads_trend, les = les, le_keys = le_keys)
-    LEs <- les
-
-    gList <- list(g1, g2, LEs)
-    names(gList) <- c(paste0("gads", years), "LEs")
+    leSelect <- make_leSelect(lePath = lePath, vSelect = vSelect)
+    if(is.null(leSelect) || length(leSelect) > 0) LEs <- getGADS(filePath = lePath, vSelect = leSelect)
+    else message("No linking errors for chosen variables available.")
   }
+
+  gList <- list(g1, g2, LEs)
+  names(gList) <- c(paste0("gads", years), "LEs")
 
   gads_trend <- do.call(mergeLabels, gList)
   class(gads_trend) <- c("trend_GADSdat", "all_GADSdat", "list")
@@ -94,8 +88,17 @@ getTrendGADS <- function(filePath1, filePath2, lePath = NULL, vSelect = NULL, le
   gads_trend
 }
 
+
+check_trend_GADSdat <- function(trend_GADSdat) {
+  if(is.null(trend_GADSdat$datList[["LEs"]])) {
+    trend_GADSdat$datList <- trend_GADSdat$datList[1:2]
+  }
+  check_all_GADSdat(trend_GADSdat)
+}
+
+
 ## Check compatability of trend data bases
-checkTrendGADS <- function(filePath1, filePath2, lePath = NULL) {
+check_keyStrcuture_TrendGADS <- function(filePath1, filePath2) {
   # check levels and keys
   k1 <- eatDB::dbKeys(filePath1)
   k2 <- eatDB::dbKeys(filePath2)
@@ -126,22 +129,20 @@ add_year <- function(GADSdat, year) {
 
 }
 
-merge_LEs <- function(gads_trend, les, le_keys) {
-  les[["labels"]][, "data_table"] <- "LEs"
-  le_keys <- unique(unlist(le_keys))
-  curr_le_keys <- le_keys[le_keys %in% names(les[["dat"]])]
-  old_g <- gads_trend
-  # if(identical(years, c(2010, 2015))) browser()
-  if(any(!curr_le_keys %in% names(gads_trend[["dat"]]))) stop("Incorrect linking error variables specified for GADS data.")
-  gads_trend[["dat"]] <- merge(gads_trend[["dat"]], les[["dat"]], by = curr_le_keys)
-  gads_trend[["labels"]] <- rbind(gads_trend[["labels"]], les[["labels"]])
-  gads_trend
+# automaticall generate variable selection for linking error data base
+make_leSelect <- function(lePath, vSelect) {
+  namLE <- namesGADS(lePath)
+  if(is.null(vSelect)) return(NULL)
+  LE_variables <- grep("^LE_", unlist(namLE), value = TRUE)
+  dep_variables <- gsub(pattern = "^LE_", replacement = "", LE_variables)
+  out <- LE_variables[dep_variables %in% vSelect]
+  names(out) <- NULL
+  out
 }
 
-
-#### Checks structure of trend gads and linking errors
+#### Checks structure of trend gads
 #############################################################################
-#' Checks compatability of twp GADS data bases.
+#' Checks compatability of two GADS data bases.
 #'
 #' This function checks if both data bases perform identical joins via foreign keys, if they contain the same variable names and if these variables have the same value labels. Results of this comparison are reported on data table level as messages and as an output list.
 #'
@@ -157,7 +158,7 @@ merge_LEs <- function(gads_trend, les, le_keys) {
 #'
 #'@export
 checkTrendStructure <- function(filePath1, filePath2) {
-  checkTrendGADS(filePath1, filePath2, lePath)
+  check_keyStrcuture_TrendGADS(filePath1, filePath2, lePath)
   # Variables
   n1 <- namesGADS(filePath1)
   n2 <- namesGADS(filePath2)
@@ -210,4 +211,52 @@ compare_meta <- function(meta1, meta2) {
 
 
 
+#### Checks structure of trend gads and linking errors
+#############################################################################
+#' Checks compatability of GADS data bases with a linking error data base.
+#'
+#' This function checks if a linking error data base is compatible with the two trend GADS data bases. For checking the compatability of two GADS data bases see \code{\link{checkTrendStructure}}.
+#'
+#' This function inspects whether all linking error variables correspond to variables in the GADS data base and if the key variables also correspond to existing variables in the trend GADS data bases.
+#'
+#'@param filePath1 Path of the first GADS db file.
+#'@param filePath2 Path of the second GADS db file.
+#'@param lePath Path of the linking error GADS db file.
+#'
+#'@return Returns a report list.
+#'
+#'@examples
+#'# See vignette.
+#'
+#'@export
+checkLEStructure <- function(filePath1, filePath2, lePath) {
+  nam1 <- namesGADS(filePath1)
+  nam2 <- namesGADS(filePath2)
+  namLE <- namesGADS(lePath)
+
+  ## all Linking error variables in trend gads data bases (without LE_)?
+  LE_variables <- grep("^LE_", unlist(namLE), value = TRUE)
+  dep_variables <- gsub(pattern = "^LE_", replacement = "", LE_variables)
+
+  dep_notIn_nam1 <- setdiff(dep_variables, unlist(nam1))
+  dep_notIn_nam2 <- setdiff(dep_variables, unlist(nam2))
+  if(length(dep_notIn_nam1) > 0) message("The following variables have linking errors but are not variables in data base 1: ",
+                                         dep_notIn_nam1)
+  if(length(dep_notIn_nam2) > 0) message("The following variables have linking errors but are not variables in data base 2: ",
+                                         dep_notIn_nam2)
+
+  ## all other variables should be primary keys
+  le_pks <- unlist(eatDB::dbKeys(lePath)$pkList)
+  le_keys <- setdiff(unlist(namLE), LE_variables)
+  if(!all(le_pks %in% le_keys) || !all(le_keys %in% le_pks)) message("The linking error data base contains variables other than linking errors and key variables.")
+
+  # all primary keys should be in trend gads data bases
+  key_notIn_nam1 <- setdiff(le_pks, unlist(nam1))
+  key_notIn_nam2 <- setdiff(le_pks, unlist(nam2))
+  if(length(key_notIn_nam1) > 0) message("The following variables are key variables in the Linking Error data base but are not variables in data base 1: ", key_notIn_nam1)
+  if(length(key_notIn_nam2) > 0) message("The following variables are key variables in the Linking Error data base but are not variables in data base 2: ", key_notIn_nam2)
+
+  list(dep_notIn_nam1 = dep_notIn_nam1, dep_notIn_nam2 = dep_notIn_nam2,
+       key_notIn_nam1 = key_notIn_nam1, key_notIn_nam2 = key_notIn_nam2)
+}
 

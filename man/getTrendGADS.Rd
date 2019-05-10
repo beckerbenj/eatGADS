@@ -5,7 +5,7 @@
 \title{Get data for trend reports.}
 \usage{
 getTrendGADS(filePath1, filePath2, lePath = NULL, vSelect = NULL,
-  leSelect = NULL, years, fast = TRUE, tempPath = tempdir())
+  years, fast = TRUE, tempPath = tempdir())
 }
 \arguments{
 \item{filePath1}{Path of the first GADS db file.}
@@ -15,8 +15,6 @@ getTrendGADS(filePath1, filePath2, lePath = NULL, vSelect = NULL,
 \item{lePath}{Path of the linking error db file. If NULL, no linking errors are added to the data.}
 
 \item{vSelect}{Variables from both GADS to be selected (as character vector).}
-
-\item{leSelect}{Names of linking errors to be selected (as character vector).}
 
 \item{years}{A numeric vector of length 2. The first elements corresponds to filePath1, the second element to filePath2.}
 
@@ -39,8 +37,7 @@ trend_gads <- getTrendGADS(filePath1 = "t:/_R_Tutorials/R_Workshops/04_eatPakete
                           filePath2 = "t:/_R_Tutorials/R_Workshops/04_eatPakete/minigads_2015.db",
                           lePath = "t:/_R_Tutorials/R_Workshops/04_eatPakete/les_2010_2015.db",
                           years = c(2010, 2015),
-                          vSelect = c("idstud", "wgt", "jkzone", "jkrep", "imp", "domain", "score"),
-                          leSelect = c("leScore", "domain"))
+                          vSelect = c("idstud", "wgt", "jkzone", "jkrep", "imp", "domain", "score"))
 
 # Extract Data
 dat <- extractData(trend_gads)

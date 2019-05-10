@@ -2,7 +2,7 @@
 % Please edit documentation in R/07_trend.R
 \name{checkTrendStructure}
 \alias{checkTrendStructure}
-\title{Checks compatability of twp GADS data bases.}
+\title{Checks compatability of two GADS data bases.}
 \usage{
 checkTrendStructure(filePath1, filePath2)
 }

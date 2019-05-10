@@ -23,8 +23,10 @@ mergeLabels <- function(...) {
 #'@export
 mergeLabels.GADSdat <- function(...) {
   l <- list(...)
-  # 1) checks
-  lapply(l, check_GADSdat)
+  # 1) checks (allow NULL as element for trend_GADSdat and Linking errors)
+  lapply(l, function(l_element) {
+    if(!is.null(l_element)) check_GADSdat(l_element)
+  })
   if(is.null(names(l))) stop("All input has to be named! See help for further clarification.")
   if(any(is.na(names(l)) || any(names(l) == ""))) stop("All input has to be named! See help for further clarification.")
   if(any(duplicated(names(l)))) stop("Names for data frames are duplicated!")
@@ -43,6 +45,7 @@ mergeLabels.GADSdat <- function(...) {
 
 # 03)  add data frame identifier ---------------------------------------------------------
 add_DFname <- function(df, name) {
+  if(is.null(df)) return(df)
   data.frame(df, data_table = rep(name, nrow(df)), stringsAsFactors = FALSE)
 }
 

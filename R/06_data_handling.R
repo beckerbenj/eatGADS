@@ -50,7 +50,8 @@ extractData.GADSdat <- function(GADSdat, convertMiss = TRUE, convertLabels = "ch
 
 #'@export
 extractData.trend_GADSdat <- function(GADSdat, convertMiss = TRUE, convertLabels = "character", dropPartialLabels = TRUE, convertVariables) {
-  check_all_GADSdat(GADSdat)
+  check_trend_GADSdat(GADSdat)
+
   gads1 <- extractGADSdat(all_GADSdat = GADSdat, name = names(GADSdat$datList)[1])
   dat1 <- extractData(gads1, convertMiss = convertMiss, convertLabels = convertLabels,
                        dropPartialLabels = dropPartialLabels, convertVariables)
@@ -58,9 +59,15 @@ extractData.trend_GADSdat <- function(GADSdat, convertMiss = TRUE, convertLabels
   dat2 <- extractData(gads2, convertMiss = convertMiss, convertLabels = convertLabels,
                       dropPartialLabels = dropPartialLabels, convertVariables)
   all_dat <- plyr::rbind.fill(dat1, dat2)
-  if(!is.null(GADSdat[["LEs"]])) {
-    # tbd
+
+  ## if available, merge also linking errors; merge picks by automatically, keep variable order as in original data frames
+  if(!is.null(GADSdat$datList[["LEs"]])) {
+    gads_le <- extractGADSdat(all_GADSdat = GADSdat, name = "LEs")
+    le <- extractData(gads_le, convertMiss = convertMiss, convertLabels = "character")
+    all_dat_withLEs <- merge(all_dat, le)
+    all_dat <- all_dat_withLEs[, c(names(all_dat), setdiff(names(le), names(all_dat)))]
   }
+
   all_dat <- all_dat[, c(names(all_dat)[names(all_dat) != "year"], "year")]
   all_dat
 }
@@ -124,6 +131,7 @@ check_labels <- function(varName, dat, labels, convertMiss) {
 na_omit <- function(vec) {
   vec[!is.na(vec)]
 }
+
 
 
 #### Missings to NA

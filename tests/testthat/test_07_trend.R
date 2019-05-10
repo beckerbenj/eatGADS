@@ -11,10 +11,10 @@ dfSAV <- import_spss(file = "helper_spss_missings.sav")
 control_caching <- FALSE
 
 ### check
-test_that("Check trend GADS", {
-  expect_silent(checkTrendGADS(filePath1 = "helper_dataBase.db", filePath2 = "helper_dataBase2.db"))
+test_that("check_keyStrcuture_TrendGADS", {
+  expect_silent(check_keyStrcuture_TrendGADS(filePath1 = "helper_dataBase.db", filePath2 = "helper_dataBase2.db"))
   # checkTrendGADS(filePath1 = "C:/Benjamin_Becker/02_Repositories/packages/eatGADS/tests/testthat/helper_dataBase3.db", filePath2 = "C:/Benjamin_Becker/02_Repositories/packages/eatGADS/tests/testthat/helper_dataBase2.db")
-  expect_error(checkTrendGADS(filePath1 = "helper_dataBase3.db", filePath2 = "helper_dataBase2.db"), "Trend data bases must have the same primary key structure.")
+  expect_error(check_keyStrcuture_TrendGADS(filePath1 = "helper_dataBase3.db", filePath2 = "helper_dataBase2.db"), "Trend data bases must have the same primary key structure.")
 })
 
 test_that("check_vSelect", {
@@ -61,41 +61,53 @@ test_that("Extract trend GADS with unique variables in one GADS", {
 })
 
 
+# with linking errors
+# ---------------------------------------------------------------------------
+# getGADS(filePath = "c:/Benjamin_Becker/02_Repositories/packages/eatGADS/tests/testthat/helper_le.db")
 
-### merging linking errors
-test_that("Mering linking errors", {
-  #gads_trend <- getTrendGADS(filePath1 = "helper_dataBase.db", filePath2 = "helper_dataBase2.db", years = c(2012, 2018), fast = control_caching)
+test_that("checkLEStructure", {
+  # checkLEStructure(filePath1 = "c:/Benjamin_Becker/02_Repositories/packages/eatGADS/tests/testthat/helper_comp.db", filePath2 = "c:/Benjamin_Becker/02_Repositories/packages/eatGADS/tests/testthat/helper_comp.db", lePath = "c:/Benjamin_Becker/02_Repositories/packages/eatGADS/tests/testthat/helper_le.db")
+  expect_silent(checkLEStructure(filePath1 = "helper_comp.db", filePath2 = "helper_comp.db", lePath = "helper_le.db"))
+  le_mes <- capture_messages(out <- checkLEStructure(filePath1 = "helper_comp.db", filePath2 = "helper_comp.db", lePath = "helper_le_wrong.db"))
+  expect_equal(le_mes[[1]], "The following variables have linking errors but are not variables in data base 1: other\n")
+  expect_equal(le_mes[[2]], "The following variables have linking errors but are not variables in data base 2: other\n")
+  expect_equal(le_mes[[3]], "The linking error data base contains variables other than linking errors and key variables.\n")
+  expect_equal(le_mes[[4]], "The following variables are key variables in the Linking Error data base but are not variables in data base 1: test_pk\n")
+  expect_equal(le_mes[[5]], "The following variables are key variables in the Linking Error data base but are not variables in data base 2: test_pk\n")
+  expect_equal(out, list(dep_notIn_nam1 = "other", dep_notIn_nam2 = "other",
+                         key_notIn_nam1 = "test_pk", key_notIn_nam2 = "test_pk"))
+})
 
-  les <- import_DF(data.frame(ID1 = 1:2, le = c(1.1, 0.9), comp = 1:2))
-  les2 <- import_DF(data.frame(ID1 = c(1, 2, 1), le = c(1.1, 0.9, 1.3), comp = 1:3))
-  les3 <- import_DF(data.frame(ID1 = c(1, 2, 1), le = c(1.1, 0.9, 1.3), V2 = c(4, NA, 8)))
-
-  #expect_error(merge_LEs(gads_trend = gads_trend, les = les2, le_keys = c("ID1", "comp")))
-
-  #out_single <- merge_LEs(gads_trend = gads_trend, les = les, le_keys = "ID1")
-  #expect_equal(out_single$dat$le, c(rep(1.1, 4), rep(0.9, 2)))
-  #expect_equal(out_single$labels$data_table[9:10],  rep("LEs", 2))
-
-  # expect_error(merge_LEs(gads_trend = gads_trend, les = les3, le_keys = c("ID1"))) ### desired, but difficult to realize
-
-  #out_double <- merge_LEs(gads_trend = gads_trend, les = les3, le_keys = c("ID1", "V2"))
-  #expect_equal(out_single$dat$le, c(rep(1.1, 4), rep(0.9, 2)))
-  #expect_equal(out_single$labels$data_table[9:10],  rep("LEs", 2))
+test_that("make_leSelect", {
+  expect_equal(make_leSelect(lePath = "helper_le.db", vSelect = NULL), NULL)
+  expect_equal(make_leSelect(lePath = "helper_le.db", vSelect = c("PV")), "LE_PV")
+  expect_equal(make_leSelect(lePath = "helper_le.db", vSelect = c("PV", "level")), c("LE_PV", "LE_level"))
+  expect_equal(make_leSelect(lePath = "helper_le.db", vSelect = c("lala")), character(0))
 })
 
 
 ### trend gads with LEs
-test_that("Extract trend GADS", {
-  # out <- getTrendGADS(filePath1 = "C:/Benjamin_Becker/02_Repositories/packages/eatGADS/tests/testthat/helper_dataBase.db", filePath2 = "C:/Benjamin_Becker/02_Repositories/packages/eatGADS/tests/testthat/helper_dataBase2.db", years = c(2012, 2018), lePath = "c:/Benjamin_Becker/02_Repositories/packages/eatGADS/tests/testthat/helper_le_dataBase.db")
+test_that("Extract trend GADS with linking errors", {
+  # out <- getTrendGADS(filePath1 = "C:/Benjamin_Becker/02_Repositories/packages/eatGADS/tests/testthat/helper_comp.db", filePath2 = "C:/Benjamin_Becker/02_Repositories/packages/eatGADS/tests/testthat/helper_comp2.db", years = c(2012, 2018), lePath = "c:/Benjamin_Becker/02_Repositories/packages/eatGADS/tests/testthat/helper_le.db", vSelect = c("ID", "PV"))
 
-  #out <- getTrendGADS(filePath1 = "helper_dataBase.db", filePath2 = "helper_dataBase2.db", years = c(2012, 2018), lePath = "helper_le_dataBase.db", fast = control_caching)
+  ## no linking errors
+  expect_message(getTrendGADS(filePath1 = "helper_comp.db", filePath2 = "helper_comp2.db", years = c(2012, 2018), lePath = "helper_le.db", fast = control_caching, vSelect = "ID"),
+                 "No linking errors for chosen variables available.")
+  out <- suppressMessages(getTrendGADS(filePath1 = "helper_comp.db", filePath2 = "helper_comp2.db", years = c(2012, 2018), lePath = "helper_le.db", fast = control_caching, vSelect = "ID"))
+  expect_equal(names(out$datList), c("gads2012", "gads2018", "LEs"))
+  expect_equal(out$datList$LEs, NULL)
+  expect_equal("LEs" %in% out$allLabels$data_table, FALSE)
 
-  #expect_equal(out$dat$year, c(2012, 2012, 2018, 2018, 2012, 2018))
-  #expect_equal(dim(out$dat), c(6, 5))
-  #expect_equal(dim(out$labels), c(10, 9))
-  #expect_equal(out$labels$data_table, c(rep(2012, 4), rep(2018, 4), rep("LEs", 2)))
-  #expect_equal(out$dat$le, c(rep(0.9, 4), rep(1.1, 2)))
+  ## linking errors
+  out2 <- getTrendGADS(filePath1 = "helper_comp.db", filePath2 = "helper_comp2.db", years = c(2012, 2018), lePath = "helper_le.db", fast = control_caching, vSelect = c("ID", "PV"))
+  expect_equal(dim(out2$datList$LEs), c(2, 2))
+  expect_equal(names(out2$datList$LEs), c("dim", "LE_PV"))
+  expect_equal("LEs" %in% out2$allLabels$data_table, TRUE)
 })
+
+
+
+
 
 
 test_that("compare_meta", {
