@@ -23,7 +23,7 @@ checkMissings <- function(GADSdat, missingLabel = "missing", addMissingCode = TR
 }
 
 #'@export
-checkMissings.GADSdat <- function(GADSdat, missingLabel = "missing", addMissingCode = TRUE, addMissingLabel = TRUE) {
+checkMissings.GADSdat <- function(GADSdat, missingLabel = "missing", addMissingCode = TRUE, addMissingLabel = FALSE) {
   check_GADSdat(GADSdat)
   labels <- GADSdat$labels
 
@@ -38,7 +38,7 @@ checkMissings.GADSdat <- function(GADSdat, missingLabel = "missing", addMissingC
   }
 
   if(length(missLabel_rows_fail) > 0) {
-    message("The following variables have values coded as missing but value label does not include the term '", missingLabel ,"':\n",
+    message("The following variables have values coded as missings but value labels do not include the term '", missingLabel ,"':\n",
             paste(unique(labels[missLabel_rows_fail, "varName"]), collapse = ", "))
     if(identical(addMissingLabel, TRUE)) labels <- insert_string(df = labels, rows = missLabel_rows_fail, col = "valLabel", string = "generic missing")
   }
