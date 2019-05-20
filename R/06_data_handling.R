@@ -52,24 +52,36 @@ extractData.GADSdat <- function(GADSdat, convertMiss = TRUE, convertLabels = "ch
 extractData.trend_GADSdat <- function(GADSdat, convertMiss = TRUE, convertLabels = "character", dropPartialLabels = TRUE, convertVariables) {
   check_trend_GADSdat(GADSdat)
 
-  gads1 <- extractGADSdat(all_GADSdat = GADSdat, name = names(GADSdat$datList)[1])
-  dat1 <- extractData(gads1, convertMiss = convertMiss, convertLabels = convertLabels,
-                       dropPartialLabels = dropPartialLabels, convertVariables)
-  gads2 <- extractGADSdat(all_GADSdat = GADSdat, name = names(GADSdat$datList)[2])
-  dat2 <- extractData(gads2, convertMiss = convertMiss, convertLabels = convertLabels,
-                      dropPartialLabels = dropPartialLabels, convertVariables)
-  all_dat <- plyr::rbind.fill(dat1, dat2)
+  all_dat <- extract_data_only(GADSdat = GADSdat, convertMiss = convertMiss, convertLabels = convertLabels,
+                               dropPartialLabels = dropPartialLabels, convertVariables = convertVariables)
 
   ## if available, merge also linking errors; merge picks by automatically, keep variable order as in original data frames
   if(!is.null(GADSdat$datList[["LEs"]])) {
     gads_le <- extractGADSdat(all_GADSdat = GADSdat, name = "LEs")
     le <- extractData(gads_le, convertMiss = convertMiss, convertLabels = "character")
-    all_dat_withLEs <- merge(all_dat, le)
+
+    # performance relevant: merge (data.table seems to be fastest)
+    all_dat <- data.table::setDT(all_dat)
+    le <- data.table::setDT(le)
+    all_dat_withLEs <- data.table:::merge.data.table(all_dat, le)
+    all_dat_withLEs <- as.data.frame(all_dat_withLEs)
+
     all_dat <- all_dat_withLEs[, c(names(all_dat), setdiff(names(le), names(all_dat)))]
   }
 
   all_dat <- all_dat[, c(names(all_dat)[names(all_dat) != "year"], "year")]
   all_dat
+}
+
+# function for extracting the data and rbinding it (extra function for prevention of memory allocation problems)
+extract_data_only <- function(GADSdat, convertMiss, convertLabels, dropPartialLabels, convertVariables) {
+  gads1 <- extractGADSdat(all_GADSdat = GADSdat, name = names(GADSdat$datList)[1])
+  dat1 <- extractData(gads1, convertMiss = convertMiss, convertLabels = convertLabels,
+                      dropPartialLabels = dropPartialLabels, convertVariables)
+  gads2 <- extractGADSdat(all_GADSdat = GADSdat, name = names(GADSdat$datList)[2])
+  dat2 <- extractData(gads2, convertMiss = convertMiss, convertLabels = convertLabels,
+                      dropPartialLabels = dropPartialLabels, convertVariables)
+  plyr::rbind.fill(dat1, dat2)
 }
 
 # converts labels to values
