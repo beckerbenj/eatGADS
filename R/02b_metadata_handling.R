@@ -424,6 +424,7 @@ checkNamesVectors <- function(oldNames, newNames, dat) {
 #'@param varName Name of the variable to be recoded.
 #'@param oldValues Vector containing the old values.
 #'@param newValues Vector containing the new values, in identical order as oldNames.
+#'@param newValueLabels Named vector containing new value labels for the new values. All new values have to get lables. Slightly experimental implementation.
 #'
 #'@return Returns the GADSdat object with changed variable names.
 #'
@@ -432,25 +433,43 @@ checkNamesVectors <- function(oldNames, newNames, dat) {
 #'#to be done
 #'
 #'@export
-recodeGADS <- function(GADSdat, varName, oldValues, newValues) {
+recodeGADS <- function(GADSdat, varName, oldValues, newValues, newValueLabels = NULL) {
   UseMethod("recodeGADS")
 }
 #'@export
-recodeGADS.GADSdat <- function(GADSdat, varName, oldValues, newValues) {
+recodeGADS.GADSdat <- function(GADSdat, varName, oldValues, newValues, newValueLabels = NULL) {
   checkRecodeVectors(oldValues = oldValues, newValues = newValues, varName = varName, dat = GADSdat$dat)
   changeTable <- getChangeMeta(GADSdat, level = "value")
   for(i in seq_along(oldValues)) {
     changeTable[changeTable$varName == varName & changeTable$value == oldValues[i], "value_new"] <- newValues[i]
   }
-  applyChangeMeta(GADSdat, changeTable = changeTable)
+  out <- applyChangeMeta(GADSdat, changeTable = changeTable)
+
+  if(!is.null(newValueLabels)) {
+    checkNewValueLabels(newValueLabels = newValueLabels, newValues = newValues)
+    checkNewValueLabels(newValueLabels = newValueLabels, newValues = unique(out$labels[out$labels$varName == varName, "value"]))
+    labels_without_var <- out$labels[out$labels$varName != varName, ]
+    blank_label <- out$labels[out$labels$varName == varName, ][1, ]
+
+    for(i in unique(newValues)) {
+      new_value_label <- blank_label
+      new_value_label[, "value"] <- i
+      new_value_label[, "valLabel"] <- newValueLabels[as.character(i)]
+      labels_without_var <- rbind(labels_without_var, new_value_label)
+    }
+    labels_without_var <- labels_without_var[order(match(labels_without_var$varName, names(out$dat))), ]
+    out <- new_GADSdat(out$dat, labels = labels_without_var)
+  }
+  out
 }
 
 #'@export
-recodeGADS.all_GADSdat <- function(GADSdat, varName, oldValues, newValues) {
+recodeGADS.all_GADSdat <- function(GADSdat, varName, oldValues, newValues, newValueLabels = NULL) {
   check_all_GADSdat(GADSdat)
   singleGADS_list <- lapply(names(GADSdat$datList), function(nam ) {
     singleGADS <- extractGADSdat(GADSdat, name = nam)
-    if(varName %in% names(singleGADS$dat)) singleGADS <- recodeGADS(singleGADS, varName = varName, oldValues = oldValues, newValues = newValues)
+    if(varName %in% names(singleGADS$dat)) singleGADS <- recodeGADS(singleGADS, varName = varName, oldValues = oldValues, newValues = newValues,
+                                                                    newValueLabels = newValueLabels)
     singleGADS
   })
   names(singleGADS_list) <- names(GADSdat$datList)
@@ -463,7 +482,11 @@ checkRecodeVectors <- function(oldValues, newValues, varName, dat) {
   return()
 }
 
-
+checkNewValueLabels <- function(newValueLabels, newValues) {
+  if(!is.character(newValueLabels)) stop("newValueLabels is not a character.")
+  if(any(duplicated(names(newValueLabels)))) stop("Duplicated values in newValueLabels.")
+  compare_and_order(set1 = names(newValueLabels), set2 = unique(newValues), FUN = stop)
+}
 
 #### Change variable label
 #############################################################################
