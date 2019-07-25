@@ -112,7 +112,7 @@ test_that("Numerics are kept numeric with extract data", {
 test_that("ExtractData with DropPartialLabels = TRUE", {
   out <- extractData(testM, dropPartialLabels = FALSE)
   expect_equal(out$VAR1, c("One", NA, NA, 2))
-  expect_equal(out$VAR2, c("1", "1", "1", "1"))
+  expect_equal(out$VAR2, c(1, 1, 1, 1))
 })
 
 test_that("ExtractData with some variables labels applied to (convertVariables argument)", {

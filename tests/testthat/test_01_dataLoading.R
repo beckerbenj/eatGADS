@@ -62,6 +62,7 @@ test_that("Variable remains even when no attributes are present", {
 
 
 ######### Attribute extracting on value level
+# string_test <- haven::read_sav(file = "c:/Benjamin_Becker/02_Repositories/packages/eatGADS/tests/testthat/helper_spss_exceptions.sav")
 # string_test <- load_spss(file = "c:/Benjamin_Becker/02_Repositories/packages/eatGADS/tests/testthat/helper_spss_exceptions.sav")
 string_test <- suppressWarnings(load_spss("helper_spss_exceptions.sav"))
 test_that("Value label of single variable extracted for SPSS types", {

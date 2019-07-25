@@ -51,20 +51,23 @@ addLabels <- function(df, label_df) {
 addLabels_single <- function(label_df) {
   out <- list()
   # attributes on variable level
-  out[["label"]] <- unique(label_df[, "varLabel"])
-  out[["format.spss"]] <- unique(label_df[, "format"])
-  out[["display_width"]] <- unique(label_df[, "display_width"])
+  if(!all(is.na(label_df[, "varLabel"]))) out[["label"]] <- unique(label_df[, "varLabel"])
+  if(!all(is.na(label_df[, "format"]))) out[["format.spss"]] <- unique(label_df[, "format"])
+  if(!all(is.na(label_df[, "display_width"]))) out[["display_width"]] <- unique(label_df[, "display_width"])
   labeled <- unique(label_df[, "labeled"])
   # check
   unique_attr <- unlist(lapply(out, length))
   stopifnot(all(unique_attr)  <= 1)
   # out[["class"]] <- strsplit(out[["class"]], split = ", ")[[1]]
+  # give specific class depending on whether value labels are needed or not
   if(identical(labeled, "yes")) out[["class"]] <- c("haven_labelled_spss", "haven_labelled")
+  if(identical(labeled, "yes") & all(is.na(label_df$value))) out[["class"]] <- c("haven_labelled_spss")
   if(identical(labeled, "no")) out[["class"]] <- NA_character_
 
   # missing labels, if any
   miss_values <- label_df[which(label_df$missings == "miss"), "value"]
-  if(length(miss_values) > 0)  out[["na_values"]] <- miss_values
+  if(length(miss_values) > 0 && length(miss_values) <= 3)  out[["na_values"]] <- miss_values
+  if(length(miss_values) > 3)  out[["na_range"]] <- range(miss_values)
 
   # value labels, if any
   value_label_df <- label_df[!is.na(label_df$value), ]
