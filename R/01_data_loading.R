@@ -126,13 +126,13 @@ import_raw <- function(df, varLabels, valLabels, checkVarNames = TRUE) {
   #### varLabels
   change_var <- getChangeMeta(GADS_raw, level = "variable")
   names(varLabels)[names(varLabels) == "varLabel"] <- "varLabel_new"
-  change_var <- merge(change_var[, !names(change_var) %in% "varLabel_new"], varLabels, all = FALSE)
+  change_var <- merge(change_var[, !names(change_var) %in% "varLabel_new"], varLabels, all = FALSE, sort = FALSE)
   change_var <- new_varChanges(change_var)
   GADS_raw2 <- applyChangeMeta(change_var, GADS_raw)
 
   #### valLabels
   change_val_ori <- getChangeMeta(GADS_raw2, level = "value")
-  variables_val_changes <- compare_and_order(change_val_ori$varName, valLabels$varName)
+  variables_val_changes <- compare_and_order(change_val_ori$varName, valLabels$varName, FUN = paste) ## paste to suppress warning, maybe later as informative message?
   change_val <- change_val_ori[!change_val_ori$varName %in% variables_val_changes$in_both_ordered, ]
   names(valLabels)[names(valLabels) == "value"] <- "value_new"
   names(valLabels)[names(valLabels) == "valLabel"] <- "valLabel_new"

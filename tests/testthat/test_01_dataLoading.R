@@ -215,6 +215,14 @@ test_that("import_raw", {
   out <- import_raw(df = df_raw, varLabels = varLabels_raw, valLabels = valLabels_raw)
   expect_equal(out$dat, df_raw)
   expect_equal(out$labels$varLabel, c(rep("variable a", 2), rep("variable b", 2)))
+
+
+  df <- data.frame(ID = 1:4, sex = c(0, 0, 1, 1), forename = c("Tim", "Bill", "Ann", "Chris"), stringsAsFactors = FALSE)
+  varLabels <- data.frame(varName = c("ID", "sex", "forename"), varLabel = c("Person Identifier", "Sex as self reported", "forename provided by teacher"), stringsAsFactors = FALSE)
+  valLabels <- data.frame(varName = rep("sex", 3), value = c(0, 1, -99), valLabel = c("male", "female", "missing - omission"), missings = c("valid", "valid", "miss"), stringsAsFactors = FALSE)
+
+  out2 <- import_raw(df = df, varLabels = varLabels, valLabels = valLabels)
+  expect_equal(out2$labels$value, c(NA, 0, 1, -99, NA))
 })
 
 
