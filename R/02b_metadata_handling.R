@@ -295,7 +295,7 @@ applyChangeMeta.varChanges <- function(changeTable, GADSdat) {
 applyChangeMeta.valChanges <- function(changeTable, GADSdat) {
   check_GADSdat(GADSdat)
   check_valChanges(changeTable)
-  check_changeTable(GADSdat, changeTable)
+  # check_changeTable(GADSdat, changeTable) ### removed; substitute with checks that work around new value labels...
   dat <- GADSdat$dat
   labels <- GADSdat$labels
   # 01) values in data
@@ -324,6 +324,7 @@ check_changeTable <- function(GADSdat, changeTable) {
   newDat <- unique(changeTable[, oldVars])
   class(newDat) <- "data.frame"
 
+  row.names(oldDat) <- row.names(newDat) <- NULL
   if(!identical(oldDat, newDat)) stop("GADSdat and changeTable are not compatible. Columns without '_new' should not be changed in the changeTable.", call. = FALSE)
   return()
 }
@@ -345,8 +346,12 @@ recode_dat <- function(dat, changeTable) {
 }
 
 recode_labels <- function(labels, changeTable) {
+  labels <- expand_labels(labels, new_varName_vec = changeTable$varName)
+
+  changeTable <- changeTable[order(match(changeTable$varName, unique(labels$varName))), ]
   simple_change_vars <- c("valLabel_new", "missings_new", "value_new")
   simpleChanges <- changeTable[, c("varName", simple_change_vars), drop = FALSE]
+
   # loop over rows and column names, overwrite if not NA
   for(i in seq(nrow(simpleChanges))) {
     simpleChange <- simpleChanges[i, ]
@@ -356,6 +361,19 @@ recode_labels <- function(labels, changeTable) {
     }
   }
   labels
+}
+
+expand_labels <- function(labels, new_varName_vec) {
+  old_order <- unique(labels$varName)
+  for(i in unique(new_varName_vec)) {
+    no_rows_2add <- sum(new_varName_vec == i) - nrow(labels[labels$varName == i, ])
+    if(no_rows_2add > 0) {
+      new_rows <- (nrow(labels) + 1):(nrow(labels) + no_rows_2add)
+      labels[new_rows, ] <- labels[labels$varName == i, ][1, ]
+      labels[new_rows, c("value", "valLabel", "missings")] <- NA
+    }
+  }
+  labels[order(match(labels$varName, old_order)), ]
 }
 
 #### Change Variable names
@@ -445,6 +463,7 @@ recodeGADS.GADSdat <- function(GADSdat, varName, oldValues, newValues, newValueL
   }
   out <- applyChangeMeta(GADSdat, changeTable = changeTable)
 
+  ### modify these parts so they use the enhanced applyChangeMeta functionality?
   if(!is.null(newValueLabels)) {
     checkNewValueLabels(newValueLabels = newValueLabels, newValues = newValues)
     checkNewValueLabels(newValueLabels = newValueLabels, newValues = unique(out$labels[out$labels$varName == varName, "value"]))

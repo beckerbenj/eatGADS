@@ -29,6 +29,7 @@ test_that("Extract trend GADS", {
   # out <- getTrendGADS(filePath1 = "C:/Benjamin_Becker/02_Repositories/packages/eatGADS/tests/testthat/helper_dataBase.db", filePath2 = "C:/Benjamin_Becker/02_Repositories/packages/eatGADS/tests/testthat/helper_dataBase2.db", years = c(2012, 2018))
   expect_error(out <- getTrendGADS(filePath1 = "helper_dataBase.db", filePath2 = "helper_dataBase.db", years = c(2012, 2018), fast = control_caching), "All file arguments have to point to different files.")
   expect_error(out <- getTrendGADS(filePath1 = "helper_dataBase.db", filePath2 = "helper_dataBase2.db", years = 2012, fast = control_caching), "years has to be a numeric vector of length 2.")
+  expect_error(out <- getTrendGADS(filePath1 = "helper_dataBase.db", filePath2 = "helper_dataBase2.db", years = c(2012, "b"), fast = control_caching), "years has to be a numeric vector of length 2.")
   out <- getTrendGADS(filePath1 = "helper_dataBase.db", filePath2 = "helper_dataBase2.db", years = c(2012, 2018), fast = control_caching)
   expect_equal(out$datList$gads2012$year, c(rep(2012, 3)))
   expect_equal(out$datList$gads2018$year, c(rep(2018, 3)))

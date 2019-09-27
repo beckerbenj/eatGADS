@@ -184,6 +184,39 @@ test_that("Data frames directly from R are imported correctly", {
                c(NA, NA, NA, NA, 1, 2, 3))
 })
 
+###### test import from R data frame with explicit meta information
+df_raw <- data.frame(a = 1:2, b = 2:3)
+varLabels_raw <- data.frame(varName = c("a", "b"), varLabel = c("variable a", "variable b"), stringsAsFactors = FALSE)
+valLabels_raw <- data.frame(varName = c("a", "a", "b", "b"), value = c(1, 2, 2, 3), valLabel = c("one", "two", "very", "few"), missings = rep("valid", 4), stringsAsFactors = FALSE)
+
+test_that("Checks for import_raw", {
+  expect_error(import_raw(df = iris), "One of the variables in df is a factor. All meta information on value level has to be stored in valLabels.")
+  varLabels_raw_fac <- data.frame(varName = c("a", "b"), varLabel = c("variable a", "variable b"))
+  expect_error(import_raw(df = df_raw, varLabels = varLabels_raw_fac), "One of the variables in varLabels is a factor.")
+  valLabels_raw <- data.frame(varName = c("a", "a", "b", "b"), value = c(1, 2, 2, 3), valLabel = c("one", "two", "very", "few"), missings = rep("valid", 4))
+  expect_error(import_raw(df = df_raw, varLabels = varLabels_raw_fac, valLabels = valLabels_raw), "One of the variables in varLabels is a factor.")
+
+  expect_error(import_raw(df = df_raw, mtcars), "varLabels needs to contain the variables 'varName' and 'varLabel'.")
+  expect_error(import_raw(df = df_raw, varLabels_raw, mtcars), "varLabels needs to contain the variables 'varName', 'value', 'varLabel' and 'missings'.")
+
+  varLabels_raw_nam <- data.frame(varName = c("a", "d"), varLabel = c("variable a", "variable b"), stringsAsFactors = FALSE)
+  expect_error(import_raw(df = df_raw, varLabels = varLabels_raw_nam), "The following variables are not in the data df: d")
+  valLabels_raw_nam <- data.frame(varName = c("a", "d"), value = c(1, 2, 2, 3), valLabel = c("one", "two", "very", "few"), missings = rep("valid", 4), stringsAsFactors = FALSE)
+  expect_error(import_raw(df = df_raw, varLabels = varLabels_raw, valLabels = valLabels_raw_nam), "The following variables are not in the data df: d")
+
+  varLabels_raw_dup <- data.frame(varName = c("a", "b", "a"), varLabel = c("variable a", "variable b", NA), stringsAsFactors = FALSE)
+  expect_error(import_raw(df = df_raw, varLabels = varLabels_raw_dup), "The following variables have duplicated rows in varLabels: a")
+
+  valLabels_raw_miss <- data.frame(varName = c("a", "a", "b", "b"), value = c(1, 2, 2, 3), valLabel = c("one", "two", "very", "few"), missings = rep("vali", 4), stringsAsFactors = FALSE)
+  expect_error(import_raw(df = df_raw, varLabels = varLabels_raw, valLabels = valLabels_raw_miss), "All values in column 'missings' of valLabels must be either 'valid' or 'miss'.")
+})
+
+test_that("import_raw", {
+  out <- import_raw(df = df_raw, varLabels = varLabels_raw, valLabels = valLabels_raw)
+  expect_equal(out$dat, df_raw)
+  expect_equal(out$labels$varLabel, c(rep("variable a", 2), rep("variable b", 2)))
+})
+
 
 ###### check_GADSdat
 # testM <- import_spss("c:/Benjamin_Becker/02_Repositories/packages/eatGADS/tests/testthat/helper_spss_missings.sav")

@@ -28,7 +28,7 @@ mergeLabels.GADSdat <- function(...) {
     if(!is.null(l_element)) check_GADSdat(l_element)
   })
   if(is.null(names(l))) stop("All input has to be named! See help for further clarification.")
-  if(any(is.na(names(l)) || any(names(l) == ""))) stop("All input has to be named! See help for further clarification.")
+  if(any(is.na(names(l))) || any(names(l) == "")) stop("All input has to be named! See help for further clarification.")
   if(any(duplicated(names(l)))) stop("Names for data frames are duplicated!")
   ## add checks for sqlite compatability, maybe from eatDB?
 

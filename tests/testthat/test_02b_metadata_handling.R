@@ -135,6 +135,7 @@ test_that("Check changeTable function", {
   expect_error(check_changeTable(dfSAV, changes_val1), "GADSdat and changeTable are not compatible. Columns without '_new' should not be changed in the changeTable.")
   expect_silent(check_changeTable(dfSAV, changes_var))
   expect_silent(check_changeTable(dfSAV, changes_val))
+  expect_silent(check_changeTable(df1, getChangeMeta(df1, "value")))
 })
 
 test_that("Changes to GADSdat on variable level", {
@@ -184,6 +185,32 @@ test_that("recoding if potential danger of overwriting old values!", {
   expect_equal(out$labels$value, c(3, 2, 1, 2, 1, 2))
   expect_equal(out$dat$v1, 3:1)
   expect_equal(out$dat$b, c(1, 2, 2))
+})
+
+
+changes_val2 <- rbind(changes_val, data.frame(varName = "VAR1", value = NA, valLabel = NA, missings = NA, value_new = 2, valLabel_new = "Two", missings_new = "valid", stringsAsFactors = FALSE))
+
+test_that("Expand labels", {
+  out <- expand_labels(df1$labels, new_varName_vec = c("ID1", "ID1", "V1"))
+  expect_equal(out$varName, c("ID1", "ID1", "V1"))
+  out2 <- expand_labels(df2$labels, new_varName_vec = c("ID1", "V2", "V2"))
+  expect_equal(out2$varName, c("ID1", "V2", "V2"))
+  expect_equal(out2$varLabel, c(NA, "Variable 2", "Variable 2"))
+  expect_equal(out2$value, c(NA, 99, NA))
+  out3 <- expand_labels(dfSAV$labels, changes_val2$varName)
+  expect_equal(out3[1:4, "value"], c(-99, -96, 1, NA))
+  expect_equal(out3[1:4, "varName"], rep("VAR1", 4))
+})
+
+test_that("Adding value labels for values without labels", {
+  out <- recode_labels(dfSAV$labels, changes_val2)
+  expect_equal(out$value[1:4], c(-99, -96, 1, 2))
+  expect_equal(dim(out), c(8, 8))
+
+  applyChangeMeta(changes_val2, dfSAV)
+  # to do
+  # checken, dass keine Probleme in recode_dat auftauchen
+  # loest das nicht teilweise errors aus, da nicht kompatibel mit altem labels-df? wenn nein, wieso nicht?
 })
 
 test_that("Changes to all_GADSdat on variable level", {

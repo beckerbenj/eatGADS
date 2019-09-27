@@ -8,7 +8,7 @@
 #' SPSS files (\code{.sav}) store variable and value labels and assign specific formatting to variables. \code{import_spss} imports data from SPSS, while storing this meta-information seperately in a long format data frame. Value labels and missing labels are used to identify missing values (see \code{\link{checkMissings}}).
 #'
 #'@param filePath Source file location, ending on \code{.sav}.
-#'@param checkVarNames Should variable names be checked for vioalitions of for SQLite and R naming rules?
+#'@param checkVarNames Should variable names be checked for vioalitions of SQLite and R naming rules?
 #'@param labeledStrings Should strings as labeled values be allowed? This possibly corrupts all labeled values.
 #'
 #'@return Returns a list with the actual data \code{dat} and a data frame with all meta information in long format \code{labels}.
@@ -41,7 +41,7 @@ import_spss <- function(filePath, checkVarNames = TRUE, labeledStrings = FALSE) 
 #' Factors are integers with labeled variable levels. \code{import_RDS} extracts these labels and stores them in a seperate meta data data.frame. See \code{\link{import_DF}} for detailed information.
 #'
 #'@param filePath Source file location, ending on \code{.RDS}.
-#'@param checkVarNames Should variable names be checked for vioalitions of for SQLite and R naming rules?
+#'@param checkVarNames Should variable names be checked for vioalitions of SQLite and R naming rules?
 #'
 #'@return Returns a list with the actual data \code{dat} and a data frame with all meta information in long format \code{labels}.
 #'
@@ -62,7 +62,7 @@ import_RDS <- function(filePath, checkVarNames = TRUE) {
 #' Factors are integers with labeled variable levels. \code{import_DF} extracts these labels and stores them in a seperate meta data data.frame. See \code{\link{import_spss}} for detailed information.
 #'
 #'@param df A data frame.
-#'@param checkVarNames Should variable names be checked for vioalitions of for SQLite and R naming rules?
+#'@param checkVarNames Should variable names be checked for vioalitions of SQLite and R naming rules?
 #'
 #'@return Returns a list with the actual data \code{dat} and a data frame with all meta information in long format \code{labels}.
 #'
@@ -81,6 +81,95 @@ import_DF <- function(df, checkVarNames = TRUE) {
   out <- prepare_labels(rawDat = df, checkVarNames = checkVarNames, labeledStrings = FALSE)
   out
 }
+
+#### Import R-data with explicit metadata
+#############################################################################
+#' Import R data frame with explicit meta data sheets
+#'
+#' Function to import a \code{data.frame} object for use in \code{eatGADS} while adding explicit variable and value meta information through separate \code{data.frame}.
+#'
+#' The varLables \code{data.frame} has to contain exactly two variables, namely \code{varName} and \code{varLabel}. The valLables \code{data.frame} has to contain exactly four variables, namely \code{varName}, \code{value}, \code{valLabel} and \code{missings}. The column \code{value} can only contain numerical values. The column \code{missings} can only contain the values \code{"valid"} and \code{"miss"}.
+#'
+#'@param df A data frame (without factors).
+#'@param varLabels A data frame containing the variable labels. All variables in the data have to have exactly one column in this data.frame.
+#'@param valLabels A data frame containing the value labels. All referenced variables have to appear in the data, but not all variables in the data have to receive value labels.
+#'@param checkVarNames Should variable names be checked for vioalitions of SQLite and R naming rules?
+#'
+#'@return Returns a list with the actual data \code{dat} and a data frame with all meta information in long format \code{labels}.
+#'
+#'@examples
+#'dat <- data.frame(ID = 1:5, grade = c(1, 1, 2, 3, 1))
+#'varLabels <- data.frame(varName = c("ID", "grade"), varLabel = c("Person Identifier", "School grade Math"))
+#'valLabels <- data.frame(varName = c("grade", "grade", "grade"),
+#'                        value = c(1, 2, 3),
+#'                        valLabel = c("very good", "good", "sufficient"),
+#'                        missings = c("valid", "valid", valid"))
+#'
+#'gads <- import_raw(df = dat, varLables = varLabels, valLabels = valLabels, checkVarNames = FALSE)
+#'
+#'# Inspect Meta data
+#'extractMeta(gads)
+#'
+#'# Extract Data
+#'dat <- extractData(gads, convertLabels = "character")
+#'
+#'@export
+import_raw <- function(df, varLabels, valLabels, checkVarNames = TRUE) {
+  if(!is.data.frame(df)) stop("df needs to be a data frame.")
+  if(any(sapply(df, is.factor))) stop("One of the variables in df is a factor. All meta information on value level has to be stored in valLabels.")
+  check_varLabels(df = df, varLabels = varLabels)
+  check_valLabels(df = df, valLabels = valLabels)
+
+  ## import
+  GADS_raw <- prepare_labels(rawDat = df, checkVarNames = checkVarNames, labeledStrings = FALSE) ## use import_df instead?
+
+  #### varLabels
+  change_var <- getChangeMeta(GADS_raw, level = "variable")
+  names(varLabels)[names(varLabels) == "varLabel"] <- "varLabel_new"
+  change_var <- merge(change_var[, !names(change_var) %in% "varLabel_new"], varLabels, all = FALSE)
+  change_var <- new_varChanges(change_var)
+  GADS_raw2 <- applyChangeMeta(change_var, GADS_raw)
+
+  #### valLabels
+  change_val_ori <- getChangeMeta(GADS_raw2, level = "value")
+  variables_val_changes <- compare_and_order(change_val_ori$varName, valLabels$varName)
+  change_val <- change_val_ori[!change_val_ori$varName %in% variables_val_changes$in_both_ordered, ]
+  names(valLabels)[names(valLabels) == "value"] <- "value_new"
+  names(valLabels)[names(valLabels) == "valLabel"] <- "valLabel_new"
+  names(valLabels)[names(valLabels) == "missings"] <- "missings_new"
+  valLabels[, c("value", "valLabel", "missings")] <- NA
+  change_val_new <- rbind(change_val, valLabels)
+  change_val_new <- change_val_new[order(match(change_val_new$varName, unique(change_val_ori$varName))),
+                                   match(names(change_val_new), names(change_val_ori))]
+  change_val_new <- new_valChanges(change_val_new)
+  GADS_out <- applyChangeMeta(change_val_new, GADS_raw2)
+
+  GADS_out
+}
+
+# Check functions for import_raw
+check_varLabels <- function(df, varLabels) {
+  if(any(sapply(varLabels, is.factor))) stop("One of the variables in varLabels is a factor.")
+  if(!is.data.frame(varLabels)) stop("varLabels has to be a data.frame.")
+  if(!identical(names(varLabels), c("varName", "varLabel"))) stop("varLabels needs to contain the variables 'varName' and 'varLabel'.")
+
+  compare_and_order(set1 = names(df), set2 = varLabels[, "varName"], name1 = "the data df", name2 = "varLabels", FUN = stop)
+  dup_names <- varLabels[, "varName"][duplicated(varLabels[, "varName"])]
+  if(length(dup_names) > 0) stop("The following variables have duplicated rows in varLabels: ", paste(dup_names, collapse = ", "))
+}
+
+check_valLabels <- function(df, valLabels) {
+  if(any(sapply(valLabels, is.factor))) stop("One of the variables in valLabels is a factor.")
+  if(!is.data.frame(valLabels)) stop("valLabels has to be a data.frame.")
+  if(!identical(names(valLabels), c("varName", "value", "valLabel", "missings"))) stop("varLabels needs to contain the variables 'varName', 'value', 'varLabel' and 'missings'.")
+
+  not_in_df <- setdiff(valLabels[, "varName"], names(df))
+  if(length(not_in_df) > 0) stop("The following variables are not in the data df: ", paste(not_in_df, collapse = ", "))
+  if(!is.numeric(valLabels$value)) stop("Value column of valLabels has to be numeric.")
+  if(!all(valLabels$missings %in% c("valid", "miss"))) stop("All values in column 'missings' of valLabels must be either 'valid' or 'miss'.")
+}
+
+
 
 # 01) Load data depending on format ---------------------------------------------------------
 # import (keep NAs how they are coded to later mark values as missings but keep them seperatable)

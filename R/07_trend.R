@@ -163,7 +163,7 @@ getTrendGADS <- function(filePath1, filePath2, lePath = NULL, vSelect = NULL, ye
   } else {
     if(length(unique(c(filePath1, filePath2, lePath))) != 3) stop("All file arguments have to point to different files.")
   }
-  if(!(length(years) == 2 && as.numeric(years))) stop("years has to be a numeric vector of length 2.")
+  if(!(length(years) == 2 && is.numeric(years))) stop("years has to be a numeric vector of length 2.")
   # check if vSelect in both GADS
   check_keyStrcuture_TrendGADS(filePath1 = filePath1, filePath2 = filePath2)
 
