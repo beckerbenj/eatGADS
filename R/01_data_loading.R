@@ -86,11 +86,11 @@ import_DF <- function(df, checkVarNames = TRUE) {
 #############################################################################
 #' Import R data frame with explicit meta data sheets
 #'
-#' Function to import a \code{data.frame} object for use in \code{eatGADS} while adding explicit variable and value meta information through separate \code{data.frame}.
+#' Function to import a \code{data.frame} object for use in \code{eatGADS} while adding explicit variable and value meta information through separate \code{data.frames}.
 #'
-#' The varLables \code{data.frame} has to contain exactly two variables, namely \code{varName} and \code{varLabel}. The valLables \code{data.frame} has to contain exactly four variables, namely \code{varName}, \code{value}, \code{valLabel} and \code{missings}. The column \code{value} can only contain numerical values. The column \code{missings} can only contain the values \code{"valid"} and \code{"miss"}.
+#' The varLables \code{data.frame} has to contain exactly two variables, namely \code{varName} and \code{varLabel}. The valLables \code{data.frame} has to contain exactly four variables, namely \code{varName}, \code{value}, \code{valLabel} and \code{missings}. The column \code{value} can only contain numerical values. The column \code{missings} can only contain the values \code{"valid"} and \code{"miss"}. Variables of type `factor` are not supported in any of the `data.frames``.`
 #'
-#'@param df A data frame (without factors).
+#'@param df A data frame.
 #'@param varLabels A data frame containing the variable labels. All variables in the data have to have exactly one column in this data.frame.
 #'@param valLabels A data frame containing the value labels. All referenced variables have to appear in the data, but not all variables in the data have to receive value labels.
 #'@param checkVarNames Should variable names be checked for vioalitions of SQLite and R naming rules?

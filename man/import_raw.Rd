@@ -7,7 +7,7 @@
 import_raw(df, varLabels, valLabels, checkVarNames = TRUE)
 }
 \arguments{
-\item{df}{A data frame (without factors).}
+\item{df}{A data frame.}
 
 \item{varLabels}{A data frame containing the variable labels. All variables in the data have to have exactly one column in this data.frame.}
 
@@ -19,8 +19,8 @@ import_raw(df, varLabels, valLabels, checkVarNames = TRUE)
 Returns a list with the actual data \code{dat} and a data frame with all meta information in long format \code{labels}.
 }
 \description{
-Function to import a \code{data.frame} object for use in \code{eatGADS} while adding explicit variable and value meta information through separate \code{data.frame}.
+Function to import a \code{data.frame} object for use in \code{eatGADS} while adding explicit variable and value meta information through separate \code{data.frames}.
 }
 \details{
-The varLables \code{data.frame} has to contain exactly two variables, namely \code{varName} and \code{varLabel}. The valLables \code{data.frame} has to contain exactly four variables, namely \code{varName}, \code{value}, \code{valLabel} and \code{missings}. The column \code{value} can only contain numerical values. The column \code{missings} can only contain the values \code{"valid"} and \code{"miss"}.
+The varLables \code{data.frame} has to contain exactly two variables, namely \code{varName} and \code{varLabel}. The valLables \code{data.frame} has to contain exactly four variables, namely \code{varName}, \code{value}, \code{valLabel} and \code{missings}. The column \code{value} can only contain numerical values. The column \code{missings} can only contain the values \code{"valid"} and \code{"miss"}. Variables of type `factor` are not supported in any of the `data.frames``.`
 }
