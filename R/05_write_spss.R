@@ -3,9 +3,9 @@
 #############################################################################
 #' Write data frame to sav file
 #'
-#' Preliminary Version! Function to write data frame with labels for values and variables to SPSS-file.
+#' Function to write data frame with labels for values and variables to SPSS-file.
 #'
-#' ...
+#' This function is still slightly experimental.
 #'
 #'@param GADSdat Data frame.
 #'@param filePath Path of sav file to write.
@@ -22,21 +22,40 @@ write_spss <- function(GADSdat, filePath) {
 
 #'@export
 write_spss.GADSdat <- function(GADSdat, filePath) {
-  # 1) check input
-  check_GADSdat(GADSdat)
-  # currently no checks
-
-  # 2) add labels to df
-  df <- addLabels(df = GADSdat$dat, label_df = GADSdat$labels)
-  #browser()
-  # 3) write spss-file
+  df <- export_tibble(GADSdat = GADSdat)
   haven::write_sav(df, path = filePath)
-
   return()
 }
 
-###  add labels all variables   ---------------------------------------------------------
-addLabels <- function(df, label_df) {
+
+#### Export to haven format
+#############################################################################
+#' Transform a GADSdat to a haven like tibble
+#'
+#' Havens \code{\link[haven]{read_spss}} stores data together with meta data (e.g. value and variable labels) in a tibble with attributes on variable level. This function transforms a \code{GADSdat} object to such a tibble.
+#'
+#' ...
+#'
+#'@param GADSdat \code{GADSdat} object imported via \code{eatGADS}.
+#'
+#'@return Returns a tibble.
+#'
+#'@examples
+#'# tbd
+#'
+#'@export
+export_tibble <- function(GADSdat) {
+  UseMethod("export_tibble")
+}
+
+#'@export
+export_tibble.GADSdat <- function(GADSdat) {
+  # 1) check input
+  check_GADSdat(GADSdat)
+  # currently no further checks (depends on haven behaviour if this were necessary)
+
+  df <- GADSdat$dat
+  label_df <- GADSdat$labels
   for(n in names(df)) {
     single_label_df <- label_df[label_df$varName == n, ]
     # add labels if any rows in label data frame
@@ -44,8 +63,9 @@ addLabels <- function(df, label_df) {
       attributes(df[, n]) <- addLabels_single(label_df = single_label_df)
     }
   }
-  df
+  tibble::as_tibble(df)
 }
+
 
 ###  add labels to a single variable ---------------------------------------------------------
 addLabels_single <- function(label_df) {
@@ -62,7 +82,7 @@ addLabels_single <- function(label_df) {
   # give specific class depending on whether value labels are needed or not
   if(identical(labeled, "yes")) out[["class"]] <- c("haven_labelled_spss", "haven_labelled")
   if(identical(labeled, "yes") & all(is.na(label_df$value))) out[["class"]] <- c("haven_labelled_spss")
-  if(identical(labeled, "no")) out[["class"]] <- NA_character_
+  # if(identical(labeled, "no")) out[["class"]] <- NA_character_
 
   # missing labels, if any
   miss_values <- label_df[which(label_df$missings == "miss"), "value"]

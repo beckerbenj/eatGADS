@@ -4,14 +4,14 @@
 \alias{import_raw}
 \title{Import R data frame with explicit meta data sheets}
 \usage{
-import_raw(df, varLabels, valLabels, checkVarNames = TRUE)
+import_raw(df, varLabels, valLabels = NULL, checkVarNames = TRUE)
 }
 \arguments{
 \item{df}{A data frame.}
 
 \item{varLabels}{A data frame containing the variable labels. All variables in the data have to have exactly one column in this data.frame.}
 
-\item{valLabels}{A data frame containing the value labels. All referenced variables have to appear in the data, but not all variables in the data have to receive value labels.}
+\item{valLabels}{A data frame containing the value labels. All referenced variables have to appear in the data, but not all variables in the data have to receive value labels. Can be omitted.}
 
 \item{checkVarNames}{Should variable names be checked for vioalitions of SQLite and R naming rules?}
 }
@@ -22,5 +22,5 @@ Returns a list with the actual data \code{dat} and a data frame with all meta in
 Function to import a \code{data.frame} object for use in \code{eatGADS} while adding explicit variable and value meta information through separate \code{data.frames}.
 }
 \details{
-The varLables \code{data.frame} has to contain exactly two variables, namely \code{varName} and \code{varLabel}. The valLables \code{data.frame} has to contain exactly four variables, namely \code{varName}, \code{value}, \code{valLabel} and \code{missings}. The column \code{value} can only contain numerical values. The column \code{missings} can only contain the values \code{"valid"} and \code{"miss"}. Variables of type `factor` are not supported in any of the `data.frames``.`
+\code{varLables} has to contain exactly two variables, namely \code{varName} and \code{varLabel}. \code{valLables} has to contain exactly four variables, namely \code{varName}, \code{value}, \code{valLabel} and \code{missings}. The column \code{value} can only contain numerical values. The column \code{missings} can only contain the values \code{"valid"} and \code{"miss"}. Variables of type \code{factor} are not supported in any of the \code{data.frames}.
 }

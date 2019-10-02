@@ -236,6 +236,8 @@ check_valChanges <- function(changeTable) {
     stop("Irregular values in 'missings_new' column.")
   }
   if(is.character(changeTable[, "value_new"])) stop("String values can not be given value labels.")
+  wrong_new_miss <- which(changeTable$missings_new == "miss" & is.na(changeTable$value_new))
+  if(length(wrong_new_miss) > 0) stop("Value 'NA' can not receive a value label.")
   return()
 }
 
@@ -363,6 +365,8 @@ recode_labels <- function(labels, changeTable) {
   labels
 }
 
+# if value labels are added, this function adds the necessary rows in the labels df, that are later filled with new values & labels
+# important: this should change a variable to "labeled" to export it later properly to spss
 expand_labels <- function(labels, new_varName_vec) {
   old_order <- unique(labels$varName)
   for(i in unique(new_varName_vec)) {
@@ -371,6 +375,7 @@ expand_labels <- function(labels, new_varName_vec) {
       new_rows <- (nrow(labels) + 1):(nrow(labels) + no_rows_2add)
       labels[new_rows, ] <- labels[labels$varName == i, ][1, ]
       labels[new_rows, c("value", "valLabel", "missings")] <- NA
+      labels[labels$varName == i, "labeled"] <- "yes"
     }
   }
   labels[order(match(labels$varName, old_order)), ]

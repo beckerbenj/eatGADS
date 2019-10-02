@@ -197,7 +197,7 @@ test_that("Checks for import_raw", {
   expect_error(import_raw(df = df_raw, varLabels = varLabels_raw_fac, valLabels = valLabels_raw), "One of the variables in varLabels is a factor.")
 
   expect_error(import_raw(df = df_raw, mtcars), "varLabels needs to contain the variables 'varName' and 'varLabel'.")
-  expect_error(import_raw(df = df_raw, varLabels_raw, mtcars), "varLabels needs to contain the variables 'varName', 'value', 'varLabel' and 'missings'.")
+  expect_error(import_raw(df = df_raw, varLabels_raw, mtcars), "valLabels needs to contain the variables 'varName', 'value', 'varLabel' and 'missings'.")
 
   varLabels_raw_nam <- data.frame(varName = c("a", "d"), varLabel = c("variable a", "variable b"), stringsAsFactors = FALSE)
   expect_error(import_raw(df = df_raw, varLabels = varLabels_raw_nam), "The following variables are not in the data df: d")
@@ -212,10 +212,13 @@ test_that("Checks for import_raw", {
 })
 
 test_that("import_raw", {
+  out1 <- import_raw(df = df_raw, varLabels = varLabels_raw)
+  expect_equal(out1$dat, df_raw)
+  expect_equal(out1$labels$varLabel, c("variable a", "variable b"))
+
   out <- import_raw(df = df_raw, varLabels = varLabels_raw, valLabels = valLabels_raw)
   expect_equal(out$dat, df_raw)
   expect_equal(out$labels$varLabel, c(rep("variable a", 2), rep("variable b", 2)))
-
 
   df <- data.frame(ID = 1:4, sex = c(0, 0, 1, 1), forename = c("Tim", "Bill", "Ann", "Chris"), stringsAsFactors = FALSE)
   varLabels <- data.frame(varName = c("ID", "sex", "forename"), varLabel = c("Person Identifier", "Sex as self reported", "forename provided by teacher"), stringsAsFactors = FALSE)
@@ -225,6 +228,14 @@ test_that("import_raw", {
   expect_equal(out2$labels$value, c(NA, 0, 1, -99, NA))
 })
 
+test_that("import_raw with tibbles", {
+  out1 <- import_raw(df = df_raw, varLabels = varLabels_raw, valLabels = valLabels_raw)
+  df_raw <- tibble::as_tibble(df_raw)
+  varLabels_raw <- tibble::as_tibble(varLabels_raw)
+  valLabels_raw <- tibble::as_tibble(valLabels_raw)
+  out2 <- import_raw(df = df_raw, varLabels = varLabels_raw, valLabels = valLabels_raw)
+  expect_equal(out1, out2)
+})
 
 ###### check_GADSdat
 # testM <- import_spss("c:/Benjamin_Becker/02_Repositories/packages/eatGADS/tests/testthat/helper_spss_missings.sav")

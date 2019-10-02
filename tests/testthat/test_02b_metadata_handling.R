@@ -106,14 +106,19 @@ test_that("Extract value level meta change table", {
   expect_equal(dim(getChangeMeta(df1, level = "value")), c(2, 7))
   expect_equal(dim(changes_val), c(7, 7))
   expect_silent(check_valChanges(changes_val))
-  changes_val2 <- changes_val3 <- changes_val
+
+  changes_val4 <- changes_val2 <- changes_val3 <- changes_val
   names(changes_val2)[7] <- "vab_new"
   changes_val3$missings_new <- "test"
   changes_val$value_new <- "test"
+  changes_val4$value_new[1] <- NA
+  changes_val4$missings_new[1] <- "miss"
 
   expect_error(check_valChanges(changes_val2), "Irregular column names in changeTable.")
   expect_error(check_valChanges(changes_val3), "Irregular values in 'missings_new' column.")
   expect_error(check_valChanges(changes_val), "String values can not be given value labels.")
+
+  expect_error(check_valChanges(changes_val4), "Value 'NA' can not receive a value label.")
 })
 
 test_that("Extract list of meta change tables for all_GADSdat", {
@@ -193,8 +198,10 @@ changes_val2 <- rbind(changes_val, data.frame(varName = "VAR1", value = NA, valL
 test_that("Expand labels", {
   out <- expand_labels(df1$labels, new_varName_vec = c("ID1", "ID1", "V1"))
   expect_equal(out$varName, c("ID1", "ID1", "V1"))
+  expect_equal(out$labeled, c("yes", "yes", "no"))
   out2 <- expand_labels(df2$labels, new_varName_vec = c("ID1", "V2", "V2"))
   expect_equal(out2$varName, c("ID1", "V2", "V2"))
+  expect_equal(out2$labeled, c("no", "yes", "yes"))
   expect_equal(out2$varLabel, c(NA, "Variable 2", "Variable 2"))
   expect_equal(out2$value, c(NA, 99, NA))
   out3 <- expand_labels(dfSAV$labels, changes_val2$varName)

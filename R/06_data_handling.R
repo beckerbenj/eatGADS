@@ -81,6 +81,8 @@ extract_data_only <- function(GADSdat, convertMiss, convertLabels, dropPartialLa
   gads2 <- extractGADSdat(all_GADSdat = GADSdat, name = names(GADSdat$datList)[2])
   dat2 <- extractData(gads2, convertMiss = convertMiss, convertLabels = convertLabels,
                       dropPartialLabels = dropPartialLabels, convertVariables)
+  # test_names <- compare_and_order(set1 = names(dat1), set2 = names(dat2), name1 = "GADS 1", name2 = "GADS 2")
+  # oder year mit reinnehmen?
   plyr::rbind.fill(dat1, dat2)
 }
 

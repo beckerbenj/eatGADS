@@ -10,8 +10,7 @@ label_df <- labelsGADS(filePath = "helper_database.db")
 
 label_df_V2 <- label_df[which(label_df == "V2"), ]
 
-expected_ID1 <- list(format.spss = "F8.2",
-                     class = NA_character_)
+expected_ID1 <- list(format.spss = "F8.2")
 expected_V2 <- list(label = "Variable 2",
                     format.spss = "F10.2",
                     class = c("haven_labelled_spss", "haven_labelled"),
@@ -23,12 +22,13 @@ test_that("Variable labels are added correctly to attributes, for single variabl
   expect_equal(addLabels_single(label_df_V2), expected_V2)
 })
 
-### check all variable label adding (with one variable)
+### check export_tibble: all variable label adding (with one variable)
 test_that("Variable labels are added correctly to attributes for all variables", {
-  out <- addLabels(df$dat, label_df)
+  out <- export_tibble(df)
   expect_equal(attributes(out$ID1), expected_ID1)
   expect_equal(attributes(out$V1), expected_ID1)
   expect_equal(attributes(out$V2), expected_V2)
+  expect_equal(class(out)[1], "tbl_df")
 })
 
 ### also for R variables
@@ -69,7 +69,7 @@ test_that("GADSdat correctly written to sav", {
 
 ### Possible Problems when writing with haven
 test_that("Check haven behaviour", {
-  raw_df <- addLabels(df$dat, df$labels)
+  raw_df <- export_tibble(df)
   test3 <- test1 <- test2 <- raw_df
 
   attributes(test1$V2) <- list(label = "Variable - 2",
