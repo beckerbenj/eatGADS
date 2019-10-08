@@ -8,7 +8,7 @@
 #' SPSS files (\code{.sav}) store variable and value labels and assign specific formatting to variables. \code{import_spss} imports data from SPSS, while storing this meta-information seperately in a long format data frame. Value labels and missing labels are used to identify missing values (see \code{\link{checkMissings}}).
 #'
 #'@param filePath Source file location, ending on \code{.sav}.
-#'@param checkVarNames Should variable names be checked for vioalitions of SQLite and R naming rules?
+#'@param checkVarNames Should variable names be checked for vioalitions of \code{SQLite} and \code{R} naming rules?
 #'@param labeledStrings Should strings as labeled values be allowed? This possibly corrupts all labeled values.
 #'
 #'@return Returns a list with the actual data \code{dat} and a data frame with all meta information in long format \code{labels}.
@@ -41,7 +41,7 @@ import_spss <- function(filePath, checkVarNames = TRUE, labeledStrings = FALSE) 
 #' Factors are integers with labeled variable levels. \code{import_RDS} extracts these labels and stores them in a seperate meta data data.frame. See \code{\link{import_DF}} for detailed information.
 #'
 #'@param filePath Source file location, ending on \code{.RDS}.
-#'@param checkVarNames Should variable names be checked for vioalitions of SQLite and R naming rules?
+#'@param checkVarNames Should variable names be checked for vioalitions of \code{SQLite} and \code{R} naming rules?
 #'
 #'@return Returns a list with the actual data \code{dat} and a data frame with all meta information in long format \code{labels}.
 #'
@@ -61,8 +61,8 @@ import_RDS <- function(filePath, checkVarNames = TRUE) {
 #'
 #' Factors are integers with labeled variable levels. \code{import_DF} extracts these labels and stores them in a seperate meta data data.frame. See \code{\link{import_spss}} for detailed information.
 #'
-#'@param df A data frame.
-#'@param checkVarNames Should variable names be checked for vioalitions of SQLite and R naming rules?
+#'@param df A \code{data.frame}.
+#'@param checkVarNames Should variable names be checked for vioalitions of \code{SQLite} and \code{R} naming rules?
 #'
 #'@return Returns a list with the actual data \code{dat} and a data frame with all meta information in long format \code{labels}.
 #'
@@ -90,12 +90,12 @@ import_DF <- function(df, checkVarNames = TRUE) {
 #'
 #' \code{varLables} has to contain exactly two variables, namely \code{varName} and \code{varLabel}. \code{valLables} has to contain exactly four variables, namely \code{varName}, \code{value}, \code{valLabel} and \code{missings}. The column \code{value} can only contain numerical values. The column \code{missings} can only contain the values \code{"valid"} and \code{"miss"}. Variables of type \code{factor} are not supported in any of the \code{data.frames}.
 #'
-#'@param df A data frame.
-#'@param varLabels A data frame containing the variable labels. All variables in the data have to have exactly one column in this data.frame.
-#'@param valLabels A data frame containing the value labels. All referenced variables have to appear in the data, but not all variables in the data have to receive value labels. Can be omitted.
-#'@param checkVarNames Should variable names be checked for vioalitions of SQLite and R naming rules?
+#'@param df A \code{data.frame}.
+#'@param varLabels A \code{data.frame} containing the variable labels. All variables in the data have to have exactly one column in this data.frame.
+#'@param valLabels A \code{data.frame} containing the value labels. All referenced variables have to appear in the data, but not all variables in the data have to receive value labels. Can be omitted.
+#'@param checkVarNames Should variable names be checked for vioalitions of \code{SQLite} and \code{R} naming rules?
 #'
-#'@return Returns a list with the actual data \code{dat} and a data frame with all meta information in long format \code{labels}.
+#'@return Returns a list with the actual data \code{dat} and with all meta information in long format \code{labels}.
 #'
 #'@examples
 #'dat <- data.frame(ID = 1:5, grade = c(1, 1, 2, 3, 1))

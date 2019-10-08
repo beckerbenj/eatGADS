@@ -7,9 +7,9 @@
 import_DF(df, checkVarNames = TRUE)
 }
 \arguments{
-\item{df}{A data frame.}
+\item{df}{A \code{data.frame}.}
 
-\item{checkVarNames}{Should variable names be checked for vioalitions of SQLite and R naming rules?}
+\item{checkVarNames}{Should variable names be checked for vioalitions of \code{SQLite} and \code{R} naming rules?}
 }
 \value{
 Returns a list with the actual data \code{dat} and a data frame with all meta information in long format \code{labels}.

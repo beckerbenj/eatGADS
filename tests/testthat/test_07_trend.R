@@ -49,15 +49,23 @@ test_that("Correct vSelect errors for getTrendGADS", {
 
 test_that("Extract trend GADS with unique variables in one GADS", {
   # out <- getTrendGADS(filePath1 = "C:/Benjamin_Becker/02_Repositories/packages/eatGADS/tests/testthat/helper_dataBase.db", filePath2 = "C:/Benjamin_Becker/02_Repositories/packages/eatGADS/tests/testthat/helper_dataBase_uniqueVar.db", years = c(2012, 2018), fast = FALSE)
-  out <- getTrendGADS(filePath1 = "helper_dataBase.db", filePath2 = "helper_dataBase_uniqueVar.db", years = c(2012, 2018), fast = control_caching)
+  expect_warning(getTrendGADS(filePath1 = "helper_dataBase.db", filePath2 = "helper_dataBase_uniqueVar.db", years = c(2012, 2018), fast = control_caching),
+                 "The following variables are not in GADS 2012: V3. NAs will be inserted if data is extracted.")
+  out <- suppressWarnings(getTrendGADS(filePath1 = "helper_dataBase.db", filePath2 = "helper_dataBase_uniqueVar.db", years = c(2012, 2018), fast = control_caching))
   expect_equal(ncol(out$datList$gads2018), 5)
   expect_equal(nrow(out$allLabels), 9)
   expect_equal(out$datList$gads2018$V3, c(8, 8, 9))
-  out2 <- getTrendGADS(filePath1 = "helper_dataBase_uniqueVar.db", filePath2 = "helper_dataBase.db", years = c(2012, 2018), fast = control_caching)
+
+  expect_warning(getTrendGADS(filePath1 = "helper_dataBase_uniqueVar.db", filePath2 = "helper_dataBase.db", years = c(2012, 2018), fast = control_caching),
+                 "The following variables are not in GADS 2018: V3. NAs will be inserted if data is extracted.")
+  out2 <- suppressWarnings(getTrendGADS(filePath1 = "helper_dataBase_uniqueVar.db", filePath2 = "helper_dataBase.db", years = c(2012, 2018), fast = control_caching))
   expect_equal(ncol(out2$datList$gads2012), 5)
   expect_equal(nrow(out2$allLabels), 9)
   expect_equal(out2$datList$gads2012$V3, c(8, 8, 9))
-  out3 <- getTrendGADS(filePath1 = "helper_dataBase.db", filePath2 = "helper_dataBase_uniqueVar.db", years = c(2012, 2018), fast = control_caching, vSelect = c("ID1", "V1", "V2", "V3"))
+
+  expect_warning(getTrendGADS(filePath1 = "helper_dataBase.db", filePath2 = "helper_dataBase_uniqueVar.db", years = c(2012, 2018), fast = control_caching, vSelect = c("ID1", "V1", "V2", "V3")),
+  "The following variables are not in GADS 2012: V3. NAs will be inserted if data is extracted.")
+  out3 <- suppressWarnings(getTrendGADS(filePath1 = "helper_dataBase.db", filePath2 = "helper_dataBase_uniqueVar.db", years = c(2012, 2018), fast = control_caching, vSelect = c("ID1", "V1", "V2", "V3")))
   expect_equal(out, out3)
 })
 

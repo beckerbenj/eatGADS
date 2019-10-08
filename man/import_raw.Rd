@@ -7,16 +7,16 @@
 import_raw(df, varLabels, valLabels = NULL, checkVarNames = TRUE)
 }
 \arguments{
-\item{df}{A data frame.}
+\item{df}{A \code{data.frame}.}
 
-\item{varLabels}{A data frame containing the variable labels. All variables in the data have to have exactly one column in this data.frame.}
+\item{varLabels}{A \code{data.frame} containing the variable labels. All variables in the data have to have exactly one column in this data.frame.}
 
-\item{valLabels}{A data frame containing the value labels. All referenced variables have to appear in the data, but not all variables in the data have to receive value labels. Can be omitted.}
+\item{valLabels}{A \code{data.frame} containing the value labels. All referenced variables have to appear in the data, but not all variables in the data have to receive value labels. Can be omitted.}
 
-\item{checkVarNames}{Should variable names be checked for vioalitions of SQLite and R naming rules?}
+\item{checkVarNames}{Should variable names be checked for vioalitions of \code{SQLite} and \code{R} naming rules?}
 }
 \value{
-Returns a list with the actual data \code{dat} and a data frame with all meta information in long format \code{labels}.
+Returns a list with the actual data \code{dat} and with all meta information in long format \code{labels}.
 }
 \description{
 Function to import a \code{data.frame} object for use in \code{eatGADS} while adding explicit variable and value meta information through separate \code{data.frames}.

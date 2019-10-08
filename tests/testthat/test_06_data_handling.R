@@ -135,7 +135,7 @@ test_that("ExtractData with some variables labels applied to (convertVariables a
 
 test_that("Extract data trend GADS", {
   # trend_gads <- getTrendGADS(filePath1 = "C:/Benjamin_Becker/02_Repositories/packages/eatGADS/tests/testthat/helper_dataBase.db", filePath2 = "C:/Benjamin_Becker/02_Repositories/packages/eatGADS/tests/testthat/helper_dataBase_uniqueVar.db", years = c(2012, 2018), fast = FALSE)
-  trend_gads <- getTrendGADS(filePath1 = "helper_dataBase.db", filePath2 = "helper_dataBase_uniqueVar.db", years = c(2012, 2018), fast = FALSE)
+  trend_gads <- suppressWarnings(getTrendGADS(filePath1 = "helper_dataBase.db", filePath2 = "helper_dataBase_uniqueVar.db", years = c(2012, 2018), fast = FALSE))
   out <- extractData(trend_gads)
   expect_equal(dim(out), c(6, 5))
   expect_equal(names(out), c("ID1", "V1", "V2", "V3", "year"))

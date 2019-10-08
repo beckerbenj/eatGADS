@@ -168,16 +168,21 @@ getTrendGADS <- function(filePath1, filePath2, lePath = NULL, vSelect = NULL, ye
   check_keyStrcuture_TrendGADS(filePath1 = filePath1, filePath2 = filePath2)
 
   # prepare vSelect for GADS (unique variables are allowed!)
+  if(is.null(vSelect)) {
+    vSelect <- unique(c(unlist(namesGADS(filePath1)), unlist(namesGADS(filePath2))))
+  }
   vSelect1 <- list(in_gads = vSelect)
   vSelect2 <- list(in_gads = vSelect)
-  if(!is.null(vSelect)) {
-    vSelect1 <- check_vSelect(filePath1, vSelect = vSelect)
-    vSelect2 <- check_vSelect(filePath2, vSelect = vSelect)
-    not_in_both_gads <- intersect(vSelect1$not_in_gads, vSelect2$not_in_gads)
-    if(length(not_in_both_gads) > 0) stop("Variables ", not_in_both_gads, " are in neither of both data bases.")
-    if(!length(vSelect1$in_gads) > 0) stop("No variables from first data base selected.")
-    if(!length(vSelect2$in_gads) > 0) stop("No variables from second data base selected.")
-  }
+
+  vSelect1 <- check_vSelect(filePath1, vSelect = vSelect)
+  vSelect2 <- check_vSelect(filePath2, vSelect = vSelect)
+  not_in_both_gads <- intersect(vSelect1$not_in_gads, vSelect2$not_in_gads)
+  if(length(not_in_both_gads) > 0) stop("Variables ", not_in_both_gads, " are in neither of both data bases.")
+  if(!length(vSelect1$in_gads) > 0) stop("No variables from first data base selected.")
+  if(!length(vSelect2$in_gads) > 0) stop("No variables from second data base selected.")
+  # warn about added missings
+  if(length(vSelect1$not_in_gads) > 0) warning(paste0("The following variables are not in GADS ", years[1],": ", vSelect1$not_in_gads,". NAs will be inserted if data is extracted."))
+  if(length(vSelect2$not_in_gads) > 0) warning(paste0("The following variables are not in GADS ", years[2],": ", vSelect2$not_in_gads,". NAs will be inserted if data is extracted."))
 
   if(!identical(fast, TRUE)) {
     g1 <- getGADS(vSelect = vSelect1$in_gads, filePath = filePath1)
