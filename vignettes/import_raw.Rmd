@@ -1,10 +1,10 @@
 ---
-title: "eatGADS: Handling meta data"
+title: "Handling meta data"
 author: "Benjamin Becker"
 date: "`r Sys.Date()`"
 output: rmarkdown::html_vignette
 vignette: >
-  %\VignetteIndexEntry{import_raw}
+  %\VignetteIndexEntry{Handling meta data}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 ---
