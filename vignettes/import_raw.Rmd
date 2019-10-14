@@ -21,7 +21,7 @@ When trying to understand data, most often not only the actual data is required,
 * variable lables: Labels describing, what a variable in the data represents
 * value labels: Labels describing, what a certrain value on a certain variable represents
 
-While the `data.frame` class in `R` supports value labels to a certrain degree with the `factor` class, its functionality is limited. Other data formats like `.xlsx` or `.csv` support no meta data at all. Commercial software like `SPSS` provides such functionality but can not compete with the various tools for analyzing data that `R` provides.
+While the `data.frame` class in `R` supports value labels to a certain degree with the `factor` class, its functionality is limited. Other data formats like `.xlsx` or `.csv` support no meta data at all. Commercial software like `SPSS` provides such functionality but can not compete with the various tools for analyzing data that `R` provides.
 
 `eatGADS` is an `R` package that was developed to bridge this gap. Its main purpose is providing a data format in `R` specifically designed for storing meta data together with data in on place. Therefore it provides an `S3` class called `GADSdat`. The following vignette concentrates on how to import data into the `GADSdat` format and work with it in the `R` environment. In collaboration with the IQB Forschungsdatenzentrum (FDZ) the package can also be used to distribute data.
 
@@ -63,7 +63,7 @@ input_txt <- read.table("path/example.txt", stringsAsFactors = FALSE)
 # importing German csv files (; separated)
 input_csv <- read.csv2("path/example.csv", stringsAsFactors = FALSE)
 # importing Excel files
-input_xlsx <- readxl::("path/example.xlsx")
+input_xlsx <- readxl::read_excel("path/example.xlsx")
 ```
 
 `import_raw` takes three separate `data.frames` as input. The actual data set (`df`), the variable labels (`varLabels`) and the value lables (`valLabels`). These three objects have to be supplied in a very specific format. 
