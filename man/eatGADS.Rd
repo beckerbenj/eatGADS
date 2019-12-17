@@ -3,7 +3,6 @@
 \docType{package}
 \name{eatGADS}
 \alias{eatGADS}
-\alias{eatGADS-package}
 \title{eatGADS: Data management of hierarchical SPSS files via R and SQLite}
 \description{
 The eatGADS package provides various groups of functions:

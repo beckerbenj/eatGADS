@@ -184,6 +184,19 @@ test_that("Data frames directly from R are imported correctly", {
                c(NA, NA, NA, NA, 1, 2, 3))
 })
 
+###### test import from eatTools convertLabel
+# convertLabel_df <- readRDS(file = "c:/Benjamin_Becker/02_Repositories/packages/eatGADS/tests/testthat/helper_convertLabel.RDS")
+convertLabel_df <- readRDS(file = "helper_convertLabel.RDS")
+
+test_that("Data frames from eatTools convertLabel imported correctly", {
+  out <- import_convertLabel(convertLabel_df)
+  expect_equal(extractMeta(out, "year")[["varLabel"]], "year of assessment")
+  expect_equal(extractMeta(out, "mig")[["varLabel"]], NA_character_)
+  expect_equal(extractMeta(out, "sex")[["valLabel"]], c("female", "male"))
+
+  expect_equal(dim(out$dat), c(5, 22))
+})
+
 ###### test import from R data frame with explicit meta information
 df_raw <- data.frame(a = 1:2, b = 2:3)
 varLabels_raw <- data.frame(varName = c("a", "b"), varLabel = c("variable a", "variable b"), stringsAsFactors = FALSE)

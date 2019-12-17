@@ -4,8 +4,13 @@
 \alias{reuseMeta}
 \title{Use meta data for a variable from another GADSdat.}
 \usage{
-reuseMeta(GADSdat, varName, other_GADSdat, other_varName = NULL,
-  missingLabels = NULL)
+reuseMeta(
+  GADSdat,
+  varName,
+  other_GADSdat,
+  other_varName = NULL,
+  missingLabels = NULL
+)
 }
 \arguments{
 \item{GADSdat}{\code{GADSdat} object imported via eatGADS.}

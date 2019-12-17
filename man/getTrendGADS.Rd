@@ -4,8 +4,15 @@
 \alias{getTrendGADS}
 \title{Get data for trend reports.}
 \usage{
-getTrendGADS(filePath1, filePath2, lePath = NULL, vSelect = NULL,
-  years, fast = TRUE, tempPath = tempdir())
+getTrendGADS(
+  filePath1,
+  filePath2,
+  lePath = NULL,
+  vSelect = NULL,
+  years,
+  fast = TRUE,
+  tempPath = tempdir()
+)
 }
 \arguments{
 \item{filePath1}{Path of the first GADS db file.}

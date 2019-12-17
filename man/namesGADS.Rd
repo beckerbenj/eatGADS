@@ -4,7 +4,7 @@
 \alias{namesGADS}
 \title{Variables names of a GADS data base.}
 \usage{
-namesGADS(filePath)
+namesGADS(GADS)
 }
 \arguments{
 \item{filePath}{Path of an existing GADS data base.}

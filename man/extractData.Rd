@@ -4,8 +4,13 @@
 \alias{extractData}
 \title{Extract Data}
 \usage{
-extractData(GADSdat, convertMiss = TRUE, convertLabels = "character",
-  dropPartialLabels = TRUE, convertVariables)
+extractData(
+  GADSdat,
+  convertMiss = TRUE,
+  convertLabels = "character",
+  dropPartialLabels = TRUE,
+  convertVariables
+)
 }
 \arguments{
 \item{GADSdat}{A \code{GADSdat} object.}

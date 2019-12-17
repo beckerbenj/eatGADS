@@ -4,8 +4,14 @@
 \alias{fdz}
 \title{FDZ Data cleaning}
 \usage{
-fdz(fileName, boundary = 5, saveFolder = NA, nameListe = NULL,
-  nameSyntax = NULL, exclude = NULL)
+fdz(
+  fileName,
+  boundary = 5,
+  saveFolder = NA,
+  nameListe = NULL,
+  nameSyntax = NULL,
+  exclude = NULL
+)
 }
 \arguments{
 \item{fileName}{Character string of the SPSS file}

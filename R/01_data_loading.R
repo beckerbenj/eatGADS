@@ -82,13 +82,44 @@ import_DF <- function(df, checkVarNames = TRUE) {
   out
 }
 
+#### Import from convertLabel
+#############################################################################
+#' Import an object imported via \code{convertLabel}
+#'
+#' Function to import a \code{data.frame} object created by \code{convertLabel} for use in \code{eatGADS}. If possible, importing data via \code{\link{import_spss}} should always be prefred.
+#'
+#' \code{convertLabel} converts an object imported via \code{foreign::read.spss} to a data.frame with factors and variable labels stored in variable attributes.
+#'
+#'@param df A \code{data.frame}.
+#'@param checkVarNames Should variable names be checked for vioalitions of \code{SQLite} and \code{R} naming rules?
+#'
+#'@return Returns a list with the actual data \code{dat} and a data frame with all meta information in long format \code{labels}.
+#'
+#'@examples
+#'# no examples
+#'
+#'@export
+import_convertLabel <- function(df, checkVarNames = TRUE) {
+  if(!is.data.frame(df)) stop("df needs to be a data frame.")
+  out <- prepare_labels(rawDat = df, checkVarNames = checkVarNames, labeledStrings = FALSE)
+
+  varLabels <- sapply(df, function(x) {
+    out <- attr(x, "varLabel")
+    if(is.null(out)) return(NA)
+    out
+  })
+  out2 <- changeVarLabels(out, varName = names(varLabels), varLabel = varLabels)
+  out2
+}
+
+
 #### Import R-data with explicit metadata
 #############################################################################
 #' Import R data frame with explicit meta data sheets
 #'
 #' Function to import a \code{data.frame} object for use in \code{eatGADS} while adding explicit variable and value meta information through separate \code{data.frames}.
 #'
-#' \code{varLables} has to contain exactly two variables, namely \code{varName} and \code{varLabel}. \code{valLables} has to contain exactly four variables, namely \code{varName}, \code{value}, \code{valLabel} and \code{missings}. The column \code{value} can only contain numerical values. The column \code{missings} can only contain the values \code{"valid"} and \code{"miss"}. Variables of type \code{factor} are not supported in any of the \code{data.frames}.
+#' The argument \code{varLables} has to contain exactly two variables, namely \code{varName} and \code{varLabel}. \code{valLables} has to contain exactly four variables, namely \code{varName}, \code{value}, \code{valLabel} and \code{missings}. The column \code{value} can only contain numerical values. The column \code{missings} can only contain the values \code{"valid"} and \code{"miss"}. Variables of type \code{factor} are not supported in any of the \code{data.frames}.
 #'
 #'@param df A \code{data.frame}.
 #'@param varLabels A \code{data.frame} containing the variable labels. All variables in the data have to have exactly one column in this data.frame.
@@ -103,7 +134,7 @@ import_DF <- function(df, checkVarNames = TRUE) {
 #'valLabels <- data.frame(varName = c("grade", "grade", "grade"),
 #'                        value = c(1, 2, 3),
 #'                        valLabel = c("very good", "good", "sufficient"),
-#'                        missings = c("valid", "valid", valid"))
+#'                        missings = c("valid", "valid", "valid"))
 #'
 #'gads <- import_raw(df = dat, varLables = varLabels, valLabels = valLabels, checkVarNames = FALSE)
 #'
@@ -209,30 +240,6 @@ prepare_labels <- function(rawDat, checkVarNames, labeledStrings) {
 
   # output
   new_GADSdat(dat = plainDat, labels = label_df)
-}
-
-# create S3 object GADSdat for User (needs interface!)
-new_GADSdat <- function(dat, labels) {
-  stopifnot(is.data.frame(dat) && is.data.frame(labels))
-  structure(list(dat = dat, labels = labels), class = c("GADSdat", "list"))
-}
-# GADSdat validator (allow data_table column for trend compatability)
-check_GADSdat <- function(GADSdat) {
-  if(!"GADSdat" %in% class(GADSdat)) stop("All input objects have to be of class GADSdat", call. = FALSE)
-  if(!is.list(GADSdat) && length(GADSdat) == 2) stop("GADSdat has to be a list with length two", call. = FALSE)
-  if(!identical(names(GADSdat), c("dat", "labels"))) stop("List elements of a GADSdat object have to be 'dat' and 'labels'", call. = FALSE)
-  if(!is.data.frame(GADSdat$dat)) stop("dat element has to be a data frame", call. = FALSE)
-  if(!is.data.frame(GADSdat$labels)) stop("labels element has to be a data frame", call. = FALSE)
-  if(!(identical(names(GADSdat$labels), c("varName", "varLabel", "format", "display_width", "labeled", "value", "valLabel", "missings")) ||
-     identical(names(GADSdat$labels), c("varName", "varLabel", "format", "display_width", "labeled", "value", "valLabel", "missings", "data_table")))) {
-    stop("Illegal column names in labels data frame.")
-  }
-
-  # internals
-  only_in_labels <- setdiff(unique(GADSdat$labels$varName), names(GADSdat$dat))
-  only_in_dat <- setdiff(names(GADSdat$dat), unique(GADSdat$labels$varName))
-  if(length(only_in_labels) > 0) stop("The following variables have meta data but are not in the actual data: ", only_in_labels, call. = FALSE)
-  if(length(only_in_dat) > 0) stop("The following variables are in the data but do not have meta data: ", only_in_dat, call. = FALSE)
 }
 
 

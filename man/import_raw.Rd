@@ -22,5 +22,22 @@ Returns a list with the actual data \code{dat} and with all meta information in 
 Function to import a \code{data.frame} object for use in \code{eatGADS} while adding explicit variable and value meta information through separate \code{data.frames}.
 }
 \details{
-\code{varLables} has to contain exactly two variables, namely \code{varName} and \code{varLabel}. \code{valLables} has to contain exactly four variables, namely \code{varName}, \code{value}, \code{valLabel} and \code{missings}. The column \code{value} can only contain numerical values. The column \code{missings} can only contain the values \code{"valid"} and \code{"miss"}. Variables of type \code{factor} are not supported in any of the \code{data.frames}.
+The argument \code{varLables} has to contain exactly two variables, namely \code{varName} and \code{varLabel}. \code{valLables} has to contain exactly four variables, namely \code{varName}, \code{value}, \code{valLabel} and \code{missings}. The column \code{value} can only contain numerical values. The column \code{missings} can only contain the values \code{"valid"} and \code{"miss"}. Variables of type \code{factor} are not supported in any of the \code{data.frames}.
+}
+\examples{
+dat <- data.frame(ID = 1:5, grade = c(1, 1, 2, 3, 1))
+varLabels <- data.frame(varName = c("ID", "grade"), varLabel = c("Person Identifier", "School grade Math"))
+valLabels <- data.frame(varName = c("grade", "grade", "grade"),
+                       value = c(1, 2, 3),
+                       valLabel = c("very good", "good", "sufficient"),
+                       missings = c("valid", "valid", "valid"))
+
+gads <- import_raw(df = dat, varLables = varLabels, valLabels = valLabels, checkVarNames = FALSE)
+
+# Inspect Meta data
+extractMeta(gads)
+
+# Extract Data
+dat <- extractData(gads, convertLabels = "character")
+
 }

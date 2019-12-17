@@ -4,8 +4,12 @@
 \alias{checkMissings}
 \title{Check and Adjust Missing Coding}
 \usage{
-checkMissings(GADSdat, missingLabel = "missing", addMissingCode = TRUE,
-  addMissingLabel = FALSE)
+checkMissings(
+  GADSdat,
+  missingLabel = "missing",
+  addMissingCode = TRUE,
+  addMissingLabel = FALSE
+)
 }
 \arguments{
 \item{GADSdat}{\code{GADSdat} object imported via \code{eatGADS}.}

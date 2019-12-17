@@ -59,8 +59,24 @@ createGADS.GADSdat <- function(allList, pkList, filePath) {
 #'}
 #'
 #'@export
-namesGADS <- function(filePath) {
-  eatDB::dbNames(filePath = filePath, includeMeta = FALSE)
+namesGADS <- function(GADS) {
+  UseMethod("namesGADS")
+}
+
+#'@export
+namesGADS.character <- function(GADS) {
+  eatDB::dbNames(filePath = GADS, includeMeta = FALSE)
+}
+#'@export
+namesGADS.GADSdat <- function(GADS) {
+  check_GADSdat(GADS)
+  names(GADS$dat)
+}
+
+#'@export
+namesGADS.all_GADSdat <- function(GADS) {
+  check_all_GADSdat(GADS)
+  names(GADS$dat)
 }
 
 
@@ -120,7 +136,7 @@ getGADS <- function(vSelect = NULL, filePath) {
 
   # select Meta data from first data table only (only relevant for foreign keys)
   fk_vars <- unique(unlist(lapply(eatDB::dbKeys(filePath)$fkList, function(fk) fk$Keys)))
-  all_names <- namesGADS(filePath = filePath)
+  all_names <- namesGADS(filePath)
   for(fk_var in fk_vars) {
     data_table <- first_list_match(x = fk_var, vec_list = all_names)
     selectLabels <- drop_duplicate_meta(labels = selectLabels, varName = fk_var, data_table)
