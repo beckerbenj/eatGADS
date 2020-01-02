@@ -230,6 +230,7 @@ new_data.frame <- function(rawDat) {
 # 02) Prepare and extract data ---------------------------------------------------------
 prepare_labels <- function(rawDat, checkVarNames, labeledStrings) {
   # 1) check and prepare variable names
+  if(anyDuplicated(tolower(names(rawDat)))) names(rawDat) <- unduplicate(names(rawDat))
   if(identical(checkVarNames, TRUE)) names(rawDat) <- unlist(lapply(names(rawDat), transf_names))
 
   # 2) extract labels
@@ -243,23 +244,35 @@ prepare_labels <- function(rawDat, checkVarNames, labeledStrings) {
 }
 
 
-# 02.1) Check variable names ---------------------------------------------------------
+# 02.1) Modify duplicate variable names ---------------------------------------------------------
+# sqlite3 not case sensitive!
+unduplicate <- function(x) {
+  out <- x
+  allower <- tolower(x)
+  out[duplicated(allower)] <- paste(out[duplicated(allower)], 2, sep = "_")
+  if(anyDuplicated(tolower(out))) out <- unduplicate(out)
+
+  Map(function(vec_name, NewName) {
+    if(!identical(NewName, vec_name)) message(paste(vec_name, "has been renamed to", NewName))
+  }, vec_name = x, NewName = out)
+  out
+}
+
+# 02.2) Check variable names ---------------------------------------------------------
 # function for preparing of variable names (to be in line with sqlite rules)
 transf_names <- function(vec_name) {
   NewName <- vec_name
-  if(any(grepl(paste0("^", vec_name, "$"),  eatDB::sqlite_keywords, ignore.case = TRUE))) {
+  if(any(grepl(paste0("^", vec_name, "$"), eatDB::sqlite_keywords, ignore.case = TRUE))) {
     NewName <- paste0(vec_name, "Var")
   }
   NewName <- make.names(NewName)
   if(grepl("\\.", NewName))       NewName <- gsub("\\.", "_", NewName)
 
-
   if(!identical(NewName, vec_name)) message(paste(vec_name, "has been renamed to", NewName))
   NewName
 }
 
-
-# 02.2) extract labels ---------------------------------------------------------
+# 02.3) extract labels ---------------------------------------------------------
 extract_labels <- function(rawDat, labeledStrings) {
   attr_vec <- c("varName", "varLabel", "format", "display_width", "labeled", "value", "valLabel", "missings")
 

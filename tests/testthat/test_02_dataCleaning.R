@@ -61,6 +61,15 @@ test_that("Check varNames", {
   expect_equal(changed_df, imported_df)
 })
 
+test_that("Unduplicate", {
+  out <- unduplicate(c("v1", "V1", "v2"))
+  expect_equal(out, c("v1", "V1_2", "v2"))
+  expect_message(out <- unduplicate(c("v1", "V1", "v2")), "V1 has been renamed to V1_2")
+
+  df <- data.frame("var1" = 1, "Var1" = 1, "vAr1" = 1)
+  out2 <- prepare_labels(df, TRUE, TRUE)
+  expect_equal(names(out2$dat), c("var1", "Var1_2", "vAr1_2_2"))
+})
 
 test_that("Check varNames all_GADSdat", {
   # if no changes
