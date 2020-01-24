@@ -4,7 +4,7 @@
 \alias{merge.GADSdat}
 \title{Merge two GADSdat objects into a single GADSdat object.}
 \usage{
-\method{merge}{GADSdat}(x, y, by)
+\method{merge}{GADSdat}(x, y, by, all = TRUE, all.x = all, all.y = all)
 }
 \arguments{
 \item{x}{\code{GADSdat} object imported via eatGADS.}
@@ -12,6 +12,12 @@
 \item{y}{\code{GADSdat} object imported via eatGADS.}
 
 \item{by}{A character vector.}
+
+\item{all}{A character vector (either a full join or an inner join).}
+
+\item{all.x}{See merge.}
+
+\item{all.y}{See merge.}
 }
 \value{
 Returns a GADSdat object.

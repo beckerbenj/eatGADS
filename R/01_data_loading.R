@@ -136,7 +136,7 @@ import_convertLabel <- function(df, checkVarNames = TRUE) {
 #'                        valLabel = c("very good", "good", "sufficient"),
 #'                        missings = c("valid", "valid", "valid"))
 #'
-#'gads <- import_raw(df = dat, varLables = varLabels, valLabels = valLabels, checkVarNames = FALSE)
+#'gads <- import_raw(df = dat, varLabels = varLabels, valLabels = valLabels, checkVarNames = FALSE)
 #'
 #'# Inspect Meta data
 #'extractMeta(gads)

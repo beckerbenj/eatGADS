@@ -108,6 +108,9 @@ checkVarNames.all_GADSdat <- function(GADSdat) {
 #'@param x \code{GADSdat} object imported via eatGADS.
 #'@param y \code{GADSdat} object imported via eatGADS.
 #'@param by A character vector.
+#'@param all A character vector (either a full join or an inner join).
+#'@param all.x See merge.
+#'@param all.y See merge.
 #'
 #'@return Returns a GADSdat object.
 #'
@@ -116,7 +119,7 @@ checkVarNames.all_GADSdat <- function(GADSdat) {
 #'#to be done
 #'
 #'@export
-merge.GADSdat <- function(x, y, by) {
+merge.GADSdat <- function(x, y, by, all = TRUE, all.x = all, all.y = all) {
   check_GADSdat(x)
   check_GADSdat(y)
   if(!is.character(by)) stop(by, " is not a character vector.")
@@ -126,7 +129,7 @@ merge.GADSdat <- function(x, y, by) {
   y_vars <- c(by, names(y$dat)[!names(y$dat) %in% names(x$dat)])
   if(!length(y_vars) > length(by)) stop("y does not contain unique variables.")
 
-  newDat <- merge(x$dat, y$dat[, y_vars], by = by, all = TRUE)
+  newDat <- merge(x$dat, y$dat[, y_vars], by = by, all = all, all.x = all.x, all.y = all.y)
   newLabels <- rbind(x$labels, y$labels[y$labels$varName %in% y_vars[!y_vars %in% by], ])
 
   newGADS <- new_GADSdat(dat = newDat, labels = newLabels)
