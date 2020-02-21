@@ -55,7 +55,7 @@ createLookup.GADSdat <- function(GADSdat, recodeVars, sort_by = NULL, addCols = 
 #'@param addCols Character vector of additional column names for recoding purposes.
 #'@param sort_by By which column should the long format data.frame be sorted? If \code{NULL}, no sorting is performed.
 #'
-#'@return Returns a data frame in long format including all unique values of the variables in \code{recodeVars}.
+#'@return Returns a data frame that can be used for \code{\link{applyLookup}}.
 #'
 #'@examples
 #'\dontrun{
@@ -130,16 +130,19 @@ check_lookup <- function(lookup, GADSdat) {
 
 #### Apply recode lookup table
 #############################################################################
-#' Recoade via lookup table.
+#' Recode MC variable based on text.
 #'
-#' Extract values form variables of \code{GADSdat} object and write to \code{xlsx} for manuel recoding.
+#' Use an additional text variable to recode an existing MC variable.
 #'
-#' If recoding of one or multiple variables is more complex, a lookup table can be created for later importing via \code{eatGADS}.
+#' to be written
 #'
 #'@param GADSdat A \code{GADSdat} object.
-#'@param lookUp LookUp table created by \code{\link{createLookup}} and - if necessary -  collapsed by \code{\link{collapseColumns}}.
+#'@param mc_var A single variable name of the multiple choice variable.
+#'@param text_var A single variable name of the text variable.
+#'@param mc_code4text The value in the MC variable that signals that information from the text variable should be used.
+#'@param suffix Variable suffix for the newly created GADSdat.
 #'
-#'@return Returns a recoded \code{GADSdat}.
+#'@return Returns a \code{GADSdat} containing the newly computed variable.
 #'
 #'@examples
 #'\dontrun{
