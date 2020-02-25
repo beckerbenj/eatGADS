@@ -90,7 +90,7 @@ add_rows_meta <- function(labels, newDat) {
 #'@param varName Name of the variable that should get the new meta data.
 #'@param other_GADSdat \code{GADSdat} object imported via eatGADS including the desired meta information. Can also be a GADS db or an \code{all_GADSdat} object.
 #'@param other_varName Name of the variable that should get the new meta data in the \code{other_GADSdat}.
-#'@param missingLabels How should meta data for missing values be treated? If NULL, missings are transfered as all other labels. If "drop", missing labels are dropped (useful for imputed data). If "leave", missing labels remain untouched.
+#'@param missingLabels How should meta data for missing values be treated? If \code{NULL}, missings are transfered as all other labels. If \code{"drop"}, missing labels are dropped (useful for imputed data). If \code{"leave"}, missing labels remain untouched.
 #'
 #'@return Returns the original object with updated meta data.
 #'
@@ -99,11 +99,11 @@ add_rows_meta <- function(labels, newDat) {
 #'#to be done
 #'
 #'@export
-reuseMeta <- function(GADSdat, varName, other_GADSdat, other_varName = NULL, missingLabels = NULL) {
+reuseMeta <- function(GADSdat, varName, other_GADSdat, other_varName = NULL, missingLabels = NULL, addValueLabels = FALSE) {
   UseMethod("reuseMeta")
 }
 #'@export
-reuseMeta.GADSdat <- function(GADSdat, varName, other_GADSdat, other_varName = NULL, missingLabels = NULL) {
+reuseMeta.GADSdat <- function(GADSdat, varName, other_GADSdat, other_varName = NULL, missingLabels = NULL, addValueLabels = FALSE) {
   if(!is.null(missingLabels) && !missingLabels %in% c("drop", "leave")) stop("Invalid input for argument missingLabels.")
   if(!varName %in% names(GADSdat$dat)) stop("varName is not a variable in the GADSdat.")
   # extract meta data
@@ -122,6 +122,8 @@ reuseMeta.GADSdat <- function(GADSdat, varName, other_GADSdat, other_varName = N
     remove_rows <- which(GADSdat$labels$varName == varName & GADSdat$labels$missings != "miss")
     if(identical(new_meta$labeled, "no")) new_meta <- new_meta[-1, ]
   }
+
+  if(addValueLabels) remove_rows <- numeric()
 
   # insert new meta information, remove old, sort
   labels <- GADSdat$labels
@@ -509,6 +511,7 @@ checkRecodeVectors <- function(oldValues, newValues, varName, dat) {
 checkNewValueLabels <- function(newValueLabels, newValues) {
   if(!is.character(newValueLabels)) stop("newValueLabels is not a character.")
   if(any(duplicated(names(newValueLabels)))) stop("Duplicated values in newValueLabels.")
+  if(length(names(newValueLabels)) == 0) stop("neValueLabels needs to be named.")
   compare_and_order(set1 = names(newValueLabels), set2 = unique(newValues), FUN = stop)
 }
 

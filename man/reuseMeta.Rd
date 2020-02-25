@@ -9,7 +9,8 @@ reuseMeta(
   varName,
   other_GADSdat,
   other_varName = NULL,
-  missingLabels = NULL
+  missingLabels = NULL,
+  addValueLabels = FALSE
 )
 }
 \arguments{
@@ -21,7 +22,7 @@ reuseMeta(
 
 \item{other_varName}{Name of the variable that should get the new meta data in the \code{other_GADSdat}.}
 
-\item{missingLabels}{How should meta data for missing values be treated? If NULL, missings are transfered as all other labels. If "drop", missing labels are dropped (useful for imputed data). If "leave", missing labels remain untouched.}
+\item{missingLabels}{How should meta data for missing values be treated? If \code{NULL}, missings are transfered as all other labels. If \code{"drop"}, missing labels are dropped (useful for imputed data). If \code{"leave"}, missing labels remain untouched.}
 }
 \value{
 Returns the original object with updated meta data.

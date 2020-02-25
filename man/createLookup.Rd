@@ -4,7 +4,7 @@
 \alias{createLookup}
 \title{Recode values.}
 \usage{
-createLookup(GADSdat, recodeVars, sort_by = NULL, addCols = c("newValue"))
+createLookup(GADSdat, recodeVars, sort_by = NULL, addCols = c("value_new"))
 }
 \arguments{
 \item{GADSdat}{A \code{GADSdat} object.}

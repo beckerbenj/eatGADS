@@ -81,7 +81,8 @@ collapseColumns <- function(lookUp, recodeVars, prioritize) {
 #' If recoding of one or multiple variables is more complex, a lookup table can be created for later importing via \code{eatGADS}.
 #'
 #'@param GADSdat A \code{GADSdat} object.
-#'@param lookUp LookUp table created by \code{\link{createLookup}} and - if necessary -  collapsed by \code{\link{collapseColumns}}.
+#'@param lookup Lookup table created by \code{\link{createLookup}} and - if necessary -  collapsed by \code{\link{collapseColumns}}.
+#'@param suffix Suffix to add to the existing variable names. If \code{NULL} the old variables will be overwritten.
 #'
 #'@return Returns a recoded \code{GADSdat}.
 #'
@@ -90,30 +91,38 @@ collapseColumns <- function(lookUp, recodeVars, prioritize) {
 #'#to be done
 #'
 #'@export
-applyLookup <- function(GADSdat, lookup, suffix = "_r") {
+applyLookup <- function(GADSdat, lookup, suffix = NULL) {
   UseMethod("applyLookup")
 }
 
 #'@export
-applyLookup.GADSdat <- function(GADSdat, lookup, suffix = "_r") {
+applyLookup.GADSdat <- function(GADSdat, lookup, suffix = NULL) {
   check_GADSdat(GADSdat)
   check_lookup(lookup, GADSdat)
 
   rec_vars <- unique(lookup[["variable"]])
 
   GADSdat2 <- GADSdat
+
   ## recode via data.table
   for(nam in rec_vars) {
     rec_dt <- data.table::as.data.table(GADSdat2$dat)
 
     sub_lu <- lookup[lookup$variable == nam, c("value", "value_new")]
     names(sub_lu) <- c(nam, "value_new")
-    sub_lu <- eatTools::asNumericIfPossible(sub_lu, force.string = FALSE)
-    new_nam <- paste0(nam, suffix)
-    rec_dt[sub_lu, on = nam, (new_nam) := i.value_new]
+    suppressWarnings(sub_lu <- eatTools::asNumericIfPossible(sub_lu, force.string = FALSE))
+
+    if(!is.null(suffix)) {
+      old_nam <- nam
+      nam <- paste0(nam, suffix)
+      rec_dt[sub_lu, on = old_nam, (nam) := i.value_new]
+    } else {
+      old_nam <- nam
+      rec_dt[sub_lu, on = nam, (nam) := i.value_new]
+    }
 
     GADSdat2 <- updateMeta(GADSdat2, newDat = as.data.frame(rec_dt, stringsAsFactor = FALSE))
-    GADSdat2 <- reuseMeta(GADSdat = GADSdat2, varName = new_nam, other_GADSdat = GADSdat, other_varName = nam)
+    GADSdat2 <- reuseMeta(GADSdat = GADSdat2, varName = nam, other_GADSdat = GADSdat, other_varName = old_nam)
   }
 
   check_GADSdat(GADSdat2)
@@ -155,26 +164,53 @@ collapseMC_Text <- function(GADSdat, mc_var, text_var, mc_code4text, suffix = "_
 
 #'@export
 collapseMC_Text.GADSdat <- function(GADSdat, mc_var, text_var, mc_code4text, suffix = "_r") {
+  mc_var_new <- paste0(mc_var, suffix)
   MC_dat <- GADSdat$dat[, mc_var, drop = FALSE]
-  #suppressMessages(MC_gads <- updateMeta(GADSdat, MC_dat))
-  MC_gads <- updateMeta(GADSdat, MC_dat)
-  MC <- extractData(MC_gads, convertMiss = FALSE, convertLabels = "character")[, 1]
+
+  suppressMessages(MC_gads <- updateMeta(GADSdat, MC_dat))
+  MC <- extractData(MC_gads, convertMiss = TRUE, convertLabels = "character")[, 1]
   MC[which(MC == mc_code4text)] <- NA
 
-  MC_new <- ifelse(is.na(MC), yes = GADSdat$dat[[text_var]],
-                                 no = MC)
-  df_MC_new <- data.frame(MC_new, stringsAsFactors = TRUE)
-  names(df_MC_new) <- paste0(mc_var, suffix)
-  MC_gads2 <- import_DF(df_MC_new)
+  MC_new <- ifelse(is.na(MC), yes = ifelse(is.na(GADSdat$dat[[text_var]]), yes = GADSdat$dat[[mc_var]], no = GADSdat$dat[[text_var]]),
+                                 no = GADSdat$dat[[mc_var]])
 
-  GADSdat_dat <- cbind(GADSdat$dat, MC_gads2$dat)
-  GADSdat_out <- updateMeta(GADSdat, GADSdat_dat)
-  GADSdat_out <- reuseMeta(GADSdat_out, other_GADSdat = MC_gads2, varName = paste0(mc_var, suffix))
+  ## work with lookup tables!
+  # recode values from old variable
+  lookup_oldValues <- data.frame(variable = mc_var_new,
+                                 value = GADSdat$labels[GADSdat$labels$varName == mc_var, "valLabel"],
+                                 value_new = GADSdat$labels[GADSdat$labels$varName == mc_var, "value"],
+                                 stringsAsFactors = FALSE)
 
-  GADSdat_out
+  GADSdat_dat <- cbind(GADSdat$dat, MC_new, stringsAsFactors = FALSE)
+  names(GADSdat_dat)[ncol(GADSdat_dat)] <- mc_var_new
+  GADSdat_dat2 <- updateMeta(GADSdat, GADSdat_dat)
+
+  # use lookup tables
+  GADSdat_dat3 <- applyLookup(GADSdat_dat2, lookup = lookup_oldValues)
+
+  # create and use lookup tables for new value levels
+  add_values <- GADSdat_dat3$dat[!GADSdat_dat3$dat[, mc_var_new] %in% lookup_oldValues$value_new, mc_var_new]
+  add_values_df <- data.frame(add_values, stringsAsFactors = TRUE)
+  names(add_values_df) <- mc_var_new
+  add_values_gads <- import_DF(add_values_df)
+  max_old_value <- max(GADSdat$labels[GADSdat$labels$varName == mc_var & GADSdat$labels$missings == "valid", "value"])
+  add_values_gads$labels$value <- add_values_gads$labels$value + max_old_value
+
+  # recode new values from text variable
+  lookup_newValues <- data.frame(variable = mc_var_new,
+                                 value = add_values_gads$labels[, "valLabel"],
+                                 value_new = add_values_gads$labels[, "value"],
+                                 stringsAsFactors = FALSE)
+  GADSdat_dat4 <- applyLookup(GADSdat_dat3, lookup = lookup_newValues)
+  GADSdat_dat4$dat[, mc_var_new] <- as.numeric(GADSdat_dat4$dat[, mc_var_new])
+
+  if(any(is.na(MC_new))) browser()
+  ### insert right meta data (combine)
+  GADSdat_out <- reuseMeta(GADSdat_dat4, other_GADSdat = GADSdat, varName = mc_var_new, other_varName = mc_var)
+  GADSdat_out2 <- reuseMeta(GADSdat_out, other_GADSdat = add_values_gads, varName = mc_var_new, addValueLabels = TRUE)
+
+  GADSdat_out2
 }
-
-
 
 
 

@@ -66,13 +66,20 @@ test_that("Tests for formatting of lookup",{
 
 test_that("Applying recode for 1 variable",{
   lu2$value_new <- c(-9, -6, 10, 11)
-  ng <- applyLookup(testM, lu2)
+  ng <- applyLookup(testM, lu2, suffix = "_r")
   expect_equal(ng$dat$VAR1_r, c(10, -9, -6, 11))
+})
+
+test_that("Applying recode for 1 variable while overwriting",{
+  lu2$value_new <- c(-9, -6, 10, 11)
+  ng <- applyLookup(testM, lu2)
+  expect_equal(ng$dat$VAR1, c(10, -9, -6, 11))
+  expect_equal(dim(ng$dat), c(4, 3))
 })
 
 test_that("Applying recode for more variables",{
   lu3$value_new <- c(-9, -6, 10, -10, 11)
-  ng <- applyLookup(testM, lu3)
+  ng <- applyLookup(testM, lu3, suffix = "_r")
   expect_equal(ng$dat$VAR1_r, c(10, -9, -6, 11))
   expect_equal(ng$dat$VAR2_r, rep(-10, 4))
 })
@@ -82,7 +89,7 @@ test_that("Workflow multiple columns, collapse, apply",{
   lu1$r2 <- c(NA, -2, 3, 4, 5)
 
   lu_r <- collapseColumns(lu1, recodeVars = c("r1", "r2"), prioritize = "r2")
-  testM2 <- applyLookup(testM, lu_r)
+  testM2 <- applyLookup(testM, lu_r, suffix = "_r")
   expect_equal(testM2$dat$VAR2_r, rep(5, 4))
   expect_equal(testM2$dat$VAR1_r, c(1, -2, 3, 4))
 })
@@ -96,11 +103,30 @@ mt_gads <- import_DF(mt)
 
 test_that("Combine mc and text",{
   test <- collapseMC_Text(mt_gads, mc_var = "mc", text_var = "text", mc_code4text = "other")
-  expect_equal(test$dat$mc_r, c(3, 2, 1, 1))
+  expect_equal(test$dat$mc_r, c(2, 4, 1, 1))
   test_dat <- extractData(test)
   expect_equal(test_dat$mc_r, c("Ger", "Eng", "Aus", "Aus"))
 })
 
 
+test_that("Combine mc and text with Missings on mcs",{
+  mt_gads2 <- recodeGADS(mt_gads, varName = "mc", oldValues = c(1, 2, 3), newValues = c(-9, -8, 1), newValueLabels = c("1" = "Aus" , "-8" = "missing other", "-9" = "missing"))
+  mt_gads2 <- checkMissings(mt_gads2)
 
+  test <- collapseMC_Text(mt_gads2, mc_var = "mc", text_var = "text", mc_code4text = "other")
+  expect_equal(test$dat$mc_r, c(-8, 1, 1, 2))
+  test_dat <- extractData(test)
+  expect_equal(test_dat$mc_r, c(NA, "Aus", "Aus", "Aus2"))
+})
+
+
+test_that("Combinations of mc_code4text and missing in text variable",{
+  mt_gads2 <- recodeGADS(mt_gads, varName = "mc", oldValues = c(1, 2, 3), newValues = c(-9, 3, 1), newValueLabels = c("1" = "Aus" , "3" = "other", "-9" = "missing"))
+  mt_gads2 <- checkMissings(mt_gads2)
+
+  test <- collapseMC_Text(mt_gads2, mc_var = "mc", text_var = "text", mc_code4text = "other")
+  expect_equal(test$dat$mc_r, c(3, 1, 1, 4))
+  test_dat <- extractData(test)
+  expect_equal(test_dat$mc_r, c("other", "Aus", "Aus", "Aus2"))
+})
 

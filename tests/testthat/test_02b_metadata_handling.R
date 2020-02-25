@@ -66,6 +66,14 @@ test_that("Transfer meta information from one GADSdat to another", {
   expect_silent(check_GADSdat(dat5))
 })
 
+test_that("Use reuseMeta for combining value labels", {
+  df <- dfSAV$dat[, 1, drop = FALSE]
+  new_dfSAV <- updateMeta(dfSAV, df)
+  new_dfSAV$labels <- new_dfSAV$labels[3, ]
+  new_dfSAV$labels[, "value"] <- 5
+  test <- reuseMeta(dfSAV, varName = "VAR1", other_GADSdat = new_dfSAV, addValueLabels = TRUE)
+})
+
 test_that("Reuse meta with special missing treatment", {
   dat2 <- import_DF(dfSAV$dat)
   expect_error(reuseMeta(dat2, varName = "VAR1", dfSAV, missingLabels = "drp"), "Invalid input for argument missingLabels.")
@@ -292,6 +300,7 @@ test_that("Recode wrapper with new value labels", {
   expect_error(recodeGADS(dfSAV, varName = "VAR1", oldValues = c(1), newValues = c(10), newValueLabels = c('10' = "la", '11' = "muh")), "The following variables are not in set2: 11")
   expect_error(recodeGADS(dfSAV, varName = "VAR1", oldValues = c(1, 2), newValues = c(10, 11), newValueLabels = c('11' = "muh")), "The following variables are not in set1: 10")
   expect_error(recodeGADS(dfSAV, varName = "VAR1", oldValues = c(1), newValues = c(10), newValueLabels = c('10' = "muh")), "The following variables are not in set1: -99, -96")
+  expect_error(recodeGADS(dfSAV, varName = "VAR1", oldValues = c(1), newValues = c(10), newValueLabels = c("muh")), "neValueLabels needs to be named.")
 
   out <- recodeGADS(dfSAV, varName = "VAR1", oldValues = c(1, -99, -96), newValues = c(1, -9, -9), newValueLabels = c('1' = "new_one", '-9' = "new_miss"))
   expect_equal(nrow(out$labels), 6)

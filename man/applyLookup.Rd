@@ -4,12 +4,14 @@
 \alias{applyLookup}
 \title{Recoade via lookup table.}
 \usage{
-applyLookup(GADSdat, lookup, suffix = "_r")
+applyLookup(GADSdat, lookup, suffix = NULL)
 }
 \arguments{
 \item{GADSdat}{A \code{GADSdat} object.}
 
-\item{lookUp}{LookUp table created by \code{\link{createLookup}} and - if necessary -  collapsed by \code{\link{collapseColumns}}.}
+\item{lookup}{Lookup table created by \code{\link{createLookup}} and - if necessary -  collapsed by \code{\link{collapseColumns}}.}
+
+\item{suffix}{Suffix to add to the existing variable names. If \code{NULL} the old variables will be overwritten.}
 }
 \value{
 Returns a recoded \code{GADSdat}.
