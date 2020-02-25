@@ -18,12 +18,12 @@
 #'#to be done
 #'
 #'@export
-createLookup <- function(GADSdat, recodeVars, sort_by = NULL, addCols = c("newValue")) {
+createLookup <- function(GADSdat, recodeVars, sort_by = NULL, addCols = c("value_new")) {
   UseMethod("createLookup")
 }
 
 #'@export
-createLookup.GADSdat <- function(GADSdat, recodeVars, sort_by = NULL, addCols = c("newValue")) {
+createLookup.GADSdat <- function(GADSdat, recodeVars, sort_by = NULL, addCols = c("value_new")) {
   check_GADSdat(GADSdat)
   if(!all(recodeVars %in% namesGADS(GADSdat))) stop("Some of the variables are not variables in the GADSdat.")
   vars_w <- data.table::as.data.table(GADSdat$dat[, recodeVars, drop = FALSE])
@@ -65,7 +65,7 @@ createLookup.GADSdat <- function(GADSdat, recodeVars, sort_by = NULL, addCols = 
 collapseColumns <- function(lookUp, recodeVars, prioritize) {
   if(length(recodeVars) != 2) stop("More recode variables than 2 are currently not supported.")
   if(length(prioritize) != 1) stop("Prioritize must be of length = length(recodeVars) - 1.")
-  lookUp[, "valueNew"] <- ifelse(is.na(lookUp[[prioritize]]),
+  lookUp[, "value_new"] <- ifelse(is.na(lookUp[[prioritize]]),
                                  yes = lookUp[[recodeVars[!recodeVars %in% prioritize]]],
                                  no = lookUp[[prioritize]])
   lookUp[, names(lookUp)[!names(lookUp) %in% recodeVars]]
@@ -106,11 +106,11 @@ applyLookup.GADSdat <- function(GADSdat, lookup, suffix = "_r") {
   for(nam in rec_vars) {
     rec_dt <- data.table::as.data.table(GADSdat2$dat)
 
-    sub_lu <- lookup[lookup$variable == nam, c("value", "newValue")]
-    names(sub_lu) <- c(nam, "valueNew")
+    sub_lu <- lookup[lookup$variable == nam, c("value", "value_new")]
+    names(sub_lu) <- c(nam, "value_new")
     sub_lu <- eatTools::asNumericIfPossible(sub_lu, force.string = FALSE)
     new_nam <- paste0(nam, suffix)
-    rec_dt[sub_lu, on = nam, (new_nam) := i.valueNew]
+    rec_dt[sub_lu, on = nam, (new_nam) := i.value_new]
 
     GADSdat2 <- updateMeta(GADSdat2, newDat = as.data.frame(rec_dt, stringsAsFactor = FALSE))
     GADSdat2 <- reuseMeta(GADSdat = GADSdat2, varName = new_nam, other_GADSdat = GADSdat, other_varName = nam)
@@ -122,7 +122,7 @@ applyLookup.GADSdat <- function(GADSdat, lookup, suffix = "_r") {
 
 check_lookup <- function(lookup, GADSdat) {
   if(!all(lookup$variable %in% namesGADS(GADSdat))) stop("Some of the variables are not variables in the GADSdat.")
-  if(!identical(names(lookup), c("variable", "value", "newValue"))) stop("LookUp table has to be formatted correctly.")
+  if(!identical(names(lookup), c("variable", "value", "value_new"))) stop("LookUp table has to be formatted correctly.")
 
   # tbd!!!!!!!!!!
 }

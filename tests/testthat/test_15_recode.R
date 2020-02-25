@@ -22,7 +22,7 @@ test_that("Create lookup for 2 mixed variables",{
   test <- suppressWarnings(createLookup(rawDat, recodeVars = c("VAR1", "VAR3")))
   expect_equal(test$variable, c("VAR1", "VAR3"))
   expect_equal(test$value, c(1, "a"))
-  expect_equal(test$newValue, c(NA, NA))
+  expect_equal(test$value_new, c(NA, NA))
   expect_equal(dim(test), c(2, 3))
 })
 
@@ -56,7 +56,7 @@ test_that("Test unique values functionality for Create lookups",{
   lu1$r2 <- c(NA, -2, 3, 4, 5)
 
   lu_r <- collapseColumns(lu1, recodeVars = c("r1", "r2"), prioritize = "r2")
-  expect_equal(lu_r$valueNew, c(1, -2, 3, 4, 5))
+  expect_equal(lu_r$value_new, c(1, -2, 3, 4, 5))
 })
 
 test_that("Tests for formatting of lookup",{
@@ -65,16 +65,26 @@ test_that("Tests for formatting of lookup",{
 })
 
 test_that("Applying recode for 1 variable",{
-  lu2$newValue <- c(-9, -6, 10, 11)
+  lu2$value_new <- c(-9, -6, 10, 11)
   ng <- applyLookup(testM, lu2)
   expect_equal(ng$dat$VAR1_r, c(10, -9, -6, 11))
 })
 
 test_that("Applying recode for more variables",{
-  lu3$newValue <- c(-9, -6, 10, -10, 11)
+  lu3$value_new <- c(-9, -6, 10, -10, 11)
   ng <- applyLookup(testM, lu3)
   expect_equal(ng$dat$VAR1_r, c(10, -9, -6, 11))
   expect_equal(ng$dat$VAR2_r, rep(-10, 4))
+})
+
+test_that("Workflow multiple columns, collapse, apply",{
+  lu1$r1 <- c(1, 2, NA, 4, NA)
+  lu1$r2 <- c(NA, -2, 3, 4, 5)
+
+  lu_r <- collapseColumns(lu1, recodeVars = c("r1", "r2"), prioritize = "r2")
+  testM2 <- applyLookup(testM, lu_r)
+  expect_equal(testM2$dat$VAR2_r, rep(5, 4))
+  expect_equal(testM2$dat$VAR1_r, c(1, -2, 3, 4))
 })
 
 
