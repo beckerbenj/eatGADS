@@ -84,6 +84,14 @@ test_that("Applying recode for more variables",{
   expect_equal(ng$dat$VAR2_r, rep(-10, 4))
 })
 
+test_that("Applying recode for more variables and lookup as tibble",{
+  lu3$value_new <- c(-9, -6, 10, -10, 11)
+  lu_tbl <- tibble::as_tibble(lu3)
+  ng <- applyLookup(testM, lu_tbl, suffix = "_r")
+  expect_equal(ng$dat$VAR1_r, c(10, -9, -6, 11))
+  expect_equal(ng$dat$VAR2_r, rep(-10, 4))
+})
+
 test_that("Workflow multiple columns, collapse, apply",{
   lu1$r1 <- c(1, 2, NA, 4, NA)
   lu1$r2 <- c(NA, -2, 3, 4, 5)
@@ -100,6 +108,12 @@ test_that("Workflow multiple columns, collapse, apply",{
 mc <- as.factor(c("Ger", "other", "other", "Aus"))
 mt <- data.frame(ID = 1:4, mc = mc, text = c(NA, "Eng", "Aus", "Aus2"), stringsAsFactors = FALSE)
 mt_gads <- import_DF(mt)
+
+test_that("Errors variable names",{
+  expect_error(collapseMC_Text(mt_gads, mc_var = "some_var", text_var = "text", mc_code4text = "other"), "mc_var is not a variable in the GADSdat.")
+  expect_error(collapseMC_Text(mt_gads, mc_var = "mc", text_var = "some_var", mc_code4text = "other"), "text_var is not a variable in the GADSdat.")
+})
+
 
 test_that("Combine mc and text",{
   test <- collapseMC_Text(mt_gads, mc_var = "mc", text_var = "text", mc_code4text = "other")

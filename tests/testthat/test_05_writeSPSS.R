@@ -22,6 +22,13 @@ test_that("Variable labels are added correctly to attributes, for single variabl
   expect_equal(addLabels_single(label_df_V2), expected_V2)
 })
 
+test_that("Variable labels are added correctly to attributes, for single character variable", {
+  label_df_V2_string <- label_df_V2
+  label_df_V2_string$format <- "A20"
+  expect_equal(class(addLabels_single(label_df_V2_string)$labels), "character")
+})
+
+
 ### check export_tibble: all variable label adding (with one variable)
 test_that("Variable labels are added correctly to attributes for all variables", {
   out <- export_tibble(df)
@@ -55,10 +62,15 @@ test_that("Variable labels are added correctly for factor", {
 })
 
 
-
 ### write SPSS
 test_that("GADSdat correctly written to sav", {
+  # write_spss("c:/Benjamin_Becker/02_Repositories/packages/eatGADS/tests/testthat/helper_write_spss.sav")
   write_spss(df, "helper_write_spss.sav")
+
+  #test_df <- export_tibble(df)
+  #test_df2 <- haven::read_sav("c:/Benjamin_Becker/02_Repositories/packages/eatGADS/other_code/helper_write_spss_manual.sav", user_na = TRUE)
+  #str(test_df)
+  #str(test_df2)
 
   df2 <- import_spss("helper_write_spss.sav")
   # df2 <- import_spss("c:/Benjamin_Becker/02_Repositories/packages/eatGADS/tests/testthat/helper_write_spss.sav")
@@ -66,6 +78,15 @@ test_that("GADSdat correctly written to sav", {
   rownames(df$labels) <- NULL
   expect_equal(df$labels, df2$labels)
 })
+
+
+test_that("Full workflow with haven", {
+  test_df <- import_spss("c:/Benjamin_Becker/02_Repositories/packages/eatGADS/tests/testthat/helper_spss_havenbug.sav")
+  test_tbl <- export_tibble(test_df)
+
+  expect_silent(write_spss(test_df, filePath = tempfile()))
+})
+
 
 ### Possible Problems when writing with haven
 test_that("Check haven behaviour", {

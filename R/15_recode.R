@@ -164,6 +164,9 @@ collapseMC_Text <- function(GADSdat, mc_var, text_var, mc_code4text, suffix = "_
 
 #'@export
 collapseMC_Text.GADSdat <- function(GADSdat, mc_var, text_var, mc_code4text, suffix = "_r") {
+  if(!mc_var %in% namesGADS(GADSdat)) stop("mc_var is not a variable in the GADSdat.")
+  if(!text_var %in% namesGADS(GADSdat)) stop("text_var is not a variable in the GADSdat.")
+
   mc_var_new <- paste0(mc_var, suffix)
   MC_dat <- GADSdat$dat[, mc_var, drop = FALSE]
 

@@ -94,7 +94,15 @@ addLabels_single <- function(label_df) {
   if(nrow(value_label_df) > 0) {
     out[["labels"]] <- value_label_df[, "value"]
     names(out[["labels"]]) <- value_label_df[, "valLabel"]
+
+    # value labels need to have the same class as the variable format
+    if(length(out[["format.spss"]]) > 0 && grepl("^A", unique(out[["format.spss"]]))) {
+      out[["labels"]] <- as.character(out[["labels"]])
+      names(out[["labels"]]) <- value_label_df[, "valLabel"]
+      if(identical(labeled, "yes")) out[["class"]] <- c("haven_labelled")
+    }
   }
+
   #if(any(label_df$varName == "TESTUNG")) browser()
   out
 }
