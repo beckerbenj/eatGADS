@@ -2,7 +2,7 @@
 % Please edit documentation in R/02_data_cleaning.R
 \name{orderLike}
 \alias{orderLike}
-\title{Order the variables a GADSdat.}
+\title{Order the variables in a GADSdat.}
 \usage{
 orderLike(GADSdat, newOrder)
 }

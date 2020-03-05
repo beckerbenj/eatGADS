@@ -66,12 +66,19 @@ test_that("Transfer meta information from one GADSdat to another", {
   expect_silent(check_GADSdat(dat5))
 })
 
-test_that("Use reuseMeta for combining value labels", {
-  df <- dfSAV$dat[, 1, drop = FALSE]
+test_that("Use reuseMeta for combining value labels, including adapting meta data on variable level", {
+  df <- dfSAV$dat[, 2, drop = FALSE]
   new_dfSAV <- updateMeta(dfSAV, df)
-  new_dfSAV$labels <- new_dfSAV$labels[3, ]
+  new_dfSAV$labels <- new_dfSAV$labels[1, ]
   new_dfSAV$labels[, "value"] <- 5
-  test <- reuseMeta(dfSAV, varName = "VAR1", other_GADSdat = new_dfSAV, addValueLabels = TRUE)
+  test <- reuseMeta(dfSAV, varName = "VAR1", other_GADSdat = new_dfSAV, other_varName = "VAR2", addValueLabels = TRUE)
+  test_labels <- test$labels[test$labels$varName == "VAR1", ]
+  expect_equal(test_labels$value, c(-99, -96, 1, 5))
+  expect_equal(unique(test_labels$varLabel), "Variable 1")
+  test2 <- reuseMeta(dfSAV, varName = "VAR1", other_GADSdat = new_dfSAV, other_varName = "VAR2", addValueLabels = FALSE)
+  test2_labels <- test2$labels[test2$labels$varName == "VAR1",]
+  expect_equal(test2_labels$value, c(5))
+  expect_equal(unique(test2_labels$varLabel), "Variable 2")
 })
 
 test_that("Reuse meta with special missing treatment", {

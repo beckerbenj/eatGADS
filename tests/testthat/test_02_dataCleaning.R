@@ -157,7 +157,13 @@ test_that("Variable ordering in GADS", {
   expect_equal(out3$dat, dfSAV$dat[, c(2, 3, 1)])
 })
 
-
+test_that("Removing variables from GADSdat", {
+  expect_error(removeVars(dfSAV, c("VAR4")), "All 'vars' have to be variables in the GADSdat.")
+  test <- removeVars(dfSAV, c("VAR1"))
+  expect_equal(namesGADS(test), c("VAR2", "VAR3"))
+  test2 <- removeVars(dfSAV, c("VAR1", "VAR3"))
+  expect_equal(namesGADS(test2), c("VAR2"))
+})
 
 
 

@@ -117,6 +117,8 @@ test_that("Errors variable names",{
 
 test_that("Combine mc and text",{
   test <- collapseMC_Text(mt_gads, mc_var = "mc", text_var = "text", mc_code4text = "other")
+  expect_true("mc_r" %in% names(test$dat))
+  expect_equal(test$labels[6, "varLabel"], "(recoded)")
   expect_equal(test$dat$mc_r, c(2, 4, 1, 1))
   test_dat <- extractData(test)
   expect_equal(test_dat$mc_r, c("Ger", "Eng", "Aus", "Aus"))
@@ -143,4 +145,16 @@ test_that("Combinations of mc_code4text and missing in text variable",{
   test_dat <- extractData(test)
   expect_equal(test_dat$mc_r, c("other", "Aus", "Aus", "Aus2"))
 })
+
+
+# testMC <- import_spss("c:/Benjamin_Becker/02_Repositories/packages/eatGADS/tests/testthat/helper_spss_recodeMC.sav")
+suppressWarnings(testMC <- import_spss("helper_spss_recodeMC.sav"))
+
+test_that("Combination of mc_code4text and labeled missing in text variable",{
+  test <- collapseMC_Text(testMC, mc_var = "mc", text_var = "text", mc_code4text = "other")
+  expect_equal(test$dat$mc_r, c(-9, 1, 2, -9, 4, 3, -9))
+  test_dat <- extractData(test)
+  expect_equal(test_dat$mc_r, c(NA, "Ger", "Eng", NA, "Aus", "other", NA))
+})
+
 

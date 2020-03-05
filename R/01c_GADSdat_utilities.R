@@ -21,4 +21,13 @@ check_GADSdat <- function(GADSdat) {
   only_in_dat <- setdiff(names(GADSdat$dat), unique(GADSdat$labels$varName))
   if(length(only_in_labels) > 0) stop("The following variables have meta data but are not in the actual data: ", only_in_labels, call. = FALSE)
   if(length(only_in_dat) > 0) stop("The following variables are in the data but do not have meta data: ", only_in_dat, call. = FALSE)
+
+  var_info <- unique(GADSdat$labels[, c("varName", "varLabel", "format", "display_width", "labeled")])
+  if(!nrow(var_info) == length(unique(names(GADSdat$dat)))) {
+    by(GADSdat$labels, GADSdat$labels$varName, function(labels) {
+      if(nrow(unique(labels[, c("varName", "varLabel", "format", "display_width", "labeled")])) > 1) {
+        stop("The following variable has inconsistent meta information on variable level: ", unique(labels$varName))
+      }
+    })
+  }
 }

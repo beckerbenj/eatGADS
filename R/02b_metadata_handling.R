@@ -91,6 +91,7 @@ add_rows_meta <- function(labels, newDat) {
 #'@param other_GADSdat \code{GADSdat} object imported via eatGADS including the desired meta information. Can also be a GADS db or an \code{all_GADSdat} object.
 #'@param other_varName Name of the variable that should get the new meta data in the \code{other_GADSdat}.
 #'@param missingLabels How should meta data for missing values be treated? If \code{NULL}, missings are transfered as all other labels. If \code{"drop"}, missing labels are dropped (useful for imputed data). If \code{"leave"}, missing labels remain untouched.
+#'@param addValueLabels Should only value labels be added and all other meta information retained?
 #'
 #'@return Returns the original object with updated meta data.
 #'
@@ -112,6 +113,12 @@ reuseMeta.GADSdat <- function(GADSdat, varName, other_GADSdat, other_varName = N
   # compatability with meta data from all_GADSdat or data base
   new_meta <- new_meta[, names(new_meta) != "data_table"]
   new_meta[, "varName"] <- varName
+  # If value labels are added (via addValueLabels = TRUE or missingLabels = "leave"), make meta information on variable level compatible
+  if(addValueLabels || identical(missingLabels, "leave")) {
+    for(i in c("varLabel", "format", "display_width", "labeled")) {
+      new_meta[, i] <- GADSdat$labels[GADSdat$labels$varName == varName, i][1]
+    }
+  }
 
   remove_rows <- which(GADSdat$labels$varName == varName)
 

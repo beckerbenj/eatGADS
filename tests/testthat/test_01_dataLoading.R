@@ -255,12 +255,13 @@ test_that("import_raw with tibbles", {
 testM <- import_spss("helper_spss_missings.sav")
 
 test_that("Object validater for GADSdat objects",{
-  testM2 <- testM
+  testM3 <- testM2 <- testM
   testM$dat[, "newVar"] <- NA
   expect_error(check_GADSdat(testM), "The following variables are in the data but do not have meta data: newVar")
   testM2$labels[7, "varName"] <- "newVar"
   expect_error(check_GADSdat(testM2), "The following variables have meta data but are not in the actual data: newVar")
-
+  testM3$labels[2, "varLabel"] <- "other label"
+  expect_error(check_GADSdat(testM3), "The following variable has inconsistent meta information on variable level: VAR1")
 })
 
 

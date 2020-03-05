@@ -4,7 +4,14 @@
 \alias{collapseMC_Text}
 \title{Recode MC variable based on text.}
 \usage{
-collapseMC_Text(GADSdat, mc_var, text_var, mc_code4text, suffix = "_r")
+collapseMC_Text(
+  GADSdat,
+  mc_var,
+  text_var,
+  mc_code4text,
+  var_suffix = "_r",
+  label_suffix = "(recoded)"
+)
 }
 \arguments{
 \item{GADSdat}{A \code{GADSdat} object.}
@@ -15,7 +22,9 @@ collapseMC_Text(GADSdat, mc_var, text_var, mc_code4text, suffix = "_r")
 
 \item{mc_code4text}{The value in the MC variable that signals that information from the text variable should be used.}
 
-\item{suffix}{Variable suffix for the newly created GADSdat.}
+\item{var_suffix}{Variable suffix for the newly created \code{GADSdat}.}
+
+\item{label_suffix}{Suffix added to variable label for the newly created variable in the \code{GADSdat}.}
 }
 \value{
 Returns a \code{GADSdat} containing the newly computed variable.

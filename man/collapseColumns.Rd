@@ -4,16 +4,14 @@
 \alias{collapseColumns}
 \title{Collapse columns.}
 \usage{
-collapseColumns(lookUp, recodeVars, prioritize)
+collapseColumns(lookup, recodeVars, prioritize)
 }
 \arguments{
-\item{recodeVars}{Character vector of variable names which should be recoded.}
+\item{lookup}{A lookup table \code{data.frame} as created via \code{\link{createLookup}}.}
 
-\item{GADSdat}{A \code{GADSdat} object.}
+\item{recodeVars}{Character vector of variable names which should be collapsed.}
 
-\item{addCols}{Character vector of additional column names for recoding purposes.}
-
-\item{sort_by}{By which column should the long format data.frame be sorted? If \code{NULL}, no sorting is performed.}
+\item{prioritize}{Which of the variables should be prioritized, if multiple values are available?}
 }
 \value{
 Returns a data frame that can be used for \code{\link{applyLookup}}.
