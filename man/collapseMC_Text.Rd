@@ -35,3 +35,7 @@ Use an additional text variable to recode an existing MC variable.
 \details{
 to be written
 }
+\examples{
+#to be done
+
+}

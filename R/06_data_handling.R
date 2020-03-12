@@ -9,7 +9,7 @@
 #'@param GADSdat A \code{GADSdat} object.
 #'@param convertMiss Should values coded as missings be recoded to \code{NA}?
 #'@param convertLabels If \code{"numeric"}, values remain as numerics. If \code{"factor"} or \code{"character"}, values are recoded to their labels. Corresponding variable type is applied.
-#'@param dropPartialLabels Should value labels for partially labelled variables be dropped? Most of the time, \code{TRUE} will be the desired behaviour.
+#'@param dropPartialLabels Should value labels for partially labelled variables be dropped? If \code{TRUE}, the partial labels will be dropped. If \code{FALSE}, the variable will be converted to the class specified in \code{convertLabels}.
 #'@param convertVariables Character vector of variables names, which labels should be applied to. If not specified (default), value labels are applied to all variables for which labels are available. Variable names not in the actual GADS are silently dropped.
 #'
 #'@return Returns a data frame.

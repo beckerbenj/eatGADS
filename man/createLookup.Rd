@@ -24,3 +24,7 @@ Extract values form variables of \code{GADSdat} object and write to \code{xlsx} 
 \details{
 If recoding of one or multiple variables is more complex, a lookup table can be created for later importing via \code{eatGADS}.
 }
+\examples{
+#to be done
+
+}

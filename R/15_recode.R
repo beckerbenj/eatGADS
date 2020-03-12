@@ -14,7 +14,6 @@
 #'@return Returns a data frame in long format including all unique values of the variables in \code{recodeVars}.
 #'
 #'@examples
-#'\dontrun{
 #'#to be done
 #'
 #'@export
@@ -57,7 +56,6 @@ createLookup.GADSdat <- function(GADSdat, recodeVars, sort_by = NULL, addCols = 
 #'@return Returns a data frame that can be used for \code{\link{applyLookup}}.
 #'
 #'@examples
-#'\dontrun{
 #'#to be done
 #'
 #'@export
@@ -86,7 +84,6 @@ collapseColumns <- function(lookup, recodeVars, prioritize) {
 #'@return Returns a recoded \code{GADSdat}.
 #'
 #'@examples
-#'\dontrun{
 #'#to be done
 #'
 #'@export
@@ -154,7 +151,6 @@ check_lookup <- function(lookup, GADSdat) {
 #'@return Returns a \code{GADSdat} containing the newly computed variable.
 #'
 #'@examples
-#'\dontrun{
 #'#to be done
 #'
 #'@export
