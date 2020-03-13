@@ -222,4 +222,148 @@ collapseMC_Text.GADSdat <- function(GADSdat, mc_var, text_var, mc_code4text, var
 }
 
 
+#### Match value and varLabels
+#############################################################################
+#' Match regular expresssions and variable names.
+#'
+#' Using variable labels, the function matches a vector of regular expressions to a set of variable names.
+#'
+#' Note that all variables in \code{mc_vars} have to be assigned a value. If a variable name is missing in the output, an error will be thrown. In this case, the \code{label_by_hand} argument should be used to specifiy the regular expression variable name pair manually.
+#'
+#'@param GADSdat A \code{GADSdat} object.
+#'@param mc_vars A vector containing the names of the variables, which should be matched accoring to their variable labels.
+#'@param values A character vector containing the regular expressions for which the \code{varLabel} column should be searched.
+#'@param label_by_hand Additional value - mc_var pairs. Necessary, if for some mc_vars no value exists.
+#'
+#'@return Returns a named character vector. Values of the vector are the variable names in the \code{GADSdat}, names of the vector are the regular expressions.
+#'
+#'@examples
+#'#to be done
+#'
+#'@export
+matchValues_varLabels <- function(GADSdat, mc_vars, values, label_by_hand = character(0)) {
+  check_GADSdat(GADSdat)
+  if(!is.vector(values) & length(values) > 0) stop("values needs to be a character vector of at least length 1.")
+
+  values <- unique(values)
+  labels <- unique(extractMeta(GADSdat, mc_vars)[, c("varName", "varLabel")])
+
+  ## test label_by_hand (all in names, all in varLabel)
+  if(!all(label_by_hand %in% mc_vars)) stop("All variable names in label_by_hand must be variables in mc_vars.")
+
+  names(values) <- values
+  matches <- lapply(values, function(value) labels[grep(value, labels$varLabel), "varName"])
+  matches <- unlist(matches[sapply(matches, function(x) length(x) > 0)])
+  matches <- c(matches, label_by_hand)
+
+  unassigned_mcs <- mc_vars[!mc_vars %in% matches]
+  if(length(unassigned_mcs) > 0) stop("The following mc_vars have not been assigned a value: ", paste(unassigned_mcs, collapse = ", "))
+  names(mc_vars) <- names(matches)[match(mc_vars, matches)]
+  mc_vars
+}
+
+
+
+#### Apply recode lookup table for Multi-MC
+#############################################################################
+#' Recode MC variable with multiple variables based on text.
+#'
+#' Use an additional text variable to recode an existing MC variable.
+#'
+#' to be written
+#'
+#'@param GADSdat A \code{GADSdat} object.
+#'@param mc_var A single variable name of the multiple choice variable.
+#'@param text_var A single variable name of the text variable.
+#'@param mc_code4text The value in the MC variable that signals that information from the text variable should be used.
+#'@param var_suffix Variable suffix for the newly created \code{GADSdat}.
+#'@param label_suffix Suffix added to variable label for the newly created variable in the \code{GADSdat}.
+#'
+#'@return Returns a \code{GADSdat} containing the newly computed variable.
+#'
+#'@examples
+#'#to be done
+#'
+#'@export
+collapseMultiMC_Text <- function(GADSdat, mc_vars, text_vars, mc_var_4text, var_suffix = "_r", label_suffix = "(recoded)") {
+  UseMethod("collapseMultiMC_Text")
+}
+
+#'@export
+collapseMultiMC_Text.GADSdat <- function(GADSdat, mc_vars, text_vars, mc_var_4text, var_suffix = "_r", label_suffix = "(recoded)") {
+  if(!all(mc_vars %in% namesGADS(GADSdat))) stop("Not all mc_vars are variables in the GADSdat.")
+  if(!all(text_vars %in% namesGADS(GADSdat))) stop("Not all text_vars are variables in the GADSdat.")
+  if(!mc_var_4text %in% mc_vars) stop("mc_var_4text is not part of mc_vars.")
+
+  mc_vars <- mc_vars[!mc_vars == mc_var_4text]
+  ## check if the the value has been given multiple times in the text fields?
+
+  # loop over all text variables, recode all MCs according to each
+  dat <- GADSdat$dat
+
+  for(text_var in text_vars) {
+    #browser()
+    for(mc_value in names(mc_vars)) {
+      mc_var <- mc_vars[[mc_value]]
+      dat[, mc_var] <- ifelse(!is.na(dat[[text_var]]) & dat[[text_var]] == mc_value, yes = 1, no = dat[[mc_var]])
+    }
+  }
+
+  dat <- remove_values(dat, vars = text_vars, values = names(mc_vars))
+  dat <- left_fill(dat, vars = text_vars)
+
+  #browser()
+
+  # count text variables, give missings if more than x left
+
+  # label new text variables with identical labels!
+
+  updateMeta(GADSdat, dat)
+}
+
+# remove all text values that occur in labels (own function)
+remove_values <- function(dat, vars = names(dat), values) {
+  for(value in values) {
+    dat[, vars][dat[, vars] == value] <- NA
+  }
+  dat
+}
+
+# "refill" text variables (move up values) (own function)
+left_fill <- function(dat, vars = names(dat)) {
+  for(var in vars[-1]) {
+    var_left <- names(dat)[which(names(dat) == var) - 1]
+    var_left_ori <- dat[, var_left]
+    dat[, var_left] <- ifelse(is.na(dat[[var_left]]) & !is.na(dat[[var]]), yes = dat[[var]], no = dat[[var_left]])
+    dat[, var] <- ifelse(is.na(var_left_ori) & !is.na(dat[[var]]), yes = NA, no = dat[[var]])
+  }
+  dat
+}
+
+
+
+#### Multiple Strings to Labeled Variable
+#############################################################################
+#'
+#'
+#' Use an additional text variable to recode an existing MC variable.
+#'
+#' to be written
+#'
+#'@param GADSdat A \code{GADSdat} object.
+#'@param mc_var A single variable name of the multiple choice variable.
+#'@param text_var A single variable name of the text variable.
+#'@param mc_code4text The value in the MC variable that signals that information from the text variable should be used.
+#'@param var_suffix Variable suffix for the newly created \code{GADSdat}.
+#'@param label_suffix Suffix added to variable label for the newly created variable in the \code{GADSdat}.
+#'
+#'@return Returns a \code{GADSdat} containing the newly computed variable.
+#'
+#'@examples
+#'#to be done
+#'
+#'@export
+collapseMultiMC_Text <- function(GADSdat, mc_vars, text_vars, mc_var_4text, var_suffix = "_r", label_suffix = "(recoded)") {
+  UseMethod("collapseMultiMC_Text")
+}
 
