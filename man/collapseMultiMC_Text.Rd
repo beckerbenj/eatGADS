@@ -16,26 +16,36 @@ collapseMultiMC_Text(
 \arguments{
 \item{GADSdat}{A \code{GADSdat} object.}
 
-\item{var_suffix}{Variable suffix for the newly created \code{GADSdat}.}
+\item{mc_vars}{A single variable name of the multiple choice variable.}
+
+\item{text_vars}{A single variable name of the text variable.}
+
+\item{mc_var_4text}{The value in the MC variable that signals that information from the text variable should be used.}
+
+\item{var_suffix}{Variable suffix for the newly created \code{GADSdat}. If an empty character, the existing variables are overwritten.}
 
 \item{label_suffix}{Suffix added to variable label for the newly created variable in the \code{GADSdat}.}
-
-\item{mc_var}{A single variable name of the multiple choice variable.}
-
-\item{text_var}{A single variable name of the text variable.}
-
-\item{mc_code4text}{The value in the MC variable that signals that information from the text variable should be used.}
 }
 \value{
 Returns a \code{GADSdat} containing the newly computed variable.
 }
 \description{
-Use an additional text variable to recode an existing MC variable.
+Recode a multiple variable multiplce choice item based on a multiple variable test field..
 }
 \details{
-to be written
+If a multiple choice item can be answered with crossing multiple boxes, multiple variables in the data set are necessary to represent this item. In this case, an additional text field for further answers can also contain multiple values at once. This function allows to recode multiple MC items of this kind based on multiple text variables.
 }
 \examples{
-#to be done
+# Prepare example data
+mt2 <- data.frame(ID = 1:4, mc1 = c(1, 0, 0, 0), mc2 = c(0, 0, 0, 0), mc3 = c(0, 1, 1, 0),
+text1 = c(NA, "Eng", "Aus", "Aus2"), text2 = c(NA, "Franz", NA, NA),stringsAsFactors = FALSE)
+mt2_gads <- import_DF(mt2)
+mt3_gads <- changeVarLabels(mt2_gads, varName = c("mc1", "mc2", "mc3"), varLabel = c("Lang: Eng", "Aus spoken", "other"))
+
+## All operations (see also respective help pages of functions for further explanations)
+mc_vars <- matchValues_varLabels(mt3_gads, mc_vars = c("mc1", "mc2", "mc3"), values = c("Aus", "Eng", "Eng"), label_by_hand = c("other" = "mc3"))
+out_gads <- collapseMultiMC_Text(mt3_gads, mc_vars = mc_vars, text_vars = c("text1", "text2"), mc_var_4text = "mc3")
+out_gads2 <- multiChar2fac(out_gads, vars = c("text1_r", "text2_r"))
+final_gads <- remove_2NA_char(out_gads2, vars = c("text1", "text2"), max_num = 1, na_value = -99)
 
 }

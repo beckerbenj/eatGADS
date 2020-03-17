@@ -210,15 +210,22 @@ collapseMC_Text.GADSdat <- function(GADSdat, mc_var, text_var, mc_code4text, var
   ### insert right meta data (combine)
   GADSdat_out <- reuseMeta(GADSdat_dat4, other_GADSdat = GADSdat, varName = mc_var_new, other_varName = mc_var)
   GADSdat_out2 <- reuseMeta(GADSdat_out, other_GADSdat = add_values_gads, varName = mc_var_new, addValueLabels = TRUE)
+  GADSdat_out3 <- append_varLabel(GADSdat = GADSdat_out2, varName = mc_var_new, label_suffix = label_suffix)
 
-  old_varLabel <- extractMeta(GADSdat_out2, mc_var_new)[1, "varLabel"]
+  check_GADSdat(GADSdat_out3)
+  GADSdat_out3
+}
+
+## append a suffix to a variable label safely
+append_varLabel <- function(GADSdat, varName, label_suffix) {
+  stopifnot(length(label_suffix) == 1)
+  if(nchar(label_suffix) == 0) return(GADSdat)
+  old_varLabel <- extractMeta(GADSdat, varName)[1, "varLabel"]
   new_varLabel <- ifelse(is.na(old_varLabel), yes = label_suffix,
                          no = paste(old_varLabel, label_suffix, sep = " "))
-  GADSdat_out2 <- changeVarLabels(GADSdat_out2, varName = mc_var_new, varLabel =
-                    new_varLabel)
-
-  check_GADSdat(GADSdat_out2)
-  GADSdat_out2
+  GADSdat_out <- changeVarLabels(GADSdat, varName = varName, varLabel =
+                                    new_varLabel)
+  GADSdat_out
 }
 
 
@@ -238,7 +245,12 @@ collapseMC_Text.GADSdat <- function(GADSdat, mc_var, text_var, mc_code4text, var
 #'@return Returns a named character vector. Values of the vector are the variable names in the \code{GADSdat}, names of the vector are the regular expressions.
 #'
 #'@examples
-#'#to be done
+#' # Prepare example data
+#' mt2 <- data.frame(ID = 1:4, mc1 = c(1, 0, 0, 0), mc2 = c(0, 0, 0, 0), mc3 = c(0, 1, 1, 0), text1 = c(NA, "Eng", "Aus", "Aus2"), text2 = c(NA, "Franz", NA, NA),stringsAsFactors = FALSE)
+#' mt2_gads <- import_DF(mt2)
+#' mt3_gads <- changeVarLabels(mt2_gads, varName = c("mc1", "mc2", "mc3"), varLabel = c("Lang: Eng", "Aus spoken", "other"))
+#'
+#' out <- matchValues_varLabels(mt3_gads, mc_vars = c("mc1", "mc2", "mc3"), values = c("Aus", "Eng", "Eng"), label_by_hand = c("other" = "mc3"))
 #'
 #'@export
 matchValues_varLabels <- function(GADSdat, mc_vars, values, label_by_hand = character(0)) {
@@ -268,21 +280,31 @@ matchValues_varLabels <- function(GADSdat, mc_vars, values, label_by_hand = char
 #############################################################################
 #' Recode MC variable with multiple variables based on text.
 #'
-#' Use an additional text variable to recode an existing MC variable.
+#' Recode a multiple variable multiplce choice item based on a multiple variable test field..
 #'
-#' to be written
+#' If a multiple choice item can be answered with crossing multiple boxes, multiple variables in the data set are necessary to represent this item. In this case, an additional text field for further answers can also contain multiple values at once. This function allows to recode multiple MC items of this kind based on multiple text variables.
 #'
 #'@param GADSdat A \code{GADSdat} object.
-#'@param mc_var A single variable name of the multiple choice variable.
-#'@param text_var A single variable name of the text variable.
-#'@param mc_code4text The value in the MC variable that signals that information from the text variable should be used.
-#'@param var_suffix Variable suffix for the newly created \code{GADSdat}.
+#'@param mc_vars A single variable name of the multiple choice variable.
+#'@param text_vars A single variable name of the text variable.
+#'@param mc_var_4text The value in the MC variable that signals that information from the text variable should be used.
+#'@param var_suffix Variable suffix for the newly created \code{GADSdat}. If an empty character, the existing variables are overwritten.
 #'@param label_suffix Suffix added to variable label for the newly created variable in the \code{GADSdat}.
 #'
 #'@return Returns a \code{GADSdat} containing the newly computed variable.
 #'
 #'@examples
-#'#to be done
+#' # Prepare example data
+#' mt2 <- data.frame(ID = 1:4, mc1 = c(1, 0, 0, 0), mc2 = c(0, 0, 0, 0), mc3 = c(0, 1, 1, 0),
+#' text1 = c(NA, "Eng", "Aus", "Aus2"), text2 = c(NA, "Franz", NA, NA),stringsAsFactors = FALSE)
+#' mt2_gads <- import_DF(mt2)
+#' mt3_gads <- changeVarLabels(mt2_gads, varName = c("mc1", "mc2", "mc3"), varLabel = c("Lang: Eng", "Aus spoken", "other"))
+#'
+#' ## All operations (see also respective help pages of functions for further explanations)
+#' mc_vars <- matchValues_varLabels(mt3_gads, mc_vars = c("mc1", "mc2", "mc3"), values = c("Aus", "Eng", "Eng"), label_by_hand = c("other" = "mc3"))
+#' out_gads <- collapseMultiMC_Text(mt3_gads, mc_vars = mc_vars, text_vars = c("text1", "text2"), mc_var_4text = "mc3")
+#' out_gads2 <- multiChar2fac(out_gads, vars = c("text1_r", "text2_r"))
+#' final_gads <- remove_2NA_char(out_gads2, vars = c("text1", "text2"), max_num = 1, na_value = -99)
 #'
 #'@export
 collapseMultiMC_Text <- function(GADSdat, mc_vars, text_vars, mc_var_4text, var_suffix = "_r", label_suffix = "(recoded)") {
@@ -295,30 +317,41 @@ collapseMultiMC_Text.GADSdat <- function(GADSdat, mc_vars, text_vars, mc_var_4te
   if(!all(text_vars %in% namesGADS(GADSdat))) stop("Not all text_vars are variables in the GADSdat.")
   if(!mc_var_4text %in% mc_vars) stop("mc_var_4text is not part of mc_vars.")
 
-  mc_vars <- mc_vars[!mc_vars == mc_var_4text]
+  dat <- GADSdat$dat
   ## check if the the value has been given multiple times in the text fields?
+  for(r in seq(nrow(dat))) {
+    dups_in_row <- duplicated(as.character(dat[r, text_vars])[!is.na(as.character(dat[r, text_vars]))])
+    if(any(dups_in_row)) stop("Duplicate values in row ", r, ".")
+  }
+
+  # create new variables
+  new_mc_vars <- paste0(mc_vars, var_suffix)
+  names(new_mc_vars) <- names(mc_vars)
+  for(i in seq(mc_vars)) dat[, new_mc_vars[i]] <- dat[, mc_vars[i]]
+  new_text_vars <- paste0(text_vars, var_suffix)
+  for(i in seq(text_vars)) dat[, new_text_vars[i]] <- dat[, text_vars[i]]
 
   # loop over all text variables, recode all MCs according to each
-  dat <- GADSdat$dat
-
-  for(text_var in text_vars) {
-    #browser()
-    for(mc_value in names(mc_vars)) {
-      mc_var <- mc_vars[[mc_value]]
-      dat[, mc_var] <- ifelse(!is.na(dat[[text_var]]) & dat[[text_var]] == mc_value, yes = 1, no = dat[[mc_var]])
+  new_mc_vars <- new_mc_vars[!new_mc_vars == paste0(mc_var_4text, var_suffix)]
+  for(text_var in new_text_vars) {
+    for(mc_value in names(new_mc_vars)) {
+      new_mc_var <- new_mc_vars[[mc_value]]
+      dat[, new_mc_var] <- ifelse(!is.na(dat[[text_var]]) & dat[[text_var]] == mc_value, yes = 1, no = dat[[new_mc_var]])
     }
   }
 
-  dat <- remove_values(dat, vars = text_vars, values = names(mc_vars))
-  dat <- left_fill(dat, vars = text_vars)
+  dat <- remove_values(dat, vars = new_text_vars, values = names(mc_vars))
+  dat <- left_fill(dat, vars = new_text_vars)
 
-  #browser()
+  GADSdat2 <- updateMeta(GADSdat, dat)
+  # fix meta data for newly created variables
+  for(old_varName in c(mc_vars, text_vars)) {
+    new_varName <- paste0(old_varName, var_suffix)
+    GADSdat2 <- reuseMeta(GADSdat = GADSdat2, varName = new_varName, other_GADSdat = GADSdat2, other_varName = old_varName)
+    GADSdat2 <- append_varLabel(GADSdat2, new_varName, label_suffix = label_suffix)
+  }
 
-  # count text variables, give missings if more than x left
-
-  # label new text variables with identical labels!
-
-  updateMeta(GADSdat, dat)
+  GADSdat2
 }
 
 # remove all text values that occur in labels (own function)
@@ -341,20 +374,17 @@ left_fill <- function(dat, vars = names(dat)) {
 }
 
 
-
-#### Multiple Strings to Labeled Variable
+#### Multiple Strings to Labeled Variables
 #############################################################################
+#' Multiple character variables to factors with identical levels.
 #'
+#' Convert multiple character variables to factors, while creating a common set of value labels, which is identical across variables.
 #'
-#' Use an additional text variable to recode an existing MC variable.
+#' If a set of variables has the same possible values, it is desirable that these variables share the same value labels, even if some of the values do not occur on the individual variables. This function allows the transformation of multiple character variables to factors while assimilating the value labels.
 #'
-#' to be written
-#'
-#'@param GADSdat A \code{GADSdat} object.
-#'@param mc_var A single variable name of the multiple choice variable.
-#'@param text_var A single variable name of the text variable.
-#'@param mc_code4text The value in the MC variable that signals that information from the text variable should be used.
-#'@param var_suffix Variable suffix for the newly created \code{GADSdat}.
+#'@param GADSdat A \code{data.frame} or \code{GADSdat} object.
+#'@param vars A single variable name of the multiple choice variable.
+#'@param var_suffix Variable suffix for the newly created \code{GADSdat}. If an empty character, the existing variables are overwritten.
 #'@param label_suffix Suffix added to variable label for the newly created variable in the \code{GADSdat}.
 #'
 #'@return Returns a \code{GADSdat} containing the newly computed variable.
@@ -363,7 +393,83 @@ left_fill <- function(dat, vars = names(dat)) {
 #'#to be done
 #'
 #'@export
-collapseMultiMC_Text <- function(GADSdat, mc_vars, text_vars, mc_var_4text, var_suffix = "_r", label_suffix = "(recoded)") {
-  UseMethod("collapseMultiMC_Text")
+multiChar2fac <- function(GADSdat, vars, var_suffix = "_r", label_suffix = "(recoded)") {
+  UseMethod("multiChar2fac")
 }
 
+#'@export
+multiChar2fac.GADSdat <- function(GADSdat, vars, var_suffix = "_r", label_suffix = "(recoded)") {
+  check_GADSdat(GADSdat)
+  if(!is.character(vars) && length(vars) > 0) stop("vars needs to be a character vector of at least length 1.")
+
+  all_levels <- unique(unlist(lapply(GADSdat$dat[vars], function(x) x)))
+  all_levels_fac <- as.data.frame(all_levels, stringsAsFactor = TRUE)
+  all_levels_gads <- import_DF(all_levels_fac)
+  all_levels_lookup <- all_levels_gads$labels[, c("valLabel", "value")]
+  names(all_levels_lookup) <- c("value", "value_new")
+
+  for(var in vars) {
+    old_nam <- var
+    var <- paste0(var, var_suffix)
+    specific_lookup <- data.frame(variable = old_nam, all_levels_lookup, stringsAsFactors = FALSE)
+    GADSdat <- applyLookup(GADSdat, lookup = specific_lookup, suffix = var_suffix)
+    GADSdat$dat[, var] <- as.numeric(GADSdat$dat[, var])
+
+    GADSdat <- reuseMeta(GADSdat, varName = var, other_GADSdat = all_levels_gads, other_varName = "all_levels")
+    GADSdat <- append_varLabel(GADSdat, varName = var, label_suffix = label_suffix)
+  }
+
+  GADSdat
+}
+
+
+
+#### Shorten multiple text variables
+#############################################################################
+#' Shorten multiple text variables while giving NA codes.
+#'
+#' Remove text variables from a certain number from \code{GADSdat} while coding overflowing answers as complete missings.
+#'
+#' In some cases, multiple text variables contain the information of one variable (e.g. mutliple answers to an open item).
+#'
+#'@param GADSdat A \code{GADSdat} object.
+#'@param vars A character vector with the names of the text variables.
+#'@param max_num Maximum number of text variables. Additional text variables will be removed and NA codes given accordingly.
+#'@param na_value Which NA value should be given in cases of too many values on text variables.
+#'
+#'@return Returns the modified \code{GADSdat}.
+#'
+#'@examples
+#'#to be done
+#'
+#'@export
+remove_2NA_char <- function(GADSdat, vars, max_num = 2, na_value) {
+  UseMethod("remove_2NA_char")
+}
+
+#'@export
+remove_2NA_char.GADSdat <- function(GADSdat, vars, max_num = 2, na_value) {
+  check_GADSdat(GADSdat)
+  if(!is.numeric(max_num) && length(max_num) == 1 && max_num > 0) stop("max_num needs to be a single numeric value greater than 0.")
+
+  dat <- max_num_strings2NA(GADSdat$dat, vars = vars, max_num = max_num, na_value = na_value)
+  # cut text variables
+  remove_vars <- vars[-(1:max_num)]
+  dat2 <- dat[, !names(dat) %in% remove_vars, drop = FALSE]
+
+  updateMeta(GADSdat, dat2)
+}
+
+# count text variables, give missings if more than x left
+max_num_strings2NA <- function(dat, vars, max_num, na_value) {
+  #dat[, vars] <- ifelse(!is.na(dat[, max_num]), yes = NA, no = dat[, vars])
+  stopifnot(is.numeric(max_num) && length(max_num) == 1)
+  stopifnot(is.character(vars) && length(vars) > 1)
+
+  for(i in seq(nrow(dat))) {
+    if(!is.na(dat[i, max_num + 1])) {
+      dat[i, vars] <- na_value
+    }
+  }
+  dat
+}

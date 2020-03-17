@@ -1,9 +1,9 @@
 Package: eatGADS
 Title: Data management of hierarchical SPSS files via R and SQLite
-Version: 0.9.8
+Version: 0.10.0
 Authors@R: person("Benjamin", "Becker", email = "b.becker@iqb.hu.berlin.de", role = c("aut", "cre"))
 Description: Importing SPSS data, handling of SPSS meta data and storage of hierarchical data in SQLite data bases.
-Depends: R (>= 3.0.0), eatDB (>= 0.2.2), data.table
+Depends: R (>= 3.5.0), eatDB (>= 0.2.2), data.table
 Imports: haven (>= 2.1.0), plyr, devtools, eatTools (>= 0.1.3), tibble
 License: MIT
 Encoding: UTF-8

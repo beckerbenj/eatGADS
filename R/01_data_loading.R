@@ -130,11 +130,12 @@ import_convertLabel <- function(df, checkVarNames = TRUE) {
 #'
 #'@examples
 #'dat <- data.frame(ID = 1:5, grade = c(1, 1, 2, 3, 1))
-#'varLabels <- data.frame(varName = c("ID", "grade"), varLabel = c("Person Identifier", "School grade Math"))
+#'varLabels <- data.frame(varName = c("ID", "grade"), varLabel = c("Person Identifier", "School grade Math"), stringsAsFactors = FALSE)
 #'valLabels <- data.frame(varName = c("grade", "grade", "grade"),
 #'                        value = c(1, 2, 3),
 #'                        valLabel = c("very good", "good", "sufficient"),
-#'                        missings = c("valid", "valid", "valid"))
+#'                        missings = c("valid", "valid", "valid"),
+#'                        stringsAsFactors = FALSE)
 #'
 #'gads <- import_raw(df = dat, varLabels = varLabels, valLabels = valLabels, checkVarNames = FALSE)
 #'

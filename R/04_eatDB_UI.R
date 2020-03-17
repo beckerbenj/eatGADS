@@ -42,7 +42,7 @@ createGADS.GADSdat <- function(allList, pkList, filePath) {
 #'
 #' Extracts names of all variables included in the relational data base, structured as a list with the individual data tables as list elements.
 #'
-#'@param filePath Path of an existing GADS data base.
+#'@param GADS Path of an existing GADS data base.
 #'
 #'@return Returns a named list of variable names per data table.
 #'

@@ -114,6 +114,18 @@ test_that("Errors variable names",{
   expect_error(collapseMC_Text(mt_gads, mc_var = "mc", text_var = "some_var", mc_code4text = "other"), "text_var is not a variable in the GADSdat.")
 })
 
+test_that("Append variable label",{
+  mt_gads2 <- changeVarLabels(mt_gads, varName = "ID", varLabel = "id")
+  mt_gads2t <- append_varLabel(mt_gads2, varName = "ID", label_suffix = "(recoded)")
+  expect_equal(mt_gads2t$label$varLabel[1], "id (recoded)")
+
+  mt_gads2u <- append_varLabel(mt_gads2, varName = "mc", label_suffix = "(recoded)")
+  expect_equal(mt_gads2u$label$varLabel[2], "(recoded)")
+
+  mt_gads2v <- append_varLabel(mt_gads2, varName = "mc", label_suffix = "")
+  expect_equal(mt_gads2v$label$varLabel[2], NA_character_)
+})
+
 
 test_that("Combine mc and text",{
   test <- collapseMC_Text(mt_gads, mc_var = "mc", text_var = "text", mc_code4text = "other")
@@ -204,9 +216,72 @@ test_that("Left fill for text variables", {
   expect_equal(out$v3, c(NA_character_, NA, NA, NA))
 })
 
+test_that("Check for duplicate values in combine multi mc and text", {
+  mc_vars <- matchValues_varLabels(mt3_gads, mc_vars = c("mc1", "mc2", "mc3"), values = c("Aus", "Eng", "other"))
+  mt3_gads_err <- mt3_gads
+  mt3_gads_err$dat[3, "text2"] <- "Aus"
+  expect_error(collapseMultiMC_Text(mt3_gads_err, mc_vars = mc_vars, text_vars = c("text1", "text2"), mc_var_4text = "mc3"), "Duplicate values in row 3.")
+})
 
 test_that("Combine multi mc and text", {
   mc_vars <- matchValues_varLabels(mt3_gads, mc_vars = c("mc1", "mc2", "mc3"), values = c("Aus", "Eng", "other"))
   test <- collapseMultiMC_Text(mt3_gads, mc_vars = mc_vars, text_vars = c("text1", "text2"), mc_var_4text = "mc3")
+
+  expect_equal(test$dat$text1_r, c(NA, "Franz", NA, "Aus2"))
+  expect_equal(test$dat$text2_r, c(NA_character_, NA, NA, NA))
+  expect_equal(test$dat$text1, c(NA, "Eng", "Aus", "Aus2"))
+  expect_equal(test$dat$mc1_r, c(1, 1, 0, 0))
+  expect_equal(test$dat$mc2_r, c(0, 0, 1, 0))
+  expect_equal(test$labels[test$labels$varName == "text1_r", "varLabel"], "(recoded)")
+  expect_equal(test$labels[test$labels$varName == "mc1_r", "varLabel"], "Lang: Eng (recoded)")
+
+  test2 <- collapseMultiMC_Text(mt3_gads, mc_vars = mc_vars, text_vars = c("text1", "text2"), mc_var_4text = "mc3", var_suffix = "", label_suffix = "")
+  expect_equal(test2$dat$text1, c(NA, "Franz", NA, "Aus2"))
+  expect_equal(test2$dat$text2, c(NA_character_, NA, NA, NA))
+  expect_equal(test2$labels[test2$labels$varName == "mc1", "varLabel"], "Lang: Eng")
 })
+
+
+################# mulitple Characters to factors with identical labels ---------------------------------------------------
+mt4 <- data.frame(text1 = c(NA, "Eng", "Aus", "Aus2"), text2 = c("Ger", "Franz", "Eng", NA), stringsAsFactors = FALSE)
+mt4_gads <- import_DF(mt4)
+
+test_that("Combine multi mc and text", {
+  out <- multiChar2fac(mt4_gads, vars = namesGADS(mt4_gads))
+  expect_equal(out$dat$text1_r, c(NA, 3, 1, 2))
+  expect_equal(out$dat$text2_r, c(5, 4, 3, NA))
+  expect_equal(out$labels[out$labels$varName == "text1_r", "value"], out$labels[out$labels$varName == "text2_r", "value"])
+  expect_equal(out$labels[out$labels$varName == "text1_r", "valLabel"], c("Aus", "Aus2", "Eng", "Franz", "Ger"))
+
+  out2 <- multiChar2fac(mt4_gads, vars = namesGADS(mt4_gads), var_suffix = "")
+  expect_equal(out2$dat$text1, c(NA, 3, 1, 2))
+  expect_equal(out2$dat$text2, c(5, 4, 3, NA))
+  expect_equal(out2$labels[out$labels$varName == "text1", "varLabel"][1], "(recoded)")
+})
+
+
+
+################# count character variables and remove overflowing while coding NA ---------------------------------------------------
+test_that("Too many strings to missing", {
+  df2 <- left_fill(df)
+  df2$v3 <- c("a", NA, NA, "b")
+  out <- max_num_strings2NA(df2, vars = names(df), max_num = 2, na_value = NA)
+  expect_equal(as.character(out[1, ]), c(NA_character_, NA, NA))
+  expect_equal(as.character(out[2, ]), c("i", "i", NA))
+  expect_equal(as.character(out[4, ]), c(NA_character_, NA, NA))
+})
+
+
+test_that("Too many strings to missing and NA coding", {
+  out <- remove_2NA_char(mt4_gads, vars = namesGADS(mt4_gads), max_num = 1, na_value = -99)
+
+  expect_equal(out$dat$text1, c(-99, -99, -99, "Aus2"))
+  expect_equal(dim(out$dat), c(4, 1))
+})
+
+
+#mc_vars <- matchValues_varLabels(mt3_gads, mc_vars = c("mc1", "mc2", "mc3"), values = c("Aus", "Eng", "Eng"), label_by_hand = c("other" = "mc3"))
+#out_gads <- collapseMultiMC_Text(mt3_gads, mc_vars = mc_vars, text_vars = c("text1", "text2"), mc_var_4text = "mc3")
+#out_gads2 <- multiChar2fac(out_gads, vars = c("text1_r", "text2_r"))
+#remove_2NA_char(out_gads2, vars = c("text1", "text2"), max_num = 1, na_value = -99)
 
