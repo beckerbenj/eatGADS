@@ -66,9 +66,9 @@ test_that("Only first meta data for foreign keys is extracted", {
 
 test_that("Fast getting GADSdat", {
   filePath <- file.path(getwd(), "helper_dataBase.db")
-  sink("aux")
+  # sink produces error; if necessary add capture.output
   out <- eatGADS:::getGADS_fast(vSelect = "ID1", filePath = filePath)
-  sink()
+  #sink()
   expect_equal(out$dat, expected_ID2)
   expect_equal(out$labels, expected_labels[1, -9])
   #expect_error(getGADS_fast(vSelect = "ID1", filePath = filePath, tempPath = "C:/"), "User has no writing permission for tempPath.")
