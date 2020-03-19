@@ -20,12 +20,19 @@
 #'@return SPSS syntax snippet
 #'
 #'@examples
-#'dat    <- data.frame ( foreign::read.spss ( "q:/BT2016/BT/50_Daten/03_Aufbereitet/06_Gesamtdatensatz/BS_LV_Primar_2016_Matchingvorlaeufig_09_erweiterteGadsversion.sav", to.data.frame = FALSE, use.value.labels = FALSE, use.missings = TRUE))
+#'\dontrun{
+#'dat    <- data.frame ( foreign::read.spss ( "q:/BT2016/BT/50_Daten/03_Aufbereitet/
+#'      06_Gesamtdatensatz/BS_LV_Primar_2016_Matchingvorlaeufig_09_erweiterteGadsversion.sav",
+#'                       to.data.frame = FALSE, use.value.labels = FALSE, use.missings = TRUE))
 #'classes<- sapply(dat, class)
 #'nCat   <- sapply(dat, FUN = function ( x ) { length(unique(x))})
 #'exclude<- intersect(which(classes=="factor"), which(nCat>90))
 #'exclude<- colnames(dat)[exclude]
-#'syntax <- fdz(fileName = "q:/BT2016/BT/50_Daten/03_Aufbereitet/06_Gesamtdatensatz/BS_LV_Primar_2016_Matchingvorlaeufig_09_erweiterteGadsversion.sav", saveFolder = "N:/archiv/temp/20_fdz", nameListe = "liste2.csv", nameSyntax = "syntax2.txt", exclude=exclude)
+#'syntax <- fdz(fileName = "q:/BT2016/BT/50_Daten/03_Aufbereitet/06_Gesamtdatensatz/
+#'             BS_LV_Primar_2016_Matchingvorlaeufig_09_erweiterteGadsversion.sav",
+#'             saveFolder = "N:/archiv/temp/20_fdz", nameListe = "liste2.csv",
+#'             nameSyntax = "syntax2.txt", exclude=exclude)
+#'}
 #'
 #'@export
 fdz <- function ( fileName, boundary = 5, saveFolder = NA, nameListe = NULL, nameSyntax = NULL, exclude = NULL) {
@@ -59,7 +66,7 @@ fdz <- function ( fileName, boundary = 5, saveFolder = NA, nameListe = NULL, nam
            if ( length(chk)>0) {
               cat(paste0("Warning: Variables '",paste(chk, collapse="', '"), "' from the 'exclude' argument are not available in the data set and will be ignored.\n"))
            }
-           liste[na.omit(match(exclude, liste[,"variable"])),"exclude"] <- TRUE
+           liste[stats::na.omit(match(exclude, liste[,"variable"])),"exclude"] <- TRUE
        }
        recode1<- intersect ( which ( liste[,"exclude"] == FALSE), intersect( intersect( which(freq5==TRUE), which ( nKatOM < grenze)), which(liste[,"skala"] %in% c("numeric", "integer" ))))
        recode2<- intersect ( which ( liste[,"exclude"] == FALSE), setdiff ( 1:nrow(liste), which(liste[,"skala"] %in% c("numeric", "integer" ))))
@@ -69,7 +76,7 @@ fdz <- function ( fileName, boundary = 5, saveFolder = NA, nameListe = NULL, nam
        }  else  {
             if(!is.na(saveFolder)) {
                 if(dir.exists(saveFolder) == FALSE) {                           ### das Verzeichnis aber nicht existiert, wird es jetzt erzeugt
-                   cat(paste("Warning: Specified folder '",saveFolder,"' does not exist. Create folder ... \n",sep="")); flush.console()
+                   cat(paste("Warning: Specified folder '",saveFolder,"' does not exist. Create folder ... \n",sep="")); utils::flush.console()
                    dir.create(saveFolder, recursive = TRUE)
                 }
             }
@@ -86,12 +93,12 @@ fdz <- function ( fileName, boundary = 5, saveFolder = NA, nameListe = NULL, nam
        if(is.null(nameSyntax)) { nameSyntax <- "syntaxbaustein.txt" }
        if(!is.na(saveFolder)) { write(snipp,  file.path(eatTools::crop(saveFolder,"/"), nameSyntax)) }
        if(is.null(nameListe))  { nameListe <- "Liste_komplett.csv"}
-       write.csv2(liste, file.path(eatTools::crop(saveFolder,"/"), nameListe), na="")
+       utils::write.csv2(liste, file.path(eatTools::crop(saveFolder,"/"), nameListe), na="")
        return(snipp)  }
-       
-       
+
+
 makeAnonymous <- function (x, liste, boundary, datOM, df, varLab) {
-       cat(paste0("\n   ",length(x), " numeric variables with category size <= ",boundary," will be recoded anonymously.\n")); flush.console()
+       cat(paste0("\n   ",length(x), " numeric variables with category size <= ",boundary," will be recoded anonymously.\n")); utils::flush.console()
        liste[x, "makeAnonymous"] <- TRUE
        toRec <- liste[which(liste[,"makeAnonymous"]==TRUE),]
        snipp1<- unlist(by(toRec, INDICES = toRec[,"variable"], FUN = function ( tr ) {
@@ -128,7 +135,7 @@ makeAnonymous <- function (x, liste, boundary, datOM, df, varLab) {
                               newValue<- r[1,"kategorie"]
                               recStat1<- paste("(",as.numeric(as.character(r[1,"kategorie"])), " THRU ", max(as.numeric(as.character(r[,"inkludiert"]))), " = ", newValue, ")",sep="")
                          }  else  {
-                              allVal  <- sort(unique(na.omit(c(as.numeric(as.character(r[,"kategorie"])), as.numeric(as.character(r[,"inkludiert"]))))))
+                              allVal  <- sort(unique(stats::na.omit(c(as.numeric(as.character(r[,"kategorie"])), as.numeric(as.character(r[,"inkludiert"]))))))
                               if ( length(allVal)>1) {
                                    recStat1<- paste("(",allVal[1], " THRU ", allVal[length(allVal)], " = SYSMIS )",sep="")
                               }  else  {
@@ -169,10 +176,10 @@ makeAnonymous <- function (x, liste, boundary, datOM, df, varLab) {
                 recSt <- c(recSt1, recSt2, recSt3, recSt4, recSt4b, recSt5, recSt6)
                 return(recSt)}))
        return(snipp1)}
-       
+
 
 makeNumeric <- function (x, df_labels, liste, datOM) {
-            cat(paste0("\n   Recode ",length(x), " non-numeric variables into numeric variables.\n")); flush.console()
+            cat(paste0("\n   Recode ",length(x), " non-numeric variables into numeric variables.\n")); utils::flush.console()
             liste[x, "recodeToNumeric"] <- TRUE
             toRec <- liste[which(liste[,"recodeToNumeric"]==TRUE),]
             snipp2<- unlist(by(toRec, INDICES = toRec[,"variable"], FUN = function ( tr ) {
@@ -191,8 +198,8 @@ makeNumeric <- function (x, df_labels, liste, datOM) {
                           recSt6<- paste0("VARIABLE LEVEL ", as.character(tr[["variable"]]), "_FDZ (NOMINAL).")
                           recSt7<- paste0("FORMATS ", as.character(tr[["variable"]]), "_FDZ (F8.0).")
                           recSt8<- NULL                                         ### initialisieren
-                          if(length(na.omit(miss[,"value"]))>0) {
-                             recSt8<- paste0("MISSING VALUES ", as.character(tr[["variable"]]), "_FDZ (", paste(na.omit(miss[,"value"]), collapse = ", "), ").")
+                          if(length(stats::na.omit(miss[,"value"]))>0) {
+                             recSt8<- paste0("MISSING VALUES ", as.character(tr[["variable"]]), "_FDZ (", paste(stats::na.omit(miss[,"value"]), collapse = ", "), ").")
                           }
                           recSt9<- "EXECUTE."
                           recSt <- c(recSt1, recSt2, recSt3, recSt4, recSt5, recSt6, recSt7, recSt8, recSt9)

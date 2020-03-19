@@ -4,7 +4,7 @@
 \alias{merge.GADSdat}
 \title{Merge two GADSdat objects into a single GADSdat object.}
 \usage{
-\method{merge}{GADSdat}(x, y, by, all = TRUE, all.x = all, all.y = all)
+\method{merge}{GADSdat}(x, y, by, all = TRUE, all.x = all, all.y = all, ...)
 }
 \arguments{
 \item{x}{\code{GADSdat} object imported via eatGADS.}
@@ -18,6 +18,8 @@
 \item{all.x}{See merge.}
 
 \item{all.y}{See merge.}
+
+\item{...}{Further arguments are currently not supported but have to be included for R CMD checks.}
 }
 \value{
 Returns a GADSdat object.

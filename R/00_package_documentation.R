@@ -15,3 +15,6 @@
 #' @docType package
 #' @name eatGADS
 NULL
+
+## quiets concerns of R CMD check regarding NSE by data.table
+utils::globalVariables(c("i.value_new"))

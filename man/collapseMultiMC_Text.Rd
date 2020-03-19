@@ -38,14 +38,21 @@ If a multiple choice item can be answered with crossing multiple boxes, multiple
 \examples{
 # Prepare example data
 mt2 <- data.frame(ID = 1:4, mc1 = c(1, 0, 0, 0), mc2 = c(0, 0, 0, 0), mc3 = c(0, 1, 1, 0),
-text1 = c(NA, "Eng", "Aus", "Aus2"), text2 = c(NA, "Franz", NA, NA),stringsAsFactors = FALSE)
+                  text1 = c(NA, "Eng", "Aus", "Aus2"), text2 = c(NA, "Franz", NA, NA),
+                  stringsAsFactors = FALSE)
 mt2_gads <- import_DF(mt2)
-mt3_gads <- changeVarLabels(mt2_gads, varName = c("mc1", "mc2", "mc3"), varLabel = c("Lang: Eng", "Aus spoken", "other"))
+mt3_gads <- changeVarLabels(mt2_gads, varName = c("mc1", "mc2", "mc3"),
+                            varLabel = c("Lang: Eng", "Aus spoken", "other"))
 
 ## All operations (see also respective help pages of functions for further explanations)
-mc_vars <- matchValues_varLabels(mt3_gads, mc_vars = c("mc1", "mc2", "mc3"), values = c("Aus", "Eng", "Eng"), label_by_hand = c("other" = "mc3"))
-out_gads <- collapseMultiMC_Text(mt3_gads, mc_vars = mc_vars, text_vars = c("text1", "text2"), mc_var_4text = "mc3")
+mc_vars <- matchValues_varLabels(mt3_gads, mc_vars = c("mc1", "mc2", "mc3"),
+            values = c("Aus", "Eng", "Eng"), label_by_hand = c("other" = "mc3"))
+
+out_gads <- collapseMultiMC_Text(mt3_gads, mc_vars = mc_vars,
+text_vars = c("text1", "text2"), mc_var_4text = "mc3")
+
 out_gads2 <- multiChar2fac(out_gads, vars = c("text1_r", "text2_r"))
+
 final_gads <- remove_2NA_char(out_gads2, vars = c("text1", "text2"), max_num = 1, na_value = -99)
 
 }

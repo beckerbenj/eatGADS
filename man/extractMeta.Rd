@@ -23,7 +23,8 @@ Meta data is stored tidily in all GADS objects as a separate long format data fr
 \examples{
 \dontrun{
 # Extract Meta data from data base
-metaData <- extractMeta(GADSobject = "t:/_R_Tutorials/R_Workshops/04_eatPakete/minigads_2010.db", vars = "domain")
+metaData <- extractMeta(GADSobject = "t:/_R_Tutorials/R_Workshops/04_eatPakete/minigads_2010.db",
+                       vars = "domain")
 
 # Extract Meta data from loaded GADS
 gads10 <- getGADS(vSelect = c("idstud", "wgt", "jkzone", "jkrep", "imp", "domain", "score"),

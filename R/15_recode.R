@@ -91,6 +91,8 @@ applyLookup <- function(GADSdat, lookup, suffix = NULL) {
   UseMethod("applyLookup")
 }
 
+#'@import data.table
+
 #'@export
 applyLookup.GADSdat <- function(GADSdat, lookup, suffix = NULL) {
   check_GADSdat(GADSdat)

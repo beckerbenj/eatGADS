@@ -24,7 +24,8 @@ SPSS files (\code{.sav}) store variable and value labels and assign specific for
 }
 \examples{
 \dontrun{
-dat <- import_spss("t:/_R_Tutorials/R_Workshops/01_Allgemeine Einfuehrung/IQB-LV-2011_SchuelerInnen-Eltern_CF.sav",
+dat <- import_spss("t:/_R_Tutorials/R_Workshops/01_Allgemeine Einfuehrung/
+                  IQB-LV-2011_SchuelerInnen-Eltern_CF.sav",
                   checkVarNames = FALSE)
 
 # Inspect Meta data

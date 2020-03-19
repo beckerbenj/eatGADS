@@ -26,7 +26,9 @@ The argument \code{varLables} has to contain exactly two variables, namely \code
 }
 \examples{
 dat <- data.frame(ID = 1:5, grade = c(1, 1, 2, 3, 1))
-varLabels <- data.frame(varName = c("ID", "grade"), varLabel = c("Person Identifier", "School grade Math"), stringsAsFactors = FALSE)
+varLabels <- data.frame(varName = c("ID", "grade"),
+                       varLabel = c("Person Identifier", "School grade Math"),
+                       stringsAsFactors = FALSE)
 valLabels <- data.frame(varName = c("grade", "grade", "grade"),
                        value = c(1, 2, 3),
                        valLabel = c("very good", "good", "sufficient"),

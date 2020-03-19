@@ -63,7 +63,7 @@ extractData.trend_GADSdat <- function(GADSdat, convertMiss = TRUE, convertLabels
     # performance relevant: merge (data.table seems to be fastest)
     all_dat <- data.table::setDT(all_dat)
     le <- data.table::setDT(le)
-    all_dat_withLEs <- data.table:::merge.data.table(all_dat, le)
+    all_dat_withLEs <- merge(all_dat, le)
     all_dat_withLEs <- as.data.frame(all_dat_withLEs)
 
     all_dat <- all_dat_withLEs[, c(names(all_dat), setdiff(names(le), names(all_dat)))]
@@ -209,7 +209,8 @@ recodeVar <- function(var, labs){
 #'@examples
 #'\dontrun{
 #'# Extract Meta data from data base
-#'metaData <- extractMeta(GADSobject = "t:/_R_Tutorials/R_Workshops/04_eatPakete/minigads_2010.db", vars = "domain")
+#'metaData <- extractMeta(GADSobject = "t:/_R_Tutorials/R_Workshops/04_eatPakete/minigads_2010.db",
+#'                        vars = "domain")
 #'
 #'# Extract Meta data from loaded GADS
 #'gads10 <- getGADS(vSelect = c("idstud", "wgt", "jkzone", "jkrep", "imp", "domain", "score"),

@@ -111,6 +111,7 @@ checkVarNames.all_GADSdat <- function(GADSdat) {
 #'@param all A character vector (either a full join or an inner join).
 #'@param all.x See merge.
 #'@param all.y See merge.
+#'@param ... Further arguments are currently not supported but have to be included for R CMD checks.
 #'
 #'@return Returns a GADSdat object.
 #'
@@ -119,7 +120,7 @@ checkVarNames.all_GADSdat <- function(GADSdat) {
 #'#to be done
 #'
 #'@export
-merge.GADSdat <- function(x, y, by, all = TRUE, all.x = all, all.y = all) {
+merge.GADSdat <- function(x, y, by, all = TRUE, all.x = all, all.y = all, ...) {
   check_GADSdat(x)
   check_GADSdat(y)
   if(!is.character(by)) stop(by, " is not a character vector.")

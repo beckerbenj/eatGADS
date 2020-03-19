@@ -15,7 +15,8 @@
 #'
 #'@examples
 #'\dontrun{
-#'dat <- import_spss("t:/_R_Tutorials/R_Workshops/01_Allgemeine Einfuehrung/IQB-LV-2011_SchuelerInnen-Eltern_CF.sav",
+#'dat <- import_spss("t:/_R_Tutorials/R_Workshops/01_Allgemeine Einfuehrung/
+#'                   IQB-LV-2011_SchuelerInnen-Eltern_CF.sav",
 #'                   checkVarNames = FALSE)
 #'
 #'# Inspect Meta data
@@ -130,7 +131,9 @@ import_convertLabel <- function(df, checkVarNames = TRUE) {
 #'
 #'@examples
 #'dat <- data.frame(ID = 1:5, grade = c(1, 1, 2, 3, 1))
-#'varLabels <- data.frame(varName = c("ID", "grade"), varLabel = c("Person Identifier", "School grade Math"), stringsAsFactors = FALSE)
+#'varLabels <- data.frame(varName = c("ID", "grade"),
+#'                        varLabel = c("Person Identifier", "School grade Math"),
+#'                        stringsAsFactors = FALSE)
 #'valLabels <- data.frame(varName = c("grade", "grade", "grade"),
 #'                        value = c(1, 2, 3),
 #'                        valLabel = c("very good", "good", "sufficient"),
