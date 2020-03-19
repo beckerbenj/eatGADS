@@ -1,5 +1,11 @@
 # eatGADS
 
+<!-- badges: start -->
+[![Travis build status](https://travis-ci.org/beckerbenj/eatGADS.svg?branch=master)](https://travis-ci.org/beckerbenj/eatGADS)
+[![AppVeyor build status](https://ci.appveyor.com/api/projects/status/github/beckerbenj/eatGADS?branch=master&svg=true)](https://ci.appveyor.com/project/beckerbenj/eatGADS)
+[![Codecov test coverage](https://codecov.io/gh/beckerbenj/eatGADS/branch/master/graph/badge.svg)](https://codecov.io/gh/beckerbenj/eatGADS?branch=master)
+<!-- badges: end -->
+
 ## Overview
 
 eatGADS (educational assessment tools: GADS) is the data management and data handling tool used by the IQB. It uses SQLlite3 as a back end and handles and converts data stored as SPSS or R files. `eatDB` is used for data base creating and use, `haven` is used for importing SPSS files.
