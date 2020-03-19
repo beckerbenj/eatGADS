@@ -71,7 +71,7 @@ test_that("Fast getting GADSdat", {
   sink()
   expect_equal(out$dat, expected_ID2)
   expect_equal(out$labels, expected_labels[1, -9])
-  expect_error(getGADS_fast(vSelect = "ID1", filePath = filePath, tempPath = "C:/"), "User has no writing permission for tempPath.")
+  #expect_error(getGADS_fast(vSelect = "ID1", filePath = filePath, tempPath = "C:/"), "User has no writing permission for tempPath.")
 })
 
 ### test via hand, because package has to be unattached for testing
