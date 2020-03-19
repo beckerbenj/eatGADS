@@ -17,10 +17,10 @@ collapseColumns(lookup, recodeVars, prioritize)
 Returns a data frame that can be used for \code{\link{applyLookup}}.
 }
 \description{
-Extract values form variables of \code{GADSdat} object and write to \code{xlsx} for manuel recoding.
+Collapse columns of a lookup table created by \code{\link{createLookup}}.
 }
 \details{
-If recoding of one or multiple variables is more complex, a lookup table can be created for later importing via \code{eatGADS}.
+tbd
 }
 \examples{
 #to be done

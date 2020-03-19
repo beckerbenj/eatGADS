@@ -1,10 +1,10 @@
 #### Write xlsx for recoding
 #############################################################################
-#' Recode values.
+#' Extract values for recoding.
 #'
-#' Extract values form variables of \code{GADSdat} object and write to \code{xlsx} for manuel recoding.
+#' Extract values from variables of a \code{GADSdat} object for recoding.
 #'
-#' If recoding of one or multiple variables is more complex, a lookup table can be created for later importing via \code{eatGADS}.
+#' If recoding of one or multiple variables is more complex, a lookup table can be created for later importing via \code{eatGADS}. The function allows the extraction of the values of multiple variables and sorting of these unique values via variable or values.
 #'
 #'@param GADSdat A \code{GADSdat} object.
 #'@param recodeVars Character vector of variable names which should be recoded.
@@ -45,9 +45,9 @@ createLookup.GADSdat <- function(GADSdat, recodeVars, sort_by = NULL, addCols = 
 #############################################################################
 #' Collapse columns.
 #'
-#' Extract values form variables of \code{GADSdat} object and write to \code{xlsx} for manuel recoding.
+#' Collapse columns of a lookup table created by \code{\link{createLookup}}.
 #'
-#' If recoding of one or multiple variables is more complex, a lookup table can be created for later importing via \code{eatGADS}.
+#' tbd
 #'
 #'@param lookup A lookup table \code{data.frame} as created via \code{\link{createLookup}}.
 #'@param recodeVars Character vector of variable names which should be collapsed.
@@ -73,9 +73,9 @@ collapseColumns <- function(lookup, recodeVars, prioritize) {
 #############################################################################
 #' Recoade via lookup table.
 #'
-#' Extract values form variables of \code{GADSdat} object and write to \code{xlsx} for manuel recoding.
+#' Recode one or multiple variables based on a lookup table created via \code{\link{createLookup}}.
 #'
-#' If recoding of one or multiple variables is more complex, a lookup table can be created for later importing via \code{eatGADS}.
+#' tbd
 #'
 #'@param GADSdat A \code{GADSdat} object.
 #'@param lookup Lookup table created by \code{\link{createLookup}} and - if necessary -  collapsed by \code{\link{collapseColumns}}.
@@ -129,11 +129,11 @@ check_lookup <- function(lookup, GADSdat) {
   if(!all(lookup$variable %in% namesGADS(GADSdat))) stop("Some of the variables are not variables in the GADSdat.")
   if(!identical(names(lookup), c("variable", "value", "value_new"))) stop("LookUp table has to be formatted correctly.")
   if(any(is.na(lookup$value_new))) warning("Some values have no recode value assigned (missings in value_new).")
-  # tbd!!!!!!!!!!
+  if(any(is.na(lookup$value))) stop("In some rows there are missings in column value.")
 }
 
 
-#### Apply recode lookup table
+#### Collapse an MC and a text variable.
 #############################################################################
 #' Recode MC variable based on text.
 #'

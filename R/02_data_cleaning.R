@@ -144,7 +144,7 @@ merge.GADSdat <- function(x, y, by, all = TRUE, all.x = all, all.y = all) {
 #'
 #' Order the variables in a GADSdat according to a character vector. If there are discrepancies between the two sets, a warning is issued.
 #'
-#' The variables in the \code{dat} and in the \code{labels} section are ordered. Variables no contained in the character vector are moved to the end of the data.
+#' The variables in the \code{dat} and in the \code{labels} section are ordered. Variables not contained in the character vector are moved to the end of the data.
 #'
 #'@param GADSdat \code{GADSdat} object imported via eatGADS.
 #'@param newOrder A character vector containing the order of variables.

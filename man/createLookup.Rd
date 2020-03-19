@@ -2,7 +2,7 @@
 % Please edit documentation in R/15_recode.R
 \name{createLookup}
 \alias{createLookup}
-\title{Recode values.}
+\title{Extract values for recoding.}
 \usage{
 createLookup(GADSdat, recodeVars, sort_by = NULL, addCols = c("value_new"))
 }
@@ -19,10 +19,10 @@ createLookup(GADSdat, recodeVars, sort_by = NULL, addCols = c("value_new"))
 Returns a data frame in long format including all unique values of the variables in \code{recodeVars}.
 }
 \description{
-Extract values form variables of \code{GADSdat} object and write to \code{xlsx} for manuel recoding.
+Extract values from variables of a \code{GADSdat} object for recoding.
 }
 \details{
-If recoding of one or multiple variables is more complex, a lookup table can be created for later importing via \code{eatGADS}.
+If recoding of one or multiple variables is more complex, a lookup table can be created for later importing via \code{eatGADS}. The function allows the extraction of the values of multiple variables and sorting of these unique values via variable or values.
 }
 \examples{
 #to be done

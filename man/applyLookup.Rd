@@ -17,10 +17,10 @@ applyLookup(GADSdat, lookup, suffix = NULL)
 Returns a recoded \code{GADSdat}.
 }
 \description{
-Extract values form variables of \code{GADSdat} object and write to \code{xlsx} for manuel recoding.
+Recode one or multiple variables based on a lookup table created via \code{\link{createLookup}}.
 }
 \details{
-If recoding of one or multiple variables is more complex, a lookup table can be created for later importing via \code{eatGADS}.
+tbd
 }
 \examples{
 #to be done
