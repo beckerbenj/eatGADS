@@ -84,7 +84,7 @@ collapseMultiMC_Text <- function(GADSdat, mc_vars, text_vars, mc_var_4text, var_
 collapseMultiMC_Text.GADSdat <- function(GADSdat, mc_vars, text_vars, mc_var_4text, var_suffix = "_r", label_suffix = "(recoded)") {
   if(!all(mc_vars %in% namesGADS(GADSdat))) stop("Not all mc_vars are variables in the GADSdat.")
   if(!all(text_vars %in% namesGADS(GADSdat))) stop("Not all text_vars are variables in the GADSdat.")
-  if(!is.character(mc_var_4text) && length(mc_var_4text) == 1) stop("mc_var_4text needs to be a character of lenth one.")
+  if(!is.character(mc_var_4text) || length(mc_var_4text) != 1) stop("mc_var_4text needs to be a character of lenth one.")
   if(!mc_var_4text %in% mc_vars) stop("mc_var_4text is not part of mc_vars.")
 
   dat <- GADSdat$dat

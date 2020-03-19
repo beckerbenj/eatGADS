@@ -1,7 +1,8 @@
-context("Value recoding via Excel")
+
+context("Recode multi mc based on text variables")
 
 
-################# Combine multi MC and text ---------------------------------------------------
+################# Match values and variables labels ---------------------------------------------------
 mt2 <- data.frame(ID = 1:4, mc1 = c(1, 0, 0, 0), mc2 = c(0, 0, 0, 0), mc3 = c(0, 1, 1, 0), text1 = c(NA, "Eng", "Aus", "Aus2"), text2 = c(NA, "Franz", NA, NA),stringsAsFactors = FALSE)
 mt2_gads <- import_DF(mt2)
 mt3_gads <- changeVarLabels(mt2_gads, varName = c("mc1", "mc2", "mc3"), varLabel = c("Lang: Eng", "Aus spoken", "other"))
@@ -31,6 +32,8 @@ test_that("Match values and variable names by variable labels", {
 })
 
 
+
+################# Combine multi MC and text ---------------------------------------------------
 test_that("Remove values from some variables", {
   out <- remove_values(df, vars = c("v1", "v2"), values = c("j", "i"))
   expect_equal(out$v1, c(NA_character_, NA, NA, NA))
@@ -46,12 +49,17 @@ test_that("Left fill for text variables", {
   expect_equal(out$v3, c(NA_character_, NA, NA, NA))
 })
 
-test_that("Check for duplicate values in combine multi mc and text", {
+test_that("Errors in combine multi mc and text", {
   mc_vars <- matchValues_varLabels(mt3_gads, mc_vars = c("mc1", "mc2", "mc3"), values = c("Aus", "Eng", "other"))
   mt3_gads_err <- mt3_gads
   mt3_gads_err$dat[3, "text2"] <- "Aus"
   expect_error(collapseMultiMC_Text(mt3_gads_err, mc_vars = mc_vars, text_vars = c("text1", "text2"), mc_var_4text = "mc3"), "Duplicate values in row 3.")
+
+  expect_error(collapseMultiMC_Text(mt3_gads, mc_vars = mc_vars, text_vars = c("text1", "text2"), mc_var_4text = c("mc3", "mc1")), "mc_var_4text needs to be a character of lenth one.")
+
+  expect_error(collapseMultiMC_Text(mt3_gads, mc_vars = mc_vars[1:2], text_vars = c("text1", "text2"), mc_var_4text = c("mc3")), "mc_var_4text is not part of mc_vars.")
 })
+
 
 test_that("Combine multi mc and text", {
   mc_vars <- matchValues_varLabels(mt3_gads, mc_vars = c("mc1", "mc2", "mc3"), values = c("Aus", "Eng", "other"))
