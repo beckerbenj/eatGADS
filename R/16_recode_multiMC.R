@@ -231,7 +231,7 @@ multiChar2fac.GADSdat <- function(GADSdat, vars, var_suffix = "_r", label_suffix
   if(!is.character(vars) && length(vars) > 0) stop("vars needs to be a character vector of at least length 1.")
 
   all_levels <- unique(unlist(lapply(GADSdat$dat[vars], function(x) x)))
-  all_levels_fac <- as.data.frame(all_levels, stringsAsFactor = TRUE)
+  all_levels_fac <- data.frame("all_levels" = as.factor(all_levels))
   all_levels_gads <- import_DF(all_levels_fac)
   all_levels_lookup <- all_levels_gads$labels[, c("valLabel", "value")]
   names(all_levels_lookup) <- c("value", "value_new")

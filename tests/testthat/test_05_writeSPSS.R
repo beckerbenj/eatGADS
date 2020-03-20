@@ -82,7 +82,7 @@ test_that("GADSdat correctly written to sav", {
 
 test_that("Full workflow with haven", {
   #test_df <- import_spss("c:/Benjamin_Becker/02_Repositories/packages/eatGADS/tests/testthat/helper_spss_havenbug.sav")
-  test_df <- import_spss("helper_spss_havenbug.sav")
+  suppressWarnings(test_df <- import_spss("helper_spss_havenbug.sav"))
   test_tbl <- export_tibble(test_df)
 
   expect_silent(write_spss(test_df, filePath = tempfile()))

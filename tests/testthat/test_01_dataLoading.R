@@ -203,8 +203,9 @@ varLabels_raw <- data.frame(varName = c("a", "b"), varLabel = c("variable a", "v
 valLabels_raw <- data.frame(varName = c("a", "a", "b", "b"), value = c(1, 2, 2, 3), valLabel = c("one", "two", "very", "few"), missings = rep("valid", 4), stringsAsFactors = FALSE)
 
 test_that("Checks for import_raw", {
+  iris$Species <- as.factor(iris$Species)
   expect_error(import_raw(df = iris), "One of the variables in df is a factor. All meta information on value level has to be stored in valLabels.")
-  varLabels_raw_fac <- data.frame(varName = c("a", "b"), varLabel = c("variable a", "variable b"))
+  varLabels_raw_fac <- data.frame(varName = c("a", "b"), varLabel = c("variable a", "variable b"), stringsAsFactors = TRUE)
   expect_error(import_raw(df = df_raw, varLabels = varLabels_raw_fac), "One of the variables in varLabels is a factor.")
   valLabels_raw <- data.frame(varName = c("a", "a", "b", "b"), value = c(1, 2, 2, 3), valLabel = c("one", "two", "very", "few"), missings = rep("valid", 4))
   expect_error(import_raw(df = df_raw, varLabels = varLabels_raw_fac, valLabels = valLabels_raw), "One of the variables in varLabels is a factor.")

@@ -191,7 +191,7 @@ test_that("Changes to GADSdat: recoding", {
 })
 
 test_that("recoding if potential danger of overwriting old values!", {
-  df_rec <- data.frame(v1 = c("x", "y", "z"), b = c("b", "a", "d"))
+  df_rec <- data.frame(v1 = c("x", "y", "z"), b = c("b", "a", "d"), stringsAsFactors = TRUE)
   df_rec <- import_DF(df_rec)
   chang <- getChangeMeta(df_rec, level = "value")
   chang2 <- chang

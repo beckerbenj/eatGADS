@@ -123,7 +123,7 @@ test_that("ExtractData with some variables labels applied to (convertVariables a
 
   # Two variables with value labels without missings
   label_df <- data.frame(a = c("one", "two"),
-                         b = c("three", "four"))
+                         b = c("three", "four"), stringsAsFactors = TRUE)
   label_df <- import_DF(label_df)
   expect_equal(extractData(label_df, convertLabels = "character", convertVariables = "a"),
                data.frame(a = c("one", "two"),
