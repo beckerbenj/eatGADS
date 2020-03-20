@@ -12,14 +12,14 @@ eatGADS (educational assessment tools: GADS) is the data management and data han
 
 ## Installation
 
-```
+```R
 # Install eatGADS from GitHub via
 devtools::install_github("beckerbenj/eatGADS")
 ```
 
 ## Usage
 
-```
+```R
 library(eatGADS)
 ### Import Data
 dat <- import_SPSS("someDat.sav")

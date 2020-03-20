@@ -24,6 +24,7 @@ createLookup <- function(GADSdat, recodeVars, sort_by = NULL, addCols = c("value
 #'@export
 createLookup.GADSdat <- function(GADSdat, recodeVars, sort_by = NULL, addCols = c("value_new")) {
   check_GADSdat(GADSdat)
+  if(!is.character(recodeVars) && length(recodeVars) > 0) stop("recodeVars needs to be a character vector of at least length 1.")
   if(!all(recodeVars %in% namesGADS(GADSdat))) stop("Some of the variables are not variables in the GADSdat.")
   vars_w <- data.table::as.data.table(GADSdat$dat[, recodeVars, drop = FALSE])
   dt_l <- unique(data.table::melt(vars_w, measure.vars = recodeVars, variable.factor = FALSE, value.factor = FALSE))
