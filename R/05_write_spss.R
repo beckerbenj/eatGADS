@@ -53,6 +53,7 @@ export_tibble.GADSdat <- function(GADSdat) {
   # 1) check input
   check_GADSdat(GADSdat)
   # currently no further checks (depends on haven behaviour if this were necessary)
+  check_var_type(GADSdat)
 
   df <- GADSdat$dat
   label_df <- GADSdat$labels
@@ -64,6 +65,16 @@ export_tibble.GADSdat <- function(GADSdat) {
     }
   }
   tibble::as_tibble(df)
+}
+
+check_var_type <- function(GADSdat) {
+  for(varName in namesGADS(GADSdat)) {
+    format.spss <- GADSdat$labels[GADSdat$labels$varName == varName, "format"]
+    class_var <- class(GADSdat$dat[, varName])
+    if(!is.na(format.spss) && grepl("^A", format.spss) && class_var == "numeric" ) stop("Incompatible R variable type and format.spss for variable ", varName)
+    if(!is.na(format.spss) && grepl("^F", format.spss) && class_var == "character" ) stop("Incompatible R variable type and format.spss for variable ", varName)
+  }
+  return()
 }
 
 
@@ -78,16 +89,18 @@ addLabels_single <- function(label_df) {
   # check
   unique_attr <- unlist(lapply(out, length))
   stopifnot(all(unique_attr)  <= 1)
-  # out[["class"]] <- strsplit(out[["class"]], split = ", ")[[1]]
-  # give specific class depending on whether value labels are needed or not
-  if(identical(labeled, "yes")) out[["class"]] <- c("haven_labelled_spss", "haven_labelled")
-  if(identical(labeled, "yes") & all(is.na(label_df$value))) out[["class"]] <- c("haven_labelled_spss")
-  # if(identical(labeled, "no")) out[["class"]] <- NA_character_
 
   # missing labels, if any
   miss_values <- label_df[which(label_df$missings == "miss"), "value"]
   if(length(miss_values) > 0 && length(miss_values) <= 3)  out[["na_values"]] <- miss_values
   if(length(miss_values) > 3)  out[["na_range"]] <- range(miss_values)
+
+  # out[["class"]] <- strsplit(out[["class"]], split = ", ")[[1]]
+  # give specific class depending on a) value labels are needed or not and b) missings are given or not:
+  if(identical(labeled, "yes")) out[["class"]] <- c("haven_labelled")
+  if(identical(labeled, "yes") & all(is.na(label_df$value))) out[["class"]] <- c("haven_labelled_spss")
+  any_miss <- length(miss_values) > 0
+  if(identical(out[["class"]], "haven_labelled") && any_miss) out[["class"]] <- c("haven_labelled_spss", "haven_labelled")
 
   # value labels, if any
   value_label_df <- label_df[!is.na(label_df$value), ]
@@ -107,6 +120,8 @@ addLabels_single <- function(label_df) {
   out
 }
 
-
+## check out difference between labelled and haven_labelled!
+# maybe: haven_labelled only if missing codes!
+# strange behaviour in case of character vectors sometimes?
 
 

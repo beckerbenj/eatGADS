@@ -13,9 +13,21 @@ label_df_V2 <- label_df[which(label_df == "V2"), ]
 expected_ID1 <- list(format.spss = "F8.2")
 expected_V2 <- list(label = "Variable 2",
                     format.spss = "F10.2",
-                    class = c("haven_labelled_spss", "haven_labelled"),
                     na_values = 99,
+                    class = c("haven_labelled_spss", "haven_labelled"),
                     labels = c(mis = 99))
+
+###
+test_that("Check for variable type and format.spss", {
+  expect_silent(check_var_type(df))
+  df3 <- df2 <- df
+  df2$labels[3, "format"] <- "A12"
+  expect_error(check_var_type(df2), "Incompatible R variable type and format.spss for variable V2")
+
+  df3$dat[, "V1"] <- as.character(df3$dat[, "V1"])
+  expect_error(check_var_type(df3), "Incompatible R variable type and format.spss for variable V1")
+})
+
 
 ### check single variable label adding
 test_that("Variable labels are added correctly to attributes, for single variable", {
@@ -39,8 +51,10 @@ test_that("Variable labels are added correctly to attributes for all variables",
 })
 
 ### also for R variables
+iris_fac <- iris
+iris_fac$Species <- as.factor(iris$Species)
 iris2 <- import_DF(iris)
-expected_Species <- list(class = c("haven_labelled_spss", "haven_labelled"),
+expected_Species <- list(class = c("haven_labelled"),
                     labels = c(setosa = 1, versicolor = 2, virginica = 3))
 
 test_that("Variable labels are added correctly for factor", {
