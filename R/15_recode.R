@@ -111,17 +111,22 @@ applyLookup.GADSdat <- function(GADSdat, lookup, suffix = NULL) {
     names(sub_lu) <- c(nam, "value_new")
     suppressWarnings(sub_lu <- eatTools::asNumericIfPossible(sub_lu, force.string = FALSE))
 
+    old_nam <- nam
     if(!is.null(suffix)) {
-      old_nam <- nam
       nam <- paste0(nam, suffix)
       rec_dt[sub_lu, on = old_nam, (nam) := i.value_new]
     } else {
-      old_nam <- nam
       rec_dt[sub_lu, on = nam, (nam) := i.value_new]
     }
 
-    GADSdat2 <- updateMeta(GADSdat2, newDat = as.data.frame(rec_dt, stringsAsFactor = FALSE))
-    GADSdat2 <- reuseMeta(GADSdat = GADSdat2, varName = nam, other_GADSdat = GADSdat, other_varName = old_nam)
+    if(all(is.na(rec_dt[[nam]]))) {
+      warning("In the new variable ", nam, " all values are missing, therefore the variable is dropped. If this behaviour is not desired, contact the package author.")
+      rec_dt[[nam]] <- NULL
+      GADSdat2 <- updateMeta(GADSdat2, newDat = as.data.frame(rec_dt, stringsAsFactor = FALSE))
+    } else{
+      GADSdat2 <- updateMeta(GADSdat2, newDat = as.data.frame(rec_dt, stringsAsFactor = FALSE))
+      GADSdat2 <- reuseMeta(GADSdat = GADSdat2, varName = nam, other_GADSdat = GADSdat, other_varName = old_nam)
+    }
   }
 
   check_GADSdat(GADSdat2)
@@ -131,8 +136,9 @@ applyLookup.GADSdat <- function(GADSdat, lookup, suffix = NULL) {
 check_lookup <- function(lookup, GADSdat) {
   if(!all(lookup$variable %in% namesGADS(GADSdat))) stop("Some of the variables are not variables in the GADSdat.")
   if(!identical(names(lookup), c("variable", "value", "value_new"))) stop("LookUp table has to be formatted correctly.")
-  if(any(is.na(lookup$value_new))) warning("Some values have no recode value assigned (missings in value_new).")
   if(any(is.na(lookup$value))) stop("In some rows there are missings in column value.")
+  if(all(is.na(lookup$value_new))) stop("All values have no recode value assigned (missings in value_new).")
+  if(any(is.na(lookup$value_new))) warning("Some values have no recode value assigned (missings in value_new).")
 }
 
 

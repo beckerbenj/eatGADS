@@ -38,7 +38,7 @@ If a multiple choice item can be answered with crossing multiple boxes, multiple
 \examples{
 # Prepare example data
 mt2 <- data.frame(ID = 1:4, mc1 = c(1, 0, 0, 0), mc2 = c(0, 0, 0, 0), mc3 = c(0, 1, 1, 0),
-                  text1 = c(NA, "Eng", "Aus", "Aus2"), text2 = c(NA, "Franz", NA, NA),
+                  text1 = c(NA, "Eng", "Aus", "Aus2"), text2 = c(NA, "Franz", NA, "Ger"),
                   stringsAsFactors = FALSE)
 mt2_gads <- import_DF(mt2)
 mt3_gads <- changeVarLabels(mt2_gads, varName = c("mc1", "mc2", "mc3"),
@@ -49,7 +49,7 @@ mc_vars <- matchValues_varLabels(mt3_gads, mc_vars = c("mc1", "mc2", "mc3"),
             values = c("Aus", "Eng", "Eng"), label_by_hand = c("other" = "mc3"))
 
 out_gads <- collapseMultiMC_Text(mt3_gads, mc_vars = mc_vars,
-text_vars = c("text1", "text2"), mc_var_4text = "mc3")
+             text_vars = c("text1", "text2"), mc_var_4text = "mc3")
 
 out_gads2 <- multiChar2fac(out_gads, vars = c("text1_r", "text2_r"))
 

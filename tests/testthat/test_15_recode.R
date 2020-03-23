@@ -59,6 +59,30 @@ test_that("Test unique values functionality for Create lookups",{
   expect_equal(lu_r$value_new, c(1, -2, 3, 4, 5))
 })
 
+test_that("Check Lookup, errors and warnings",{
+  expect_error(check_lookup(lu2, testM), "All values have no recode value assigned (missings in value_new).", fixed = TRUE)
+
+  lu2_2 <- lu2_1 <- lu2
+  lu2_1[1, 1] <- "v10"
+  expect_error(check_lookup(lu2_1, testM), "Some of the variables are not variables in the GADSdat.")
+  lu2_2[1, 2] <- NA
+  expect_error(check_lookup(lu2_2, testM), "In some rows there are missings in column value.")
+})
+
+test_that("Behaviour if new variable containts only missings",{
+  lu3_1 <- lu3
+  lu3_1$value_new <- c(-9, -6, 1, NA, 2)
+  mess <- capture_warnings(applyLookup(testM, lu3_1))
+  expect_equal(mess[[2]], "In the new variable VAR2 all values are missing, therefore the variable is dropped. If this behaviour is not desired, contact the package author.")
+
+  suppressWarnings(out <- applyLookup(testM, lu3_1))
+  expect_equal(namesGADS(out), c("VAR1", "VAR3"))
+
+  suppressWarnings(out <- applyLookup(testM, lu3_1, suffix = c("_r")))
+  expect_equal(namesGADS(out), c("VAR1", "VAR2", "VAR3", "VAR1_r"))
+})
+
+
 test_that("Tests for formatting of lookup",{
   lu_false <- lu1[, 2:4]
   expect_error(ng <- applyLookup(testM, lu_false))

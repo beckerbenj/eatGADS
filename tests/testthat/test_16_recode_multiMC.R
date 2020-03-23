@@ -3,7 +3,7 @@ context("Recode multi mc based on text variables")
 
 
 ################# Match values and variables labels ---------------------------------------------------
-mt2 <- data.frame(ID = 1:4, mc1 = c(1, 0, 0, 0), mc2 = c(0, 0, 0, 0), mc3 = c(0, 1, 1, 0), text1 = c(NA, "Eng", "Aus", "Aus2"), text2 = c(NA, "Franz", NA, NA),stringsAsFactors = FALSE)
+mt2 <- data.frame(ID = 1:4, mc1 = c(1, 0, 0, 0), mc2 = c(0, 0, 0, 0), mc3 = c(0, 1, 1, 0), text1 = c(NA, "Eng", "Aus", "Aus2"), text2 = c(NA, "Franz", NA, "Ger"),stringsAsFactors = FALSE)
 mt2_gads <- import_DF(mt2)
 mt3_gads <- changeVarLabels(mt2_gads, varName = c("mc1", "mc2", "mc3"), varLabel = c("Lang: Eng", "Aus spoken", "other"))
 df <- data.frame(v1 = c("j", "i", NA, NA),
@@ -98,7 +98,7 @@ test_that("Combine multi mc and text", {
   test <- collapseMultiMC_Text(mt3_gads, mc_vars = mc_vars, text_vars = c("text1", "text2"), mc_var_4text = "mc3")
 
   expect_equal(test$dat$text1_r, c(NA, "Franz", NA, "Aus2"))
-  expect_equal(test$dat$text2_r, c(NA_character_, NA, NA, NA))
+  expect_equal(test$dat$text2_r, c(NA_character_, NA, NA, "Ger"))
   expect_equal(test$dat$text1, c(NA, "Eng", "Aus", "Aus2"))
   expect_equal(test$dat$mc1_r, c(1, 1, 0, 0))
   expect_equal(test$dat$mc2_r, c(0, 0, 1, 0))
@@ -107,8 +107,13 @@ test_that("Combine multi mc and text", {
 
   test2 <- collapseMultiMC_Text(mt3_gads, mc_vars = mc_vars, text_vars = c("text1", "text2"), mc_var_4text = "mc3", var_suffix = "", label_suffix = "")
   expect_equal(test2$dat$text1, c(NA, "Franz", NA, "Aus2"))
-  expect_equal(test2$dat$text2, c(NA_character_, NA, NA, NA))
+  expect_equal(test2$dat$text2, c(NA_character_, NA, NA, "Ger"))
   expect_equal(test2$labels[test2$labels$varName == "mc1", "varLabel"], "Lang: Eng")
+
+  mt3_gads_1 <- mt3_gads
+  mt3_gads_1$dat$text2[4] <- NA
+  expect_warning(test <- collapseMultiMC_Text(mt3_gads_1, mc_vars = mc_vars, text_vars = c("text1", "text2"), mc_var_4text = "mc3"), "In the new variable text2_r all values are missing, therefore the variable is dropped. If this behaviour is not desired, contact the package author.")
+  expect_false("text2_r" %in% namesGADS(test))
 })
 
 

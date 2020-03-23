@@ -69,7 +69,7 @@ export_tibble.GADSdat <- function(GADSdat) {
 
 check_var_type <- function(GADSdat) {
   for(varName in namesGADS(GADSdat)) {
-    format.spss <- GADSdat$labels[GADSdat$labels$varName == varName, "format"]
+    format.spss <- GADSdat$labels[GADSdat$labels$varName == varName, "format"][1]
     class_var <- class(GADSdat$dat[, varName])
     if(!is.na(format.spss) && grepl("^A", format.spss) && class_var == "numeric" ) stop("Incompatible R variable type and format.spss for variable ", varName)
     if(!is.na(format.spss) && grepl("^F", format.spss) && class_var == "character" ) stop("Incompatible R variable type and format.spss for variable ", varName)

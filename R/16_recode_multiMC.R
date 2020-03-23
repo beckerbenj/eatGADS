@@ -116,7 +116,7 @@ applyLookup_expandVar.GADSdat <- function(GADSdat, lookup) {
 #'@examples
 #' # Prepare example data
 #' mt2 <- data.frame(ID = 1:4, mc1 = c(1, 0, 0, 0), mc2 = c(0, 0, 0, 0), mc3 = c(0, 1, 1, 0),
-#'                   text1 = c(NA, "Eng", "Aus", "Aus2"), text2 = c(NA, "Franz", NA, NA),
+#'                   text1 = c(NA, "Eng", "Aus", "Aus2"), text2 = c(NA, "Franz", NA, "Ger"),
 #'                   stringsAsFactors = FALSE)
 #' mt2_gads <- import_DF(mt2)
 #' mt3_gads <- changeVarLabels(mt2_gads, varName = c("mc1", "mc2", "mc3"),
@@ -127,7 +127,7 @@ applyLookup_expandVar.GADSdat <- function(GADSdat, lookup) {
 #'             values = c("Aus", "Eng", "Eng"), label_by_hand = c("other" = "mc3"))
 #'
 #' out_gads <- collapseMultiMC_Text(mt3_gads, mc_vars = mc_vars,
-#' text_vars = c("text1", "text2"), mc_var_4text = "mc3")
+#'              text_vars = c("text1", "text2"), mc_var_4text = "mc3")
 #'
 #' out_gads2 <- multiChar2fac(out_gads, vars = c("text1_r", "text2_r"))
 #'
@@ -170,13 +170,16 @@ collapseMultiMC_Text.GADSdat <- function(GADSdat, mc_vars, text_vars, mc_var_4te
 
   dat <- remove_values(dat, vars = new_text_vars, values = names(mc_vars))
   dat <- left_fill(dat, vars = new_text_vars)
+  dat <- drop_empty(dat, vars = new_text_vars)
 
   GADSdat2 <- updateMeta(GADSdat, dat)
   # fix meta data for newly created variables
   for(old_varName in c(mc_vars, text_vars)) {
     new_varName <- paste0(old_varName, var_suffix)
-    GADSdat2 <- reuseMeta(GADSdat = GADSdat2, varName = new_varName, other_GADSdat = GADSdat2, other_varName = old_varName)
-    GADSdat2 <- append_varLabel(GADSdat2, new_varName, label_suffix = label_suffix)
+    if(new_varName %in% namesGADS(GADSdat2)) {
+      GADSdat2 <- reuseMeta(GADSdat = GADSdat2, varName = new_varName, other_GADSdat = GADSdat2, other_varName = old_varName)
+      GADSdat2 <- append_varLabel(GADSdat2, new_varName, label_suffix = label_suffix)
+    }
   }
 
   GADSdat2
@@ -197,6 +200,16 @@ left_fill <- function(dat, vars = names(dat)) {
     var_left_ori <- dat[, var_left]
     dat[, var_left] <- ifelse(is.na(dat[[var_left]]) & !is.na(dat[[var]]), yes = dat[[var]], no = dat[[var_left]])
     dat[, var] <- ifelse(is.na(var_left_ori) & !is.na(dat[[var]]), yes = NA, no = dat[[var]])
+  }
+  dat
+}
+
+drop_empty <- function(dat, vars = names(dat)) {
+  for(nam in names(dat)) {
+    if(all(is.na(dat[[nam]]))) {
+      warning("In the new variable ", nam, " all values are missing, therefore the variable is dropped. If this behaviour is not desired, contact the package author.")
+      dat[[nam]] <- NULL
+    }
   }
   dat
 }
