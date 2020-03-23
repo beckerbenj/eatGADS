@@ -16,7 +16,8 @@ os:
 
 matrix:
  exclude:
-    - r: devel
+    - r:  - devel
+          - oldrel
       os: osx
 
 r_packages:

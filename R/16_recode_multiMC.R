@@ -307,8 +307,10 @@ max_num_strings2NA <- function(dat, vars, max_num, na_value) {
   stopifnot(is.numeric(max_num) && length(max_num) == 1)
   stopifnot(is.character(vars) && length(vars) > 1)
 
+  max_var <- vars[max_num + 1]
+
   for(i in seq(nrow(dat))) {
-    if(!is.na(dat[i, max_num + 1])) {
+    if(!is.na(dat[i, max_var])) {
       dat[i, vars] <- na_value
     }
   }
