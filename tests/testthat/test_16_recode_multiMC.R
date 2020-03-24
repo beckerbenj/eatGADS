@@ -149,10 +149,17 @@ test_that("Too many strings to missing", {
 
 test_that("Too many strings to missing and NA coding", {
   out <- remove_2NA_char(mt4_gads, vars = namesGADS(mt4_gads), max_num = 1, na_value = -99)
-
   expect_equal(out$dat$text1, c(-99, -99, -99, "Aus2"))
   expect_equal(dim(out$dat), c(4, 1))
+
+  out <- remove_2NA_char(mt3_gads, vars = c("text1", "text2"), max_num = 1, na_value = -99)
+  expect_equal(out$dat$text1, c(NA, -99, "Aus", -99))
+  expect_equal(dim(out$dat), c(4, 5))
 })
+
+
+
+
 
 
 #mc_vars <- matchValues_varLabels(mt3_gads, mc_vars = c("mc1", "mc2", "mc3"), values = c("Aus", "Eng", "Eng"), label_by_hand = c("other" = "mc3"))

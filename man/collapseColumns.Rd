@@ -7,7 +7,7 @@
 collapseColumns(lookup, recodeVars, prioritize)
 }
 \arguments{
-\item{lookup}{A lookup table \code{data.frame} as created via \code{\link{createLookup}}.}
+\item{lookup}{For example a lookup table \code{data.frame} as created via \code{\link{createLookup}}.}
 
 \item{recodeVars}{Character vector of variable names which should be collapsed.}
 
@@ -20,9 +20,15 @@ Returns a data frame that can be used for \code{\link{applyLookup}}.
 Collapse columns of a lookup table created by \code{\link{createLookup}}.
 }
 \details{
-tbd
+This function can for example be used to collapse multiple recoding variables from which one should be preferred if values for both recoding variables are present.
 }
 \examples{
-#to be done
+# create example recode data.frame
+lookup_raw <- data.frame(variable = c("var1"), value = c("germa", "German", "dscherman"),
+           recode1 = c(NA, "Englisch", "German"),
+           recode2 = c("German", "German", NA))
+
+# collapse columns
+lookup <- collapseColumns(lookup_raw, recodeVars = c("recode1", "recode2"), prioritize = "recode2")
 
 }

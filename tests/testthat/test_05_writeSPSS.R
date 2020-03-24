@@ -122,5 +122,8 @@ test_that("Check haven behaviour", {
                                format.spss = "F6.0",
                                class = c("haven_labelled_spss", "haven_labelled"))
   #expect_error(haven::write_sav(test3, "helper_write_spss_test.sav"))
-})
 
+  ## Note to myself: There is still a haven bug regarding wide string variable when reading (missing codes are dropped)
+  # and writing (sometimes all missing codes and value labels are dropped; haven 2.2.0, 24.03.2020)
+  # but it is difficult to produce a minimal reprex
+})

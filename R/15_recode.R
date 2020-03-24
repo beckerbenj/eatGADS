@@ -2,19 +2,25 @@
 #############################################################################
 #' Extract values for recoding.
 #'
-#' Extract values from variables of a \code{GADSdat} object for recoding.
+#' Extract unique values from on or multiple variables of a \code{GADSdat} object for recoding (e.g. in an Excel spreadsheet).
 #'
-#' If recoding of one or multiple variables is more complex, a lookup table can be created for later importing via \code{eatGADS}. The function allows the extraction of the values of multiple variables and sorting of these unique values via variable or values.
+#' If recoding of one or multiple variables is more complex, a lookup table can be created for later application via \code{\link{applyLookup}} or \code{\link{applyLookup_expandVar}}. The function allows the extraction of the values of multiple variables and sorting of these unique values via variable and/or values.
 #'
 #'@param GADSdat A \code{GADSdat} object.
 #'@param recodeVars Character vector of variable names which should be recoded.
-#'@param sort_by By which column should the long format data.frame be sorted? If \code{NULL}, no sorting is performed.
+#'@param sort_by By which column (\code{variable} and/or \code{value}) should the long format \code{data.frame} be sorted? If \code{NULL}, no sorting is performed.
 #'@param addCols Character vector of additional column names for recoding purposes.
 #'
 #'@return Returns a data frame in long format including all unique values of the variables in \code{recodeVars}.
 #'
 #'@examples
-#'#to be done
+#' # create example GADS
+#' dat <- data.frame(ID = 1:4, var1 = c(NA, "Eng", "Aus", "Aus2"), var2 = c(NA, "French", "Ger", "Ita"),
+#'                   stringsAsFactors = TRUE)
+#' gads <- import_DF(mt2)
+#'
+#' # create Lookup table for recoding
+#' lookup <- createLookup(gads, recodeVars = c("var1", "var2"), sort_by = c("value", "variable))
 #'
 #'@export
 createLookup <- function(GADSdat, recodeVars, sort_by = NULL, addCols = c("value_new")) {
@@ -48,21 +54,30 @@ createLookup.GADSdat <- function(GADSdat, recodeVars, sort_by = NULL, addCols = 
 #'
 #' Collapse columns of a lookup table created by \code{\link{createLookup}}.
 #'
-#' tbd
+#' This function can for example be used to collapse multiple recoding variables from which one should be preferred if values for both recoding variables are present.
 #'
-#'@param lookup A lookup table \code{data.frame} as created via \code{\link{createLookup}}.
+#'@param lookup For example a lookup table \code{data.frame} as created via \code{\link{createLookup}}.
 #'@param recodeVars Character vector of variable names which should be collapsed.
 #'@param prioritize Which of the variables should be prioritized, if multiple values are available?
 #'
 #'@return Returns a data frame that can be used for \code{\link{applyLookup}}.
 #'
 #'@examples
-#'#to be done
+#' # create example recode data.frame
+#' lookup_raw <- data.frame(variable = c("var1"), value = c("germa", "German", "dscherman"),
+#'            recode1 = c(NA, "Englisch", "German"),
+#'            recode2 = c("German", "German", NA))
+#'
+#' # collapse columns
+#' lookup <- collapseColumns(lookup_raw, recodeVars = c("recode1", "recode2"), prioritize = "recode2")
 #'
 #'@export
 collapseColumns <- function(lookup, recodeVars, prioritize) {
   if(length(recodeVars) != 2) stop("More recode variables than 2 are currently not supported.")
   if(length(prioritize) != 1) stop("Prioritize must be of length = length(recodeVars) - 1.")
+  if(!all(recodeVars %in% names(lookup))) stop("All variables names in recodeVars need to be variables in lookup.")
+  if(!all(prioritize %in% recodeVars)) stop("All variables names in prioritize need to be in recodeVars.")
+
   lookup[, "value_new"] <- ifelse(is.na(lookup[[prioritize]]),
                                  yes = lookup[[recodeVars[!recodeVars %in% prioritize]]],
                                  no = lookup[[prioritize]])

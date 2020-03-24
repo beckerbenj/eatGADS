@@ -11,7 +11,7 @@ createLookup(GADSdat, recodeVars, sort_by = NULL, addCols = c("value_new"))
 
 \item{recodeVars}{Character vector of variable names which should be recoded.}
 
-\item{sort_by}{By which column should the long format data.frame be sorted? If \code{NULL}, no sorting is performed.}
+\item{sort_by}{By which column (\code{variable} and/or \code{value}) should the long format \code{data.frame} be sorted? If \code{NULL}, no sorting is performed.}
 
 \item{addCols}{Character vector of additional column names for recoding purposes.}
 }
@@ -19,12 +19,8 @@ createLookup(GADSdat, recodeVars, sort_by = NULL, addCols = c("value_new"))
 Returns a data frame in long format including all unique values of the variables in \code{recodeVars}.
 }
 \description{
-Extract values from variables of a \code{GADSdat} object for recoding.
+Extract unique values from on or multiple variables of a \code{GADSdat} object for recoding (e.g. in an Excel spreadsheet).
 }
 \details{
-If recoding of one or multiple variables is more complex, a lookup table can be created for later importing via \code{eatGADS}. The function allows the extraction of the values of multiple variables and sorting of these unique values via variable or values.
-}
-\examples{
-#to be done
-
+If recoding of one or multiple variables is more complex, a lookup table can be created for later application via \code{\link{applyLookup}} or \code{\link{applyLookup_expandVar}}. The function allows the extraction of the values of multiple variables and sorting of these unique values via variable and/or values.
 }

@@ -102,6 +102,8 @@ addLabels_single <- function(label_df) {
   any_miss <- length(miss_values) > 0
   if(identical(out[["class"]], "haven_labelled") && any_miss) out[["class"]] <- c("haven_labelled_spss", "haven_labelled")
 
+
+  #if(all(label_df$varName == "Emspm18_pp_3")) browser()
   # value labels, if any
   value_label_df <- label_df[!is.na(label_df$value), ]
   if(nrow(value_label_df) > 0) {
@@ -112,16 +114,12 @@ addLabels_single <- function(label_df) {
     if(length(out[["format.spss"]]) > 0 && grepl("^A", unique(out[["format.spss"]]))) {
       out[["labels"]] <- as.character(out[["labels"]])
       names(out[["labels"]]) <- value_label_df[, "valLabel"]
-      if(identical(labeled, "yes")) out[["class"]] <- c("haven_labelled")
+      #if(identical(labeled, "yes")) out[["class"]] <- c("haven_labelled")
     }
   }
 
   #if(any(label_df$varName == "TESTUNG")) browser()
   out
 }
-
-## check out difference between labelled and haven_labelled!
-# maybe: haven_labelled only if missing codes!
-# strange behaviour in case of character vectors sometimes?
 
 
