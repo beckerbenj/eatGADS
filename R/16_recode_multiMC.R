@@ -243,7 +243,9 @@ multiChar2fac.GADSdat <- function(GADSdat, vars, var_suffix = "_r", label_suffix
   check_GADSdat(GADSdat)
   if(!is.character(vars) && length(vars) > 0) stop("vars needs to be a character vector of at least length 1.")
 
-  all_levels <- unique(unlist(lapply(GADSdat$dat[vars], function(x) x)))
+  suppressMessages(only_vars_gads <- removeVars(GADSdat, namesGADS(GADSdat)[!namesGADS(GADSdat) %in% vars]))
+  df_no_miss <- extractData(only_vars_gads)
+  all_levels <- unique(unlist(lapply(df_no_miss, function(x) x)))
   all_levels_fac <- data.frame("all_levels" = as.factor(all_levels))
   all_levels_gads <- import_DF(all_levels_fac)
   all_levels_lookup <- all_levels_gads$labels[, c("valLabel", "value")]
@@ -253,10 +255,13 @@ multiChar2fac.GADSdat <- function(GADSdat, vars, var_suffix = "_r", label_suffix
     old_nam <- var
     var <- paste0(var, var_suffix)
     specific_lookup <- data.frame(variable = old_nam, all_levels_lookup, stringsAsFactors = FALSE)
+
+    #browser()
     GADSdat <- applyLookup(GADSdat, lookup = specific_lookup, suffix = var_suffix)
     GADSdat$dat[, var] <- as.numeric(GADSdat$dat[, var])
 
-    GADSdat <- reuseMeta(GADSdat, varName = var, other_GADSdat = all_levels_gads, other_varName = "all_levels")
+    GADSdat <- reuseMeta(GADSdat, varName = var, other_GADSdat = all_levels_gads, other_varName = "all_levels",
+                         addValueLabels = TRUE)
     GADSdat <- append_varLabel(GADSdat, varName = var, label_suffix = label_suffix)
   }
 
