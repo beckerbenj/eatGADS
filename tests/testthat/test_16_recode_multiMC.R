@@ -139,6 +139,7 @@ test_that("Combine multic mc and text, keeping var and missing codes", {
   mt4_gads_2$dat[1, "text1"] <- -99
   mt4_gads_2$labels[1, c("value")] <- c(-99)
   mt4_gads_2$labels[1, c("valLabel")] <- c("missing")
+  mt4_gads_2$labels[1, c("labeled")] <- c("yes")
   mt4_gads_2 <- checkMissings(mt4_gads_2, missingLabel = "missing")
 
   out <- multiChar2fac(mt4_gads_2, vars = namesGADS(mt4_gads))

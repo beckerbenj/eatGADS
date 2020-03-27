@@ -120,7 +120,7 @@ applyLookup.GADSdat <- function(GADSdat, lookup, suffix = NULL) {
 
   ## recode via data.table
   for(nam in rec_vars) {
-    rec_dt <- data.table::as.data.table(GADSdat2$dat)
+    rec_df <- data.table::as.data.table(GADSdat2$dat)
 
     sub_lu <- lookup[lookup$variable == nam, c("value", "value_new")]
     names(sub_lu) <- c(nam, "value_new")
@@ -129,10 +129,11 @@ applyLookup.GADSdat <- function(GADSdat, lookup, suffix = NULL) {
     old_nam <- nam
     if(!is.null(suffix)) {
       nam <- paste0(nam, suffix)
-      rec_dt[sub_lu, on = old_nam, (nam) := i.value_new]
-    } else {
-      rec_dt[sub_lu, on = nam, (nam) := i.value_new]
+      rec_df[[nam]] <- rec_df[[old_nam]] # initialise variable to allow incomplete recodes
+      names(sub_lu)[1] <- nam
     }
+    rec_dt <- data.table::as.data.table(rec_df)
+    rec_dt[sub_lu, on = nam, (nam) := i.value_new]
 
     if(all(is.na(rec_dt[[nam]]))) {
       warning("In the new variable ", nam, " all values are missing, therefore the variable is dropped. If this behaviour is not desired, contact the package author.")
@@ -198,8 +199,6 @@ collapseMC_Text.GADSdat <- function(GADSdat, mc_var, text_var, mc_code4text, var
   MC_new <- ifelse(MC == mc_code4text | is.na(MC),
                    yes = ifelse(is.na(tex), yes = GADSdat$dat[[mc_var]], no = tex),
                    no = GADSdat$dat[[mc_var]])
-  #cbind(MC, tex, MC_new)
-  #if(all.equal(dim(GADSdat$dat), c(7, 2))) browser()
 
   ## work with lookup tables!
   # recode values from old variable

@@ -53,7 +53,7 @@ matchValues_varLabels <- function(GADSdat, mc_vars, values, label_by_hand = char
 
 #### Apply recode lookup table with input 1 variable output multiple variables
 #############################################################################
-#' Recoade via lookup table into multiple variables.
+#' Recode via lookup table into multiple variables.
 #'
 #' Recode one or multiple variables based on a lookup table created via \code{\link{createLookup}}. In contrast to \code{\link{applyLookup}}, this function allows the creation of multiple resulting variables from a single input variable.
 #'
@@ -107,7 +107,7 @@ applyLookup_expandVar.GADSdat <- function(GADSdat, lookup) {
 #'@param GADSdat A \code{GADSdat} object.
 #'@param mc_vars A character vector with the variable names of the multiple choice variable. Names of the character vector are the corresponding values that are represented by the individual variables.
 #'@param text_vars A character vector with the names of the text variables which should be collapsed.
-#'@param mc_var_4text The names of the multiple choice variable that signals that information from the text variable should be used.
+#'@param mc_var_4text The name of the multiple choice variable that signals that information from the text variable should be used.
 #'@param var_suffix Variable suffix for the newly created \code{GADSdat}. If an empty character, the existing variables are overwritten.
 #'@param label_suffix Suffix added to variable label for the newly created or modified variables in the \code{GADSdat}.
 #'
@@ -131,7 +131,8 @@ applyLookup_expandVar.GADSdat <- function(GADSdat, lookup) {
 #'
 #' out_gads2 <- multiChar2fac(out_gads, vars = c("text1_r", "text2_r"))
 #'
-#' final_gads <- remove_2NA_char(out_gads2, vars = c("text1_r_r", "text2_r_r"), max_num = 1, na_value = -99)
+#' final_gads <- remove_2NA_char(out_gads2, vars = c("text1_r_r", "text2_r_r"),
+#'                               max_num = 1, na_value = -99)
 #'
 #'@export
 collapseMultiMC_Text <- function(GADSdat, mc_vars, text_vars, mc_var_4text, var_suffix = "_r", label_suffix = "(recoded)") {

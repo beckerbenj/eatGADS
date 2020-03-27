@@ -20,7 +20,7 @@ collapseMultiMC_Text(
 
 \item{text_vars}{A character vector with the names of the text variables which should be collapsed.}
 
-\item{mc_var_4text}{The names of the multiple choice variable that signals that information from the text variable should be used.}
+\item{mc_var_4text}{The name of the multiple choice variable that signals that information from the text variable should be used.}
 
 \item{var_suffix}{Variable suffix for the newly created \code{GADSdat}. If an empty character, the existing variables are overwritten.}
 
@@ -53,6 +53,7 @@ out_gads <- collapseMultiMC_Text(mt3_gads, mc_vars = mc_vars,
 
 out_gads2 <- multiChar2fac(out_gads, vars = c("text1_r", "text2_r"))
 
-final_gads <- remove_2NA_char(out_gads2, vars = c("text1_r_r", "text2_r_r"), max_num = 1, na_value = -99)
+final_gads <- remove_2NA_char(out_gads2, vars = c("text1_r_r", "text2_r_r"),
+                              max_num = 1, na_value = -99)
 
 }

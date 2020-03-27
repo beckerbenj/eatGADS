@@ -115,7 +115,7 @@ reuseMeta.GADSdat <- function(GADSdat, varName, other_GADSdat, other_varName = N
   new_meta[, "varName"] <- varName
   # If value labels are added (via addValueLabels = TRUE or missingLabels = "leave"), make meta information on variable level compatible
   if(addValueLabels || identical(missingLabels, "leave")) {
-    for(i in c("varLabel", "format", "display_width", "labeled")) {
+    for(i in c("varLabel", "format", "display_width")) {
       new_meta[, i] <- GADSdat$labels[GADSdat$labels$varName == varName, i][1]
     }
   }
@@ -130,7 +130,14 @@ reuseMeta.GADSdat <- function(GADSdat, varName, other_GADSdat, other_varName = N
     if(identical(new_meta$labeled, "no")) new_meta <- new_meta[-1, ]
   }
 
-  if(addValueLabels) remove_rows <- numeric()
+  # only not remove rows, if already labeled (to prevent empty row)
+  if(addValueLabels && GADSdat$labels[remove_rows, "labeled"][1] != "no") {
+    remove_rows <- numeric()
+  }
+  # change to labeled in new meta, if labels are added!
+  if((addValueLabels || identical(missingLabels, "leave")) && nrow(new_meta) > 0 && new_meta[1, "labeled"] == "yes") {
+    GADSdat$labels[GADSdat$labels$varName == varName, "labeled"] <- "yes"
+  }
 
   # insert new meta information, remove old, sort
   labels <- GADSdat$labels

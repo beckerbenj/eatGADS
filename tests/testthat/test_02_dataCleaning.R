@@ -16,6 +16,7 @@ df4$labels[3, ] <- df4$labels[2, ]
 df4$labels[3, "value"] <- -99
 df4$labels[3, "valLabel"] <- "missing by design"
 df4$labels[3, "missings"] <- "valid"
+df4$labels[2:3, "labeled"] <- "yes"
 
 test_that("Missing checks raise no false alarms", {
   expect_equal(df1, checkMissings(df1))

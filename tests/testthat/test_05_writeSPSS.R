@@ -79,14 +79,15 @@ test_that("Variable labels are added correctly for factor", {
 ### write SPSS
 test_that("GADSdat correctly written to sav", {
   # write_spss("c:/Benjamin_Becker/02_Repositories/packages/eatGADS/tests/testthat/helper_write_spss.sav")
-  write_spss(df, "helper_write_spss.sav")
+  sav_path <- file.path(tempdir(), "helper_write_spss.sav")
+  write_spss(df, filePath = sav_path)
 
   #test_df <- export_tibble(df)
   #test_df2 <- haven::read_sav("c:/Benjamin_Becker/02_Repositories/packages/eatGADS/other_code/helper_write_spss_manual.sav", user_na = TRUE)
   #str(test_df)
   #str(test_df2)
 
-  df2 <- import_spss("helper_write_spss.sav")
+  df2 <- import_spss(sav_path)
   # df2 <- import_spss("c:/Benjamin_Becker/02_Repositories/packages/eatGADS/tests/testthat/helper_write_spss.sav")
   expect_equal(df$dat, df2$dat)
   rownames(df$labels) <- NULL
@@ -110,12 +111,12 @@ test_that("Check haven behaviour", {
 
   attributes(test1$V2) <- list(label = "Variable - 2",
                       format.spss = "F10.2")
-  expect_silent(haven::write_sav(test1, "helper_write_spss_test.sav"))
+  expect_silent(haven::write_sav(test1, tempfile()))
 
   attributes(test2$V2) <- list(na_values = c(99, 98, 97, 95),
                                class = c("haven_labelled_spss", "haven_labelled"),
                                format.spss = "F10.2")
-  expect_error(haven::write_sav(test2, "helper_write_spss_test.sav"))
+  expect_error(haven::write_sav(test2, tempfile()), "Writing failure: The number of defined missing values exceeds the format limit.")
 
   attributes(test3$V2) <- list(label = "Schul-ID",
                                display_width = 14,

@@ -22,6 +22,14 @@ check_GADSdat <- function(GADSdat) {
   if(length(only_in_labels) > 0) stop("The following variables have meta data but are not in the actual data: ", only_in_labels, call. = FALSE)
   if(length(only_in_dat) > 0) stop("The following variables are in the data but do not have meta data: ", only_in_dat, call. = FALSE)
 
+  unlabeled_labels <- GADSdat$labels[GADSdat$labels$labeled == "no", ]
+  if(nrow(unlabeled_labels) > 0) {
+    by(unlabeled_labels, unlabeled_labels$varName, function(labels) {
+      if(any(!is.na(labels$value))) stop("The following variable has value labels but is not marked as labeled: ", unique(labels$varName))
+      if(any(!is.na(labels$valLabel))) stop("The following variable has value labels but is not marked as labeled: ", unique(labels$varName))
+    })
+  }
+
   var_info <- unique(GADSdat$labels[, c("varName", "varLabel", "format", "display_width", "labeled")])
   if(!nrow(var_info) == length(unique(names(GADSdat$dat)))) {
     by(GADSdat$labels, GADSdat$labels$varName, function(labels) {

@@ -30,6 +30,9 @@ test_that("Create lookup for 2 mixed variables",{
 testM <- import_spss("helper_spss_missings.sav")
 
 lu1 <- createLookup(testM, recodeVars = c("VAR1", "VAR2"), addCols = c("r1", "r2"))
+lu2 <- createLookup(testM, recodeVars = c("VAR1"), sort_by = "value")
+lu3 <- createLookup(testM, recodeVars = c("VAR1", "VAR2"), sort_by = "value")
+
 
 test_that("Test unique values functionality for Create lookups",{
   expect_equal(lu1$value, c(1, -99, -96, 2, 1))
@@ -38,8 +41,6 @@ test_that("Test unique values functionality for Create lookups",{
   #expect_equal(dim(test), c(2, 3))
 })
 
-lu2 <- createLookup(testM, recodeVars = c("VAR1"), sort_by = "value")
-lu3 <- createLookup(testM, recodeVars = c("VAR1", "VAR2"), sort_by = "value")
 test_that("Ordering by values",{
   expect_equal(lu2$value, c(-99, -96, 1, 2))
 
@@ -92,6 +93,14 @@ test_that("Applying recode for 1 variable",{
   lu2$value_new <- c(-9, -6, 10, 11)
   ng <- applyLookup(testM, lu2, suffix = "_r")
   expect_equal(ng$dat$VAR1_r, c(10, -9, -6, 11))
+})
+
+test_that("Applying partial recode for 1 variable",{
+  lu2$value_new <- c(-9, -6, 10, 11)
+  lu2_part <- lu2[3:4, ]
+  ng <- applyLookup(testM, lu2_part, suffix = "_r")
+  expect_equal(ng$dat$VAR1_r, c(10, -99, -96, 11))
+  expect_equal(ng$dat$VAR1, c(1, -99, -96, 2))
 })
 
 test_that("Applying recode for 1 variable while overwriting",{

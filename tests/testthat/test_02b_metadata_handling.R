@@ -93,6 +93,12 @@ test_that("Reuse meta with special missing treatment", {
   expect_equal(dat3$labels[1, "value"], -99)
 })
 
+test_that("Reuse meta adding value labels to an unlabeled variable", {
+  out <- reuseMeta(df1, varName = "V1", other_GADSdat = dfSAV, other_varName = "VAR1", addValueLabels = TRUE)
+  expect_equal(out$labels[2, "labeled"], "yes")
+  expect_equal(out$labels[2, "valLabel"], "By design")
+})
+
 test_that("Bugfix if only missing rows and missingLabels = leave", {
   out <- reuseMeta(dfSAV, varName = "VAR3", other_GADSdat = dfSAV, other_varName = "VAR1", missingLabels = "leave")
   expect_equal(nrow(out$labels), 8)

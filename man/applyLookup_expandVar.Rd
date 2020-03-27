@@ -2,7 +2,7 @@
 % Please edit documentation in R/16_recode_multiMC.R
 \name{applyLookup_expandVar}
 \alias{applyLookup_expandVar}
-\title{Recoade via lookup table into multiple variables.}
+\title{Recode via lookup table into multiple variables.}
 \usage{
 applyLookup_expandVar(GADSdat, lookup)
 }

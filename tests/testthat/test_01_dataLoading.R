@@ -254,6 +254,9 @@ test_that("import_raw with tibbles", {
 ###### check_GADSdat
 # testM <- import_spss("c:/Benjamin_Becker/02_Repositories/packages/eatGADS/tests/testthat/helper_spss_missings.sav")
 testM <- import_spss("helper_spss_missings.sav")
+# load(file = "c:/Benjamin_Becker/02_Repositories/packages/eatGADS/tests/testthat/helper_data.rda")
+load(file = "helper_data.rda")
+
 
 test_that("Object validater for GADSdat objects",{
   testM3 <- testM2 <- testM
@@ -263,6 +266,12 @@ test_that("Object validater for GADSdat objects",{
   expect_error(check_GADSdat(testM2), "The following variables have meta data but are not in the actual data: newVar")
   testM3$labels[2, "varLabel"] <- "other label"
   expect_error(check_GADSdat(testM3), "The following variable has inconsistent meta information on variable level: VAR1")
+
+  df1_1 <- df1_2 <- df1
+  df1_1$labels[2, c("value")] <- -99
+  df1_2$labels[2, c("valLabel")] <- "some"
+  expect_error(check_GADSdat(df1_1), "The following variable has value labels but is not marked as labeled: V1")
+  expect_error(check_GADSdat(df1_2), "The following variable has value labels but is not marked as labeled: V1")
 })
 
 
