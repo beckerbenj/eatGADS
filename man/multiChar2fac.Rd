@@ -23,6 +23,7 @@ Convert multiple character variables to factors, while creating a common set of 
 }
 \details{
 If a set of variables has the same possible values, it is desirable that these variables share the same value labels, even if some of the values do not occur on the individual variables. This function allows the transformation of multiple character variables to factors while assimilating the value labels.
+The SPSS format of the newly created variables is set to F10.0.
 }
 \examples{
 #to be done

@@ -223,6 +223,7 @@ drop_empty <- function(dat, vars = names(dat)) {
 #' Convert multiple character variables to factors, while creating a common set of value labels, which is identical across variables.
 #'
 #' If a set of variables has the same possible values, it is desirable that these variables share the same value labels, even if some of the values do not occur on the individual variables. This function allows the transformation of multiple character variables to factors while assimilating the value labels.
+#' The SPSS format of the newly created variables is set to F10.0.
 #'
 #'@param GADSdat A \code{data.frame} or \code{GADSdat} object.
 #'@param vars A single variable name of the multiple choice variable.
@@ -264,6 +265,7 @@ multiChar2fac.GADSdat <- function(GADSdat, vars, var_suffix = "_r", label_suffix
     GADSdat <- reuseMeta(GADSdat, varName = var, other_GADSdat = all_levels_gads, other_varName = "all_levels",
                          addValueLabels = TRUE)
     GADSdat <- append_varLabel(GADSdat, varName = var, label_suffix = label_suffix)
+    GADSdat$labels[GADSdat$labels$varName == var, "format"] <- "F10.0"
   }
 
   GADSdat
