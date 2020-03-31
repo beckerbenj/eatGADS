@@ -535,13 +535,13 @@ checkNewValueLabels <- function(newValueLabels, newValues) {
 #'
 #' Change the variable label of a variable as part of a \code{GADSdat} or \code{all_GADSdat} object.
 #'
-#' Applied to a \code{GADSdat} or \code{all_GADSdat} object, this function is a wrapper of \code{\link{getChangeMeta}} and \code{\link{applyChangeMeta}}
+#' Applied to a \code{GADSdat} or \code{all_GADSdat} object, this function is a wrapper of \code{\link{getChangeMeta}} and \code{\link{applyChangeMeta}}.
 #'
 #'@param GADSdat GADSdat object imported via eatGADS.
 #'@param varName Character string of variable names.
 #'@param varLabel Character string of the new variable labels.
 #'
-#'@return Returns the GADSdat object with changed meta data..
+#'@return Returns the GADSdat object with changed meta data.
 #'
 #'@examples
 #'# Example data set
@@ -581,14 +581,14 @@ checkVarLabelVector <- function(varName, varLabel, dat) {
 #'
 #' Change value labels of a variable as part of a \code{GADSdat} or \code{all_GADSdat} object.
 #'
-#' Applied to a \code{GADSdat} or \code{all_GADSdat} object, this function is a wrapper of \code{\link{getChangeMeta}} and \code{\link{applyChangeMeta}}
+#' Applied to a \code{GADSdat} or \code{all_GADSdat} object, this function is a wrapper of \code{\link{getChangeMeta}} and \code{\link{applyChangeMeta}}.
 #'
 #'@param GADSdat GADSdat object imported via eatGADS.
 #'@param varName Character string of a variable name.
 #'@param value Numeric values.
 #'@param valLabel Character string of the new value labels.
 #'
-#'@return Returns the GADSdat object with changed meta data..
+#'@return Returns the GADSdat object with changed meta data.
 #'
 #'@examples
 #'# Example data set
@@ -619,6 +619,90 @@ checkValLabelInput <- function(varName, value, valLabel, labels) {
   if(length(value) != length(valLabel)) stop("value and valLabel are not of identical length.", call. = FALSE)
   if(!all(value %in% labels[labels$varName == varName, "value"])) stop("values are not existing values for the variable.", call. = FALSE)
   return()
+}
+
+
+#### Change spss format
+#############################################################################
+#' Change SPSS format.
+#'
+#' Change the SPSS format of a variable as part of a \code{GADSdat} or \code{all_GADSdat} object.
+#'
+#' Applied to a \code{GADSdat} or \code{all_GADSdat} object, this function is a wrapper of \code{\link{getChangeMeta}} and \code{\link{applyChangeMeta}}.
+#'
+#'@param GADSdat GADSdat object imported via eatGADS.
+#'@param varName Character string of variable names.
+#'@param format A single string containing the new SPSS format, for example 'A25' or 'F10'.
+#'
+#'@return Returns the GADSdat object with changed meta data..
+#'
+#'@examples
+#'# Example data set
+#'#to be done
+#'
+#'@export
+changeSPSSformat <- function(GADSdat, varName, format) {
+  UseMethod("changeSPSSformat")
+}
+#'@export
+changeSPSSformat.GADSdat <- function(GADSdat, varName, format) {
+  check_GADSdat(GADSdat)
+  if(!all(varName %in% namesGADS(GADSdat))) stop("varName are not all variables in the GADSdat.")
+  if(!is.character(format) || length(format) != 1) stop("format has to be a single character value.")
+  if(!grepl("^A|^F", format)) stop("format has to start with A (string) or F (numeric).")
+  if(nchar(format) > 4) stop("format has to have maximum 3 numbers (width) after its type.")
+  format_numbers <- substr(format, 2, nchar(format))
+  if(!grepl("^[0-9]*$", format_numbers)) stop("format can only have numbers (width) after its type.")
+
+  changeTable <- getChangeMeta(GADSdat, level = "variable")
+  for(i in seq_along(varName)) {
+    changeTable[changeTable$varName == varName[i], "format_new"] <- format
+  }
+  GADSdat_out <- applyChangeMeta(GADSdat, changeTable = changeTable)
+  check_var_type(GADSdat_out)
+  GADSdat_out
+}
+
+#'@export
+changeVarLabels.all_GADSdat <- function(GADSdat, varName, varLabel) {
+  stop("This method has not been implemented yet")
+}
+
+
+
+#### As numeric
+#############################################################################
+#' Transform string to numeric.
+#'
+#' Transform a string variable within a \code{GADSdat} or \code{all_GADSdat} object to a numeric variable.
+#'
+#' Applied to a \code{GADSdat} or \code{all_GADSdat} object, this function uses \code{\link{asNumeric}} to change the variable class and changes the \code{format} column in the meta data.
+#'
+#'@param GADSdat GADSdat object imported via eatGADS.
+#'@param varName Character string of a variable name.
+#'
+#'@return Returns the GADSdat object with with the changed variable.
+#'
+#'@examples
+#'# Example data set
+#'#to be done
+#'
+#'@export
+stringAsNumeric <- function(GADSdat, varName) {
+  UseMethod("stringAsNumeric")
+}
+#'@export
+stringAsNumeric.GADSdat <- function(GADSdat, varName) {
+  check_GADSdat(GADSdat)
+  if(!varName %in% namesGADS(GADSdat)) stop("varName is not a variable in the GADSdat.")
+
+  GADSdat$dat[[varName]] <- eatTools::catch_asNumericIfPossible(x = GADSdat$dat[[varName]], warn = paste("Some or all values for ", varName,
+                                                    " cannot be coerced to numeric and are therefore changed to NA. \n", sep = ""),
+                                                    maintain.factor.scores = TRUE, force.string = TRUE, transform.factors = TRUE)
+  GADSdat_out <- changeSPSSformat(GADSdat, varName = varName, format = "F10")
+
+  check_var_type(GADSdat_out)
+  GADSdat_out
 }
 
 
