@@ -27,6 +27,7 @@ test_that("Create lookup for 2 mixed variables",{
 })
 
 # testM <- import_spss("c:/Benjamin_Becker/02_Repositories/packages/eatGADS/tests/testthat/helper_spss_missings.sav")
+# testM <- import_spss("C:/Users/benjb/Documents/Repositories/eatGADS/tests/testthat/helper_spss_missings.sav")
 testM <- import_spss("helper_spss_missings.sav")
 
 lu1 <- createLookup(testM, recodeVars = c("VAR1", "VAR2"), addCols = c("r1", "r2"))
@@ -67,7 +68,10 @@ test_that("Check Lookup, errors and warnings",{
   lu2_1[1, 1] <- "v10"
   expect_error(check_lookup(lu2_1, testM), "Some of the variables are not variables in the GADSdat.")
   lu2_2[1, 2] <- NA
-  expect_error(check_lookup(lu2_2, testM), "In some rows there are missings in column value.")
+  lu2_2[1, 3] <- 1
+  expect_silent(suppressWarnings(check_lookup(lu2_2, testM)))
+  lu2_2[2, 2] <- NA
+  expect_error(check_lookup(lu2_2, testM), "In more than 1 row value is missing.")
 })
 
 test_that("Behaviour if new variable containts only missings",{
@@ -93,6 +97,14 @@ test_that("Applying recode for 1 variable",{
   lu2$value_new <- c(-9, -6, 10, 11)
   ng <- applyLookup(testM, lu2, suffix = "_r")
   expect_equal(ng$dat$VAR1_r, c(10, -9, -6, 11))
+})
+
+test_that("Applying recode for 1 variable with one empty old value",{
+  lu2$value_new <- c(-94, -6, 10, 11)
+  lu2$value[1] <- NA
+  testM$dat$VAR1[2] <- NA
+  ng <- applyLookup(testM, lu2, suffix = "_r")
+  expect_equal(ng$dat$VAR1_r, c(10, -94, -6, 11))
 })
 
 test_that("Applying partial recode for 1 variable",{

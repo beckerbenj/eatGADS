@@ -24,3 +24,14 @@ Extract unique values from on or multiple variables of a \code{GADSdat} object f
 \details{
 If recoding of one or multiple variables is more complex, a lookup table can be created for later application via \code{\link{applyLookup}} or \code{\link{applyLookup_expandVar}}. The function allows the extraction of the values of multiple variables and sorting of these unique values via variable and/or values.
 }
+\examples{
+# create example GADS
+dat <- data.frame(ID = 1:4, var1 = c(NA, "Eng", "Aus", "Aus2"),
+                  var2 = c(NA, "French", "Ger", "Ita"),
+                  stringsAsFactors = TRUE)
+gads <- import_DF(dat)
+
+# create Lookup table for recoding
+lookup <- createLookup(gads, recodeVars = c("var1", "var2"), sort_by = c("value", "variable"))
+
+}

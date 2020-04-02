@@ -20,7 +20,7 @@ Returns a GADSdat object.
 Extracts variables from a GADS data base. Only the specified variables are extracted. Note that this selection determines the format of the \code{data.frame} that is extracted. CAREFUL: This function uses a local temporary directory to speed up loading the GADS from a server and caches the data base locally for a running R session. The temporary data base is removed automatically when the running \code{R} session is terminated.
 }
 \details{
-A random temporary directory is used for caching the data base and is removed, when the R sessions terminates. See \code{\link{createDB}} and \code{\link{dbPull}} for further explanation of the query and merging processes.
+A random temporary directory is used for caching the data base and is removed, when the R sessions terminates. See \code{\link[eatDB]{createDB}} and \code{\link[eatDB]{dbPull}} for further explanation of the query and merging processes.
 }
 \examples{
 \dontrun{

@@ -47,8 +47,8 @@ test_that("Errors for apply lookup with expanding into multiple variables", {
   names(lookup2)[1] <- "v"
   expect_error(applyLookup_expandVar(l_gads, lookup2), "LookUp table has to be formatted correctly.")
 
-  lookup3$value[1] <- NA
-  expect_error(applyLookup_expandVar(l_gads, lookup3), "In some rows there are missings in column value.")
+  lookup3$value[1:2] <- NA
+  expect_error(applyLookup_expandVar(l_gads, lookup3), "In more than 1 row value is missing.")
 
   lookup4$new_value1[1] <- NA
   expect_warning(applyLookup_expandVar(l_gads, lookup4),)

@@ -676,7 +676,7 @@ changeVarLabels.all_GADSdat <- function(GADSdat, varName, varLabel) {
 #'
 #' Transform a string variable within a \code{GADSdat} or \code{all_GADSdat} object to a numeric variable.
 #'
-#' Applied to a \code{GADSdat} or \code{all_GADSdat} object, this function uses \code{\link{asNumeric}} to change the variable class and changes the \code{format} column in the meta data.
+#' Applied to a \code{GADSdat} or \code{all_GADSdat} object, this function uses \code{\link[eatTools]{asNumericIfPossible}} to change the variable class and changes the \code{format} column in the meta data.
 #'
 #'@param GADSdat GADSdat object imported via eatGADS.
 #'@param varName Character string of a variable name.

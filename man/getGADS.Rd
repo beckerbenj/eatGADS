@@ -18,7 +18,7 @@ Returns a GADSdat object.
 Extracts variables from a GADS data base. Only the specified variables are extracted. Note that this selection determines the format of the \code{data.frame} that is extracted.
 }
 \details{
-See \code{\link{createDB}} and \code{\link{dbPull}} for further explanation of the query and merging processes.
+See \code{\link[eatDB]{createDB}} and \code{\link[eatDB]{dbPull}} for further explanation of the query and merging processes.
 }
 \examples{
 \dontrun{

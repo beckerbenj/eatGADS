@@ -15,12 +15,13 @@
 #'
 #'@examples
 #' # create example GADS
-#' dat <- data.frame(ID = 1:4, var1 = c(NA, "Eng", "Aus", "Aus2"), var2 = c(NA, "French", "Ger", "Ita"),
+#' dat <- data.frame(ID = 1:4, var1 = c(NA, "Eng", "Aus", "Aus2"),
+#'                   var2 = c(NA, "French", "Ger", "Ita"),
 #'                   stringsAsFactors = TRUE)
-#' gads <- import_DF(mt2)
+#' gads <- import_DF(dat)
 #'
 #' # create Lookup table for recoding
-#' lookup <- createLookup(gads, recodeVars = c("var1", "var2"), sort_by = c("value", "variable))
+#' lookup <- createLookup(gads, recodeVars = c("var1", "var2"), sort_by = c("value", "variable"))
 #'
 #'@export
 createLookup <- function(GADSdat, recodeVars, sort_by = NULL, addCols = c("value_new")) {
@@ -152,7 +153,7 @@ applyLookup.GADSdat <- function(GADSdat, lookup, suffix = NULL) {
 check_lookup <- function(lookup, GADSdat) {
   if(!all(lookup$variable %in% namesGADS(GADSdat))) stop("Some of the variables are not variables in the GADSdat.")
   if(!identical(names(lookup), c("variable", "value", "value_new"))) stop("LookUp table has to be formatted correctly.")
-  if(any(is.na(lookup$value))) stop("In some rows there are missings in column value.")
+  if(sum(is.na(lookup$value)) > 1) stop("In more than 1 row value is missing.")
   if(all(is.na(lookup$value_new))) stop("All values have no recode value assigned (missings in value_new).")
   if(any(is.na(lookup$value_new))) warning("Some values have no recode value assigned (missings in value_new).")
 }
