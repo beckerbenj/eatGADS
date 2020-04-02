@@ -60,6 +60,14 @@ test_that("Test unique values functionality for Create lookups",{
   lu_r <- collapseColumns(lu1, recodeVars = c("r1", "r2"), prioritize = "r2")
   expect_equal(lu_r$value_new, c(1, -2, 3, 4, 5))
 })
+test_that("Test unique values functionality for Create lookups",{
+  lu1$r1 <- c(1, 2, NA, 4, NA)
+
+  lu_r <- collapseColumns(lu1[1:3], recodeVars = c("r1"), prioritize = "r1")
+  expect_equal(names(lu_r), c("variable", "value", "value_new"))
+  expect_equal(lu_r$value_new, c(1, 2, NA, 4, NA))
+})
+
 
 test_that("Check Lookup, errors and warnings",{
   expect_error(check_lookup(lu2, testM), "All values have no recode value assigned (missings in value_new).", fixed = TRUE)

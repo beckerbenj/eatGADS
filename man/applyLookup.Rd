@@ -9,7 +9,7 @@ applyLookup(GADSdat, lookup, suffix = NULL)
 \arguments{
 \item{GADSdat}{A \code{GADSdat} object.}
 
-\item{lookup}{Lookup table created by \code{\link{createLookup}} and - if necessary -  collapsed by \code{\link{collapseColumns}}.}
+\item{lookup}{Lookup table created by \code{\link{createLookup}} and - if necessary -  collapsed by \code{\link{collapseColumns}}. Column names should be \code{c("variable", "value", "value_new")}.}
 
 \item{suffix}{Suffix to add to the existing variable names. If \code{NULL} the old variables will be overwritten.}
 }

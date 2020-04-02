@@ -74,11 +74,15 @@ createLookup.GADSdat <- function(GADSdat, recodeVars, sort_by = NULL, addCols = 
 #'
 #'@export
 collapseColumns <- function(lookup, recodeVars, prioritize) {
-  if(length(recodeVars) != 2) stop("More recode variables than 2 are currently not supported.")
+  if(!length(recodeVars) %in% 1:2) stop("More recode variables than 2 are currently not supported.")
   if(length(prioritize) != 1) stop("Prioritize must be of length = length(recodeVars) - 1.")
   if(!all(recodeVars %in% names(lookup))) stop("All variables names in recodeVars need to be variables in lookup.")
   if(!all(prioritize %in% recodeVars)) stop("All variables names in prioritize need to be in recodeVars.")
 
+  if(length(recodeVars) == 1){
+    names(lookup)[names(lookup) == recodeVars] <- "value_new"
+    return(lookup)
+  }
   lookup[, "value_new"] <- ifelse(is.na(lookup[[prioritize]]),
                                  yes = lookup[[recodeVars[!recodeVars %in% prioritize]]],
                                  no = lookup[[prioritize]])
@@ -95,7 +99,7 @@ collapseColumns <- function(lookup, recodeVars, prioritize) {
 #' tbd
 #'
 #'@param GADSdat A \code{GADSdat} object.
-#'@param lookup Lookup table created by \code{\link{createLookup}} and - if necessary -  collapsed by \code{\link{collapseColumns}}.
+#'@param lookup Lookup table created by \code{\link{createLookup}} and - if necessary -  collapsed by \code{\link{collapseColumns}}. Column names should be \code{c("variable", "value", "value_new")}.
 #'@param suffix Suffix to add to the existing variable names. If \code{NULL} the old variables will be overwritten.
 #'
 #'@return Returns a recoded \code{GADSdat}.
