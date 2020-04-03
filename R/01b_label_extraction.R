@@ -11,10 +11,11 @@ extract_variable_level.savDat<- function(rawDat) {
   unknown_attr <- all_attr[!all_attr %in% c("label", "format.spss", "display_width", "class", "labels", "na_range", "na_values")]
   if(length(unknown_attr) > 0) stop("Unknown attributes exported from haven:", unknown_attr, ". Please contact package author.")
 
+  varClass <- unlist(lapply(rawDat, extract_attribute, attr_name = "class"))
+  #if(any(c("difftime", "Date") %in% varClass)) browser()
   varLabels <- unlist(lapply(rawDat, extract_attribute, attr_name = "label"))
   varFormat <- unlist(lapply(rawDat, extract_attribute, attr_name = "format.spss"))
   varWidth <- unlist(lapply(rawDat, extract_attribute, attr_name = "display_width", NA_type = NA_real_))
-  varClass <- unlist(lapply(rawDat, extract_attribute, attr_name = "class"))
   if(any(grepl("^labelled_spss", varClass))) {
     warning("You are using an old version of haven. Please download the current version from GitHub. \n Correct importing from SPSS-files can not be guaranteed.", call. = FALSE)
   }

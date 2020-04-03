@@ -5,7 +5,7 @@
 #'
 #' Function to import \code{.sav} files while extracting meta information, e.g. variable and value labels.
 #'
-#' SPSS files (\code{.sav}) store variable and value labels and assign specific formatting to variables. \code{import_spss} imports data from SPSS, while storing this meta-information seperately in a long format data frame. Value labels and missing labels are used to identify missing values (see \code{\link{checkMissings}}).
+#' SPSS files (\code{.sav}) store variable and value labels and assign specific formatting to variables. \code{import_spss} imports data from SPSS, while storing this meta-information seperately in a long format data frame. Value labels and missing labels are used to identify missing values (see \code{\link{checkMissings}}). Time and date variables are converted to character.
 #'
 #'@param filePath Source file location, ending on \code{.sav}.
 #'@param checkVarNames Should variable names be checked for vioalitions of \code{SQLite} and \code{R} naming rules?
@@ -237,7 +237,10 @@ prepare_labels <- function(rawDat, checkVarNames, labeledStrings) {
   if(anyDuplicated(tolower(names(rawDat)))) names(rawDat) <- unduplicate(names(rawDat))
   if(identical(checkVarNames, TRUE)) names(rawDat) <- unlist(lapply(names(rawDat), transf_names))
 
-  # 2) extract labels
+  # 2) dates and times to character
+  rawDat <- times2character(rawDat = rawDat)
+
+  # 3) extract labels
   label_df <- extract_labels(rawDat = rawDat, labeledStrings = labeledStrings)
 
   # 3) depends on class! strip away labels from rawDat for spss, convert factors for R

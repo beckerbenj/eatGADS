@@ -275,3 +275,34 @@ test_that("Object validater for GADSdat objects",{
 })
 
 
+# dates and times
+# ------------------------------------------------------------------------
+# testT <- haven::read_sav("c:/Benjamin_Becker/02_Repositories/packages/eatGADS/tests/testthat/helper_spss_times_error.sav", user_na = TRUE)
+# testT <- haven::read_sav("c:/Benjamin_Becker/02_Repositories/packages/eatGADS/tests/testthat/helper_spss_times.sav", user_na = TRUE)
+testT <- haven::read_sav("helper_spss_times.sav", user_na = TRUE)
+
+test_that("Modifiying of variables of class date/time", {
+  out <- times2character.savDat(testT)
+  expect_equal(attributes(out$VAR1)$na_values, c("-99:00:00"))
+  expect_equal(attributes(out$VAR1)$labels, c("missing" = "-99:00:00"))
+
+  expect_equal(attributes(out$VAR3_1)$format.spss, c("A11"))
+})
+
+test_that("Import of variables of class date/time", {
+  # out <- import_spss("c:/Benjamin_Becker/02_Repositories/packages/eatGADS/tests/testthat/helper_spss_times.sav")
+  suppressWarnings(out <- import_spss("helper_spss_times.sav"))
+  expect_equal(out$dat$VAR1, c("13:00:00", "-99:00:00"))
+  expect_equal(out$dat$VAR2, c("13:00:00", "-99:00:00"))
+  expect_equal(out$dat$VAR1_1, c("13:00:00", "-99:00:00"))
+  expect_equal(out$dat$VAR3_1, c("1989-08-12", "2009-01-27"))
+
+  expect_equal(out$labels[1, "format"], c("A8"))
+})
+
+test_that("Errors for import of variables of class date/time", {
+  expect_error(out <- import_spss("helper_spss_times_error.sav"), "Labelled dates are currently not supported by eatGADS.")
+  vec <- as.POSIXct(strptime("2011-03-27 01:30:00", "%Y-%m-%d %H:%M:%S"))
+  df <- data.frame(vec)
+  expect_error(out <- import_DF(df), "POSIXct and POSIXlt are currently not supported by eatGADS.")
+})

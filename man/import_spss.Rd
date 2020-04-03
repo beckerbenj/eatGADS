@@ -20,7 +20,7 @@ Returns a list with the actual data \code{dat} and a data frame with all meta in
 Function to import \code{.sav} files while extracting meta information, e.g. variable and value labels.
 }
 \details{
-SPSS files (\code{.sav}) store variable and value labels and assign specific formatting to variables. \code{import_spss} imports data from SPSS, while storing this meta-information seperately in a long format data frame. Value labels and missing labels are used to identify missing values (see \code{\link{checkMissings}}).
+SPSS files (\code{.sav}) store variable and value labels and assign specific formatting to variables. \code{import_spss} imports data from SPSS, while storing this meta-information seperately in a long format data frame. Value labels and missing labels are used to identify missing values (see \code{\link{checkMissings}}). Time and date variables are converted to character.
 }
 \examples{
 \dontrun{
