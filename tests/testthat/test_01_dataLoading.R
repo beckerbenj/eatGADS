@@ -282,9 +282,12 @@ test_that("Object validater for GADSdat objects",{
 testT <- haven::read_sav("helper_spss_times.sav", user_na = TRUE)
 
 test_that("Modifiying of variables of class date/time", {
-  out <- times2character.savDat(testT)
-  expect_equal(attributes(out$VAR1)$na_values, c("-99:00:00"))
-  expect_equal(attributes(out$VAR1)$labels, c("missing" = "-99:00:00"))
+  warns <- capture_warnings(out <- times2character.savDat(testT))
+  expect_equal(warns[[1]], "Value labels and missing codes for 'TIMES' variables are not supported by eatGADS. Missing values are converted to NA and labels and missing codes are dropped from meta data for variable VAR1")
+  expect_equal(warns[[2]], "Value labels and missing codes for 'TIMES' variables are not supported by eatGADS. Missing values are converted to NA and labels and missing codes are dropped from meta data for variable VAR2")
+
+  expect_equal(attributes(out$VAR1)$na_values, NULL)
+  expect_equal(attributes(out$VAR1)$labels, NULL)
 
   expect_equal(attributes(out$VAR3_1)$format.spss, c("A11"))
 })
@@ -292,8 +295,8 @@ test_that("Modifiying of variables of class date/time", {
 test_that("Import of variables of class date/time", {
   # out <- import_spss("c:/Benjamin_Becker/02_Repositories/packages/eatGADS/tests/testthat/helper_spss_times.sav")
   suppressWarnings(out <- import_spss("helper_spss_times.sav"))
-  expect_equal(out$dat$VAR1, c("13:00:00", "-99:00:00"))
-  expect_equal(out$dat$VAR2, c("13:00:00", "-99:00:00"))
+  expect_equal(out$dat$VAR1, c("13:00:00", NA))
+  expect_equal(out$dat$VAR2, c("13:00:00", NA))
   expect_equal(out$dat$VAR1_1, c("13:00:00", "-99:00:00"))
   expect_equal(out$dat$VAR3_1, c("1989-08-12", "2009-01-27"))
 

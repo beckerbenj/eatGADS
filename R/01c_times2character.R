@@ -15,12 +15,20 @@ times2character.savDat<- function(rawDat) {
   for(hms_var in hms_vars) {
     old_attributes <- attributes(rawDat[[hms_var]])
     new_attributes <- old_attributes
-    #if(hms_var == "VAR1_1") browser()
-    new_var <- as.character(hms::as_hms(as.numeric(rawDat[[hms_var]])))
 
-    if(!is.null(old_attributes[["labels"]])) new_attributes[["labels"]] <- as.character(hms::as_hms(unname(old_attributes[["labels"]])))
-    names(new_attributes[["labels"]]) <- names(old_attributes[["labels"]])
-    if(!is.null(old_attributes[["na_values"]])) new_attributes[["na_values"]] <- as.character(hms::as_hms(unname(old_attributes[["na_values"]])))
+    #if(hms_var == "VAR2") browser()
+    new_var_zapped <- haven::zap_labels(rawDat[[hms_var]])
+    new_var <- as.character(hms::as_hms(as.numeric(new_var_zapped)))
+
+    ## Conserving labels + missing codes (deprecated)
+    #if(!is.null(old_attributes[["labels"]])) new_attributes[["labels"]] <- as.character(hms::as_hms(unname(old_attributes[["labels"]])))
+    #names(new_attributes[["labels"]]) <- names(old_attributes[["labels"]])
+    #if(!is.null(old_attributes[["na_values"]])) new_attributes[["na_values"]] <- as.character(hms::as_hms(unname(old_attributes[["na_values"]])))
+
+    if(!is.null(new_attributes[["labels"]]) || !is.null(new_attributes[["na_values"]])) {
+      warning("Value labels and missing codes for 'TIMES' variables are not supported by eatGADS. Missing values are converted to NA and labels and missing codes are dropped from meta data for variable ", hms_var)
+    }
+    new_attributes[["labels"]] <- new_attributes[["na_values"]] <- NULL
 
     new_attributes[["format.spss"]] <- "A8"
     new_attributes[["units"]] <- NULL
@@ -59,3 +67,8 @@ times2character.data.frame <- function(rawDat) {
   if(any(grepl("POSIX", varClass))) stop("POSIXct and POSIXlt are currently not supported by eatGADS.")
   rawDat
 }
+
+
+### set missings to NA
+### remove value labels
+### issue warning
