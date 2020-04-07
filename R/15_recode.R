@@ -2,16 +2,21 @@
 #############################################################################
 #' Extract values for recoding.
 #'
-#' Extract unique values from on or multiple variables of a \code{GADSdat} object for recoding (e.g. in an Excel spreadsheet).
+#' Extract unique values from one or multiple variables of a \code{GADSdat} object for recoding (e.g. via an Excel spreadsheet).
 #'
-#' If recoding of one or multiple variables is more complex, a lookup table can be created for later application via \code{\link{applyLookup}} or \code{\link{applyLookup_expandVar}}. The function allows the extraction of the values of multiple variables and sorting of these unique values via variable and/or values.
+#' If recoding of one or multiple variables is more complex, a lookup table can be created for later application via \code{\link{applyLookup}} or \code{\link{applyLookup_expandVar}}.
+#'  The function allows the extraction of the values of multiple variables and sorting of these unique values via \code{variable} and/or \code{values}.
+#' If \code{addCols} are specified the lookup table has to be formatted via \code{\link{collapseColumns}}, before it can be applied to recode data.
 #'
 #'@param GADSdat A \code{GADSdat} object.
 #'@param recodeVars Character vector of variable names which should be recoded.
 #'@param sort_by By which column (\code{variable} and/or \code{value}) should the long format \code{data.frame} be sorted? If \code{NULL}, no sorting is performed.
 #'@param addCols Character vector of additional column names for recoding purposes.
 #'
-#'@return Returns a data frame in long format including all unique values of the variables in \code{recodeVars}.
+#'@return Returns a data frame in long format with the following variables:
+#'\item{variable}{Variables as specified in \code{recodeVars}}
+#'\item{value}{Unique values of the variabels specified in \code{recodeVars}}
+#'\item{value_new}{This is the default for \code{addCols}. If different additional column names are supplied, this column is missing.}
 #'
 #'@examples
 #' # create example GADS
@@ -32,6 +37,7 @@ createLookup <- function(GADSdat, recodeVars, sort_by = NULL, addCols = c("value
 createLookup.GADSdat <- function(GADSdat, recodeVars, sort_by = NULL, addCols = c("value_new")) {
   check_GADSdat(GADSdat)
   if(!is.character(recodeVars) && length(recodeVars) > 0) stop("recodeVars needs to be a character vector of at least length 1.")
+  if(!is.character(addCols) && length(addCols) > 0) stop("addCols needs to be a character vector of at least length 1.")
   if(!all(recodeVars %in% namesGADS(GADSdat))) stop("Some of the variables are not variables in the GADSdat.")
   vars_w <- data.table::as.data.table(GADSdat$dat[, recodeVars, drop = FALSE])
   dt_l <- unique(data.table::melt(vars_w, measure.vars = recodeVars, variable.factor = FALSE, value.factor = FALSE))
@@ -42,7 +48,6 @@ createLookup.GADSdat <- function(GADSdat, recodeVars, sort_by = NULL, addCols = 
   }
 
   vars_l <- data.frame(dt_l, stringsAsFactors = FALSE)
-  stopifnot(length(addCols) >= 1)
   for(i in addCols) vars_l[, i] <- NA
 
   vars_l
@@ -153,6 +158,10 @@ applyLookup.GADSdat <- function(GADSdat, lookup, suffix = NULL) {
   check_GADSdat(GADSdat2)
   GADSdat2
 }
+
+## maybe: implement check if all values of variable in value column of lookup table? collect all unique values that don't occur?
+# eatGADS::compare_and_order?
+
 
 check_lookup <- function(lookup, GADSdat) {
   if(!all(lookup$variable %in% namesGADS(GADSdat))) stop("Some of the variables are not variables in the GADSdat.")

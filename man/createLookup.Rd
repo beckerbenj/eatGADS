@@ -16,13 +16,18 @@ createLookup(GADSdat, recodeVars, sort_by = NULL, addCols = c("value_new"))
 \item{addCols}{Character vector of additional column names for recoding purposes.}
 }
 \value{
-Returns a data frame in long format including all unique values of the variables in \code{recodeVars}.
+Returns a data frame in long format with the following variables:
+\item{variable}{Variables as specified in \code{recodeVars}}
+\item{value}{Unique values of the variabels specified in \code{recodeVars}}
+\item{value_new}{This is the default for \code{addCols}. If different additional column names are supplied, this column is missing.}
 }
 \description{
-Extract unique values from on or multiple variables of a \code{GADSdat} object for recoding (e.g. in an Excel spreadsheet).
+Extract unique values from one or multiple variables of a \code{GADSdat} object for recoding (e.g. via an Excel spreadsheet).
 }
 \details{
-If recoding of one or multiple variables is more complex, a lookup table can be created for later application via \code{\link{applyLookup}} or \code{\link{applyLookup_expandVar}}. The function allows the extraction of the values of multiple variables and sorting of these unique values via variable and/or values.
+If recoding of one or multiple variables is more complex, a lookup table can be created for later application via \code{\link{applyLookup}} or \code{\link{applyLookup_expandVar}}.
+ The function allows the extraction of the values of multiple variables and sorting of these unique values via \code{variable} and/or \code{values}.
+If \code{addCols} are specified the lookup table has to be formatted via \code{\link{collapseColumns}}, before it can be applied to recode data.
 }
 \examples{
 # create example GADS

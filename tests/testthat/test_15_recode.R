@@ -107,12 +107,29 @@ test_that("Applying recode for 1 variable",{
   expect_equal(ng$dat$VAR1_r, c(10, -9, -6, 11))
 })
 
-test_that("Applying recode for 1 variable with one empty old value",{
+test_that("Applying recode for 1 variable with one NA old value",{
   lu2$value_new <- c(-94, -6, 10, 11)
   lu2$value[1] <- NA
   testM$dat$VAR1[2] <- NA
   ng <- applyLookup(testM, lu2, suffix = "_r")
   expect_equal(ng$dat$VAR1_r, c(10, -94, -6, 11))
+
+  ng2 <- applyLookup(testM, lu2, suffix = "")
+  expect_equal(ng2$dat$VAR1, c(10, -94, -6, 11))
+})
+
+test_that("Applying recode for 1 variable with one empty string old value",{
+  string_df <- data.frame(VAR1 = c("a", "b", ""), stringsAsFactors = FALSE)
+  string_gads <- import_DF(string_df)
+  lu_string <- createLookup(string_gads, recodeVars = "VAR1")
+
+  lu_string$value_new <- c("q", "h", "y")
+
+  ng <- applyLookup(string_gads, lu_string, suffix = "_r")
+  expect_equal(ng$dat$VAR1_r, c("q", "h", "y"))
+
+  ng2 <- applyLookup(string_gads, lu_string, suffix = "")
+  expect_equal(ng2$dat$VAR1, c("q", "h", "y"))
 })
 
 test_that("Applying partial recode for 1 variable",{
