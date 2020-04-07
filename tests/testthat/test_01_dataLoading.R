@@ -303,8 +303,16 @@ test_that("Import of variables of class date/time", {
   expect_equal(out$labels[1, "format"], c("A8"))
 })
 
+test_that("Import of variables of class date with labels", {
+  # out <- import_spss("c:/Benjamin_Becker/02_Repositories/packages/eatGADS/tests/testthat/helper_spss_date_labeled.sav")
+  warns <- capture_warnings(out <- import_spss("helper_spss_date_labeled.sav"))
+  expect_equal(warns[[1]], "Value labels and missing codes for 'DATE' variables are not supported by eatGADS and current implementation is experimental. Missing values are converted to NA and labels and missing codes are dropped from meta data for variable VAR3_1")
+  expect_equal(out$dat$VAR3_1, c(NA, "2009-01-27"))
+
+})
+
 test_that("Errors for import of variables of class date/time", {
-  expect_error(out <- import_spss("helper_spss_times_error.sav"), "Labelled dates are currently not supported by eatGADS.")
+  #expect_error(out <- import_spss("helper_spss_times_error.sav"), "Labelled dates are currently not supported by eatGADS.")
   vec <- as.POSIXct(strptime("2011-03-27 01:30:00", "%Y-%m-%d %H:%M:%S"))
   df <- data.frame(vec)
   expect_error(out <- import_DF(df), "POSIXct and POSIXlt are currently not supported by eatGADS.")
