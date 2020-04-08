@@ -259,7 +259,7 @@ multiChar2fac.GADSdat <- function(GADSdat, vars, var_suffix = "_r", label_suffix
     specific_lookup <- data.frame(variable = old_nam, all_levels_lookup, stringsAsFactors = FALSE)
 
     #browser()
-    GADSdat <- applyLookup(GADSdat, lookup = specific_lookup, suffix = var_suffix)
+    GADSdat <- suppressWarnings(applyLookup(GADSdat, lookup = specific_lookup, suffix = var_suffix))
     GADSdat$dat[, var] <- as.numeric(GADSdat$dat[, var])
 
     GADSdat <- reuseMeta(GADSdat, varName = var, other_GADSdat = all_levels_gads, other_varName = "all_levels",

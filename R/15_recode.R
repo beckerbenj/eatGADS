@@ -40,7 +40,7 @@ createLookup.GADSdat <- function(GADSdat, recodeVars, sort_by = NULL, addCols = 
   if(!is.character(addCols) && length(addCols) > 0) stop("addCols needs to be a character vector of at least length 1.")
   if(!all(recodeVars %in% namesGADS(GADSdat))) stop("Some of the variables are not variables in the GADSdat.")
   vars_w <- data.table::as.data.table(GADSdat$dat[, recodeVars, drop = FALSE])
-  dt_l <- unique(data.table::melt(vars_w, measure.vars = recodeVars, variable.factor = FALSE, value.factor = FALSE))
+  dt_l <- suppressWarnings(unique(data.table::melt(vars_w, measure.vars = recodeVars, variable.factor = FALSE, value.factor = FALSE)))
 
   if(!all(sort_by %in% names(dt_l))) stop("data.frame can only be sorted by 'variable' or 'value' or both.")
   if(!is.null(sort_by)) {
@@ -136,6 +136,10 @@ applyLookup.GADSdat <- function(GADSdat, lookup, suffix = NULL) {
     names(sub_lu) <- c(nam, "value_new")
     suppressWarnings(sub_lu <- eatTools::asNumericIfPossible(sub_lu, force.string = FALSE))
 
+    suppressWarnings(test <- compare_and_order(rec_df[[nam]], set2 = sub_lu[[nam]]))
+    if(length(test$not_in_set1) != 0) warning("For variable ", nam, " the following values are in the lookup table but not in the data: ", paste(test$not_in_set1, collapse = ", "))
+    if(length(test$not_in_set2) != 0) warning("For variable ", nam, " the following values are in the data but not in the lookup table: ", paste(test$not_in_set2, collapse = ", "))
+
     old_nam <- nam
     if(!is.null(suffix)) {
       nam <- paste0(nam, suffix)
@@ -159,8 +163,7 @@ applyLookup.GADSdat <- function(GADSdat, lookup, suffix = NULL) {
   GADSdat2
 }
 
-## maybe: implement check if all values of variable in value column of lookup table? collect all unique values that don't occur?
-# eatGADS::compare_and_order?
+
 
 
 check_lookup <- function(lookup, GADSdat) {
@@ -226,7 +229,7 @@ collapseMC_Text.GADSdat <- function(GADSdat, mc_var, text_var, mc_code4text, var
   GADSdat_dat2 <- updateMeta(GADSdat, GADSdat_dat)
 
   # use lookup tables
-  suppressMessages(GADSdat_dat3 <- applyLookup(GADSdat_dat2, lookup = lookup_oldValues))
+  suppressWarnings(suppressMessages(GADSdat_dat3 <- applyLookup(GADSdat_dat2, lookup = lookup_oldValues)))
 
   # create and use lookup tables for new value levels
   add_values <- GADSdat_dat3$dat[!GADSdat_dat3$dat[, mc_var_new] %in% lookup_oldValues$value_new, mc_var_new]
@@ -241,7 +244,7 @@ collapseMC_Text.GADSdat <- function(GADSdat, mc_var, text_var, mc_code4text, var
                                  value = add_values_gads$labels[, "valLabel"],
                                  value_new = add_values_gads$labels[, "value"],
                                  stringsAsFactors = FALSE)
-  suppressMessages(GADSdat_dat4 <- applyLookup(GADSdat_dat3, lookup = lookup_newValues))
+  suppressWarnings(suppressMessages(GADSdat_dat4 <- applyLookup(GADSdat_dat3, lookup = lookup_newValues)))
   GADSdat_dat4$dat[, mc_var_new] <- as.numeric(GADSdat_dat4$dat[, mc_var_new])
 
   ### insert right meta data (combine)
@@ -263,6 +266,56 @@ append_varLabel <- function(GADSdat, varName, label_suffix) {
   GADSdat_out <- changeVarLabels(GADSdat, varName = varName, varLabel =
                                     new_varLabel)
   GADSdat_out
+}
+
+
+
+
+#### Empty strings to NA
+#############################################################################
+#' Recode a string to NA.
+#'
+#' Recode an unlabeled string in mulitple variables in a \code{GADSdat} to NA.
+#'
+#' A check is performed, whether there are truly no labels given to the specified string. Number of recodes per variable are reported.
+#'
+#'@param GADSdat A \code{GADSdat} object.
+#'@param recodeVars Character vector of variable names which should be recoded.
+#'@param string Which string should be recoded to NA?
+#'
+#'@return Returns the recoded \code{GADSdat}.
+#'
+#'@examples
+#' # create example GADS
+#' dat <- data.frame(ID = 1:4, var1 = c("", "Eng", "Aus", "Aus2"),
+#'                   var2 = c("", "French", "Ger", "Ita"),
+#'                   stringsAsFactors = TRUE)
+#' gads <- import_DF(dat)
+#'
+#' # recode empty strings
+#' gads2 <- recodeString2NA(gads)
+#'
+#'@export
+recodeString2NA <- function(GADSdat, recodeVars = namesGADS(GADSdat), string = "") {
+  UseMethod("recodeString2NA")
+}
+
+#'@export
+recodeString2NA.GADSdat <- function(GADSdat, recodeVars = namesGADS(GADSdat), string = "") {
+  if(!is.character(recodeVars) || length(recodeVars) < 1) stop("recodeVars needs to be character vector of at least lenght 1.")
+  if(!all(recodeVars %in% namesGADS(GADSdat))) stop("All variables names in recodeVars need to be variables in the GADSdat.")
+  if(!is.character(string) || length(string) != 1) stop("string needs to be a character vector of exactly length 1.")
+
+  if(length(which(GADSdat$labels[GADSdat$labels$varName %in% recodeVars, "value"] == string)) > 0) {
+    stop("Specified string is labeled in at least one of the recodeVars.")
+  }
+
+  for(recodeVar in recodeVars) {
+    log_vec <- GADSdat[["dat"]][, recodeVar] == string
+    GADSdat[["dat"]][log_vec, recodeVar] <- NA
+    message("Recodes in variable ", recodeVar, ": ", sum(log_vec))
+  }
+  GADSdat
 }
 
 

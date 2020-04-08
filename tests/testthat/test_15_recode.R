@@ -19,7 +19,7 @@ test_that("Create lookup for 2 numeric variables",{
 })
 
 test_that("Create lookup for 2 mixed variables",{
-  test <- suppressWarnings(createLookup(rawDat, recodeVars = c("VAR1", "VAR3")))
+  test <- createLookup(rawDat, recodeVars = c("VAR1", "VAR3"))
   expect_equal(test$variable, c("VAR1", "VAR3"))
   expect_equal(test$value, c(1, "a"))
   expect_equal(test$value_new, c(NA, NA))
@@ -82,6 +82,13 @@ test_that("Check Lookup, errors and warnings",{
   expect_error(check_lookup(lu2_2, testM), "In more than 1 row value is missing.")
 })
 
+test_that("Warnings for incomplete lookup/lookup with additional values",{
+  lu3_1 <- lu3
+  lu3_1$value_new <- c(-9, -6, 1, NA, 2)
+  mess <- capture_warnings(applyLookup(testM, lu3_1[1:4, ]))
+  expect_equal(mess[[2]], "For variable VAR1 the following values are in the data but not in the lookup table: 2")
+})
+
 test_that("Behaviour if new variable containts only missings",{
   lu3_1 <- lu3
   lu3_1$value_new <- c(-9, -6, 1, NA, 2)
@@ -135,7 +142,7 @@ test_that("Applying recode for 1 variable with one empty string old value",{
 test_that("Applying partial recode for 1 variable",{
   lu2$value_new <- c(-9, -6, 10, 11)
   lu2_part <- lu2[3:4, ]
-  ng <- applyLookup(testM, lu2_part, suffix = "_r")
+  suppressWarnings(ng <- applyLookup(testM, lu2_part, suffix = "_r"))
   expect_equal(ng$dat$VAR1_r, c(10, -99, -96, 11))
   expect_equal(ng$dat$VAR1, c(1, -99, -96, 2))
 })
@@ -237,6 +244,27 @@ test_that("Combination of mc_code4text and labeled missing in text variable",{
   expect_equal(test$dat$mc_r, c(-9, 1, 2, -9, 4, 3, -9))
   test_dat <- extractData(test)
   expect_equal(test_dat$mc_r, c(NA, "Ger", "Eng", NA, "Aus", "other", NA))
+})
+
+
+################# Recode string to NA ---------------------------------------------------
+txt <- data.frame(ID = 1:4, var1 = c("", "Eng", "Aus", "Aus2"),
+                   var2 = c("", "French", "Ger", "Ita"),
+                   stringsAsFactors = FALSE)
+txt_gads <- import_DF(txt)
+
+test_that("Recodestring2NA", {
+  mess <- capture_messages(out <- recodeString2NA(txt_gads))
+  expect_equal(out$dat$var1, c(NA, "Eng", "Aus", "Aus2"))
+  expect_equal(out$dat$var2, c(NA, "French", "Ger", "Ita"))
+  expect_equal(out$labels, txt_gads$labels)
+  expect_equal(mess[[1]], "Recodes in variable ID: 0\n")
+  expect_equal(mess[[2]], "Recodes in variable var1: 1\n")
+})
+
+test_that("Errors for Recodestring2NA", {
+  expect_error(out <- recodeString2NA(txt_gads, string = c("", "la")), "string needs to be a character vector of exactly length 1.")
+  expect_error(out <- recodeString2NA(mt_gads, string = c("1")), "Specified string is labeled in at least one of the recodeVars.")
 })
 
 
