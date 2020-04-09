@@ -30,7 +30,7 @@ collapseMultiMC_Text(
 Returns a \code{GADSdat} containing the newly computed variable.
 }
 \description{
-Recode a multiple variable multiplce choice item based on a multiple variable test field.
+Recode a multiple variable multiplce choice item based on a multiple variable text field.
 }
 \details{
 If a multiple choice item can be answered with crossing multiple boxes, multiple variables in the data set are necessary
