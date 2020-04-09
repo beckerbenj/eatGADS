@@ -20,7 +20,7 @@ collapseMultiMC_Text(
 
 \item{text_vars}{A character vector with the names of the text variables which should be collapsed.}
 
-\item{mc_var_4text}{The name of the multiple choice variable that signals that information from the text variable should be used.}
+\item{mc_var_4text}{The name of the multiple choice variable that signals that information from the text variable should be used. This variable is recoded according to the final status of the text variables.}
 
 \item{var_suffix}{Variable suffix for the newly created \code{GADSdat}. If an empty character, the existing variables are overwritten.}
 
@@ -30,10 +30,13 @@ collapseMultiMC_Text(
 Returns a \code{GADSdat} containing the newly computed variable.
 }
 \description{
-Recode a multiple variable multiplce choice item based on a multiple variable test field..
+Recode a multiple variable multiplce choice item based on a multiple variable test field.
 }
 \details{
-If a multiple choice item can be answered with crossing multiple boxes, multiple variables in the data set are necessary to represent this item. In this case, an additional text field for further answers can also contain multiple values at once. This function allows to recode multiple MC items of this kind based on multiple text variables.
+If a multiple choice item can be answered with crossing multiple boxes, multiple variables in the data set are necessary
+to represent this item. In this case, an additional text field for further answers can also contain multiple values at once.
+This function allows to recode multiple MC items of this kind based on multiple text variables. Additionally, the \code{mc_var_4text}
+variable is recoded according to the final status of the \code{text_vars}.
 }
 \examples{
 # Prepare example data

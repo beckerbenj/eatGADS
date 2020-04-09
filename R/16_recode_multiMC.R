@@ -100,14 +100,17 @@ applyLookup_expandVar.GADSdat <- function(GADSdat, lookup) {
 #############################################################################
 #' Recode MC variable with multiple variables based on text.
 #'
-#' Recode a multiple variable multiplce choice item based on a multiple variable test field..
+#' Recode a multiple variable multiplce choice item based on a multiple variable text field.
 #'
-#' If a multiple choice item can be answered with crossing multiple boxes, multiple variables in the data set are necessary to represent this item. In this case, an additional text field for further answers can also contain multiple values at once. This function allows to recode multiple MC items of this kind based on multiple text variables.
+#' If a multiple choice item can be answered with crossing multiple boxes, multiple variables in the data set are necessary
+#' to represent this item. In this case, an additional text field for further answers can also contain multiple values at once.
+#' This function allows to recode multiple MC items of this kind based on multiple text variables. Additionally, the \code{mc_var_4text}
+#' variable is recoded according to the final status of the \code{text_vars}.
 #'
 #'@param GADSdat A \code{GADSdat} object.
 #'@param mc_vars A character vector with the variable names of the multiple choice variable. Names of the character vector are the corresponding values that are represented by the individual variables.
 #'@param text_vars A character vector with the names of the text variables which should be collapsed.
-#'@param mc_var_4text The name of the multiple choice variable that signals that information from the text variable should be used.
+#'@param mc_var_4text The name of the multiple choice variable that signals that information from the text variable should be used. This variable is recoded according to the final status of the text variables.
 #'@param var_suffix Variable suffix for the newly created \code{GADSdat}. If an empty character, the existing variables are overwritten.
 #'@param label_suffix Suffix added to variable label for the newly created or modified variables in the \code{GADSdat}.
 #'
@@ -154,6 +157,7 @@ collapseMultiMC_Text.GADSdat <- function(GADSdat, mc_vars, text_vars, mc_var_4te
   }
 
   # create new variables
+  new_mc_var_4text <- paste0(mc_var_4text, var_suffix)
   new_mc_vars <- paste0(mc_vars, var_suffix)
   names(new_mc_vars) <- names(mc_vars)
   for(i in seq(mc_vars)) dat[, new_mc_vars[i]] <- dat[, mc_vars[i]]
@@ -161,7 +165,7 @@ collapseMultiMC_Text.GADSdat <- function(GADSdat, mc_vars, text_vars, mc_var_4te
   for(i in seq(text_vars)) dat[, new_text_vars[i]] <- dat[, text_vars[i]]
 
   # loop over all text variables, recode all MCs according to each
-  new_mc_vars <- new_mc_vars[!new_mc_vars == paste0(mc_var_4text, var_suffix)]
+  new_mc_vars <- new_mc_vars[!new_mc_vars == new_mc_var_4text]
   for(text_var in new_text_vars) {
     for(mc_value in names(new_mc_vars)) {
       new_mc_var <- new_mc_vars[[mc_value]]
@@ -182,6 +186,9 @@ collapseMultiMC_Text.GADSdat <- function(GADSdat, mc_vars, text_vars, mc_var_4te
       GADSdat2 <- append_varLabel(GADSdat2, new_varName, label_suffix = label_suffix)
     }
   }
+
+  ## recode 'other' mc
+  GADSdat2$dat[, new_mc_var_4text] <- ifelse(is.na(GADSdat2$dat[[new_text_vars[1]]]), yes = 0, no = 1)
 
   GADSdat2
 }

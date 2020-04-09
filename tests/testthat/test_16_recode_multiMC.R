@@ -102,6 +102,7 @@ test_that("Combine multi mc and text", {
   expect_equal(test$dat$text1, c(NA, "Eng", "Aus", "Aus2"))
   expect_equal(test$dat$mc1_r, c(1, 1, 0, 0))
   expect_equal(test$dat$mc2_r, c(0, 0, 1, 0))
+  expect_equal(test$dat$mc3_r, c(0, 1, 0, 1)) ### should be recoded by function according to left over fields!
   expect_equal(test$labels[test$labels$varName == "text1_r", "varLabel"], "(recoded)")
   expect_equal(test$labels[test$labels$varName == "mc1_r", "varLabel"], "Lang: Eng (recoded)")
 
