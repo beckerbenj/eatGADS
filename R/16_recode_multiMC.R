@@ -189,6 +189,9 @@ collapseMultiMC_Text.GADSdat <- function(GADSdat, mc_vars, text_vars, mc_var_4te
 
   ## recode 'other' mc
   GADSdat2$dat[, new_mc_var_4text] <- ifelse(is.na(GADSdat2$dat[[new_text_vars[1]]]), yes = 0, no = 1)
+  ## special case: originaly other but empty text
+  GADSdat2$dat[, new_mc_var_4text] <- ifelse(GADSdat$dat[[mc_var_4text]] == 1 & is.na(GADSdat$dat[[text_vars[1]]]),
+                                             yes = 1, no = GADSdat2$dat[, new_mc_var_4text])
 
   GADSdat2
 }

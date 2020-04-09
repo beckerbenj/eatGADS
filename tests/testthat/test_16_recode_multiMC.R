@@ -3,7 +3,7 @@ context("Recode multi mc based on text variables")
 
 
 ################# Match values and variables labels ---------------------------------------------------
-mt2 <- data.frame(ID = 1:4, mc1 = c(1, 0, 0, 0), mc2 = c(0, 0, 0, 0), mc3 = c(0, 1, 1, 0), text1 = c(NA, "Eng", "Aus", "Aus2"), text2 = c(NA, "Franz", NA, "Ger"),stringsAsFactors = FALSE)
+mt2 <- data.frame(ID = 1:4, mc1 = c(1, 0, 0, 0), mc2 = c(0, 0, 0, 0), mc3 = c(1, 1, 1, 0), text1 = c(NA, "Eng", "Aus", "Aus2"), text2 = c(NA, "Franz", NA, "Ger"),stringsAsFactors = FALSE)
 mt2_gads <- import_DF(mt2)
 mt3_gads <- changeVarLabels(mt2_gads, varName = c("mc1", "mc2", "mc3"), varLabel = c("Lang: Eng", "Aus spoken", "other"))
 df <- data.frame(v1 = c("j", "i", NA, NA),
@@ -102,7 +102,7 @@ test_that("Combine multi mc and text", {
   expect_equal(test$dat$text1, c(NA, "Eng", "Aus", "Aus2"))
   expect_equal(test$dat$mc1_r, c(1, 1, 0, 0))
   expect_equal(test$dat$mc2_r, c(0, 0, 1, 0))
-  expect_equal(test$dat$mc3_r, c(0, 1, 0, 1)) ### should be recoded by function according to left over fields!
+  expect_equal(test$dat$mc3_r, c(1, 1, 0, 1)) ### should be recoded by function according to left over fields!
   expect_equal(test$labels[test$labels$varName == "text1_r", "varLabel"], "(recoded)")
   expect_equal(test$labels[test$labels$varName == "mc1_r", "varLabel"], "Lang: Eng (recoded)")
 
