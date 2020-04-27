@@ -8,6 +8,8 @@ applyNumCheck(GADSdat, numCheck)
 }
 \arguments{
 \item{GADSdat}{A \code{GADSdat} object.}
+
+\item{numCheck}{A \code{data.frame} as created by \code{\link{createNumCheck}}.}
 }
 \value{
 A recoded \code{GADSdat}.

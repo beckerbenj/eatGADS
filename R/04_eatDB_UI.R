@@ -188,7 +188,7 @@ getGADS_fast <- function(vSelect = NULL, filePath, tempPath = tempdir()) {
   if(!file.exists(tempPath)) stop("tempPath is not an existing directory.")
   if(file.access(tempPath, mode = 2) != 0) stop("User has no writing permission for tempPath.")
 
-  fileName <- eatTools::halveString(filePath, "/", first = FALSE)[[2]]
+  fileName <- basename(filePath)
   tempFile <- file.path(tempPath, fileName)
   # if (length(vSelect) >10)browser()
   # create copy

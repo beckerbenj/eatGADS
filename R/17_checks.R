@@ -55,6 +55,7 @@ createNumCheck.GADSdat <- function(GADSdat) {
 #' tbd
 #'
 #'@param GADSdat A \code{GADSdat} object.
+#'@param numCheck A \code{data.frame} as created by \code{\link{createNumCheck}}.
 #'
 #'@return A recoded \code{GADSdat}.
 #'
