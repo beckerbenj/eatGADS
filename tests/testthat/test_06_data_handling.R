@@ -61,9 +61,10 @@ test_that("Extract Meta from DB path", {
 ######## extractData
 testM2 <- testM
 testM2$dat[, "Var_char"] <- c("a", "b", "c", "d")
-testM2$dat[, "Var_char2"] <- c("b", "b", "b", "b")
+testM2$dat[, "Var_char2"] <- c(1, 1, 1, 1)
 testM2$labels[8, ] <- c("Var_char", NA, NA, NA, NA, NA, NA, NA)
-testM2$labels[9, ] <- c("Var_char2", NA, NA, NA, "labeled", "b", "b_value", NA)
+testM2$labels[9, ] <- c("Var_char2", NA, NA, NA, "labeled", 1, "b_value", NA)
+testM2$labels$value <- as.numeric(testM2$labels$value)
 
 test_that("Warnings and errors for Extract Data",  {
   w <- capture_warnings(extractData(testM))
@@ -93,20 +94,75 @@ test_that("Extract data for strings into factors", {
   expect_equal(out$Var_char2, as.factor(c("b_value", "b_value", "b_value", "b_value")))
 })
 
-mixed_values <- new_GADSdat(dat = data.frame(x = 0, y = "a", stringsAsFactors = FALSE),
+test_that("Correct ordering of factors", {
+  df <- data.frame(v1 = factor(c("z", "a", "b"), levels = c("z", "a", "b")),
+                   stringsAsFactors = TRUE)
+  gads <- import_DF(df)
+
+  dat <- extractData(gads, convertLabels = "factor")
+  expect_equal(as.numeric(dat$v1), 1:3)
+
+  gads$labels[3, "missings"] <- "miss"
+  dat <- extractData(gads, convertLabels = "factor")
+  expect_equal(as.numeric(dat$v1), c(1:2, NA))
+
+  dat2 <- extractData(gads, convertLabels = "factor", convertMiss = FALSE)
+  expect_equal(as.numeric(dat2$v1), c(1:3))
+})
+
+test_that("Correct behavior if factors can't be sorted", {
+  df <- data.frame(v1 = factor(c("z", "a", "b"), levels = c("z", "a", "b")),
+                   v2 = factor(c("z", "a", "b"), levels = c("z", "a", "b")),
+                   v3 = factor(c("z", "a", "b"), levels = c("z", "a", "b")),
+                   stringsAsFactors = TRUE)
+  gads <- import_DF(df)
+  gads$labels[4, "value"] <- 5
+  gads$dat[1, "v2"] <- 5
+  gads$labels <- gads$labels[-8, ]
+
+  w <- capture_warnings(dat <- extractData(gads, convertLabels = "factor"))
+  expect_equal(w[[2]], "For the following factor variables the underlying integers can not be preserved: v2")
+  expect_equal(as.numeric(dat$v1), c(1, 2, 3))
+  expect_equal(as.numeric(dat$v2), c(3, 1, 2))
+  expect_equal(as.numeric(dat$v3), c(1:3))
+
+  ## drop partially labeled = FALSE?
+  w2 <- capture_warnings(dat2 <- extractData(gads, convertLabels = "factor", dropPartialLabels = FALSE))
+  expect_equal(w2[[1]], "For the following factor variables only incomplete value labels are available, rendering the underlying integers meaningless: v3")
+  expect_equal(w2[[2]], "For the following factor variables the underlying integers can not be preserved: v2")
+  expect_equal(as.numeric(dat2$v1), c(1, 2, 3))
+  expect_equal(as.numeric(dat2$v2), c(3, 1, 2))
+  expect_equal(as.character(dat2$v3), c("z", 2, "b"))
+  expect_equal(as.numeric(dat2$v3), c(3, 1, 2))
+
+  df3 <- data.frame(v1 = factor(c("z", "a", "b"), levels = c("z", "a", "b")),
+                   v3 = factor(c("z", "a", "b"), levels = c("z", "a", "b")),
+                   stringsAsFactors = TRUE)
+  gads3 <- import_DF(df3)
+  gads3$labels <- gads3$labels[-6, ]
+  w3 <- capture_warnings(dat3 <- extractData(gads3, convertLabels = "factor", dropPartialLabels = FALSE))
+  expect_equal(w3[[1]], "For the following factor variables only incomplete value labels are available, rendering the underlying integers meaningless: v3")
+  expect_equal(as.numeric(dat3$v1), c(1, 2, 3))
+  expect_equal(as.character(dat3$v3), c("z", "a", 3))
+  expect_equal(as.numeric(dat3$v3), c(3, 2, 1))
+})
+
+
+mixed_values <- new_GADSdat(dat = data.frame(x = 0, y = 1, stringsAsFactors = FALSE),
                             labels = data.frame(varName = c("x", "y"),
                                 varLabel = NA,
                                 format = NA,
                                 display_width = NA,
                                 labeled = c("yes", "yes"),
-                                value = c(0, "a"),
+                                value = c(0, 1),
                                 valLabel = c("lab", "lab"),
                                 missings = NA, stringsAsFactors = FALSE))
 
+## probably outdated, as strings are no longer supported in value column
 test_that("Numerics are kept numeric with extract data", {
   expect_equal(extractData(mixed_values), data.frame(x = "lab", y = "lab", stringsAsFactors = FALSE))
   mixed_values$labels$valLabel <- c(99, 99)
-  expect_equal(extractData(mixed_values), data.frame(x = 99, y = "99", stringsAsFactors = FALSE))
+  expect_equal(extractData(mixed_values), data.frame(x = 99, y = 99, stringsAsFactors = FALSE))
 })
 
 test_that("ExtractData with DropPartialLabels = TRUE", {

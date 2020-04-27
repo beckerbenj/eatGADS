@@ -30,7 +30,10 @@ Returns a data frame.
 Extract \code{data.frame} from a \code{GADSdat} object for analyses in \code{R}. For extracting meta data see \code{\link{extractMeta}}.
 }
 \details{
-A \code{GADSdat} object includes actual data (\code{GADSdat$dat}) and the corresponding meta data information (\code{GADSdat$labels}). \code{extractData} extracts the data and applies relevant meta data (missing conversion, value labels), so the data can be used for analyses in \code{R}. Careful: If factors are extracted, the underlying integers will not be equal to the original underlying integers and \code{as.numeric} will probably yield undesired results.
+A \code{GADSdat} object includes actual data (\code{GADSdat$dat}) and the corresponding meta data information
+(\code{GADSdat$labels}). \code{extractData} extracts the data and applies relevant meta data (missing conversion, value labels),
+so the data can be used for analyses in \code{R}. If factors are extracted via \code{convertLabels == "factor"}, the underlying integers will
+are tried to preserved. If this is not possible, a warning is issued.
 }
 \examples{
 \dontrun{

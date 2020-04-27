@@ -4,7 +4,10 @@
 #'
 #' Extract \code{data.frame} from a \code{GADSdat} object for analyses in \code{R}. For extracting meta data see \code{\link{extractMeta}}.
 #'
-#' A \code{GADSdat} object includes actual data (\code{GADSdat$dat}) and the corresponding meta data information (\code{GADSdat$labels}). \code{extractData} extracts the data and applies relevant meta data (missing conversion, value labels), so the data can be used for analyses in \code{R}. Careful: If factors are extracted, the underlying integers will not be equal to the original underlying integers and \code{as.numeric} will probably yield undesired results.
+#' A \code{GADSdat} object includes actual data (\code{GADSdat$dat}) and the corresponding meta data information
+#' (\code{GADSdat$labels}). \code{extractData} extracts the data and applies relevant meta data (missing conversion, value labels),
+#' so the data can be used for analyses in \code{R}. If factors are extracted via \code{convertLabels == "factor"}, the underlying integers will
+#' are tried to preserved. If this is not possible, a warning is issued.
 #'
 #'@param GADSdat A \code{GADSdat} object.
 #'@param convertMiss Should values coded as missings be recoded to \code{NA}?
@@ -115,9 +118,33 @@ labels2values <- function(dat, labels, convertLabels, convertMiss, dropPartialLa
       changed_variables <- unique(c(curRow$varName, changed_variables))
     }
   }
-  # convert characters to factor if specified
+
+  # convert characters to factor if specified (keep ordering if possible)
   if(identical(convertLabels, "factor")) {
-    for(i in changed_variables) dat[, i] <- as.factor(dat[, i])
+    partially_labeled <- unordered_facs <- changed_variables
+    for(i in changed_variables) {
+      fac_meta <- labels[labels$varName == i & (is.na(labels$missings) | labels$missings != "miss")  , c("value", "valLabel")]
+      ## additionalcolumns relevant, if missings are not converted
+      if(convertMiss == FALSE) fac_meta <- labels[labels$varName == i, c("value", "valLabel")]
+      fac_meta <- fac_meta[order(fac_meta$value), ]
+
+      ## 3 scenarios: a) ordering possible, b) ordering impossible because no strictly integers from 1 rising,
+      # c) Ordering impossible because partially labelled
+      if(nrow(fac_meta) != length(unique(dat[!is.na(dat[, i]), i]))) {
+        dat[, i] <- factor(dat[, i])
+        unordered_facs <- unordered_facs[unordered_facs != i]
+      } else{
+        partially_labeled <- partially_labeled[partially_labeled != i]
+        if(all(fac_meta$value == seq(nrow(fac_meta)))) unordered_facs <- unordered_facs[unordered_facs != i]
+
+        dat[, i] <- factor(dat[, i], levels = fac_meta$valLabel)
+      }
+    }
+
+    if(length(partially_labeled) > 0) warning("For the following factor variables only incomplete value labels are available, rendering the underlying integers meaningless: ",
+                                           paste(partially_labeled, collapse = ", "))
+    if(length(unordered_facs) > 0) warning("For the following factor variables the underlying integers can not be preserved: ",
+                                           paste(unordered_facs, collapse = ", "))
   }
   dat
 }
