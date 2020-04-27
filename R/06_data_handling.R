@@ -37,7 +37,7 @@ extractData <- function(GADSdat, convertMiss = TRUE, convertLabels = "character"
 #'@export
 extractData.GADSdat <- function(GADSdat, convertMiss = TRUE, convertLabels = "character", dropPartialLabels = TRUE, convertVariables) {
   check_GADSdat(GADSdat)
-  if(!convertLabels %in% c("character", "factor", "numeric") && length(convertLabels) == 1) stop("Argument convertLabels incorrectly specified.")
+  if(length(convertLabels) != 1 || !convertLabels %in% c("character", "factor", "numeric")) stop("Argument convertLabels incorrectly specified.")
   dat <- GADSdat$dat
   labels <- GADSdat$labels
   ## missings
