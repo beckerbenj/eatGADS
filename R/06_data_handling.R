@@ -121,30 +121,7 @@ labels2values <- function(dat, labels, convertLabels, convertMiss, dropPartialLa
 
   # convert characters to factor if specified (keep ordering if possible)
   if(identical(convertLabels, "factor")) {
-    partially_labeled <- unordered_facs <- changed_variables
-    for(i in changed_variables) {
-      fac_meta <- labels[labels$varName == i & (is.na(labels$missings) | labels$missings != "miss")  , c("value", "valLabel")]
-      ## additionalcolumns relevant, if missings are not converted
-      if(convertMiss == FALSE) fac_meta <- labels[labels$varName == i, c("value", "valLabel")]
-      fac_meta <- fac_meta[order(fac_meta$value), ]
-
-      ## 3 scenarios: a) ordering possible, b) ordering impossible because no strictly integers from 1 rising,
-      # c) Ordering impossible because partially labelled
-      if(nrow(fac_meta) != length(unique(dat[!is.na(dat[, i]), i]))) {
-        dat[, i] <- factor(dat[, i])
-        unordered_facs <- unordered_facs[unordered_facs != i]
-      } else{
-        partially_labeled <- partially_labeled[partially_labeled != i]
-        if(all(fac_meta$value == seq(nrow(fac_meta)))) unordered_facs <- unordered_facs[unordered_facs != i]
-
-        dat[, i] <- factor(dat[, i], levels = fac_meta$valLabel)
-      }
-    }
-
-    if(length(partially_labeled) > 0) warning("For the following factor variables only incomplete value labels are available, rendering the underlying integers meaningless: ",
-                                           paste(partially_labeled, collapse = ", "))
-    if(length(unordered_facs) > 0) warning("For the following factor variables the underlying integers can not be preserved: ",
-                                           paste(unordered_facs, collapse = ", "))
+    dat <- char2fac(dat = dat, labels = labels, vars = changed_variables, convertMiss = convertMiss)
   }
   dat
 }
@@ -173,6 +150,34 @@ na_omit <- function(vec) {
   vec[!is.na(vec)]
 }
 
+# convert characters to factor if specified (keep ordering if possible)
+char2fac <- function(dat, labels, vars, convertMiss) {
+  partially_labeled <- unordered_facs <- vars
+  for(i in vars) {
+    fac_meta <- labels[labels$varName == i & (is.na(labels$missings) | labels$missings != "miss")  , c("value", "valLabel")]
+    ## additionalcolumns relevant, if missings are not converted
+    if(convertMiss == FALSE) fac_meta <- labels[labels$varName == i, c("value", "valLabel")]
+    fac_meta <- fac_meta[order(fac_meta$value), ]
+
+    ## 3 scenarios: a) ordering possible, b) ordering impossible because no strictly integers from 1 rising,
+    # c) Ordering impossible because partially labelled
+    if(nrow(fac_meta) < length(unique(dat[!is.na(dat[, i]), i]))) {
+      dat[, i] <- factor(dat[, i])
+      unordered_facs <- unordered_facs[unordered_facs != i]
+    } else{
+      partially_labeled <- partially_labeled[partially_labeled != i]
+      if(all(fac_meta$value == seq(nrow(fac_meta)))) unordered_facs <- unordered_facs[unordered_facs != i]
+
+      dat[, i] <- factor(dat[, i], levels = fac_meta$valLabel)
+    }
+  }
+
+  if(length(partially_labeled) > 0) warning("For the following factor variables only incomplete value labels are available, rendering the underlying integers meaningless: ",
+                                            paste(partially_labeled, collapse = ", "))
+  if(length(unordered_facs) > 0) warning("For the following factor variables the underlying integers can not be preserved: ",
+                                         paste(unordered_facs, collapse = ", "))
+  dat
+}
 
 
 #### Missings to NA

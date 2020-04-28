@@ -94,6 +94,18 @@ test_that("Extract data for strings into factors", {
   expect_equal(out$Var_char2, as.factor(c("b_value", "b_value", "b_value", "b_value")))
 })
 
+test_that("char2fac", {
+  df <- data.frame(v1 = factor(c("z", "a", "b"), levels = c("z", "a", "b")),
+                   stringsAsFactors = TRUE)
+  gads <- import_DF(df)
+
+  dat <- extractData(gads, convertLabels = "character")
+  out <- char2fac(dat, labels = gads$labels, vars = "v1", convertMiss = TRUE)
+  expect_true(is.factor(out$v1))
+  expect_equal(as.numeric(out$v1), c(1:3))
+})
+
+ # tests could be rewritten for char2fac
 test_that("Correct ordering of factors", {
   df <- data.frame(v1 = factor(c("z", "a", "b"), levels = c("z", "a", "b")),
                    stringsAsFactors = TRUE)
@@ -110,6 +122,7 @@ test_that("Correct ordering of factors", {
   expect_equal(as.numeric(dat2$v1), c(1:3))
 })
 
+# tests could be rewritten for char2fac
 test_that("Correct behavior if factors can't be sorted", {
   df <- data.frame(v1 = factor(c("z", "a", "b"), levels = c("z", "a", "b")),
                    v2 = factor(c("z", "a", "b"), levels = c("z", "a", "b")),
@@ -145,6 +158,16 @@ test_that("Correct behavior if factors can't be sorted", {
   expect_equal(as.numeric(dat3$v1), c(1, 2, 3))
   expect_equal(as.character(dat3$v3), c("z", "a", 3))
   expect_equal(as.numeric(dat3$v3), c(3, 2, 1))
+})
+
+test_that("Correct behavior if not all value labels in actual values", {
+  df <- data.frame(v1 = factor(c("z", "a", "b"), levels = c("z", "a", "b")),
+                   stringsAsFactors = TRUE)
+  gads <- import_DF(df)
+  gads$dat[3, "v1"] <- 1
+
+  expect_silent(dat <- extractData(gads, convertLabels = "factor"))
+  expect_equal(as.numeric(dat$v1), c(1, 2, 1))
 })
 
 
