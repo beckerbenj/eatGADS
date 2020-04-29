@@ -46,6 +46,13 @@ createNumCheck.GADSdat <- function(GADSdat) {
 
 
 
+#### write inbetween function to obtain info on invalid info
+# look at Felix function for comparison
+# then create
+
+# probably no specific recoding necessary
+
+
 #### Apply num check
 #############################################################################
 #' Apply recodes according to a numerical check data.frame.

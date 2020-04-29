@@ -187,6 +187,14 @@ collapseMultiMC_Text.GADSdat <- function(GADSdat, mc_vars, text_vars, mc_var_4te
     }
   }
 
+  ## careful (old):
+  # - 94 other MC (other missing codes possible, add argument?) should be kept
+  # - 98 other MC
+
+  # better approach:
+  # use new text variable + old; if new text empty look at old text, if discrepancy -> other to 0, otherwise keep original other MC
+  # implement!!!!!!!
+
   ## recode 'other' mc
   GADSdat2$dat[, new_mc_var_4text] <- ifelse(is.na(GADSdat2$dat[[new_text_vars[1]]]), yes = 0, no = 1)
   ## special case: originaly other but empty text
