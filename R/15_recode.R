@@ -130,11 +130,15 @@ applyLookup.GADSdat <- function(GADSdat, lookup, suffix = NULL) {
 
   ## recode via data.table
   for(nam in rec_vars) {
-    rec_df <- data.table::as.data.table(GADSdat2$dat)
+    #rec_df <- data.table::as.data.table(GADSdat2$dat)
+    rec_df <- GADSdat2$dat
+    lookup <- as.data.frame(lookup)
 
     sub_lu <- lookup[lookup$variable == nam, c("value", "value_new")]
     names(sub_lu) <- c(nam, "value_new")
-    suppressWarnings(sub_lu <- eatTools::asNumericIfPossible(sub_lu, force.string = FALSE))
+    if(is.numeric(GADSdat$dat[, nam])) {
+      suppressWarnings(sub_lu <- eatTools::asNumericIfPossible(sub_lu, force.string = FALSE))
+    }
 
     suppressWarnings(test <- compare_and_order(rec_df[[nam]], set2 = sub_lu[[nam]]))
     if(length(test$not_in_set1) != 0) warning("For variable ", nam, " the following values are in the lookup table but not in the data: ", paste(test$not_in_set1, collapse = ", "))

@@ -154,6 +154,28 @@ test_that("Applying recode for 1 variable while overwriting",{
   expect_equal(dim(ng$dat), c(4, 3))
 })
 
+test_that("Applying recode for character to numeric/character variables",{
+  df <- data.frame(id = 1:3, v1 = c("1", "5", "3"), stringsAsFactors = FALSE)
+  gads <- import_DF(df)
+  lu_nc2 <- lu_nc1 <- createLookup(gads, "v1")
+
+  # originally problems, if variable could be converted to numeric before recoding
+  lu_nc1$value_new <- c("one", "five", "three")
+  ng1 <- applyLookup(gads, lu_nc1)
+
+  lu_nc2$value_new <- c(1, 5, 3)
+  ng2 <- applyLookup(gads, lu_nc2)
+  expect_equal(ng2$dat$v1, c("1", "5", "3"))
+})
+
+test_that("Applying recode for with a tibbel lookup table",{
+  lu2$value_new <- c(-9, -6, 10, 11)
+  lu2 <- tibble::as_tibble(lu2)
+  ng <- applyLookup(testM, lu2)
+  expect_equal(ng$dat$VAR1, c(10, -9, -6, 11))
+  expect_equal(dim(ng$dat), c(4, 3))
+})
+
 test_that("Applying recode for more variables",{
   lu3$value_new <- c(-9, -6, 10, -10, 11)
   ng <- applyLookup(testM, lu3, suffix = "_r")
