@@ -282,6 +282,7 @@ test_that("Object validater for GADSdat objects",{
 # ------------------------------------------------------------------------
 # testT <- haven::read_sav("c:/Benjamin_Becker/02_Repositories/packages/eatGADS/tests/testthat/helper_spss_times_error.sav", user_na = TRUE)
 # testT <- haven::read_sav("c:/Benjamin_Becker/02_Repositories/packages/eatGADS/tests/testthat/helper_spss_times.sav", user_na = TRUE)
+#testT <- haven::read_sav("tests/testthat/helper_spss_times.sav", user_na = TRUE)
 testT <- haven::read_sav("helper_spss_times.sav", user_na = TRUE)
 
 test_that("Modifiying of variables of class date/time", {
@@ -308,6 +309,7 @@ test_that("Import of variables of class date/time", {
 
 test_that("Import of variables of class date with labels", {
   # out <- import_spss("c:/Benjamin_Becker/02_Repositories/packages/eatGADS/tests/testthat/helper_spss_date_labeled.sav")
+  # out <- import_spss("tests/testthat/helper_spss_date_labeled.sav")
   warns <- capture_warnings(out <- import_spss("helper_spss_date_labeled.sav"))
   expect_equal(warns[[1]], "Value labels and missing codes for 'DATE' variables are not supported by eatGADS and current implementation is experimental. Missing values are converted to NA and labels and missing codes are dropped from meta data for variable VAR3_1")
   expect_equal(out$dat$VAR3_1, c(NA, "2009-01-27"))
