@@ -187,6 +187,7 @@ getGADS_fast <- function(vSelect = NULL, filePath, tempPath = tempdir()) {
   if(!is.character(tempPath) || length(tempPath) != 1) stop("tempPath is not a character vector of length 1.")
   if(!file.exists(tempPath)) stop("tempPath is not an existing directory.")
   if(file.access(tempPath, mode = 2) != 0) stop("User has no writing permission for tempPath.")
+  if(!file.exists(filePath)) stop(filePath, " is not a valid path to a data base")
 
   fileName <- basename(filePath)
   tempFile <- file.path(tempPath, fileName)

@@ -79,6 +79,13 @@ test_that("Fast getting GADSdat", {
 
 })
 
+test_that("Fast getting GADSdat invalid path", {
+  f <- "v:/some_path00/some_file"
+  expect_error(getGADS_fast(filePath = f), "v:/some_path00/some_file is not a valid path to a data base")
+
+})
+
+
 ### test via hand, because package has to be unattached for testing
 # "Automatic File Deletion of Fast getting GADSdat"
 # dat <- getGADS_fast(filePath = "C:/Benjamin_Becker/02_Repositories/packages/eatGADS/tests/testthat/helper_dataBase.db", tempPath = "c:/Benjamin_Becker")
