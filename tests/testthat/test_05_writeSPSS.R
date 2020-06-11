@@ -128,3 +128,21 @@ test_that("Check haven behaviour", {
   # and writing (sometimes all missing codes and value labels are dropped; haven 2.2.0, 24.03.2020)
   # but it is difficult to produce a minimal reprex
 })
+
+
+#df <- data.frame(long = paste(rep("a", 1000), collapse = ""), stringsAsFactors = FALSE)
+#haven::write_sav(df, path = "tests/testthat/helper_longstring.sav")
+
+test_that("Write strings longer than 255", {
+  #g <- import_spss("tests/testthat/helper_longstring.sav")
+  g <- import_spss("helper_longstring.sav")
+  f <- paste0(tempfile(), ".sav")
+  write_spss(g, filePath = f)
+  out <- haven::read_spss(f)
+  expect_equal(dim(out), c(1, 1))
+})
+
+
+
+
+
