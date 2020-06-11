@@ -98,7 +98,8 @@ labels2values <- function(dat, labels, convertLabels, convertMiss, dropPartialLa
   change_labels <- labels[labels[, "varName"] %in% convertVariables, ]    # careful, from here use only change_labels!
   # check value labels, remove incomplete labels from insertion to protect variables
   if(identical(dropPartialLabels, TRUE)) {
-    drop_labels <- unlist(lapply(unique(labels$varName), check_labels, dat = dat, labels = labels, convertMiss = convertMiss))
+    drop_labels <- unlist(lapply(unique(labels$varName), check_labels, dat = dat, labels = labels,
+                                 convertMiss = convertMiss))
     change_labels <- change_labels[!change_labels$varName %in% drop_labels, ]
   }
   # convert labels into values
@@ -138,7 +139,7 @@ check_labels <- function(varName, dat, labels, convertMiss) {
     labeled_values <- na_omit(labels[labels$varName == varName & labels$missings == "valid", "value"])
     if(length(labeled_values) == 0) return(varName)
   }
-  warning("Variable ", varName, " is partially labeled. Value labels will be dropped for this variable variable.\n",
+  warning("Variable ", varName, " is partially labeled. Value labels will be dropped for this variable.\n",
           "Labeled values are: ", paste(labeled_values, collapse = ", "), call. = FALSE)
 
   varName
@@ -174,7 +175,7 @@ char2fac <- function(dat, labels, vars, convertMiss) {
 
   if(length(partially_labeled) > 0) warning("For the following factor variables only incomplete value labels are available, rendering the underlying integers meaningless: ",
                                             paste(partially_labeled, collapse = ", "))
-  if(length(unordered_facs) > 0) warning("For the following factor variables the underlying integers can not be preserved: ",
+  if(length(unordered_facs) > 0) warning("For the following factor variables the underlying integers can not be preserved due to R-incompatible ordering of numeric values: ",
                                          paste(unordered_facs, collapse = ", "))
   dat
 }

@@ -4,6 +4,7 @@ context("Handle data")
 # load data with missings
 # testM <- import_spss(file = "c:/Benjamin_Becker/02_Repositories/packages/eatGADS/tests/testthat/helper_spss_missings.sav")
 # load(file = "c:/Benjamin_Becker/02_Repositories/packages/eatGADS/tests/testthat/helper_data.rda")
+# testM <- import_spss("tests/testthat/helper_spss_missings.sav")
 testM <- import_spss("helper_spss_missings.sav")
 load(file = "helper_data.rda")
 
@@ -68,8 +69,8 @@ testM2$labels$value <- as.numeric(testM2$labels$value)
 
 test_that("Warnings and errors for Extract Data",  {
   w <- capture_warnings(extractData(testM))
-  expect_equal(w[[1]], "Variable VAR1 is partially labeled. Value labels will be dropped for this variable variable.\nLabeled values are: 1")
-  expect_equal(w[[2]], "Variable VAR2 is partially labeled. Value labels will be dropped for this variable variable.\nLabeled values are: -96")
+  expect_equal(w[[1]], "Variable VAR1 is partially labeled. Value labels will be dropped for this variable.\nLabeled values are: 1")
+  expect_equal(w[[2]], "Variable VAR2 is partially labeled. Value labels will be dropped for this variable.\nLabeled values are: -96")
   expect_error(extractData(testM, convertLabels = "integer"), "Argument convertLabels incorrectly specified.")
 })
 
@@ -134,7 +135,7 @@ test_that("Correct behavior if factors can't be sorted", {
   gads$labels <- gads$labels[-8, ]
 
   w <- capture_warnings(dat <- extractData(gads, convertLabels = "factor"))
-  expect_equal(w[[2]], "For the following factor variables the underlying integers can not be preserved: v2")
+  expect_equal(w[[2]], "For the following factor variables the underlying integers can not be preserved due to R-incompatible ordering of numeric values: v2")
   expect_equal(as.numeric(dat$v1), c(1, 2, 3))
   expect_equal(as.numeric(dat$v2), c(3, 1, 2))
   expect_equal(as.numeric(dat$v3), c(1:3))
@@ -142,7 +143,7 @@ test_that("Correct behavior if factors can't be sorted", {
   ## drop partially labeled = FALSE?
   w2 <- capture_warnings(dat2 <- extractData(gads, convertLabels = "factor", dropPartialLabels = FALSE))
   expect_equal(w2[[1]], "For the following factor variables only incomplete value labels are available, rendering the underlying integers meaningless: v3")
-  expect_equal(w2[[2]], "For the following factor variables the underlying integers can not be preserved: v2")
+  expect_equal(w2[[2]], "For the following factor variables the underlying integers can not be preserved due to R-incompatible ordering of numeric values: v2")
   expect_equal(as.numeric(dat2$v1), c(1, 2, 3))
   expect_equal(as.numeric(dat2$v2), c(3, 1, 2))
   expect_equal(as.character(dat2$v3), c("z", 2, "b"))
