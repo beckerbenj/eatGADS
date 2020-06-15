@@ -130,16 +130,16 @@ test_that("Check haven behaviour", {
 })
 
 
-#df <- data.frame(long = paste(rep("a", 1000), collapse = ""), stringsAsFactors = FALSE)
+#df <- data.frame(Pflub1516_c = 1, Pflub1516_d = paste(rep("a", 1000), collapse = ""), stringsAsFactors = FALSE)
 #haven::write_sav(df, path = "tests/testthat/helper_longstring.sav")
 
 test_that("Write strings longer than 255", {
   #g <- import_spss("tests/testthat/helper_longstring.sav")
-  g <- import_spss("helper_longstring.sav")
+  suppressWarnings(g <- import_spss("helper_longstring.sav"))
   f <- paste0(tempfile(), ".sav")
   write_spss(g, filePath = f)
   out <- haven::read_spss(f)
-  expect_equal(dim(out), c(1, 1))
+  expect_equal(dim(out), c(1, 2))
 })
 
 

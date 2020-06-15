@@ -32,8 +32,12 @@ Extract \code{data.frame} from a \code{GADSdat} object for analyses in \code{R}.
 \details{
 A \code{GADSdat} object includes actual data (\code{GADSdat$dat}) and the corresponding meta data information
 (\code{GADSdat$labels}). \code{extractData} extracts the data and applies relevant meta data (missing conversion, value labels),
-so the data can be used for analyses in \code{R}. If factors are extracted via \code{convertLabels == "factor"}, the underlying integers will
-are tried to preserved. If this is not possible, a warning is issued.
+so the data can be used for analyses in \code{R}.
+
+If \code{factor} are extracted via \code{convertLabels == "factor"}, the underlying integers will
+be tried to preserved. If this is not possible, a warning is issued. As \code{SPSS} has almost no limitations regarding the underlying values of labeled
+integers and \code{R}'s \code{factor} format is very strict (no \code{0}, only integers increasing by \code{+ 1}), this procedure can lead to
+frequent problems.
 }
 \examples{
 \dontrun{
