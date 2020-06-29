@@ -9,7 +9,7 @@ import_spss(filePath, checkVarNames = TRUE, labeledStrings = FALSE)
 \arguments{
 \item{filePath}{Source file location, ending on \code{.sav}.}
 
-\item{checkVarNames}{Should variable names be checked for vioalitions of \code{SQLite} and \code{R} naming rules?}
+\item{checkVarNames}{Should variable names be checked for violations of \code{SQLite} and \code{R} naming rules?}
 
 \item{labeledStrings}{Should strings as labeled values be allowed? This possibly corrupts all labeled values.}
 }

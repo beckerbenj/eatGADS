@@ -204,7 +204,7 @@ valLabels_raw <- data.frame(varName = c("a", "a", "b", "b"), value = c(1, 2, 2, 
 
 test_that("Checks for import_raw", {
   iris$Species <- as.factor(iris$Species)
-  expect_error(import_raw(df = iris), "One of the variables in df is a factor. All meta information on value level has to be stored in valLabels.")
+  expect_error(import_raw(df = iris), "At least one of the variables in df is a factor. All meta information on value level has to be stored in valLabels.")
   varLabels_raw_fac <- data.frame(varName = c("a", "b"), varLabel = c("variable a", "variable b"), stringsAsFactors = TRUE)
   expect_error(import_raw(df = df_raw, varLabels = varLabels_raw_fac), "One of the variables in varLabels is a factor.")
   valLabels_raw <- data.frame(varName = c("a", "a", "b", "b"), value = c(1, 2, 2, 3), valLabel = c("one", "two", "very", "few"), missings = rep("valid", 4))
@@ -233,6 +233,7 @@ test_that("import_raw", {
   out <- import_raw(df = df_raw, varLabels = varLabels_raw, valLabels = valLabels_raw)
   expect_equal(out$dat, df_raw)
   expect_equal(out$labels$varLabel, c(rep("variable a", 2), rep("variable b", 2)))
+  expect_equal(out$labels$labeled, rep("yes", 4))
 
   df <- data.frame(ID = 1:4, sex = c(0, 0, 1, 1), forename = c("Tim", "Bill", "Ann", "Chris"), stringsAsFactors = FALSE)
   varLabels <- data.frame(varName = c("ID", "sex", "forename"), varLabel = c("Person Identifier", "Sex as self reported", "forename provided by teacher"), stringsAsFactors = FALSE)
@@ -240,6 +241,7 @@ test_that("import_raw", {
 
   out2 <- import_raw(df = df, varLabels = varLabels, valLabels = valLabels)
   expect_equal(out2$labels$value, c(NA, 0, 1, -99, NA))
+  expect_equal(out2$labels$labeled, c("no", "yes", "yes", "yes", "no"))
 })
 
 test_that("import_raw with tibbles", {

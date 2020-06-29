@@ -8,7 +8,7 @@
 #' SPSS files (\code{.sav}) store variable and value labels and assign specific formatting to variables. \code{import_spss} imports data from SPSS, while storing this meta-information seperately in a long format data frame. Value labels and missing labels are used to identify missing values (see \code{\link{checkMissings}}). Time and date variables are converted to character.
 #'
 #'@param filePath Source file location, ending on \code{.sav}.
-#'@param checkVarNames Should variable names be checked for vioalitions of \code{SQLite} and \code{R} naming rules?
+#'@param checkVarNames Should variable names be checked for violations of \code{SQLite} and \code{R} naming rules?
 #'@param labeledStrings Should strings as labeled values be allowed? This possibly corrupts all labeled values.
 #'
 #'@return Returns a list with the actual data \code{dat} and a data frame with all meta information in long format \code{labels}.
@@ -42,7 +42,7 @@ import_spss <- function(filePath, checkVarNames = TRUE, labeledStrings = FALSE) 
 #' Factors are integers with labeled variable levels. \code{import_RDS} extracts these labels and stores them in a seperate meta data data.frame. See \code{\link{import_DF}} for detailed information.
 #'
 #'@param filePath Source file location, ending on \code{.RDS}.
-#'@param checkVarNames Should variable names be checked for vioalitions of \code{SQLite} and \code{R} naming rules?
+#'@param checkVarNames Should variable names be checked for violations of \code{SQLite} and \code{R} naming rules?
 #'
 #'@return Returns a list with the actual data \code{dat} and a data frame with all meta information in long format \code{labels}.
 #'
@@ -63,7 +63,7 @@ import_RDS <- function(filePath, checkVarNames = TRUE) {
 #' Factors are integers with labeled variable levels. \code{import_DF} extracts these labels and stores them in a seperate meta data data.frame. See \code{\link{import_spss}} for detailed information.
 #'
 #'@param df A \code{data.frame}.
-#'@param checkVarNames Should variable names be checked for vioalitions of \code{SQLite} and \code{R} naming rules?
+#'@param checkVarNames Should variable names be checked for violations of \code{SQLite} and \code{R} naming rules?
 #'
 #'@return Returns a list with the actual data \code{dat} and a data frame with all meta information in long format \code{labels}.
 #'
@@ -87,12 +87,12 @@ import_DF <- function(df, checkVarNames = TRUE) {
 #############################################################################
 #' Import an object imported via \code{convertLabel}
 #'
-#' Function to import a \code{data.frame} object created by \code{convertLabel} for use in \code{eatGADS}. If possible, importing data via \code{\link{import_spss}} should always be prefred.
+#' Function to import a \code{data.frame} object created by \code{convertLabel} for use in \code{eatGADS}. If possible, importing data via \code{\link{import_spss}} should always be preferred.
 #'
-#' \code{convertLabel} converts an object imported via \code{foreign::read.spss} to a data.frame with factors and variable labels stored in variable attributes.
+#' \code{\link[eatAnalysis]{convertLabel}} converts an object imported via \code{\link[foreign]{read.spss}} (from the \code{foreign} package) to a \code{data.frame} with factors and variable labels stored in variable attributes.
 #'
 #'@param df A \code{data.frame}.
-#'@param checkVarNames Should variable names be checked for vioalitions of \code{SQLite} and \code{R} naming rules?
+#'@param checkVarNames Should variable names be checked for violations of \code{SQLite} and \code{R} naming rules?
 #'
 #'@return Returns a list with the actual data \code{dat} and a data frame with all meta information in long format \code{labels}.
 #'
@@ -125,7 +125,7 @@ import_convertLabel <- function(df, checkVarNames = TRUE) {
 #'@param df A \code{data.frame}.
 #'@param varLabels A \code{data.frame} containing the variable labels. All variables in the data have to have exactly one column in this data.frame.
 #'@param valLabels A \code{data.frame} containing the value labels. All referenced variables have to appear in the data, but not all variables in the data have to receive value labels. Can be omitted.
-#'@param checkVarNames Should variable names be checked for vioalitions of \code{SQLite} and \code{R} naming rules?
+#'@param checkVarNames Should variable names be checked for violations of \code{SQLite} and \code{R} naming rules?
 #'
 #'@return Returns a list with the actual data \code{dat} and with all meta information in long format \code{labels}.
 #'
@@ -151,7 +151,7 @@ import_convertLabel <- function(df, checkVarNames = TRUE) {
 #'@export
 import_raw <- function(df, varLabels, valLabels = NULL, checkVarNames = TRUE) {
   if(!is.data.frame(df)) stop("df needs to be a data frame.")
-  if(any(sapply(df, is.factor))) stop("One of the variables in df is a factor. All meta information on value level has to be stored in valLabels.")
+  if(any(sapply(df, is.factor))) stop("At least one of the variables in df is a factor. All meta information on value level has to be stored in valLabels.")
 
   ## data import
   GADS_raw <- prepare_labels(rawDat = df, checkVarNames = checkVarNames, labeledStrings = FALSE) ## use import_df instead?

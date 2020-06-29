@@ -13,7 +13,7 @@ import_raw(df, varLabels, valLabels = NULL, checkVarNames = TRUE)
 
 \item{valLabels}{A \code{data.frame} containing the value labels. All referenced variables have to appear in the data, but not all variables in the data have to receive value labels. Can be omitted.}
 
-\item{checkVarNames}{Should variable names be checked for vioalitions of \code{SQLite} and \code{R} naming rules?}
+\item{checkVarNames}{Should variable names be checked for violations of \code{SQLite} and \code{R} naming rules?}
 }
 \value{
 Returns a list with the actual data \code{dat} and with all meta information in long format \code{labels}.

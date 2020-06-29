@@ -2,9 +2,9 @@
 context("Meta data handling")
 
 # load test data (df1, df2, pkList, fkList)
-# load(file = "c:/Benjamin_Becker/02_Repositories/packages/eatGADS/tests/testthat/helper_data.rda")
+# load(file = "tests/testthat/helper_data.rda")
 load(file = "helper_data.rda")
-# dfSAV <- import_spss(file = "c:/Benjamin_Becker/02_Repositories/packages/eatGADS/tests/testthat/helper_spss_missings.sav")
+# dfSAV <- import_spss(file = "tests/testthat/helper_spss_missings.sav")
 dfSAV <- import_spss(file = "helper_spss_missings.sav")
 
 ### Update Meta
@@ -114,9 +114,9 @@ var_changes_list <- getChangeMeta(expected_bigList, level = "variable")
 val_changes_list <- getChangeMeta(expected_bigList, level = "value")
 
 test_that("Extract variable level meta change table", {
-  out <- c(names(df1$labels)[1:5], paste0(names(df1$labels)[1:5], "_new"))
+  out <- c(names(df1$labels)[1:4], paste0(names(df1$labels)[1:4], "_new"))
   expect_equal(names(getChangeMeta(df1)), out)
-  expect_equal(dim(getChangeMeta(df1)), c(2, 10))
+  expect_equal(dim(getChangeMeta(df1)), c(2, 8))
   names(changes_var)[8] <- "lala_new"
   expect_error(check_varChanges(changes_var), "Irregular column names in changeTable.")
 })
@@ -239,6 +239,28 @@ test_that("Adding value labels for values without labels", {
   # to do
   # checken, dass keine Probleme in recode_dat auftauchen
   # loest das nicht teilweise errors aus, da nicht kompatibel mit altem labels-df? wenn nein, wieso nicht?
+})
+
+test_that("update labeled helper", {
+  g <- import_DF(mtcars)
+  g$labels[1, "value"] <- 1
+  out <- update_labeled_col(g$labels)
+  expect_equal(out[1, "labeled"], "yes")
+  expect_equal(out[2, "labeled"], "no")
+})
+
+test_that("Adding value labels to an unlabeled variable", {
+  iris2 <- as.data.frame(iris, stringsAsFactors = TRUE)
+  suppressMessages(g <- import_DF(iris2))
+  changer <- getChangeMeta(g, level = "value")
+
+  changer[1, "value_new"] <- 99
+  changer[1, "valLabel_new"] <- "some label"
+  changer[1, "missings_new"] <- "valid"
+  out <- applyChangeMeta(changer, g)
+
+  expect_equal(out[[2]][1, ][6:8], data.frame(value = 99, valLabel = "some label", missings = "valid", stringsAsFactors = FALSE))
+  expect_equal(out[[2]][1, ][5], data.frame(labeled = "yes", stringsAsFactors = FALSE))
 })
 
 test_that("Changes to all_GADSdat on variable level", {

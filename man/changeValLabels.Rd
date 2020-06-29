@@ -7,7 +7,7 @@
 changeValLabels(GADSdat, varName, value, valLabel)
 }
 \arguments{
-\item{GADSdat}{GADSdat object imported via eatGADS.}
+\item{GADSdat}{\code{GADSdat} object imported via \code{eatGADS}.}
 
 \item{varName}{Character string of a variable name.}
 

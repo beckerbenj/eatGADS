@@ -197,7 +197,7 @@ getChangeMeta.GADSdat <- function(GADSdat, level = "variable") {
   check_GADSdat(GADSdat)
   labels <- GADSdat[["labels"]]
   if(identical(level, "variable")) {
-    oldCols <- c("varName", "varLabel", "format", "display_width", "labeled")
+    oldCols <- c("varName", "varLabel", "format", "display_width")
     newCols <- paste0(oldCols, "_new")
     for(n in newCols) labels[, n] <- NA
     change_sheet <- unique(labels[, c(oldCols, newCols)])
@@ -229,7 +229,7 @@ new_varChanges <- function(df) {
 }
 check_varChanges <- function(changeTable) {
   if(!is.data.frame(changeTable)) stop("changeTable is not a data.frame.")
-  colNames <- c("varName", "varLabel", "format", "display_width", "labeled")
+  colNames <- c("varName", "varLabel", "format", "display_width")
   colNames <- c(colNames, paste0(colNames, "_new"))
   if(any(!names(changeTable) %in% colNames)) stop("Irregular column names in changeTable.")
   # tbd: content checks for format and display width
@@ -321,7 +321,10 @@ applyChangeMeta.valChanges <- function(changeTable, GADSdat) {
   # 02) valueLabels, missings and values in labels
   labels <- recode_labels(labels = labels, changeTable = changeTable)
 
-  new_GADSdat(dat = dat, labels = labels)
+  # 03) if variable was unlabeled before, set to labeled
+  labels2 <- update_labeled_col(labels)
+
+  new_GADSdat(dat = dat, labels = labels2)
 }
 
 #'@export
@@ -395,6 +398,12 @@ expand_labels <- function(labels, new_varName_vec) {
     }
   }
   labels[order(match(labels$varName, old_order)), ]
+}
+
+# updates the labeled column in the meta data according to the value column
+update_labeled_col <- function(labels) {
+  labels$labeled <- ifelse(is.na(labels$value), yes = "no", no = "yes")
+  labels
 }
 
 #### Change Variable names
@@ -583,7 +592,7 @@ checkVarLabelVector <- function(varName, varLabel, dat) {
 #'
 #' Applied to a \code{GADSdat} or \code{all_GADSdat} object, this function is a wrapper of \code{\link{getChangeMeta}} and \code{\link{applyChangeMeta}}.
 #'
-#'@param GADSdat GADSdat object imported via eatGADS.
+#'@param GADSdat \code{GADSdat} object imported via \code{eatGADS}.
 #'@param varName Character string of a variable name.
 #'@param value Numeric values.
 #'@param valLabel Character string of the new value labels.

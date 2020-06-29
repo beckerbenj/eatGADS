@@ -9,16 +9,16 @@ import_convertLabel(df, checkVarNames = TRUE)
 \arguments{
 \item{df}{A \code{data.frame}.}
 
-\item{checkVarNames}{Should variable names be checked for vioalitions of \code{SQLite} and \code{R} naming rules?}
+\item{checkVarNames}{Should variable names be checked for violations of \code{SQLite} and \code{R} naming rules?}
 }
 \value{
 Returns a list with the actual data \code{dat} and a data frame with all meta information in long format \code{labels}.
 }
 \description{
-Function to import a \code{data.frame} object created by \code{convertLabel} for use in \code{eatGADS}. If possible, importing data via \code{\link{import_spss}} should always be prefred.
+Function to import a \code{data.frame} object created by \code{convertLabel} for use in \code{eatGADS}. If possible, importing data via \code{\link{import_spss}} should always be preferred.
 }
 \details{
-\code{convertLabel} converts an object imported via \code{foreign::read.spss} to a data.frame with factors and variable labels stored in variable attributes.
+\code{\link[eatAnalysis]{convertLabel}} converts an object imported via \code{\link[foreign]{read.spss}} (from the \code{foreign} package) to a \code{data.frame} with factors and variable labels stored in variable attributes.
 }
 \examples{
 # no examples
