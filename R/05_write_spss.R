@@ -62,7 +62,7 @@ export_tibble.GADSdat <- function(GADSdat) {
     single_label_df <- label_df[label_df$varName == n, ]
     # add labels if any rows in label data frame
     if(nrow(single_label_df) > 0) {
-      attributes(df[, n]) <- addLabels_single(label_df = single_label_df)
+      attributes(df[, n]) <- addLabels_single(label_df = single_label_df, varClass = class(df[[n]]))
     }
   }
   tibble::as_tibble(df)
@@ -80,7 +80,7 @@ check_var_type <- function(GADSdat) {
 
 
 ###  add labels to a single variable ---------------------------------------------------------
-addLabels_single <- function(label_df) {
+addLabels_single <- function(label_df, varClass) {
   out <- list()
   # attributes on variable level
   if(!all(is.na(label_df[, "varLabel"]))) out[["label"]] <- unique(label_df[, "varLabel"])
@@ -104,7 +104,6 @@ addLabels_single <- function(label_df) {
   if(identical(out[["class"]], "haven_labelled") && any_miss) out[["class"]] <- c("haven_labelled_spss", "haven_labelled")
 
 
-  #if(all(label_df$varName == "Emspm18_pp_3")) browser()
   # value labels, if any
   value_label_df <- label_df[!is.na(label_df$value), ]
   if(nrow(value_label_df) > 0) {
@@ -112,7 +111,9 @@ addLabels_single <- function(label_df) {
     names(out[["labels"]]) <- value_label_df[, "valLabel"]
 
     # value labels need to have the same class as the variable format
-    if(length(out[["format.spss"]]) > 0 && grepl("^A", unique(out[["format.spss"]]))) {
+    #if(all(label_df$varName == "groupVar")) browser()
+    if((length(out[["format.spss"]]) > 0 && grepl("^A", unique(out[["format.spss"]]))) || identical(varClass, "character")) {
+    #if((length(out[["format.spss"]]) > 0 && grepl("^A", unique(out[["format.spss"]])))) {
       out[["labels"]] <- as.character(out[["labels"]])
       names(out[["labels"]]) <- value_label_df[, "valLabel"]
       #if(identical(labeled, "yes")) out[["class"]] <- c("haven_labelled")
