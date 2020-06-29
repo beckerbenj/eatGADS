@@ -7,14 +7,14 @@
 changeSPSSformat(GADSdat, varName, format)
 }
 \arguments{
-\item{GADSdat}{GADSdat object imported via eatGADS.}
+\item{GADSdat}{\code{GADSdat} object imported via \code{eatGADS}.}
 
 \item{varName}{Character string of variable names.}
 
 \item{format}{A single string containing the new SPSS format, for example 'A25' or 'F10'.}
 }
 \value{
-Returns the GADSdat object with changed meta data..
+Returns the \code{GADSdat} object with changed meta data..
 }
 \description{
 Change the SPSS format of a variable as part of a \code{GADSdat} or \code{all_GADSdat} object.

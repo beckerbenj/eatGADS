@@ -5,7 +5,9 @@
 #'
 #' Function to import \code{.sav} files while extracting meta information, e.g. variable and value labels.
 #'
-#' SPSS files (\code{.sav}) store variable and value labels and assign specific formatting to variables. \code{import_spss} imports data from SPSS, while storing this meta-information seperately in a long format data frame. Value labels and missing labels are used to identify missing values (see \code{\link{checkMissings}}). Time and date variables are converted to character.
+#' SPSS files (\code{.sav}) store variable and value labels and assign specific formatting to variables. \code{import_spss} imports
+#' data from SPSS, while storing this meta-information separately in a long format data frame. Value labels and missing labels are used
+#' to identify missing values (see \code{\link{checkMissings}}). Time and date variables are converted to character.
 #'
 #'@param filePath Source file location, ending on \code{.sav}.
 #'@param checkVarNames Should variable names be checked for violations of \code{SQLite} and \code{R} naming rules?
@@ -39,7 +41,8 @@ import_spss <- function(filePath, checkVarNames = TRUE, labeledStrings = FALSE) 
 #'
 #' Function to import \code{.RDS} files while extracting value labels from factors.
 #'
-#' Factors are integers with labeled variable levels. \code{import_RDS} extracts these labels and stores them in a seperate meta data data.frame. See \code{\link{import_DF}} for detailed information.
+#' Factors are integers with labeled variable levels. \code{import_RDS} extracts these labels and stores them in a separate meta data data.frame.
+#' See \code{\link{import_DF}} for detailed information.
 #'
 #'@param filePath Source file location, ending on \code{.RDS}.
 #'@param checkVarNames Should variable names be checked for violations of \code{SQLite} and \code{R} naming rules?
@@ -60,7 +63,8 @@ import_RDS <- function(filePath, checkVarNames = TRUE) {
 #'
 #' Function to import a \code{data.frame} object for use in \code{eatGADS} while extracting value labels from factors.
 #'
-#' Factors are integers with labeled variable levels. \code{import_DF} extracts these labels and stores them in a seperate meta data data.frame. See \code{\link{import_spss}} for detailed information.
+#' Factors are integers with labeled variable levels. \code{import_DF} extracts these labels and stores them in a separate meta data data.frame.
+#' See \code{\link{import_spss}} for detailed information.
 #'
 #'@param df A \code{data.frame}.
 #'@param checkVarNames Should variable names be checked for violations of \code{SQLite} and \code{R} naming rules?
@@ -118,9 +122,13 @@ import_convertLabel <- function(df, checkVarNames = TRUE) {
 #############################################################################
 #' Import R data frame with explicit meta data sheets
 #'
-#' Function to import a \code{data.frame} object for use in \code{eatGADS} while adding explicit variable and value meta information through separate \code{data.frames}.
+#' Function to import a \code{data.frame} object for use in \code{eatGADS} while adding explicit variable and value meta information through
+#' separate \code{data.frames}.
 #'
-#' The argument \code{varLables} has to contain exactly two variables, namely \code{varName} and \code{varLabel}. \code{valLables} has to contain exactly four variables, namely \code{varName}, \code{value}, \code{valLabel} and \code{missings}. The column \code{value} can only contain numerical values. The column \code{missings} can only contain the values \code{"valid"} and \code{"miss"}. Variables of type \code{factor} are not supported in any of the \code{data.frames}.
+#' The argument \code{varLables} has to contain exactly two variables, namely \code{varName} and \code{varLabel}. \code{valLables} has
+#' to contain exactly four variables, namely \code{varName}, \code{value}, \code{valLabel} and \code{missings}. The column \code{value}
+#' can only contain numerical values. The column \code{missings} can only contain the values \code{"valid"} and \code{"miss"}.
+#' Variables of type \code{factor} are not supported in any of the \code{data.frames}.
 #'
 #'@param df A \code{data.frame}.
 #'@param varLabels A \code{data.frame} containing the variable labels. All variables in the data have to have exactly one column in this data.frame.

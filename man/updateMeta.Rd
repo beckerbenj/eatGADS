@@ -7,15 +7,17 @@
 updateMeta(GADSdat, newDat)
 }
 \arguments{
-\item{GADSdat}{\code{GADSdat} or \code{all_GADSdat} object imported via eatGADS.}
+\item{GADSdat}{\code{GADSdat} or \code{all_GADSdat} object imported via \code{eatGADS}.}
 
-\item{newDat}{Data frame oder list of data frames with the modified data.}
+\item{newDat}{\code{data.frame} or list of \code{data.frames} with the modified data.}
 }
 \value{
 Returns the original object with updated meta data (and removes factors from the data).
 }
 \description{
-If the data of a \code{GADSdat} or a \code{all_GADSdat} has changed, update assimilates the corresponding meta data set. Factors are transformed to numerical and their levels added to the meta data set. Careful, this is a development version and should be only used with great care!
+If the data of a \code{GADSdat} or a \code{all_GADSdat} has changed, update assimilates the corresponding meta data set.
+Factors are transformed to numerical and their levels added to the meta data set. Careful, this is a development version and should
+be only used with great care!
 }
 \details{
 tbd.

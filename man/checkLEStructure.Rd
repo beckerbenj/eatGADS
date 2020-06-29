@@ -2,25 +2,27 @@
 % Please edit documentation in R/07_trend.R
 \name{checkLEStructure}
 \alias{checkLEStructure}
-\title{Checks compatability of GADS data bases with a linking error data base.}
+\title{Checks compatibility of GADS data bases with a linking error data base.}
 \usage{
 checkLEStructure(filePath1, filePath2, lePath)
 }
 \arguments{
-\item{filePath1}{Path of the first GADS db file.}
+\item{filePath1}{Path of the first \code{eatGADS} \code{.db} file.}
 
-\item{filePath2}{Path of the second GADS db file.}
+\item{filePath2}{Path of the second \code{eatGADS} \code{.db} file.}
 
-\item{lePath}{Path of the linking error GADS db file.}
+\item{lePath}{Path of the linking error \code{eatGADS} \code{.db} file.}
 }
 \value{
 Returns a report list.
 }
 \description{
-This function checks if a linking error data base is compatible with the two trend GADS data bases. For checking the compatability of two GADS data bases see \code{\link{checkTrendStructure}}.
+This function checks if a linking error data base is compatible with the two trend \code{eatGADS} data bases. For checking the compatibility
+of two \code{eatGADS} data bases see \code{\link{checkTrendStructure}}.
 }
 \details{
-This function inspects whether all linking error variables correspond to variables in the GADS data base and if the key variables also correspond to existing variables in the trend GADS data bases.
+This function inspects whether all linking error variables correspond to variables in the \code{eatGADS} data base and if the key variables
+also correspond to existing variables in the trend \code{eatGADS} data bases.
 }
 \examples{
 # See vignette.

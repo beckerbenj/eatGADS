@@ -2,7 +2,7 @@
 % Please edit documentation in R/15_recode.R
 \name{recodeString2NA}
 \alias{recodeString2NA}
-\title{Recode a string to NA.}
+\title{Recode a string to \code{NA}.}
 \usage{
 recodeString2NA(GADSdat, recodeVars = namesGADS(GADSdat), string = "")
 }
@@ -11,13 +11,13 @@ recodeString2NA(GADSdat, recodeVars = namesGADS(GADSdat), string = "")
 
 \item{recodeVars}{Character vector of variable names which should be recoded.}
 
-\item{string}{Which string should be recoded to NA?}
+\item{string}{Which string should be recoded to \code{NA}?}
 }
 \value{
 Returns the recoded \code{GADSdat}.
 }
 \description{
-Recode an unlabeled string in mulitple variables in a \code{GADSdat} to NA.
+Recode an unlabeled string in multiple variables in a \code{GADSdat} to \code{NA}.
 }
 \details{
 A check is performed, whether there are truly no labels given to the specified string. Number of recodes per variable are reported.

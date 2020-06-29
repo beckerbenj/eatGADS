@@ -15,7 +15,7 @@
 #'
 #'@return Returns a data frame in long format with the following variables:
 #'\item{variable}{Variables as specified in \code{recodeVars}}
-#'\item{value}{Unique values of the variabels specified in \code{recodeVars}}
+#'\item{value}{Unique values of the variables specified in \code{recodeVars}}
 #'\item{value_new}{This is the default for \code{addCols}. If different additional column names are supplied, this column is missing.}
 #'
 #'@examples
@@ -60,7 +60,8 @@ createLookup.GADSdat <- function(GADSdat, recodeVars, sort_by = NULL, addCols = 
 #'
 #' Collapse columns of a lookup table created by \code{\link{createLookup}}.
 #'
-#' This function can for example be used to collapse multiple recoding variables from which one should be preferred if values for both recoding variables are present.
+#' This function can for example be used to collapse multiple recoding variables from which one should be preferred if values for
+#' both recoding variables are present.
 #'
 #'@param lookup For example a lookup table \code{data.frame} as created via \code{\link{createLookup}}.
 #'@param recodeVars Character vector of variable names which should be collapsed.
@@ -97,7 +98,7 @@ collapseColumns <- function(lookup, recodeVars, prioritize) {
 
 #### Apply recode lookup table
 #############################################################################
-#' Recoade via lookup table.
+#' Recode via lookup table.
 #'
 #' Recode one or multiple variables based on a lookup table created via \code{\link{createLookup}}.
 #'
@@ -277,15 +278,15 @@ append_varLabel <- function(GADSdat, varName, label_suffix) {
 
 #### Empty strings to NA
 #############################################################################
-#' Recode a string to NA.
+#' Recode a string to \code{NA}.
 #'
-#' Recode an unlabeled string in mulitple variables in a \code{GADSdat} to NA.
+#' Recode an unlabeled string in multiple variables in a \code{GADSdat} to \code{NA}.
 #'
 #' A check is performed, whether there are truly no labels given to the specified string. Number of recodes per variable are reported.
 #'
 #'@param GADSdat A \code{GADSdat} object.
 #'@param recodeVars Character vector of variable names which should be recoded.
-#'@param string Which string should be recoded to NA?
+#'@param string Which string should be recoded to \code{NA}?
 #'
 #'@return Returns the recoded \code{GADSdat}.
 #'

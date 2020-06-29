@@ -1,16 +1,16 @@
 
 #### Writing sav files
 #############################################################################
-#' Write data frame to sav file
+#' Write a \code{GADSdat} object to \code{sav}
 #'
-#' Function to write data frame with labels for values and variables to SPSS-file.
+#' Write a \code{GADSdat} object, which contains meta information as value and variable labels to an SPSS file (\code{sav}).
 #'
-#' This function is still slightly experimental.
+#' Careful: This function is still slightly experimental.
 #'
-#'@param GADSdat Data frame.
-#'@param filePath Path of sav file to write.
+#'@param GADSdat A \code{GADSdat} object.
+#'@param filePath Path of \code{sav} file to write.
 #'
-#'@return Writes sav-file, returns nothing.
+#'@return Writes \code{sav} file to disc, returns \code{NULL}.
 #'
 #'@examples
 #'# tbd
@@ -30,15 +30,16 @@ write_spss.GADSdat <- function(GADSdat, filePath) {
 
 #### Export to haven format
 #############################################################################
-#' Transform a GADSdat to a haven like tibble
+#' Transform a \code{GADSdat} to a \code{tibble}
 #'
-#' Havens \code{\link[haven]{read_spss}} stores data together with meta data (e.g. value and variable labels) in a tibble with attributes on variable level. This function transforms a \code{GADSdat} object to such a tibble.
+#' \code{haven}'s \code{\link[haven]{read_spss}} stores data together with meta data (e.g. value and variable labels) in a
+#' \code{tibble} with attributes on variable level. This function transforms a \code{GADSdat} object to such a \code{tibble}.
 #'
-#' ...
+#' This function is mainly intended for internal use.
 #'
 #'@param GADSdat \code{GADSdat} object imported via \code{eatGADS}.
 #'
-#'@return Returns a tibble.
+#'@return Returns a \code{tibble}.
 #'
 #'@examples
 #'# tbd

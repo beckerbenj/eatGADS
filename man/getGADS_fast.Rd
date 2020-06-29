@@ -7,20 +7,24 @@
 getGADS_fast(vSelect = NULL, filePath, tempPath = tempdir())
 }
 \arguments{
-\item{vSelect}{Variables}
+\item{vSelect}{Character vector of variable names.}
 
-\item{filePath}{Path of the existing db file.}
+\item{filePath}{Path of the existing \code{eatGADS} data base file.}
 
-\item{tempPath}{Local directory in which the dataBase can temporarily be stored. Using the default is recommended.}
+\item{tempPath}{Local directory in which the data base can temporarily be stored. Using the default is recommended.}
 }
 \value{
-Returns a GADSdat object.
+Returns a \code{GADSdat} object.
 }
 \description{
-Extracts variables from a GADS data base. Only the specified variables are extracted. Note that this selection determines the format of the \code{data.frame} that is extracted. CAREFUL: This function uses a local temporary directory to speed up loading the GADS from a server and caches the data base locally for a running R session. The temporary data base is removed automatically when the running \code{R} session is terminated.
+Extracts variables from a \code{eatGADS} data base. Only the specified variables are extracted. Note that this selection determines the format
+of the \code{data.frame} that is extracted. CAREFUL: This function uses a local temporary directory to speed up loading the data base
+from a server and caches the data base locally for a running R session. The temporary data base is removed automatically when the
+running \code{R} session is terminated.
 }
 \details{
-A random temporary directory is used for caching the data base and is removed, when the R sessions terminates. See \code{\link[eatDB]{createDB}} and \code{\link[eatDB]{dbPull}} for further explanation of the query and merging processes.
+A random temporary directory is used for caching the data base and is removed, when the \code{R} sessions terminates. See
+\code{\link[eatDB]{createDB}} and \code{\link[eatDB]{dbPull}} for further explanation of the query and merging processes.
 }
 \examples{
 \dontrun{

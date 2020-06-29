@@ -7,20 +7,21 @@
 changeVarNames(GADSdat, oldNames, newNames)
 }
 \arguments{
-\item{GADSdat}{GADSdat object imported via eatGADS.}
+\item{GADSdat}{\code{GADSdat} object imported via \code{eatGADS}.}
 
 \item{oldNames}{Vector containing the old variable names.}
 
-\item{newNames}{Vector containing the new variable names, in identical order as oldNames.}
+\item{newNames}{Vector containing the new variable names, in identical order as \code{oldNames}.}
 }
 \value{
-Returns the GADSdat object with changed variable names.
+Returns the \code{GADSdat} object with changed variable names.
 }
 \description{
 Change variable names of a \code{GADSdat} or \code{all_GADSdat} object.
 }
 \details{
-Applied to a \code{GADSdat} or \code{all_GADSdat} object, this function is a wrapper of \code{\link{getChangeMeta}} and \code{\link{applyChangeMeta}}
+Applied to a \code{GADSdat} or \code{all_GADSdat} object, this function is a wrapper of \code{\link{getChangeMeta}} and
+\code{\link{applyChangeMeta}}
 }
 \examples{
 # Example data set

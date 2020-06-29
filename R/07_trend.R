@@ -1,13 +1,15 @@
 #### Checks structure of trend gads
 #############################################################################
-#' Checks compatability of two GADS data bases.
+#' Checks compatibility of two \code{eatGADS} data bases.
 #'
-#' This function checks if both data bases perform identical joins via foreign keys, if they contain the same variable names and if these variables have the same value labels. Results of this comparison are reported on data table level as messages and as an output list.
+#' This function checks if both data bases perform identical joins via foreign keys, if they contain the same variable names and if
+#' these variables have the same value labels. Results of this comparison are reported on data table level as messages and as an output list.
 #'
-#' An error is thrown if the key structure or the data table structure differs between the two data bases. Differences regarding meta data for missing value labels and for variables labels (and formatting) are ignored.
+#' An error is thrown if the key structure or the data table structure differs between the two data bases. Differences regarding
+#' meta data for missing value labels and for variables labels (and formatting) are ignored.
 #'
-#'@param filePath1 Path of the first GADS db file.
-#'@param filePath2 Path of the second GADS db file.
+#'@param filePath1 Path of the first \code{eatGADS} \code{.db} file.
+#'@param filePath2 Path of the second \code{eatGADS} \code{.db} file.
 #'
 #'@return Returns a report list.
 #'
@@ -71,15 +73,17 @@ compare_meta <- function(meta1, meta2) {
 
 #### Checks structure of trend gads and linking errors
 #############################################################################
-#' Checks compatability of GADS data bases with a linking error data base.
+#' Checks compatibility of GADS data bases with a linking error data base.
 #'
-#' This function checks if a linking error data base is compatible with the two trend GADS data bases. For checking the compatability of two GADS data bases see \code{\link{checkTrendStructure}}.
+#' This function checks if a linking error data base is compatible with the two trend \code{eatGADS} data bases. For checking the compatibility
+#' of two \code{eatGADS} data bases see \code{\link{checkTrendStructure}}.
 #'
-#' This function inspects whether all linking error variables correspond to variables in the GADS data base and if the key variables also correspond to existing variables in the trend GADS data bases.
+#' This function inspects whether all linking error variables correspond to variables in the \code{eatGADS} data base and if the key variables
+#' also correspond to existing variables in the trend \code{eatGADS} data bases.
 #'
-#'@param filePath1 Path of the first GADS db file.
-#'@param filePath2 Path of the second GADS db file.
-#'@param lePath Path of the linking error GADS db file.
+#'@param filePath1 Path of the first \code{eatGADS} \code{.db} file.
+#'@param filePath2 Path of the second \code{eatGADS} \code{.db} file.
+#'@param lePath Path of the linking error \code{eatGADS} \code{.db} file.
 #'
 #'@return Returns a report list.
 #'
@@ -125,19 +129,27 @@ checkLEStructure <- function(filePath1, filePath2, lePath) {
 #############################################################################
 #' Get data for trend reports.
 #'
-#' Extracts variables from two GADS data bases and a linking error data base. Data can then be extracted from the \code{GADSdat} object via \code{\link{extractData}}. For extracting meta data from a db file or a \code{GADSdat} object see \code{\link{extractMeta}}. To speed up the data loading, \code{\link{getGADS_fast}} is used pre default.
+#' Extracts variables from two \code{eatGADS} data bases and a linking error data base. Data can then be extracted from the \code{GADSdat} object via
+#' \code{\link{extractData}}. For extracting meta data from a data base or a \code{GADSdat} object see \code{\link{extractMeta}}. To speed
+#' up the data loading, \code{\link{getGADS_fast}} is used per default.
 #'
-#' This function extracts data from two GADS data bases and a linking error data base. All data bases have to be created via \code{\link{createGADS}}. The two GADS are joined via \code{rbind} and a variable \code{year} is added, corresponding to the argument \code{years}. If \code{lePath} is specified, linking errors are also extracted and then merged to the GADS data. Make sure to also extract the key variables necessary for merging the linking errors (the domain variable for all linking errors, additionally the competence level variable for linking errors for competence levels). The \code{GADSdat} object can then further be used via \code{\link{extractData}}. See \code{\link[eatDB]{createDB}} and \code{\link[eatDB]{dbPull}} for further explanation of the querying and merging processes.
+#' This function extracts data from two GADS data bases and a linking error data base. All data bases have to be created via
+#' \code{\link{createGADS}}. The two GADS are joined via \code{rbind} and a variable \code{year} is added, corresponding to the
+#' argument \code{years}. If \code{lePath} is specified, linking errors are also extracted and then merged to the GADS data. Make
+#' sure to also extract the key variables necessary for merging the linking errors (the domain variable for all linking errors,
+#' additionally the competence level variable for linking errors for competence levels). The \code{GADSdat} object can then further
+#' be used via \code{\link{extractData}}. See \code{\link[eatDB]{createDB}} and \code{\link[eatDB]{dbPull}} for further explanation
+#' of the querying and merging processes.
 #'
-#'@param filePath1 Path of the first GADS db file.
-#'@param filePath2 Path of the second GADS db file.
-#'@param lePath Path of the linking error db file. If NULL, no linking errors are added to the data.
+#'@param filePath1 Path of the first \code{eatGADS} db file.
+#'@param filePath2 Path of the second \code{eatGADS} db file.
+#'@param lePath Path of the linking error db file. If \code{NULL}, no linking errors are added to the data.
 #'@param vSelect Variables from both GADS to be selected (as character vector).
-#'@param years A numeric vector of length 2. The first elements corresponds to filePath1, the second element to filePath2.
+#'@param years A numeric vector of length 2. The first elements corresponds to \code{filePath1}, the second element to \code{filePath2}.
 #'@param fast Should \code{\link{getGADS_fast}} be used for data loading instead of \code{\link{getGADS}}? Using the default is heavily recommended.
 #'@param tempPath The directory, in which both GADS will be temporarily stored. Using the default is heavily recommended.
 #'
-#'@return Returns a GADSdat object.
+#'@return Returns a \code{GADSdat} object.
 #'
 #'@examples
 #'\dontrun{

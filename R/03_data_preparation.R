@@ -3,9 +3,11 @@
 #############################################################################
 #' Prepare data and metadata
 #'
-#' Function to transform list of data-frames and metainformation ready for data base creation
+#' Transform multiple \code{GADSdat} objects into a list ready for data base creation.
 #'
-#' The function createDB takes a list of data frames and a single data frame with metainformation as input. This function transforms lists from import_SPSS and import_RDS into a list of data frames (in the same order as inputted, which is then used for the merging order in createDB). Additionally the seperate lists of metainformation for each data frame are merged and a data frame unique identifier is added.
+#' The function \code{\link{createGADS}} takes multiple \code{GADSdat} objects as input. The function preserves the ordering
+#' in which the objects are supplied, which is then used for the merging order in \code{\link{createGADS}}. Additionally,
+#' the separate lists of meta information for each \code{GADSdat} are merged and a data frame unique identifier is added.
 #'
 #'@param ... \code{GADSdat} objects, as named arguments in the correct merge order.
 #'
@@ -91,14 +93,15 @@ check_all_GADSdat <- function(all_GADSdat, GADSdatChecks = TRUE) {
 
 #### Extract GADSdat from all_GADSdat object (especially useful for Meta changes)
 #############################################################################
-#' Extract single GADSdat from all_GADSdat
+#' Extract single \code{GADSdat} from \code{all_GADSdat}
 #'
-#' Function to extract a single \code{GADSdat} from an \code{all_GADSdat} object
+#' Function to extract a single \code{GADSdat} from an \code{all_GADSdat} object.
 #'
-#' The function createDB takes a list of data frames and a single data frame with metainformation as input. This function transforms lists from import_SPSS and import_RDS into a list of data frames (in the same order as inputted, which is then used for the merging order in createDB). Additionally the seperate lists of metainformation for each data frame are merged and a data frame unique identifier is added.
+#' \code{GADSdat} objects can be merged into a single \code{all_GADSdat} object via \code{\link{mergeLabels}}. This function, performs the
+#' reverse action, extracting a single \code{GADSdat} object.
 #'
-#'@param all_GADSdat \code{all_GADSdat} object, containing a table with the corresponding GADSdat name
-#'@param name A character vector with length 1 with the name of the single GADSdat
+#'@param all_GADSdat \code{all_GADSdat} object
+#'@param name A character vector with length 1 with the name of the \code{GADSdat}
 #'
 #'@return Returns an \code{GADSdat} object.
 #'

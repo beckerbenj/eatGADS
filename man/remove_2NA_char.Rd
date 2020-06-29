@@ -22,7 +22,7 @@ Returns the modified \code{GADSdat}.
 Remove text variables from a certain number from \code{GADSdat} while coding overflowing answers as complete missings.
 }
 \details{
-In some cases, multiple text variables contain the information of one variable (e.g. mutliple answers to an open item).
+In some cases, multiple text variables contain the information of one variable (e.g. multiple answers to an open item).
 }
 \examples{
 #to be done

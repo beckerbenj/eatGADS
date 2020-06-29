@@ -7,18 +7,20 @@
 extractMeta(GADSobject, vars = NULL)
 }
 \arguments{
-\item{GADSobject}{A \code{GADSdat} object.}
+\item{GADSobject}{Either a \code{GADSdat} object or a path to an existing \code{eatGADS} data base.}
 
-\item{vars}{A character vector containing variable names. If \code{NULL} (default), all available metainformation is returned.}
+\item{vars}{A character vector containing variable names. If \code{NULL} (default), all available meta information is returned.}
 }
 \value{
 Returns a long format data frame with meta information.
 }
 \description{
-Exctrat meta data (e.g. variable and values labels) from an \code{eatGADS} object. This can be a \code{GADSdat}, an \code{all_GADSdat}, a labels \code{data.frame}, or the path to an existing data base.
+Extract meta data (e.g. variable and values labels) from an \code{eatGADS} object. This can be a \code{GADSdat}, an \code{all_GADSdat},
+a labels \code{data.frame}, or the path to an existing data base.
 }
 \details{
-Meta data is stored tidily in all GADS objects as a separate long format data frame. This information can be extracted for a single or multiple variables.
+Meta data is stored tidily in all \code{GADSdat} objects as a separate long format data frame. This information can be extracted for a single or
+multiple variables.
 }
 \examples{
 \dontrun{

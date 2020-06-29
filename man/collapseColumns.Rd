@@ -20,7 +20,8 @@ Returns a data frame that can be used for \code{\link{applyLookup}}.
 Collapse columns of a lookup table created by \code{\link{createLookup}}.
 }
 \details{
-This function can for example be used to collapse multiple recoding variables from which one should be preferred if values for both recoding variables are present.
+This function can for example be used to collapse multiple recoding variables from which one should be preferred if values for
+both recoding variables are present.
 }
 \examples{
 # create example recode data.frame

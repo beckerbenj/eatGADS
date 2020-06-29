@@ -7,7 +7,7 @@
 namesGADS(GADS)
 }
 \arguments{
-\item{GADS}{Path of an existing GADS data base.}
+\item{GADS}{Path of an existing \code{eatGADS} data base.}
 }
 \value{
 Returns a named list of variable names per data table.

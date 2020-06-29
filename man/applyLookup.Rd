@@ -2,7 +2,7 @@
 % Please edit documentation in R/15_recode.R
 \name{applyLookup}
 \alias{applyLookup}
-\title{Recoade via lookup table.}
+\title{Recode via lookup table.}
 \usage{
 applyLookup(GADSdat, lookup, suffix = NULL)
 }

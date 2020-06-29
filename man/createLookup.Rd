@@ -18,7 +18,7 @@ createLookup(GADSdat, recodeVars, sort_by = NULL, addCols = c("value_new"))
 \value{
 Returns a data frame in long format with the following variables:
 \item{variable}{Variables as specified in \code{recodeVars}}
-\item{value}{Unique values of the variabels specified in \code{recodeVars}}
+\item{value}{Unique values of the variables specified in \code{recodeVars}}
 \item{value_new}{This is the default for \code{addCols}. If different additional column names are supplied, this column is missing.}
 }
 \description{

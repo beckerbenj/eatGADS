@@ -5,8 +5,8 @@
 \alias{eatGADS}
 \title{eatGADS: Data management of hierarchical SPSS files via R and SQLite}
 \description{
-The eatGADS package provides various groups of functions:
-importing data (mainly sav-files), handling and modifying meta data on variable level, creating a fixed form SQLite data base and using the SQLite data base.
+The \code{eatGADS} package provides various groups of functions:
+importing data (mainly \code{sav}-files), handling and modifying meta data on variable level, creating a fixed form \code{SQLite} data base and using the \code{SQLite} data base.
 }
 \section{Importing data}{
 
@@ -15,7 +15,7 @@ SPSS data can be imported via \code{\link{import_spss}}, \code{R} \code{data.fra
 
 \section{Creating the GADS}{
 
-Hierarcical data sets are combined via \code{\link{mergeLabels}} and the data base is created via \code{\link{createGADS}}. For this, the package \code{eatDB} is utilized. See also \code{\link[eatDB]{createDB}}.
+Hierarchical data sets are combined via \code{\link{mergeLabels}} and the data base is created via \code{\link{createGADS}}. For this, the package \code{eatDB} is utilized. See also \code{\link[eatDB]{createDB}}.
 }
 
 \section{Using the GADS}{

@@ -1,18 +1,19 @@
 
 #### Create GADS using eatDB
 #############################################################################
-#' Create GADS data base.
+#' Create an \code{eatGADS} data base.
 #'
-#' Creates a relational data base.
+#' Creates a relational data base containing hierarchically stored data with meta information (e.g. value and variable labels).
 #'
-#' Uses createDB from the eatDB package to create a relational data base. For details on how to define keys see the documentation of createDB.
+#' Uses \code{\link[eatDB]{createDB}} from the \code{eatDB} package to create a relational data base. For details on how to define
+#' keys see the documentation of \code{\link[eatDB]{createDB}}.
 #'
 #'@param allList An object created via \code{\link{mergeLabels}}.
 #'@param pkList List of primary keys.
 #'@param fkList List of foreign keys.
 #'@param filePath Path to the db file to write (including name); has to end on '.db'.
 #'
-#'@return Creates a data base in the given path, returns NULL.
+#'@return Creates a data base in the given path, returns \code{NULL}.
 #'
 #'@examples
 #'# see createDB
@@ -42,7 +43,7 @@ createGADS.GADSdat <- function(allList, pkList, fkList, filePath) {
 #'
 #' Extracts names of all variables included in the relational data base, structured as a list with the individual data tables as list elements.
 #'
-#'@param GADS Path of an existing GADS data base.
+#'@param GADS Path of an existing \code{eatGADS} data base.
 #'
 #'@return Returns a named list of variable names per data table.
 #'
@@ -82,14 +83,15 @@ namesGADS.all_GADSdat <- function(GADS) {
 
 #### Get Labels from Gads
 #############################################################################
-#' Labels from relational db.
+#' Labels from relational \code{eatGADS} data base.
 #'
-#' Returns the variable and value labels of all variables in the GADS
+#' Returns the variable and value labels of all variables in the \code{eatGADS} data base.
 #'
-#' Variable, value and missing labels as stored in the original SPSS-files and factors from R files are converted to long format for storage in the data base. labelsGADS returns them as a long format data frame.
+#' Variable, value and missing labels as stored in the original SPSS-files and factors from R files are converted to long format for
+#' storage in the data base. \code{labelsGADS} returns them as a long format data frame.
 #'
 #'
-#'@param filePath Path of the existing db file.
+#'@param filePath Path of the existing \code{eatGADS} data base.
 #'
 #'@return Returns a long format data frame including variable names, labels, values, value labels and missing labels.
 #'
@@ -109,14 +111,15 @@ labelsGADS <- function(filePath) {
 #############################################################################
 #' Get data from GADS data base.
 #'
-#'Extracts variables from a GADS data base. Only the specified variables are extracted. Note that this selection determines the format of the \code{data.frame} that is extracted.
+#'Extracts variables from a GADS data base. Only the specified variables are extracted. Note that this selection determines the format of
+#'the \code{data.frame} that is extracted.
 #'
 #' See \code{\link[eatDB]{createDB}} and \code{\link[eatDB]{dbPull}} for further explanation of the query and merging processes.
 #'
-#'@param vSelect Variables
-#'@param filePath Path of the existing db file.
+#'@param vSelect Character vector of variable names.
+#'@param filePath Path of the existing \code{eatGADS} data base file.
 #'
-#'@return Returns a GADSdat object.
+#'@return Returns a \code{GADSdat} object.
 #'
 #'@examples
 #'\dontrun{
@@ -161,15 +164,19 @@ first_list_match <- function(x, vec_list) {
 #############################################################################
 #' Get data from GADS data base fast from server directory.
 #'
-#' Extracts variables from a GADS data base. Only the specified variables are extracted. Note that this selection determines the format of the \code{data.frame} that is extracted. CAREFUL: This function uses a local temporary directory to speed up loading the GADS from a server and caches the data base locally for a running R session. The temporary data base is removed automatically when the running \code{R} session is terminated.
+#' Extracts variables from a \code{eatGADS} data base. Only the specified variables are extracted. Note that this selection determines the format
+#' of the \code{data.frame} that is extracted. CAREFUL: This function uses a local temporary directory to speed up loading the data base
+#' from a server and caches the data base locally for a running R session. The temporary data base is removed automatically when the
+#' running \code{R} session is terminated.
 #'
-#' A random temporary directory is used for caching the data base and is removed, when the R sessions terminates. See \code{\link[eatDB]{createDB}} and \code{\link[eatDB]{dbPull}} for further explanation of the query and merging processes.
+#' A random temporary directory is used for caching the data base and is removed, when the \code{R} sessions terminates. See
+#' \code{\link[eatDB]{createDB}} and \code{\link[eatDB]{dbPull}} for further explanation of the query and merging processes.
 #'
-#'@param vSelect Variables
-#'@param filePath Path of the existing db file.
-#'@param tempPath Local directory in which the dataBase can temporarily be stored. Using the default is recommended.
+#'@param vSelect Character vector of variable names.
+#'@param filePath Path of the existing \code{eatGADS} data base file.
+#'@param tempPath Local directory in which the data base can temporarily be stored. Using the default is recommended.
 #'
-#'@return Returns a GADSdat object.
+#'@return Returns a \code{GADSdat} object.
 #'
 #'@examples
 #'\dontrun{
@@ -224,7 +231,8 @@ getGADS_fast <- function(vSelect = NULL, filePath, tempPath = tempdir()) {
 #'
 #' Deprecated. The cached data base is now cleaned when the R sessions ends automatically.
 #'
-#' Cleans the temporary cache, speficied by tempdir(). This function should always be executed at the end of an \code{R} session if \code{\link{getGADS_fast}} or \code{\link{getTrendGADS}} with \code{fast = TRUE} has been used.
+#' Cleans the temporary cache, specified by \code{tempdir()}. This function should always be executed at the end of an \code{R} session if
+#' \code{\link{getGADS_fast}} or \code{\link{getTrendGADS}} with \code{fast = TRUE} has been used.
 #'
 #'@param tempPath Local directory in which the data base was temporarily be stored.
 #'

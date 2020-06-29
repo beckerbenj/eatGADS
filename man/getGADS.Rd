@@ -7,15 +7,16 @@
 getGADS(vSelect = NULL, filePath)
 }
 \arguments{
-\item{vSelect}{Variables}
+\item{vSelect}{Character vector of variable names.}
 
-\item{filePath}{Path of the existing db file.}
+\item{filePath}{Path of the existing \code{eatGADS} data base file.}
 }
 \value{
-Returns a GADSdat object.
+Returns a \code{GADSdat} object.
 }
 \description{
-Extracts variables from a GADS data base. Only the specified variables are extracted. Note that this selection determines the format of the \code{data.frame} that is extracted.
+Extracts variables from a GADS data base. Only the specified variables are extracted. Note that this selection determines the format of
+the \code{data.frame} that is extracted.
 }
 \details{
 See \code{\link[eatDB]{createDB}} and \code{\link[eatDB]{dbPull}} for further explanation of the query and merging processes.

@@ -2,7 +2,7 @@
 % Please edit documentation in R/04_eatDB_UI.R
 \name{createGADS}
 \alias{createGADS}
-\title{Create GADS data base.}
+\title{Create an \code{eatGADS} data base.}
 \usage{
 createGADS(allList, pkList, fkList, filePath)
 }
@@ -16,13 +16,14 @@ createGADS(allList, pkList, fkList, filePath)
 \item{filePath}{Path to the db file to write (including name); has to end on '.db'.}
 }
 \value{
-Creates a data base in the given path, returns NULL.
+Creates a data base in the given path, returns \code{NULL}.
 }
 \description{
-Creates a relational data base.
+Creates a relational data base containing hierarchically stored data with meta information (e.g. value and variable labels).
 }
 \details{
-Uses createDB from the eatDB package to create a relational data base. For details on how to define keys see the documentation of createDB.
+Uses \code{\link[eatDB]{createDB}} from the \code{eatDB} package to create a relational data base. For details on how to define
+keys see the documentation of \code{\link[eatDB]{createDB}}.
 }
 \examples{
 # see createDB

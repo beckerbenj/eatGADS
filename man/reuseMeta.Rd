@@ -2,7 +2,7 @@
 % Please edit documentation in R/02b_metadata_handling.R
 \name{reuseMeta}
 \alias{reuseMeta}
-\title{Use meta data for a variable from another GADSdat.}
+\title{Use meta data for a variable from another \code{GADSdat}.}
 \usage{
 reuseMeta(
   GADSdat,
@@ -14,15 +14,15 @@ reuseMeta(
 )
 }
 \arguments{
-\item{GADSdat}{\code{GADSdat} object imported via eatGADS.}
+\item{GADSdat}{\code{GADSdat} object imported via \code{eatGADS}.}
 
 \item{varName}{Name of the variable that should get the new meta data.}
 
-\item{other_GADSdat}{\code{GADSdat} object imported via eatGADS including the desired meta information. Can also be a GADS db or an \code{all_GADSdat} object.}
+\item{other_GADSdat}{\code{GADSdat} object imported via \code{eatGADS} including the desired meta information. Can also be a GADS db or an \code{all_GADSdat} object.}
 
 \item{other_varName}{Name of the variable that should get the new meta data in the \code{other_GADSdat}.}
 
-\item{missingLabels}{How should meta data for missing values be treated? If \code{NULL}, missings are transfered as all other labels. If \code{"drop"}, missing labels are dropped (useful for imputed data). If \code{"leave"}, missing labels remain untouched.}
+\item{missingLabels}{How should meta data for missing values be treated? If \code{NULL}, missing values are transferred as all other labels. If \code{"drop"}, missing labels are dropped (useful for imputed data). If \code{"leave"}, missing labels remain untouched.}
 
 \item{addValueLabels}{Should only value labels be added and all other meta information retained?}
 }
@@ -30,7 +30,7 @@ reuseMeta(
 Returns the original object with updated meta data.
 }
 \description{
-Transfer meta information from one GADSdat to another.
+Transfer meta information from one \code{GADSdat} to another.
 }
 \details{
 tbd.

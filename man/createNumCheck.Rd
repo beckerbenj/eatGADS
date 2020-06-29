@@ -2,7 +2,7 @@
 % Please edit documentation in R/17_checks.R
 \name{createNumCheck}
 \alias{createNumCheck}
-\title{Create data.frame for specification of numerical plausability checks.}
+\title{Create data.frame for specification of numerical plausibility checks.}
 \usage{
 createNumCheck(GADSdat)
 }
@@ -18,7 +18,8 @@ A data.frame with the following variables:
 \item{value_new}{Which value should be inserted if values exceed the specified range?}
 }
 \description{
-All numerical variables without value labels in a \code{GADSdat} are selected and a \code{data.frame} is created, which allows the specification of minima and maxima.
+All numerical variables without value labels in a \code{GADSdat} are selected and a \code{data.frame} is created, which allows the specification
+of minima and maxima.
 }
 \details{
 tbd

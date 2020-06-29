@@ -14,9 +14,9 @@
 #' frequent problems.
 #'
 #'@param GADSdat A \code{GADSdat} object.
-#'@param convertMiss Should values coded as missings be recoded to \code{NA}?
+#'@param convertMiss Should values coded as missing values be recoded to \code{NA}?
 #'@param convertLabels If \code{"numeric"}, values remain as numerics. If \code{"factor"} or \code{"character"}, values are recoded to their labels. Corresponding variable type is applied.
-#'@param dropPartialLabels Should value labels for partially labelled variables be dropped? If \code{TRUE}, the partial labels will be dropped. If \code{FALSE}, the variable will be converted to the class specified in \code{convertLabels}.
+#'@param dropPartialLabels Should value labels for partially labeled variables be dropped? If \code{TRUE}, the partial labels will be dropped. If \code{FALSE}, the variable will be converted to the class specified in \code{convertLabels}.
 #'@param convertVariables Character vector of variables names, which labels should be applied to. If not specified (default), value labels are applied to all variables for which labels are available. Variable names not in the actual GADS are silently dropped.
 #'
 #'@return Returns a data frame.
@@ -189,9 +189,10 @@ char2fac <- function(dat, labels, vars, convertMiss) {
 #############################################################################
 #' Recode Missings to \code{NA}
 #'
-#' Recode Missings to \code{NA} according to missing labels in label data frame.
+#' Recode Missings to \code{NA} according to missing labels in label \code{data.frame}.
 #'
-#' Missings are imported as their values via \code{\link{import_spss}}. Using the value labels in the labels data frame, \code{miss2NA} recodes these missings codes to \code{NA}.
+#' Missings are imported as their values via \code{\link{import_spss}}. Using the value labels in the labels \code{data.frame},
+#' \code{miss2NA} recodes these missings codes to \code{NA}.
 #'
 #'@param GADSdat A \code{GADSdat} object.
 #'
@@ -234,12 +235,14 @@ recodeVar <- function(var, labs){
 #############################################################################
 #' Get Meta Data
 #'
-#' Exctrat meta data (e.g. variable and values labels) from an \code{eatGADS} object. This can be a \code{GADSdat}, an \code{all_GADSdat}, a labels \code{data.frame}, or the path to an existing data base.
+#' Extract meta data (e.g. variable and values labels) from an \code{eatGADS} object. This can be a \code{GADSdat}, an \code{all_GADSdat},
+#' a labels \code{data.frame}, or the path to an existing data base.
 #'
-#' Meta data is stored tidily in all GADS objects as a separate long format data frame. This information can be extracted for a single or multiple variables.
+#' Meta data is stored tidily in all \code{GADSdat} objects as a separate long format data frame. This information can be extracted for a single or
+#' multiple variables.
 #'
-#'@param GADSobject A \code{GADSdat} object.
-#'@param vars A character vector containing variable names. If \code{NULL} (default), all available metainformation is returned.
+#'@param GADSobject Either a \code{GADSdat} object or a path to an existing \code{eatGADS} data base.
+#'@param vars A character vector containing variable names. If \code{NULL} (default), all available meta information is returned.
 #'
 #'@return Returns a long format data frame with meta information.
 #'

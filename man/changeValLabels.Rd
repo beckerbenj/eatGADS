@@ -16,13 +16,14 @@ changeValLabels(GADSdat, varName, value, valLabel)
 \item{valLabel}{Character string of the new value labels.}
 }
 \value{
-Returns the GADSdat object with changed meta data.
+Returns the \code{GADSdat} object with changed meta data.
 }
 \description{
 Change value labels of a variable as part of a \code{GADSdat} or \code{all_GADSdat} object.
 }
 \details{
-Applied to a \code{GADSdat} or \code{all_GADSdat} object, this function is a wrapper of \code{\link{getChangeMeta}} and \code{\link{applyChangeMeta}}.
+Applied to a \code{GADSdat} or \code{all_GADSdat} object, this function is a wrapper of \code{\link{getChangeMeta}} and
+\code{\link{applyChangeMeta}}.
 }
 \examples{
 # Example data set

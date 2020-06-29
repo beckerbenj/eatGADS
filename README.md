@@ -8,7 +8,7 @@
 
 ## Overview
 
-eatGADS (educational assessment tools: GADS) is the data management and data handling tool used by the IQB. It uses SQLlite3 as a back end and handles and converts data stored as SPSS or R files. `eatDB` is used for data base creating and use, `haven` is used for importing SPSS files.
+`eatGADS` (educational assessment tools: GADS) is the data management and data handling tool used by the IQB. It uses `SQLlite3` as a back end and handles and converts data stored as SPSS or R files. `eatDB` is used for data base creating and use, `haven` is used for importing SPSS files.
 
 ## Installation
 

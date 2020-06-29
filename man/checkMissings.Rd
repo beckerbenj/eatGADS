@@ -16,18 +16,19 @@ checkMissings(
 
 \item{missingLabel}{Single string indicating how missing labels are commonly named in the value labels.}
 
-\item{addMissingCode}{If \code{TRUE}, missing codes are added according to occurence of \code{"missingLabel"} in \code{"valLabel"}.}
+\item{addMissingCode}{If \code{TRUE}, missing codes are added according to occurrence of \code{"missingLabel"} in \code{"valLabel"}.}
 
-\item{addMissingLabel}{If \code{TRUE}, \code{"generic missing"} is added according to occurence of \code{"mis"} in \code{"missings"}. As often various value labels for missings are used, this argument should be used with great care.}
+\item{addMissingLabel}{If \code{TRUE}, \code{"generic missing"} is added according to occurrence of \code{"mis"} in \code{"missings"}. As often various value labels for missings are used, this argument should be used with great care.}
 }
 \value{
-Returns a GADSdat object.
+Returns a \code{GADSdat} object.
 }
 \description{
-Function to check if missings are coded and labeled correctly in a GADSdat object.
+Function to check if missings are coded and labeled correctly in a \code{GADSdat} object.
 }
 \details{
-The function compares value labels \code{"valLabels"} and missing codes \code{"missings"} of a \code{GADSdat} object and its meta data information. Missmatches are reported and can be automatically adjusted.
+The function compares value labels \code{"valLabels"} and missing codes \code{"missings"} of a \code{GADSdat} object and its
+meta data information. Mismatches are reported and can be automatically adjusted.
 }
 \examples{
 # Example data set

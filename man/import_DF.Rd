@@ -18,7 +18,8 @@ Returns a list with the actual data \code{dat} and a data frame with all meta in
 Function to import a \code{data.frame} object for use in \code{eatGADS} while extracting value labels from factors.
 }
 \details{
-Factors are integers with labeled variable levels. \code{import_DF} extracts these labels and stores them in a seperate meta data data.frame. See \code{\link{import_spss}} for detailed information.
+Factors are integers with labeled variable levels. \code{import_DF} extracts these labels and stores them in a separate meta data data.frame.
+See \code{\link{import_spss}} for detailed information.
 }
 \examples{
 dat <- import_DF(iris, checkVarNames = FALSE)

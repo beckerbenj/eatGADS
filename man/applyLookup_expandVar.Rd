@@ -15,7 +15,8 @@ applyLookup_expandVar(GADSdat, lookup)
 Returns a recoded \code{GADSdat}.
 }
 \description{
-Recode one or multiple variables based on a lookup table created via \code{\link{createLookup}}. In contrast to \code{\link{applyLookup}}, this function allows the creation of multiple resulting variables from a single input variable.
+Recode one or multiple variables based on a lookup table created via \code{\link{createLookup}}. In contrast to \code{\link{applyLookup}},
+this function allows the creation of multiple resulting variables from a single input variable.
 }
 \details{
 tbd

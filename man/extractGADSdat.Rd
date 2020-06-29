@@ -2,23 +2,24 @@
 % Please edit documentation in R/03_data_preparation.R
 \name{extractGADSdat}
 \alias{extractGADSdat}
-\title{Extract single GADSdat from all_GADSdat}
+\title{Extract single \code{GADSdat} from \code{all_GADSdat}}
 \usage{
 extractGADSdat(all_GADSdat, name)
 }
 \arguments{
-\item{all_GADSdat}{\code{all_GADSdat} object, containing a table with the corresponding GADSdat name}
+\item{all_GADSdat}{\code{all_GADSdat} object}
 
-\item{name}{A character vector with length 1 with the name of the single GADSdat}
+\item{name}{A character vector with length 1 with the name of the \code{GADSdat}}
 }
 \value{
 Returns an \code{GADSdat} object.
 }
 \description{
-Function to extract a single \code{GADSdat} from an \code{all_GADSdat} object
+Function to extract a single \code{GADSdat} from an \code{all_GADSdat} object.
 }
 \details{
-The function createDB takes a list of data frames and a single data frame with metainformation as input. This function transforms lists from import_SPSS and import_RDS into a list of data frames (in the same order as inputted, which is then used for the merging order in createDB). Additionally the seperate lists of metainformation for each data frame are merged and a data frame unique identifier is added.
+\code{GADSdat} objects can be merged into a single \code{all_GADSdat} object via \code{\link{mergeLabels}}. This function, performs the
+reverse action, extracting a single \code{GADSdat} object.
 }
 \examples{
 # Example data set

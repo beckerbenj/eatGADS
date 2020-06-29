@@ -2,7 +2,7 @@
 % Please edit documentation in R/05_write_spss.R
 \name{export_tibble}
 \alias{export_tibble}
-\title{Transform a GADSdat to a haven like tibble}
+\title{Transform a \code{GADSdat} to a \code{tibble}}
 \usage{
 export_tibble(GADSdat)
 }
@@ -10,13 +10,14 @@ export_tibble(GADSdat)
 \item{GADSdat}{\code{GADSdat} object imported via \code{eatGADS}.}
 }
 \value{
-Returns a tibble.
+Returns a \code{tibble}.
 }
 \description{
-Havens \code{\link[haven]{read_spss}} stores data together with meta data (e.g. value and variable labels) in a tibble with attributes on variable level. This function transforms a \code{GADSdat} object to such a tibble.
+\code{haven}'s \code{\link[haven]{read_spss}} stores data together with meta data (e.g. value and variable labels) in a
+\code{tibble} with attributes on variable level. This function transforms a \code{GADSdat} object to such a \code{tibble}.
 }
 \details{
-...
+This function is mainly intended for internal use.
 }
 \examples{
 # tbd

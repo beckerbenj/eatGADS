@@ -2,21 +2,22 @@
 % Please edit documentation in R/04_eatDB_UI.R
 \name{labelsGADS}
 \alias{labelsGADS}
-\title{Labels from relational db.}
+\title{Labels from relational \code{eatGADS} data base.}
 \usage{
 labelsGADS(filePath)
 }
 \arguments{
-\item{filePath}{Path of the existing db file.}
+\item{filePath}{Path of the existing \code{eatGADS} data base.}
 }
 \value{
 Returns a long format data frame including variable names, labels, values, value labels and missing labels.
 }
 \description{
-Returns the variable and value labels of all variables in the GADS
+Returns the variable and value labels of all variables in the \code{eatGADS} data base.
 }
 \details{
-Variable, value and missing labels as stored in the original SPSS-files and factors from R files are converted to long format for storage in the data base. labelsGADS returns them as a long format data frame.
+Variable, value and missing labels as stored in the original SPSS-files and factors from R files are converted to long format for
+storage in the data base. \code{labelsGADS} returns them as a long format data frame.
 }
 \examples{
 \dontrun{

@@ -2,23 +2,23 @@
 % Please edit documentation in R/05_write_spss.R
 \name{write_spss}
 \alias{write_spss}
-\title{Write data frame to sav file}
+\title{Write a \code{GADSdat} object to \code{sav}}
 \usage{
 write_spss(GADSdat, filePath)
 }
 \arguments{
-\item{GADSdat}{Data frame.}
+\item{GADSdat}{A \code{GADSdat} object.}
 
-\item{filePath}{Path of sav file to write.}
+\item{filePath}{Path of \code{sav} file to write.}
 }
 \value{
-Writes sav-file, returns nothing.
+Writes \code{sav} file to disc, returns \code{NULL}.
 }
 \description{
-Function to write data frame with labels for values and variables to SPSS-file.
+Write a \code{GADSdat} object, which contains meta information as value and variable labels to an SPSS file (\code{sav}).
 }
 \details{
-This function is still slightly experimental.
+Careful: This function is still slightly experimental.
 }
 \examples{
 # tbd

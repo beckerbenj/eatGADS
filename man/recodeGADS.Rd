@@ -7,18 +7,18 @@
 recodeGADS(GADSdat, varName, oldValues, newValues, newValueLabels = NULL)
 }
 \arguments{
-\item{GADSdat}{GADSdat object imported via eatGADS.}
+\item{GADSdat}{\code{GADSdat} object imported via \code{eatGADS}.}
 
 \item{varName}{Name of the variable to be recoded.}
 
 \item{oldValues}{Vector containing the old values.}
 
-\item{newValues}{Vector containing the new values, in identical order as oldNames.}
+\item{newValues}{Vector containing the new values, in identical order as \code{oldNames}.}
 
-\item{newValueLabels}{Named vector containing new value labels for the new values. All new values have to get lables. Slightly experimental implementation.}
+\item{newValueLabels}{Named vector containing new value labels for the new values. All new values have to get labels. Slightly experimental implementation.}
 }
 \value{
-Returns the GADSdat object with changed variable names.
+Returns the \code{GADSdat} object with changed variable names.
 }
 \description{
 Recode a variable as part of a \code{GADSdat} or \code{all_GADSdat} object.

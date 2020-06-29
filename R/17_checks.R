@@ -2,9 +2,10 @@
 
 #### Create data.frame for plausability check of numerical variables
 #############################################################################
-#' Create data.frame for specification of numerical plausability checks.
+#' Create data.frame for specification of numerical plausibility checks.
 #'
-#' All numerical variables without value labels in a \code{GADSdat} are selected and a \code{data.frame} is created, which allows the specification of minima and maxima.
+#' All numerical variables without value labels in a \code{GADSdat} are selected and a \code{data.frame} is created, which allows the specification
+#' of minima and maxima.
 #'
 #' tbd
 #'

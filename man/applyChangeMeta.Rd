@@ -9,7 +9,7 @@ applyChangeMeta(changeTable, GADSdat)
 \arguments{
 \item{changeTable}{Change table as provided by \code{\link{getChangeMeta}}.}
 
-\item{GADSdat}{GADSdat object imported via eatGADS.}
+\item{GADSdat}{\code{GADSdat} object imported via \code{eatGADS}.}
 }
 \value{
 Returns the modified \code{GADSdat} object.

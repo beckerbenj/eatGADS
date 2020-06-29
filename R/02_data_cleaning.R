@@ -2,16 +2,17 @@
 #############################################################################
 #' Check and Adjust Missing Coding
 #'
-#' Function to check if missings are coded and labeled correctly in a GADSdat object.
+#' Function to check if missings are coded and labeled correctly in a \code{GADSdat} object.
 #'
-#' The function compares value labels \code{"valLabels"} and missing codes \code{"missings"} of a \code{GADSdat} object and its meta data information. Missmatches are reported and can be automatically adjusted.
+#' The function compares value labels \code{"valLabels"} and missing codes \code{"missings"} of a \code{GADSdat} object and its
+#' meta data information. Mismatches are reported and can be automatically adjusted.
 #'
 #'@param GADSdat \code{GADSdat} object imported via \code{eatGADS}.
 #'@param missingLabel Single string indicating how missing labels are commonly named in the value labels.
-#'@param addMissingCode If \code{TRUE}, missing codes are added according to occurence of \code{"missingLabel"} in \code{"valLabel"}.
-#'@param addMissingLabel If \code{TRUE}, \code{"generic missing"} is added according to occurence of \code{"mis"} in \code{"missings"}. As often various value labels for missings are used, this argument should be used with great care.
+#'@param addMissingCode If \code{TRUE}, missing codes are added according to occurrence of \code{"missingLabel"} in \code{"valLabel"}.
+#'@param addMissingLabel If \code{TRUE}, \code{"generic missing"} is added according to occurrence of \code{"mis"} in \code{"missings"}. As often various value labels for missings are used, this argument should be used with great care.
 #'
-#'@return Returns a GADSdat object.
+#'@return Returns a \code{GADSdat} object.
 #'
 #'@examples
 #'# Example data set
@@ -99,21 +100,22 @@ checkVarNames.all_GADSdat <- function(GADSdat) {
 
 #### Merge GADSdat objects
 #############################################################################
-#' Merge two GADSdat objects into a single GADSdat object.
+#' Merge two \code{GADSdat} objects into a single \code{GADSdat} object.
 #'
-#' Is a secure way to merge the data and the meta data of two GADSdat objects. Only a very specific way of merging is possible.
+#' Is a secure way to merge the data and the meta data of two \code{GADSdat} objects. Currently, only limited merging options are supported.
 #'
-#' If there are variables duplicate (the variables specified in by are excempt), these variables are removed from y. The data is merged via a full join. The meta data is joined for the remaining variables via rbind.
+#' If there are duplicate variables (except the variables specified in the \code{by} argument), these variables are removed from y.
+#' The meta data is joined for the remaining variables via \code{rbind}.
 #'
-#'@param x \code{GADSdat} object imported via eatGADS.
-#'@param y \code{GADSdat} object imported via eatGADS.
+#'@param x \code{GADSdat} object imported via \code{eatGADS}.
+#'@param y \code{GADSdat} object imported via \code{eatGADS}.
 #'@param by A character vector.
 #'@param all A character vector (either a full join or an inner join).
 #'@param all.x See merge.
 #'@param all.y See merge.
-#'@param ... Further arguments are currently not supported but have to be included for R CMD checks.
+#'@param ... Further arguments are currently not supported but have to be included for \code{R CMD} checks.
 #'
-#'@return Returns a GADSdat object.
+#'@return Returns a \code{GADSdat} object.
 #'
 #'@examples
 #'# Example data set

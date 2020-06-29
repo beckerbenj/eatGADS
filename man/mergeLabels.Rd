@@ -13,10 +13,12 @@ mergeLabels(...)
 Returns an \code{all_GADSdat} object, which consists of list with a list of all data frames \code{"datList"} and a single data frame containing all meta data information \code{"allLabels"}.
 }
 \description{
-Function to transform list of data-frames and metainformation ready for data base creation
+Transform multiple \code{GADSdat} objects into a list ready for data base creation.
 }
 \details{
-The function createDB takes a list of data frames and a single data frame with metainformation as input. This function transforms lists from import_SPSS and import_RDS into a list of data frames (in the same order as inputted, which is then used for the merging order in createDB). Additionally the seperate lists of metainformation for each data frame are merged and a data frame unique identifier is added.
+The function \code{\link{createGADS}} takes multiple \code{GADSdat} objects as input. The function preserves the ordering
+in which the objects are supplied, which is then used for the merging order in \code{\link{createGADS}}. Additionally,
+the separate lists of meta information for each \code{GADSdat} are merged and a data frame unique identifier is added.
 }
 \examples{
 # Example data set

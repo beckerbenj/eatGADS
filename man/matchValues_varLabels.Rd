@@ -2,27 +2,30 @@
 % Please edit documentation in R/16_recode_multiMC.R
 \name{matchValues_varLabels}
 \alias{matchValues_varLabels}
-\title{Match regular expresssions and variable names.}
+\title{Match regular expressions and variable names.}
 \usage{
 matchValues_varLabels(GADSdat, mc_vars, values, label_by_hand = character(0))
 }
 \arguments{
 \item{GADSdat}{A \code{GADSdat} object.}
 
-\item{mc_vars}{A vector containing the names of the variables, which should be matched accoring to their variable labels.}
+\item{mc_vars}{A vector containing the names of the variables, which should be matched according to their variable labels.}
 
 \item{values}{A character vector containing the regular expressions for which the \code{varLabel} column should be searched.}
 
-\item{label_by_hand}{Additional value - mc_var pairs. Necessary, if for some mc_vars no value exists.}
+\item{label_by_hand}{Additional value - \code{mc_var} pairs. Necessary, if for some \code{mc_vars} no value exists.}
 }
 \value{
-Returns a named character vector. Values of the vector are the variable names in the \code{GADSdat}, names of the vector are the regular expressions.
+Returns a named character vector. Values of the vector are the variable names in the \code{GADSdat}, names of the vector
+are the regular expressions.
 }
 \description{
 Using variable labels, the function matches a vector of regular expressions to a set of variable names.
 }
 \details{
-Note that all variables in \code{mc_vars} have to be assigned a value. If a variable name is missing in the output, an error will be thrown. In this case, the \code{label_by_hand} argument should be used to specifiy the regular expression variable name pair manually.
+Note that all variables in \code{mc_vars} have to be assigned a value. If a variable name is missing in the output,
+an error will be thrown. In this case, the \code{label_by_hand} argument should be used to specify the regular expression
+variable name pair manually.
 }
 \examples{
 # Prepare example data

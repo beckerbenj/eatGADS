@@ -2,23 +2,25 @@
 % Please edit documentation in R/07_trend.R
 \name{checkTrendStructure}
 \alias{checkTrendStructure}
-\title{Checks compatability of two GADS data bases.}
+\title{Checks compatibility of two \code{eatGADS} data bases.}
 \usage{
 checkTrendStructure(filePath1, filePath2)
 }
 \arguments{
-\item{filePath1}{Path of the first GADS db file.}
+\item{filePath1}{Path of the first \code{eatGADS} \code{.db} file.}
 
-\item{filePath2}{Path of the second GADS db file.}
+\item{filePath2}{Path of the second \code{eatGADS} \code{.db} file.}
 }
 \value{
 Returns a report list.
 }
 \description{
-This function checks if both data bases perform identical joins via foreign keys, if they contain the same variable names and if these variables have the same value labels. Results of this comparison are reported on data table level as messages and as an output list.
+This function checks if both data bases perform identical joins via foreign keys, if they contain the same variable names and if
+these variables have the same value labels. Results of this comparison are reported on data table level as messages and as an output list.
 }
 \details{
-An error is thrown if the key structure or the data table structure differs between the two data bases. Differences regarding meta data for missing value labels and for variables labels (and formatting) are ignored.
+An error is thrown if the key structure or the data table structure differs between the two data bases. Differences regarding
+meta data for missing value labels and for variables labels (and formatting) are ignored.
 }
 \examples{
 # See vignette.

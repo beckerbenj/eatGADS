@@ -2,14 +2,14 @@
 % Please edit documentation in R/02_data_cleaning.R
 \name{merge.GADSdat}
 \alias{merge.GADSdat}
-\title{Merge two GADSdat objects into a single GADSdat object.}
+\title{Merge two \code{GADSdat} objects into a single \code{GADSdat} object.}
 \usage{
 \method{merge}{GADSdat}(x, y, by, all = TRUE, all.x = all, all.y = all, ...)
 }
 \arguments{
-\item{x}{\code{GADSdat} object imported via eatGADS.}
+\item{x}{\code{GADSdat} object imported via \code{eatGADS}.}
 
-\item{y}{\code{GADSdat} object imported via eatGADS.}
+\item{y}{\code{GADSdat} object imported via \code{eatGADS}.}
 
 \item{by}{A character vector.}
 
@@ -19,16 +19,17 @@
 
 \item{all.y}{See merge.}
 
-\item{...}{Further arguments are currently not supported but have to be included for R CMD checks.}
+\item{...}{Further arguments are currently not supported but have to be included for \code{R CMD} checks.}
 }
 \value{
-Returns a GADSdat object.
+Returns a \code{GADSdat} object.
 }
 \description{
-Is a secure way to merge the data and the meta data of two GADSdat objects. Only a very specific way of merging is possible.
+Is a secure way to merge the data and the meta data of two \code{GADSdat} objects. Currently, only limited merging options are supported.
 }
 \details{
-If there are variables duplicate (the variables specified in by are excempt), these variables are removed from y. The data is merged via a full join. The meta data is joined for the remaining variables via rbind.
+If there are duplicate variables (except the variables specified in the \code{by} argument), these variables are removed from y.
+The meta data is joined for the remaining variables via \code{rbind}.
 }
 \examples{
 # Example data set

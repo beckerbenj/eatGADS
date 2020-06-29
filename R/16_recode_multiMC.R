@@ -1,17 +1,20 @@
 #### Match value and varLabels
 #############################################################################
-#' Match regular expresssions and variable names.
+#' Match regular expressions and variable names.
 #'
 #' Using variable labels, the function matches a vector of regular expressions to a set of variable names.
 #'
-#' Note that all variables in \code{mc_vars} have to be assigned a value. If a variable name is missing in the output, an error will be thrown. In this case, the \code{label_by_hand} argument should be used to specifiy the regular expression variable name pair manually.
+#' Note that all variables in \code{mc_vars} have to be assigned a value. If a variable name is missing in the output,
+#' an error will be thrown. In this case, the \code{label_by_hand} argument should be used to specify the regular expression
+#' variable name pair manually.
 #'
 #'@param GADSdat A \code{GADSdat} object.
-#'@param mc_vars A vector containing the names of the variables, which should be matched accoring to their variable labels.
+#'@param mc_vars A vector containing the names of the variables, which should be matched according to their variable labels.
 #'@param values A character vector containing the regular expressions for which the \code{varLabel} column should be searched.
-#'@param label_by_hand Additional value - mc_var pairs. Necessary, if for some mc_vars no value exists.
+#'@param label_by_hand Additional value - \code{mc_var} pairs. Necessary, if for some \code{mc_vars} no value exists.
 #'
-#'@return Returns a named character vector. Values of the vector are the variable names in the \code{GADSdat}, names of the vector are the regular expressions.
+#'@return Returns a named character vector. Values of the vector are the variable names in the \code{GADSdat}, names of the vector
+#'are the regular expressions.
 #'
 #'@examples
 #' # Prepare example data
@@ -55,7 +58,8 @@ matchValues_varLabels <- function(GADSdat, mc_vars, values, label_by_hand = char
 #############################################################################
 #' Recode via lookup table into multiple variables.
 #'
-#' Recode one or multiple variables based on a lookup table created via \code{\link{createLookup}}. In contrast to \code{\link{applyLookup}}, this function allows the creation of multiple resulting variables from a single input variable.
+#' Recode one or multiple variables based on a lookup table created via \code{\link{createLookup}}. In contrast to \code{\link{applyLookup}},
+#' this function allows the creation of multiple resulting variables from a single input variable.
 #'
 #' tbd
 #'
@@ -100,7 +104,7 @@ applyLookup_expandVar.GADSdat <- function(GADSdat, lookup) {
 #############################################################################
 #' Recode MC variable with multiple variables based on text.
 #'
-#' Recode a multiple variable multiplce choice item based on a multiple variable text field.
+#' Recode a multiple variable multiple choice item based on a multiple variable text field.
 #'
 #' If a multiple choice item can be answered with crossing multiple boxes, multiple variables in the data set are necessary
 #' to represent this item. In this case, an additional text field for further answers can also contain multiple values at once.
@@ -240,8 +244,10 @@ drop_empty <- function(dat, vars = names(dat)) {
 #'
 #' Convert multiple character variables to factors, while creating a common set of value labels, which is identical across variables.
 #'
-#' If a set of variables has the same possible values, it is desirable that these variables share the same value labels, even if some of the values do not occur on the individual variables. This function allows the transformation of multiple character variables to factors while assimilating the value labels.
-#' The SPSS format of the newly created variables is set to F10.0.
+#' If a set of variables has the same possible values, it is desirable that these variables share the same value labels, even if
+#' some of the values do not occur on the individual variables. This function allows the transformation of multiple character variables
+#' to factors while assimilating the value labels.
+#' The SPSS format of the newly created variables is set to \code{F10.0}.
 #'
 #'@param GADSdat A \code{data.frame} or \code{GADSdat} object.
 #'@param vars A single variable name of the multiple choice variable.
@@ -297,7 +303,7 @@ multiChar2fac.GADSdat <- function(GADSdat, vars, var_suffix = "_r", label_suffix
 #'
 #' Remove text variables from a certain number from \code{GADSdat} while coding overflowing answers as complete missings.
 #'
-#' In some cases, multiple text variables contain the information of one variable (e.g. mutliple answers to an open item).
+#' In some cases, multiple text variables contain the information of one variable (e.g. multiple answers to an open item).
 #'
 #'@param GADSdat A \code{GADSdat} object.
 #'@param vars A character vector with the names of the text variables.

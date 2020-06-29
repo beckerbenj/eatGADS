@@ -7,7 +7,7 @@
 getChangeMeta(GADSdat, level = "variable")
 }
 \arguments{
-\item{GADSdat}{\code{GADSdat} object imported via eatGADS.}
+\item{GADSdat}{\code{GADSdat} object imported via \code{eatGADS}.}
 
 \item{level}{\code{variable} or \code{value}.}
 }
@@ -18,7 +18,9 @@ Returns the meta data sheet for all variables including the corresponding change
 Function to obtain a data frame from a \code{GADSdat} object for for changes to meta data on variable or on value level.
 }
 \details{
-Changes on variable level include variable names (\code{varName}), to variable labels (\code{varLabel}), SPSS format ((\code{format})) and display width (\code{display_width}). Changes on value level include values (\code{value}), to value labels (\code{valLabel}) and missing codes (\code{missings}).
+Changes on variable level include variable names (\code{varName}), to variable labels (\code{varLabel}), SPSS format ((\code{format}))
+and display width (\code{display_width}). Changes on value level include values (\code{value}), to value labels (\code{valLabel}) and
+missing codes (\code{missings}).
 }
 \examples{
 # Example data set

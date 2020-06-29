@@ -2,12 +2,14 @@
 #############################################################################
 #' Update Meta data frame.
 #'
-#' If the data of a \code{GADSdat} or a \code{all_GADSdat} has changed, update assimilates the corresponding meta data set. Factors are transformed to numerical and their levels added to the meta data set. Careful, this is a development version and should be only used with great care!
+#' If the data of a \code{GADSdat} or a \code{all_GADSdat} has changed, update assimilates the corresponding meta data set.
+#' Factors are transformed to numerical and their levels added to the meta data set. Careful, this is a development version and should
+#' be only used with great care!
 #'
 #' tbd.
 #'
-#'@param GADSdat \code{GADSdat} or \code{all_GADSdat} object imported via eatGADS.
-#'@param newDat Data frame oder list of data frames with the modified data.
+#'@param GADSdat \code{GADSdat} or \code{all_GADSdat} object imported via \code{eatGADS}.
+#'@param newDat \code{data.frame} or list of \code{data.frames} with the modified data.
 #'
 #'@return Returns the original object with updated meta data (and removes factors from the data).
 #'
@@ -80,17 +82,17 @@ add_rows_meta <- function(labels, newDat) {
 
 #### Reuse Meta
 #############################################################################
-#' Use meta data for a variable from another GADSdat.
+#' Use meta data for a variable from another \code{GADSdat}.
 #'
-#' Transfer meta information from one GADSdat to another.
+#' Transfer meta information from one \code{GADSdat} to another.
 #'
 #' tbd.
 #'
-#'@param GADSdat \code{GADSdat} object imported via eatGADS.
+#'@param GADSdat \code{GADSdat} object imported via \code{eatGADS}.
 #'@param varName Name of the variable that should get the new meta data.
-#'@param other_GADSdat \code{GADSdat} object imported via eatGADS including the desired meta information. Can also be a GADS db or an \code{all_GADSdat} object.
+#'@param other_GADSdat \code{GADSdat} object imported via \code{eatGADS} including the desired meta information. Can also be a GADS db or an \code{all_GADSdat} object.
 #'@param other_varName Name of the variable that should get the new meta data in the \code{other_GADSdat}.
-#'@param missingLabels How should meta data for missing values be treated? If \code{NULL}, missings are transfered as all other labels. If \code{"drop"}, missing labels are dropped (useful for imputed data). If \code{"leave"}, missing labels remain untouched.
+#'@param missingLabels How should meta data for missing values be treated? If \code{NULL}, missing values are transferred as all other labels. If \code{"drop"}, missing labels are dropped (useful for imputed data). If \code{"leave"}, missing labels remain untouched.
 #'@param addValueLabels Should only value labels be added and all other meta information retained?
 #'
 #'@return Returns the original object with updated meta data.
@@ -176,9 +178,11 @@ drop_missing_labels <- function(meta) {
 #'
 #' Function to obtain a data frame from a \code{GADSdat} object for for changes to meta data on variable or on value level.
 #'
-#' Changes on variable level include variable names (\code{varName}), to variable labels (\code{varLabel}), SPSS format ((\code{format})) and display width (\code{display_width}). Changes on value level include values (\code{value}), to value labels (\code{valLabel}) and missing codes (\code{missings}).
+#' Changes on variable level include variable names (\code{varName}), to variable labels (\code{varLabel}), SPSS format ((\code{format}))
+#' and display width (\code{display_width}). Changes on value level include values (\code{value}), to value labels (\code{valLabel}) and
+#' missing codes (\code{missings}).
 #'
-#'@param GADSdat \code{GADSdat} object imported via eatGADS.
+#'@param GADSdat \code{GADSdat} object imported via \code{eatGADS}.
 #'@param level \code{variable} or \code{value}.
 #'
 #'@return Returns the meta data sheet for all variables including the corresponding change columns.
@@ -268,7 +272,7 @@ check_valChanges <- function(changeTable) {
 #' Values for which the change columns contain \code{NA} remain unchanged.
 #'
 #'@param changeTable Change table as provided by \code{\link{getChangeMeta}}.
-#'@param GADSdat GADSdat object imported via eatGADS.
+#'@param GADSdat \code{GADSdat} object imported via \code{eatGADS}.
 #'
 #'@return Returns the modified \code{GADSdat} object.
 #'
@@ -412,13 +416,14 @@ update_labeled_col <- function(labels) {
 #'
 #' Change variable names of a \code{GADSdat} or \code{all_GADSdat} object.
 #'
-#' Applied to a \code{GADSdat} or \code{all_GADSdat} object, this function is a wrapper of \code{\link{getChangeMeta}} and \code{\link{applyChangeMeta}}
+#' Applied to a \code{GADSdat} or \code{all_GADSdat} object, this function is a wrapper of \code{\link{getChangeMeta}} and
+#' \code{\link{applyChangeMeta}}
 #'
-#'@param GADSdat GADSdat object imported via eatGADS.
+#'@param GADSdat \code{GADSdat} object imported via \code{eatGADS}.
 #'@param oldNames Vector containing the old variable names.
-#'@param newNames Vector containing the new variable names, in identical order as oldNames.
+#'@param newNames Vector containing the new variable names, in identical order as \code{oldNames}.
 #'
-#'@return Returns the GADSdat object with changed variable names.
+#'@return Returns the \code{GADSdat} object with changed variable names.
 #'
 #'@examples
 #'# Example data set
@@ -468,13 +473,13 @@ checkNamesVectors <- function(oldNames, newNames, dat) {
 #'
 #' Applied to a \code{GADSdat} or \code{all_GADSdat} object, this function is a wrapper of \code{\link{getChangeMeta}} and \code{\link{applyChangeMeta}}
 #'
-#'@param GADSdat GADSdat object imported via eatGADS.
+#'@param GADSdat \code{GADSdat} object imported via \code{eatGADS}.
 #'@param varName Name of the variable to be recoded.
 #'@param oldValues Vector containing the old values.
-#'@param newValues Vector containing the new values, in identical order as oldNames.
-#'@param newValueLabels Named vector containing new value labels for the new values. All new values have to get lables. Slightly experimental implementation.
+#'@param newValues Vector containing the new values, in identical order as \code{oldNames}.
+#'@param newValueLabels Named vector containing new value labels for the new values. All new values have to get labels. Slightly experimental implementation.
 #'
-#'@return Returns the GADSdat object with changed variable names.
+#'@return Returns the \code{GADSdat} object with changed variable names.
 #'
 #'@examples
 #'# Example data set
@@ -544,13 +549,14 @@ checkNewValueLabels <- function(newValueLabels, newValues) {
 #'
 #' Change the variable label of a variable as part of a \code{GADSdat} or \code{all_GADSdat} object.
 #'
-#' Applied to a \code{GADSdat} or \code{all_GADSdat} object, this function is a wrapper of \code{\link{getChangeMeta}} and \code{\link{applyChangeMeta}}.
+#' Applied to a \code{GADSdat} or \code{all_GADSdat} object, this function is a wrapper of \code{\link{getChangeMeta}} and
+#' \code{\link{applyChangeMeta}}.
 #'
-#'@param GADSdat GADSdat object imported via eatGADS.
+#'@param GADSdat \code{GADSdat} object imported via \code{eatGADS}.
 #'@param varName Character string of variable names.
 #'@param varLabel Character string of the new variable labels.
 #'
-#'@return Returns the GADSdat object with changed meta data.
+#'@return Returns the \code{GADSdat} object with changed meta data.
 #'
 #'@examples
 #'# Example data set
@@ -590,14 +596,15 @@ checkVarLabelVector <- function(varName, varLabel, dat) {
 #'
 #' Change value labels of a variable as part of a \code{GADSdat} or \code{all_GADSdat} object.
 #'
-#' Applied to a \code{GADSdat} or \code{all_GADSdat} object, this function is a wrapper of \code{\link{getChangeMeta}} and \code{\link{applyChangeMeta}}.
+#' Applied to a \code{GADSdat} or \code{all_GADSdat} object, this function is a wrapper of \code{\link{getChangeMeta}} and
+#' \code{\link{applyChangeMeta}}.
 #'
 #'@param GADSdat \code{GADSdat} object imported via \code{eatGADS}.
 #'@param varName Character string of a variable name.
 #'@param value Numeric values.
 #'@param valLabel Character string of the new value labels.
 #'
-#'@return Returns the GADSdat object with changed meta data.
+#'@return Returns the \code{GADSdat} object with changed meta data.
 #'
 #'@examples
 #'# Example data set
@@ -639,11 +646,11 @@ checkValLabelInput <- function(varName, value, valLabel, labels) {
 #'
 #' Applied to a \code{GADSdat} or \code{all_GADSdat} object, this function is a wrapper of \code{\link{getChangeMeta}} and \code{\link{applyChangeMeta}}.
 #'
-#'@param GADSdat GADSdat object imported via eatGADS.
+#'@param GADSdat \code{GADSdat} object imported via \code{eatGADS}.
 #'@param varName Character string of variable names.
 #'@param format A single string containing the new SPSS format, for example 'A25' or 'F10'.
 #'
-#'@return Returns the GADSdat object with changed meta data..
+#'@return Returns the \code{GADSdat} object with changed meta data..
 #'
 #'@examples
 #'# Example data set
@@ -685,12 +692,13 @@ changeVarLabels.all_GADSdat <- function(GADSdat, varName, varLabel) {
 #'
 #' Transform a string variable within a \code{GADSdat} or \code{all_GADSdat} object to a numeric variable.
 #'
-#' Applied to a \code{GADSdat} or \code{all_GADSdat} object, this function uses \code{\link[eatTools]{asNumericIfPossible}} to change the variable class and changes the \code{format} column in the meta data.
+#' Applied to a \code{GADSdat} or \code{all_GADSdat} object, this function uses \code{\link[eatTools]{asNumericIfPossible}} to
+#' change the variable class and changes the \code{format} column in the meta data.
 #'
-#'@param GADSdat GADSdat object imported via eatGADS.
+#'@param GADSdat \code{GADSdat} object imported via \code{eatGADS}.
 #'@param varName Character string of a variable name.
 #'
-#'@return Returns the GADSdat object with with the changed variable.
+#'@return Returns the \code{GADSdat} object with with the changed variable.
 #'
 #'@examples
 #'# Example data set

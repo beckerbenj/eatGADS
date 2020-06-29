@@ -13,10 +13,11 @@ miss2NA(GADSdat)
 Returns the data frame with \code{NA} instead of missing codes.
 }
 \description{
-Recode Missings to \code{NA} according to missing labels in label data frame.
+Recode Missings to \code{NA} according to missing labels in label \code{data.frame}.
 }
 \details{
-Missings are imported as their values via \code{\link{import_spss}}. Using the value labels in the labels data frame, \code{miss2NA} recodes these missings codes to \code{NA}.
+Missings are imported as their values via \code{\link{import_spss}}. Using the value labels in the labels \code{data.frame},
+\code{miss2NA} recodes these missings codes to \code{NA}.
 }
 \examples{
 # Example data set

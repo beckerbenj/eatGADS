@@ -7,18 +7,19 @@
 stringAsNumeric(GADSdat, varName)
 }
 \arguments{
-\item{GADSdat}{GADSdat object imported via eatGADS.}
+\item{GADSdat}{\code{GADSdat} object imported via \code{eatGADS}.}
 
 \item{varName}{Character string of a variable name.}
 }
 \value{
-Returns the GADSdat object with with the changed variable.
+Returns the \code{GADSdat} object with with the changed variable.
 }
 \description{
 Transform a string variable within a \code{GADSdat} or \code{all_GADSdat} object to a numeric variable.
 }
 \details{
-Applied to a \code{GADSdat} or \code{all_GADSdat} object, this function uses \code{\link[eatTools]{asNumericIfPossible}} to change the variable class and changes the \code{format} column in the meta data.
+Applied to a \code{GADSdat} or \code{all_GADSdat} object, this function uses \code{\link[eatTools]{asNumericIfPossible}} to
+change the variable class and changes the \code{format} column in the meta data.
 }
 \examples{
 # Example data set
