@@ -20,7 +20,7 @@ Writes \code{sav} file to disc, returns \code{NULL}.
 Write a \code{GADSdat} object to a text file (\code{txt}) and an accompanying \code{SPSS} syntax file containing all meta information (e.g. value and variable labels).
 }
 \details{
-This function is based on \code{eatPrep's} \code{\link[eatPrep]{writeSpss}} function. Currently under developement.
+This function is based on \code{eatPreps} \code{\link[eatPrep]{writeSpss}} function. Currently under developement.
 }
 \examples{
 # tbd

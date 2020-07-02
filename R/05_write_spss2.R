@@ -5,7 +5,7 @@
 #'
 #' Write a \code{GADSdat} object to a text file (\code{txt}) and an accompanying \code{SPSS} syntax file containing all meta information (e.g. value and variable labels).
 #'
-#' This function is based on \code{eatPrep's} \code{\link[eatPrep]{writeSpss}} function. Currently under developement.
+#' This function is based on \code{eatPreps} \code{\link[eatPrep]{writeSpss}} function. Currently under developement.
 #'
 #'@param GADSdat A \code{GADSdat} object.
 #'@param filePath Path of \code{.txt} file to write.
@@ -25,7 +25,7 @@ write_spss2 <- function(GADSdat, filePath, syntaxPath) {
 write_spss2.GADSdat <- function(GADSdat, filePath, syntaxPath) {
 
   ## write txt
-  write.table(GADSdat$dat, file = filePath, row.names = FALSE, col.names = FALSE,
+  utils::write.table(GADSdat$dat, file = filePath, row.names = FALSE, col.names = FALSE,
               sep = "\t", dec = ".", quote = FALSE, na = "", eol = "\n")
 
   ##### write SPSS syntax

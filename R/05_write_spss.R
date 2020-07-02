@@ -5,7 +5,7 @@
 #'
 #' Write a \code{GADSdat} object, which contains meta information as value and variable labels to an SPSS file (\code{sav}). See 'details' for some imporant limitations.
 #'
-#' The provided functionality relies on \code{haven's} \code{\link[haven]{write_sav}} function. Currently known limitations are: (a) Missing codes for all character variables are dropped, (b) value labels for long character variables (> \code{A10}) are dropped, (c) under specific conditions very long character variables (> \code{A254}) are incorrectly displayed as multipe character variables in \code{SPSS}. Furthermore, \code{write_spss} currently does not support exporting date or time variables.
+#' The provided functionality relies on \code{havens} \code{\link[haven]{write_sav}} function. Currently known limitations are: (a) Missing codes for all character variables are dropped, (b) value labels for long character variables (> \code{A10}) are dropped, (c) under specific conditions very long character variables (> \code{A254}) are incorrectly displayed as multipe character variables in \code{SPSS}. Furthermore, \code{write_spss} currently does not support exporting date or time variables.
 #'
 #'@param GADSdat A \code{GADSdat} object.
 #'@param filePath Path of \code{sav} file to write.
