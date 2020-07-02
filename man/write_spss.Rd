@@ -15,10 +15,10 @@ write_spss(GADSdat, filePath)
 Writes \code{sav} file to disc, returns \code{NULL}.
 }
 \description{
-Write a \code{GADSdat} object, which contains meta information as value and variable labels to an SPSS file (\code{sav}).
+Write a \code{GADSdat} object, which contains meta information as value and variable labels to an SPSS file (\code{sav}). See 'details' for some imporant limitations.
 }
 \details{
-Careful: This function is still slightly experimental.
+The provided functionality relies on \code{haven}s \code{\link[haven]{write_sav}} function. Currently known limitations are: (a) Missing codes for all character variables are dropped, (b) value labels for long character variables (> \code{A10}) are dropped, (c) under specific conditions very long character variables (> \code{A254}) are incorrectly displayed as multipe character variables in \code{SPSS}. Furthermore, \code{write_spss} currently does not support exporting date or time variables.
 }
 \examples{
 # tbd

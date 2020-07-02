@@ -106,7 +106,7 @@ test_that("All labels extracted correctly ", {
 
 
 ### Missing Label extracting
-# rawDat_missings <- haven::read_spss(file = "c:/Benjamin_Becker/02_Repositories/packages/eatGADS/tests/testthat/helper_spss_missings.sav", user_na = TRUE)
+# rawDat_missings <- haven::read_spss(file = "tests/testthat/helper_spss_missings.sav", user_na = TRUE)
 rawDat_missings <- haven::read_spss("helper_spss_missings.sav", user_na = TRUE)
 
 label_miss <- data.frame(varName = rep("VAR1", 3), value = c(-99, -96, 1),
@@ -211,7 +211,7 @@ test_that("Checks for import_raw", {
   expect_error(import_raw(df = df_raw, varLabels = varLabels_raw_fac, valLabels = valLabels_raw), "One of the variables in varLabels is a factor.")
 
   expect_error(import_raw(df = df_raw, mtcars), "varLabels needs to contain the variables 'varName' and 'varLabel'.")
-  expect_error(import_raw(df = df_raw, varLabels_raw, mtcars), "valLabels needs to contain the variables 'varName', 'value', 'varLabel' and 'missings'.")
+  expect_error(import_raw(df = df_raw, varLabels_raw, mtcars), "valLabels needs to contain the variables 'varName', 'value', 'valLabel' and 'missings'.")
 
   varLabels_raw_nam <- data.frame(varName = c("a", "d"), varLabel = c("variable a", "variable b"), stringsAsFactors = FALSE)
   expect_error(import_raw(df = df_raw, varLabels = varLabels_raw_nam), "The following variables are not in the data df: d")

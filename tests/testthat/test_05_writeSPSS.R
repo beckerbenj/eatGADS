@@ -163,7 +163,46 @@ test_that("Write strings longer than 255", {
   expect_equal(dim(out), c(1, 2))
 })
 
+test_that("Haven and eatGADS import and export missing codes correctly", {
+  rawDat_missings <- haven::read_spss("helper_spss_missings.sav", user_na = TRUE)
+  f <- paste0(tempfile(), ".sav")
+  haven::write_sav(rawDat_missings, f)
+  out <- haven::read_spss(f, user_na = TRUE)
 
+  expect_equal(attributes(rawDat_missings$VAR1), attributes(out$VAR1))
+
+  ###character variables (na_values not yet implemented, see https://github.com/tidyverse/haven/issues/409)
+  #rawDat_missings2 <- haven::read_spss("tests/testthat/helper_spss_havenbug.sav", user_na = TRUE)
+  #rawDat_missings2 <- haven::read_spss("helper_spss_havenbug.sav", user_na = TRUE)
+  #f2 <- paste0(tempfile(), ".sav")
+  #haven::write_sav(rawDat_missings2, f2)
+  #out2 <- haven::read_spss(f2, user_na = TRUE)
+  #expect_equal(attributes(rawDat_missings2$v2)$na_values, attributes(out2$v2)$na_values)
+})
+
+test_that("Write variables with missing codes", {
+  g <- import_raw(df = data.frame(v1 = "abc", v2 = 1, stringsAsFactors = FALSE),
+                  varLabels = data.frame(varName = c("v1", "v2"), varLabel = NA, stringsAsFactors = FALSE),
+                  valLabels = data.frame(varName = c("v1", "v1", "v2"), value = c(-96, -99, -99),
+                                         valLabel = c("miss1", "miss2", "miss1"),
+                                         missings = c("miss", "miss", "miss"), stringsAsFactors = FALSE))
+  g <- changeSPSSformat(g, varName = "v1", format = "A3")
+  f <- paste0(tempfile(), ".sav")
+  write_spss(g, filePath = f)
+  out <- haven::read_spss(f, user_na = TRUE)
+
+  tib <- export_tibble(g)
+
+  attributes(tib$v1)
+  attributes(tib$v2)
+  # numeric
+  expect_equal(attributes(out$v2)$labels, c(miss1 = -99))
+  expect_equal(attributes(out$v2)$na_values, c(-99))
+  # character
+  expect_equal(attributes(out$v1)$labels, c(miss1 = "-96", miss2 = "-99"))
+  ###character variables (na_values not yet implemented, see https://github.com/tidyverse/haven/issues/409)
+  #expect_equal(attributes(out$v1)$na_values, c(-96, -99))
+})
 
 
 

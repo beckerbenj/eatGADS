@@ -3,9 +3,9 @@
 #############################################################################
 #' Write a \code{GADSdat} object to \code{sav}
 #'
-#' Write a \code{GADSdat} object, which contains meta information as value and variable labels to an SPSS file (\code{sav}).
+#' Write a \code{GADSdat} object, which contains meta information as value and variable labels to an SPSS file (\code{sav}). See 'details' for some imporant limitations.
 #'
-#' Careful: This function is still slightly experimental.
+#' The provided functionality relies on \code{haven's} \code{\link[haven]{write_sav}} function. Currently known limitations are: (a) Missing codes for all character variables are dropped, (b) value labels for long character variables (> \code{A10}) are dropped, (c) under specific conditions very long character variables (> \code{A254}) are incorrectly displayed as multipe character variables in \code{SPSS}. Furthermore, \code{write_spss} currently does not support exporting date or time variables.
 #'
 #'@param GADSdat A \code{GADSdat} object.
 #'@param filePath Path of \code{sav} file to write.
@@ -103,6 +103,9 @@ addLabels_single <- function(label_df, varClass) {
   any_miss <- length(miss_values) > 0
   if(identical(out[["class"]], "haven_labelled") && any_miss) out[["class"]] <- c("haven_labelled_spss", "haven_labelled")
 
+  # experimental class modification (due to haven 2.3.0 classes got modified)
+  #stopifnot(varClass %in% c("numeric", "character"))
+  #out[["class"]] <- c(out[["class"]], "vctrs_vctr", ifelse(varClass == "numeric", yes = "double", no = "character"))
 
   # value labels, if any
   value_label_df <- label_df[!is.na(label_df$value), ]
@@ -116,6 +119,7 @@ addLabels_single <- function(label_df, varClass) {
     #if((length(out[["format.spss"]]) > 0 && grepl("^A", unique(out[["format.spss"]])))) {
       out[["labels"]] <- as.character(out[["labels"]])
       names(out[["labels"]]) <- value_label_df[, "valLabel"]
+      #if(!is.null(out[["na_values"]]))
       #if(identical(labeled, "yes")) out[["class"]] <- c("haven_labelled")
     }
   }
