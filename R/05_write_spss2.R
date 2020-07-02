@@ -8,7 +8,8 @@
 #' This function is based on \code{eatPrep's} \code{\link[eatPrep]{writeSpss}} function. Currently under developement.
 #'
 #'@param GADSdat A \code{GADSdat} object.
-#'@param filePath Path of \code{sav} file to write.
+#'@param filePath Path of \code{.txt} file to write.
+#'@param syntaxPath Path of \code{.sps} file to write.
 #'
 #'@return Writes \code{sav} file to disc, returns \code{NULL}.
 #'
@@ -16,17 +17,59 @@
 #'# tbd
 #'
 #'@export
-write_spss2 <- function(GADSdat, filePath) {
-  UseMethod("write_spss")
+write_spss2 <- function(GADSdat, filePath, syntaxPath) {
+  UseMethod("write_spss2")
 }
 
 #'@export
-write_spss2.GADSdat <- function(GADSdat, filePath) {
+write_spss2.GADSdat <- function(GADSdat, filePath, syntaxPath) {
 
-  stop("Not implemented yet.")
   ## write txt
+  write.table(GADSdat$dat, file = filePath, row.names = FALSE, col.names = FALSE,
+              sep = "\t", dec = ".", quote = FALSE, na = "", eol = "\n")
 
-  ## write SPSS syntax
+  ##### write SPSS syntax
+  labels <- GADSdat$labels
+  varInfo <- unique(labels[, c("varName", "varLabel", "format")])
+  valInfo <- unique(labels[!is.na(labels$value), c("varName", "value", "valLabel", "missings")])
+
+  #browser()
+  # write header
+  freefield <- " free (TAB)\n"
+  cat("DATA LIST FILE=", autoQuote(filePath), freefield, file = syntaxPath)
+  cat(" /", varInfo$varName, ".\n\n", file = syntaxPath, append = TRUE,
+      fill = 60, labels = " ")
+
+  # write variable labels
+  cat("VARIABLE LABELS\n", file = syntaxPath, append = TRUE)
+  cat(" ", paste(varInfo$varName, autoQuote(varInfo$varLabel), "\n"), ".\n",
+      file = syntaxPath, append = TRUE)
+
+  # write value labels
+  if (nrow(valInfo) > 0) {
+
+    cat("\nVALUE LABELS\n", file = syntaxPath, append = TRUE)
+
+    for (v in unique(valInfo$varName)) {
+      cat(" /", v, "\n", file = syntaxPath, append = TRUE)
+      #if (any(nchar(valueLabels) > 120L)) {
+      #  cat(paste(funVersion, "Value labels for variable", v , "longer than 120 characters. Only the first 120 characters will be used.\n"))
+       # valueLabels <- substring(valueLabels, 1, 120)
+      #}
+      cat(paste("  ", valInfo$value, autoQuote(valInfo$valLabel),"\n",  sep = " "),
+          file = syntaxPath, append = TRUE)
+    }
+    cat(" .\n", file = syntaxPath, append = TRUE)
+  }
+
+  # write missing codes
+  # tbd
+
+  cat("\nEXECUTE.\n", file = syntaxPath, append = TRUE)
 
   return()
+}
+
+autoQuote <- function (x){
+  paste("\"", x, "\"", sep = "")
 }
