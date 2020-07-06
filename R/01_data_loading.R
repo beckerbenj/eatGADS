@@ -206,7 +206,7 @@ check_varLabels <- function(df, varLabels) {
 check_valLabels <- function(df, valLabels) {
   if(any(sapply(valLabels, is.factor))) stop("One of the variables in valLabels is a factor.")
   if(!is.data.frame(valLabels)) stop("valLabels has to be a data.frame.")
-  if(!identical(names(valLabels), c("varName", "value", "valLabel", "missings"))) stop("valLabels needs to contain the variables 'varName', 'value', 'varLabel' and 'missings'.")
+  if(!identical(names(valLabels), c("varName", "value", "valLabel", "missings"))) stop("valLabels needs to contain the variables 'varName', 'value', 'valLabel' and 'missings'.")
 
   not_in_df <- setdiff(valLabels[["varName"]], names(df))
   if(length(not_in_df) > 0) stop("The following variables are not in the data df: ", paste(not_in_df, collapse = ", "))
