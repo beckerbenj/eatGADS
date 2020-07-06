@@ -117,6 +117,16 @@ test_that("Combine multi mc and text", {
   expect_false("text2_r" %in% namesGADS(test))
 })
 
+test_that("Combine multi mc and text with empty text variables", {
+  mc_vars <- matchValues_varLabels(mt3_gads, mc_vars = c("mc1", "mc2", "mc3"), values = c("Aus", "Eng", "other"))
+  mtE_gads <- mt3_gads
+  mtE_gads$dat[1, c("text1", "text2")] <- c("", "")
+  test <- collapseMultiMC_Text(mtE_gads, mc_vars = mc_vars, text_vars = c("text1", "text2"), mc_var_4text = "mc3")
+
+  expect_equal(as.character(test$dat[1, c("text1", "text2")]), c("", ""))
+  expect_equal(as.character(test$dat[1, c("text1_r", "text2_r")]), c("", ""))
+  expect_equal(as.numeric(test$dat[1, c("mc3", "mc3_r")]), c(1, 1))
+})
 
 ################# mulitple Characters to factors with identical labels ---------------------------------------------------
 mt4 <- data.frame(text1 = c(NA, "Eng", "Aus", "Aus2"), text2 = c("Ger", "Franz", "Eng", NA), stringsAsFactors = FALSE)

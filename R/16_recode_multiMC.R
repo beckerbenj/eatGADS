@@ -111,6 +111,8 @@ applyLookup_expandVar.GADSdat <- function(GADSdat, lookup) {
 #' This function allows to recode multiple MC items of this kind based on multiple text variables. Additionally, the \code{mc_var_4text}
 #' variable is recoded according to the final status of the \code{text_vars}.
 #'
+#' Missing values in the text variables can be represented either by \code{NAs} or by empty characters.
+#'
 #'@param GADSdat A \code{GADSdat} object.
 #'@param mc_vars A character vector with the variable names of the multiple choice variable. Names of the character vector are the corresponding values that are represented by the individual variables.
 #'@param text_vars A character vector with the names of the text variables which should be collapsed.
@@ -156,7 +158,9 @@ collapseMultiMC_Text.GADSdat <- function(GADSdat, mc_vars, text_vars, mc_var_4te
   dat <- GADSdat$dat
   ## check if the the value has been given multiple times in the text fields?
   for(r in seq(nrow(dat))) {
-    dups_in_row <- duplicated(as.character(dat[r, text_vars])[!is.na(as.character(dat[r, text_vars]))])
+    values_in_row <- as.character(dat[r, text_vars])[!is.na(as.character(dat[r, text_vars]))]
+    dups_in_row <- duplicated(values_in_row[values_in_row != ""])
+    #if(mc_var_4text == "Pfluhl_k") browser()
     if(any(dups_in_row)) stop("Duplicate values in row ", r, ".")
   }
 

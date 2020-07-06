@@ -37,6 +37,8 @@ If a multiple choice item can be answered with crossing multiple boxes, multiple
 to represent this item. In this case, an additional text field for further answers can also contain multiple values at once.
 This function allows to recode multiple MC items of this kind based on multiple text variables. Additionally, the \code{mc_var_4text}
 variable is recoded according to the final status of the \code{text_vars}.
+
+Missing values in the text variables can be represented either by \code{NAs} or by empty characters.
 }
 \examples{
 # Prepare example data
