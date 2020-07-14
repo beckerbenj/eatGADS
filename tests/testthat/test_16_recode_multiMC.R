@@ -66,6 +66,14 @@ test_that("Apply lookup with expanding into multiple variables", {
 
 
 ################# Combine multi MC and text ---------------------------------------------------
+test_that("Errors wrong codes MC variables",{
+  expect_error(check_01_mc_in_gadsdat(l_gads, "v1"), "MC variables must be coded 0 and 1. Variable v1 contains values: a, b, b, f")
+
+  mc_gads <- import_DF(data.frame(ID = 1:3, mc = c(0, 2, 2)))
+  expect_error(check_01_mc_in_gadsdat(mc_gads, "mc"), "MC variables must be coded 0 and 1. Variable mc contains values: 0, 2")
+})
+
+
 test_that("Remove values from some variables", {
   out <- remove_values(df, vars = c("v1", "v2"), values = c("j", "i"))
   expect_equal(out$v1, c(NA_character_, NA, NA, NA))

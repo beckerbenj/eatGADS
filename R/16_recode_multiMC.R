@@ -111,10 +111,13 @@ applyLookup_expandVar.GADSdat <- function(GADSdat, lookup) {
 #' This function allows to recode multiple MC items of this kind based on multiple text variables. Additionally, the \code{mc_var_4text}
 #' variable is recoded according to the final status of the \code{text_vars}.
 #'
-#' Missing values in the text variables can be represented either by \code{NAs} or by empty characters.
+#' Missing values in the text variables can be represented either by \code{NAs} or by empty characters. The multiple choice variables
+#' specified with \code{mc_vars} can only contain the values \code{0}, \code{1} and missing codes. If necessary, use
+#' \code{\link{recodeGADS}} for recoding.
 #'
 #'@param GADSdat A \code{GADSdat} object.
-#'@param mc_vars A character vector with the variable names of the multiple choice variable. Names of the character vector are the corresponding values that are represented by the individual variables.
+#'@param mc_vars A character vector with the variable names of the multiple choice variable. Names of the character vector are
+#'the corresponding values that are represented by the individual variables.
 #'@param text_vars A character vector with the names of the text variables which should be collapsed.
 #'@param mc_var_4text The name of the multiple choice variable that signals that information from the text variable should be used. This variable is recoded according to the final status of the text variables.
 #'@param var_suffix Variable suffix for the newly created \code{GADSdat}. If an empty character, the existing variables are overwritten.
@@ -154,6 +157,7 @@ collapseMultiMC_Text.GADSdat <- function(GADSdat, mc_vars, text_vars, mc_var_4te
   if(!all(text_vars %in% namesGADS(GADSdat))) stop("Not all text_vars are variables in the GADSdat.")
   if(!is.character(mc_var_4text) || length(mc_var_4text) != 1) stop("mc_var_4text needs to be a character of lenth one.")
   if(!mc_var_4text %in% mc_vars) stop("mc_var_4text is not part of mc_vars.")
+  check_01_mc_in_gadsdat(GADSdat, mcs = mc_vars)
 
   dat <- GADSdat$dat
   ## check if the the value has been given multiple times in the text fields?
@@ -210,6 +214,17 @@ collapseMultiMC_Text.GADSdat <- function(GADSdat, mc_vars, text_vars, mc_var_4te
                                              yes = 1, no = GADSdat2$dat[, new_mc_var_4text])
 
   GADSdat2
+}
+
+check_01_mc_in_gadsdat <- function(GADSdat, mcs) {
+  for(mc in mcs) {
+    suppressMessages(one_GADSdat <- removeVars(GADSdat, namesGADS(GADSdat)[namesGADS(GADSdat) != mc]))
+    dat <- extractData(one_GADSdat, convertMiss = TRUE, convertLabels = "numeric")
+    unique_values <- sort(unique(dat[[mc]]))
+    if(!all(unique_values %in% c(0, 1))) stop("MC variables must be coded 0 and 1. Variable ", mc, " contains values: ",
+                                              paste(unique_values, collapse = ", "))
+  }
+  return()
 }
 
 # remove all text values that occur in labels (own function)

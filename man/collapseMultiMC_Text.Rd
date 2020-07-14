@@ -16,7 +16,8 @@ collapseMultiMC_Text(
 \arguments{
 \item{GADSdat}{A \code{GADSdat} object.}
 
-\item{mc_vars}{A character vector with the variable names of the multiple choice variable. Names of the character vector are the corresponding values that are represented by the individual variables.}
+\item{mc_vars}{A character vector with the variable names of the multiple choice variable. Names of the character vector are
+the corresponding values that are represented by the individual variables.}
 
 \item{text_vars}{A character vector with the names of the text variables which should be collapsed.}
 
@@ -38,7 +39,9 @@ to represent this item. In this case, an additional text field for further answe
 This function allows to recode multiple MC items of this kind based on multiple text variables. Additionally, the \code{mc_var_4text}
 variable is recoded according to the final status of the \code{text_vars}.
 
-Missing values in the text variables can be represented either by \code{NAs} or by empty characters.
+Missing values in the text variables can be represented either by \code{NAs} or by empty characters. The multiple choice variables
+specified with \code{mc_vars} can only contain the values \code{0}, \code{1} and missing codes. If necessary, use
+\code{\link{recodeGADS}} for recoding.
 }
 \examples{
 # Prepare example data
