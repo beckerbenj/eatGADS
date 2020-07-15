@@ -1,0 +1,47 @@
+#### Import SPSS data
+#############################################################################
+#' Import SPSS data
+#'
+#' Function to import \code{.sav} files while extracting meta information, e.g. variable and value labels.
+#'
+#' SPSS files (\code{.sav}) store variable and value labels and assign specific formatting to variables. \code{import_spss} imports
+#' data from SPSS, while storing this meta-information separately in a long format data frame. Value labels and missing labels are used
+#' to identify missing values (see \code{\link{checkMissings}}). Time and date variables are converted to character.
+#'
+#'@param filePath Source file location, ending on \code{.sav}.
+#'@param checkVarNames Should variable names be checked for violations of \code{SQLite} and \code{R} naming rules?
+#'@param labeledStrings Should strings as labeled values be allowed? This possibly corrupts all labeled values.
+#'
+#'@return Returns a list with the actual data \code{dat} and a data frame with all meta information in long format \code{labels}.
+#'
+#'@examples
+#'\dontrun{
+#'dat <- import_spss("t:/_R_Tutorials/R_Workshops/01_Allgemeine Einfuehrung/
+#'                   IQB-LV-2011_SchuelerInnen-Eltern_CF.sav",
+#'                   checkVarNames = FALSE)
+#'
+#'# Inspect Meta data
+#'extractMeta(dat)
+#'
+#'# Extract Data
+#'dat <- extractData(dat, convertLabels = "character")
+#'}
+#'
+#'@export
+import_spss <- function(filePath, checkVarNames = TRUE, labeledStrings = FALSE) {
+  df <- load_spss(filePath = filePath)
+  out <- prepare_labels(rawDat = df, checkVarNames = checkVarNames, labeledStrings = labeledStrings)
+  out
+}
+
+# Load data depending on format ---------------------------------------------------------
+# import (keep NAs how they are coded to later mark values as missings but keep them seperatable)
+load_spss <- function(filePath) {
+  rawDat <- haven::read_spss(file = filePath, user_na = TRUE)
+  new_savDat(rawDat)
+}
+# create S3 object savDat for internal use
+new_savDat <- function(rawDat) {
+  stopifnot(is.data.frame(rawDat))
+  structure(rawDat, class = c("savDat", "data.frame"))
+}

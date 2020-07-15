@@ -1,6 +1,4 @@
 
-context("UI for eatDB")
-
 # load test data
 # load(file = "tests/testthat/helper_data.rda")
 load(file = "helper_data.rda")

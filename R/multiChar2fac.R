@@ -1,0 +1,56 @@
+#### Multiple Strings to Labeled Variables
+#############################################################################
+#' Multiple character variables to factors with identical levels.
+#'
+#' Convert multiple character variables to factors, while creating a common set of value labels, which is identical across variables.
+#'
+#' If a set of variables has the same possible values, it is desirable that these variables share the same value labels, even if
+#' some of the values do not occur on the individual variables. This function allows the transformation of multiple character variables
+#' to factors while assimilating the value labels.
+#' The SPSS format of the newly created variables is set to \code{F10.0}.
+#'
+#'@param GADSdat A \code{data.frame} or \code{GADSdat} object.
+#'@param vars A single variable name of the multiple choice variable.
+#'@param var_suffix Variable suffix for the newly created \code{GADSdat}. If an empty character, the existing variables are overwritten.
+#'@param label_suffix Suffix added to variable label for the newly created variable in the \code{GADSdat}.
+#'
+#'@return Returns a \code{GADSdat} containing the newly computed variable.
+#'
+#'@examples
+#'#to be done
+#'
+#'@export
+multiChar2fac <- function(GADSdat, vars, var_suffix = "_r", label_suffix = "(recoded)") {
+  UseMethod("multiChar2fac")
+}
+
+#'@export
+multiChar2fac.GADSdat <- function(GADSdat, vars, var_suffix = "_r", label_suffix = "(recoded)") {
+  check_GADSdat(GADSdat)
+  if(!is.character(vars) && length(vars) > 0) stop("vars needs to be a character vector of at least length 1.")
+
+  suppressMessages(only_vars_gads <- removeVars(GADSdat, namesGADS(GADSdat)[!namesGADS(GADSdat) %in% vars]))
+  df_no_miss <- extractData(only_vars_gads)
+  all_levels <- unique(unlist(lapply(df_no_miss, function(x) x)))
+  all_levels_fac <- data.frame("all_levels" = as.factor(all_levels))
+  all_levels_gads <- import_DF(all_levels_fac)
+  all_levels_lookup <- all_levels_gads$labels[, c("valLabel", "value")]
+  names(all_levels_lookup) <- c("value", "value_new")
+
+  for(var in vars) {
+    old_nam <- var
+    var <- paste0(var, var_suffix)
+    specific_lookup <- data.frame(variable = old_nam, all_levels_lookup, stringsAsFactors = FALSE)
+
+    #browser()
+    GADSdat <- suppressWarnings(applyLookup(GADSdat, lookup = specific_lookup, suffix = var_suffix))
+    GADSdat$dat[, var] <- as.numeric(GADSdat$dat[, var])
+
+    GADSdat <- reuseMeta(GADSdat, varName = var, other_GADSdat = all_levels_gads, other_varName = "all_levels",
+                         addValueLabels = TRUE)
+    GADSdat <- append_varLabel(GADSdat, varName = var, label_suffix = label_suffix)
+    GADSdat$labels[GADSdat$labels$varName == var, "format"] <- "F10.0"
+  }
+
+  GADSdat
+}
