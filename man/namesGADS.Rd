@@ -2,21 +2,23 @@
 % Please edit documentation in R/namesGADS.R
 \name{namesGADS}
 \alias{namesGADS}
-\title{Variables names of a GADS data base.}
+\title{Variables names of a GADS.}
 \usage{
 namesGADS(GADS)
 }
 \arguments{
-\item{GADS}{Path of an existing \code{eatGADS} data base.}
+\item{GADS}{A \code{GADSdat} object, a \code{all_GADSdat} or the path to an existing \code{eatGADS} data base.}
 }
 \value{
-Returns a named list of variable names per data table.
+Returns a character vector or a named list of character vectors.
 }
 \description{
-Returns a list of all variable names included in the GADS data base.
+Variables names of a \code{GADSdat} object, a \code{all_GADSdat} object or a \code{eatGADS} data base.
 }
 \details{
-Extracts names of all variables included in the relational data base, structured as a list with the individual data tables as list elements.
+If the function is applied to a \code{GADSdat} object, a character vector with all variable names is returned. If the function is
+applied to a \code{all_GADSdat} object or to the path of a \code{eatGADS} data base, a named list is returned. Each list entry
+represents a data table in the object.
 }
 \examples{
 \dontrun{

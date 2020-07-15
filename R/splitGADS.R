@@ -1,16 +1,19 @@
 
 #### Split up a wide/long format GADS in hierarchical levels
 #############################################################################
-#' Split GADS
+#' Split \code{GADSdat} into hierarchy levels.
 #'
-#' Function to split a \code{GADSdat} with all variables in it into hierarchical levels.
+#' Split a \code{GADSdat} into multiple, specified hierarchical levels.
 #'
-#' The function takes a \code{GADSdat} object and splits it into its desired hierarchical levels. Meta data include therefore then references via \code{data_table} to the corresponding hierarchical level.
+#' The function takes a \code{GADSdat} object and splits it into its desired hierarchical levels (a \code{all_GADSdat} object).
+#' Hierarchy level of a variable is also accessible in the meta data via the column \code{data_table}. If not all variable names
+#' are included in the \code{nameList}, the missing variables will be dropped.
 #'
-#'@param GADSdat \code{GADSdat} objects, as named arguments in the correct merge order.
-#'@param nameList A list with character vector. The names in the list correspond the the hierarchy levels.
+#'@param GADSdat A \code{GADSdat} object.
+#'@param nameList A list of character vectors. The names in the list correspond the the hierarchy levels.
 #'
-#'@return Returns an \code{all_GADSdat} object, which consists of list with a list of all data frames \code{"datList"} and a single data frame containing all meta data information \code{"allLabels"}. For more details see also \code{\link{mergeLabels}}.
+#'@return Returns an \code{all_GADSdat} object, which consists of list with a list of all data frames \code{"datList"} and
+#'a single data frame containing all meta data information \code{"allLabels"}. For more details see also \code{\link{mergeLabels}}.
 #'
 #'@examples
 #'# Example data set

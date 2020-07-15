@@ -1,6 +1,6 @@
 
 # load test data (df1, df2, pkList, fkList)
-# load(file = "c:/Benjamin_Becker/02_Repositories/packages/eatGADS/tests/testthat/helper_data.rda")
+# load(file = "tests/testthat/helper_data.rda")
 load(file = "helper_data.rda")
 
 

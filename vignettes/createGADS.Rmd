@@ -1,0 +1,70 @@
+---
+title: "Create a relational data base"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{createGADS}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+```
+
+```{r setup}
+library(eatGADS)
+```
+
+In the context of educational large-scale assessments but also in other contexts we frequently encounter data sets which have an hidden hierarchical structure. An example are multiple imputations or plausible values for person parameter estimation.
+
+We can import an `.sav` data set via the `import_spss()` function.
+
+```{r import spss, message=FALSE}
+sav_path <- system.file("extdata", "LV_2011_CF.sav", package = "eatGADS")
+dat <- import_spss(sav_path)
+```
+
+In a first step we want to split the resulting `GADSdat` object into its hierarchy levels. This can be achieved by the `splitGADS()` function. After this, we can extract separate `GADSdat` objects by name via the `extractGADS()` function. These objects can then be used for reshaping.
+
+```{r split GADS}
+## Reshapen
+pvs <- grep("pv0", namesGADS(dat), value = T)
+
+splitted_gads <- splitGADS(dat, list(noImp = namesGADS(dat)[!namesGADS(dat) %in% pvs],
+                    PVs = c("idstud_FDZ", pvs)))
+
+noImp <- extractGADSdat(splitted_gads, "noImp")
+pvs_wide <- extractGADSdat(splitted_gads, "PVs")
+```
+
+For reshaping data we highly recommend the `R` package `tidyr`. Its performance might be less optimized than for example the `data_table` package, but its usability is very beginner friendly. For our example data set we have to reshape the `PVs` from wide to long format and then separte the resulting column into two columns, containing the `dimension` and imputation number (`imp`).
+
+```{r reshape PVs}
+out <- tidyr::pivot_longer(pvs_wide$dat, cols = pvs)
+out2 <- tidyr::separate(out, col = "name", sep = c(2, 4, 5), into = c("pv", "imp", "sepa", "dimension"))
+out3 <- out2[, c("idstud_FDZ", "imp", "dimension", "value")]
+out3$imp <- as.numeric(out3$imp)
+```
+
+After reshaping we re-import the data into the `GADSdat` format via `import_DF()`. If necessary, we could now manipulate the meta data. For an extensive tutorial see the vignette handling meta data.
+
+For the creation of a relational data base we create the hierarchical structure via `mergeLabels()`. Furthermore, we create two lists, a primary key list (`pkList`) and a foreign key list (`fkList`).
+
+```{r prepare data base}
+pvs_long <- import_DF(out3)
+merged_gads <- mergeLabels(noImp = noImp, PVs = pvs_long)
+pkList <- list(noImp = "idstud_FDZ",
+               PVs = c("idstud_FDZ", "imp", "dimension"))
+fkList <- list(noImp = list(References = NULL, Keys = NULL),
+               PVs = list(References = "noImp", Keys = "idstud_FDZ"))
+```
+Finally, we create the relational data base on disc via the `createGADS()` function.
+
+```{r create data base}
+
+#createGADS(merged_gads, pkList = pkList, fkList = fkList,
+#           filePath = paste0(tempfile(), ".db")) ## waiting for bugfix eatDB
+```
