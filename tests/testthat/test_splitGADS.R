@@ -1,7 +1,7 @@
 
 # load(file = "tests/testthat/helper_data.rda")
 load(file = "helper_data.rda")
-# gBig <- getGADS(filePath = "c:/Benjamin_Becker/02_Repositories/packages/eatGADS/tests/testthat/helper_dataBase.db")
+# gBig <- getGADS(filePath = "tests/testthat/helper_dataBase.db")
 gBig <- getGADS(filePath = "helper_dataBase.db")
 
 ### Split GADS into all_GADSdat
