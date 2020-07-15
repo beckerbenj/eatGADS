@@ -1,33 +1,4 @@
 
-#### Writing sav files
-#############################################################################
-#' Write a \code{GADSdat} object to \code{sav}
-#'
-#' Write a \code{GADSdat} object, which contains meta information as value and variable labels to an SPSS file (\code{sav}). See 'details' for some imporant limitations.
-#'
-#' The provided functionality relies on \code{havens} \code{\link[haven]{write_sav}} function. Currently known limitations are: (a) Missing codes for all character variables are dropped, (b) value labels for long character variables (> \code{A10}) are dropped, (c) under specific conditions very long character variables (> \code{A254}) are incorrectly displayed as multipe character variables in \code{SPSS}. Furthermore, \code{write_spss} currently does not support exporting date or time variables.
-#'
-#'@param GADSdat A \code{GADSdat} object.
-#'@param filePath Path of \code{sav} file to write.
-#'
-#'@return Writes \code{sav} file to disc, returns \code{NULL}.
-#'
-#'@examples
-#'# tbd
-#'
-#'@export
-write_spss <- function(GADSdat, filePath) {
-  UseMethod("write_spss")
-}
-
-#'@export
-write_spss.GADSdat <- function(GADSdat, filePath) {
-  df <- export_tibble(GADSdat = GADSdat)
-  haven::write_sav(df, path = filePath)
-  return()
-}
-
-
 #### Export to haven format
 #############################################################################
 #' Transform a \code{GADSdat} to a \code{tibble}
@@ -116,7 +87,7 @@ addLabels_single <- function(label_df, varClass) {
     # value labels need to have the same class as the variable format
     #if(all(label_df$varName == "groupVar")) browser()
     if((length(out[["format.spss"]]) > 0 && grepl("^A", unique(out[["format.spss"]]))) || identical(varClass, "character")) {
-    #if((length(out[["format.spss"]]) > 0 && grepl("^A", unique(out[["format.spss"]])))) {
+      #if((length(out[["format.spss"]]) > 0 && grepl("^A", unique(out[["format.spss"]])))) {
       out[["labels"]] <- as.character(out[["labels"]])
       names(out[["labels"]]) <- value_label_df[, "valLabel"]
       #if(!is.null(out[["na_values"]]))
@@ -127,5 +98,4 @@ addLabels_single <- function(label_df, varClass) {
   #if(any(label_df$varName == "TESTUNG")) browser()
   out
 }
-
 

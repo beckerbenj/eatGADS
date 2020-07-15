@@ -1,4 +1,3 @@
-context("Trend data bases")
 
 # load test data
 # load(file = "c:/Benjamin_Becker/02_Repositories/packages/eatGADS/tests/testthat/helper_data.rda")
@@ -74,26 +73,12 @@ test_that("Extract trend GADS with unique variables in one GADS", {
 # ---------------------------------------------------------------------------
 # getGADS(filePath = "c:/Benjamin_Becker/02_Repositories/packages/eatGADS/tests/testthat/helper_le.db")
 
-test_that("checkLEStructure", {
-  # checkLEStructure(filePath1 = "c:/Benjamin_Becker/02_Repositories/packages/eatGADS/tests/testthat/helper_comp.db", filePath2 = "c:/Benjamin_Becker/02_Repositories/packages/eatGADS/tests/testthat/helper_comp.db", lePath = "c:/Benjamin_Becker/02_Repositories/packages/eatGADS/tests/testthat/helper_le.db")
-  expect_silent(checkLEStructure(filePath1 = "helper_comp.db", filePath2 = "helper_comp.db", lePath = "helper_le.db"))
-  le_mes <- capture_messages(out <- checkLEStructure(filePath1 = "helper_comp.db", filePath2 = "helper_comp.db", lePath = "helper_le_wrong.db"))
-  expect_equal(le_mes[[1]], "The following variables have linking errors but are not variables in data base 1: other\n")
-  expect_equal(le_mes[[2]], "The following variables have linking errors but are not variables in data base 2: other\n")
-  expect_equal(le_mes[[3]], "The linking error data base contains variables other than linking errors and key variables.\n")
-  expect_equal(le_mes[[4]], "The following variables are key variables in the Linking Error data base but are not variables in data base 1: test_pk\n")
-  expect_equal(le_mes[[5]], "The following variables are key variables in the Linking Error data base but are not variables in data base 2: test_pk\n")
-  expect_equal(out, list(dep_notIn_nam1 = "other", dep_notIn_nam2 = "other",
-                         key_notIn_nam1 = "test_pk", key_notIn_nam2 = "test_pk"))
-})
-
 test_that("make_leSelect", {
   expect_equal(make_leSelect(lePath = "helper_le.db", vSelect = NULL), NULL)
   expect_equal(make_leSelect(lePath = "helper_le.db", vSelect = c("PV")), "LE_PV")
   expect_equal(make_leSelect(lePath = "helper_le.db", vSelect = c("PV", "level")), c("LE_PV", "LE_level"))
   expect_equal(make_leSelect(lePath = "helper_le.db", vSelect = c("lala")), character(0))
 })
-
 
 ### trend gads with LEs
 test_that("Extract trend GADS with linking errors", {
@@ -117,26 +102,5 @@ test_that("Extract trend GADS with linking errors", {
 
 
 
-
-
-test_that("compare_meta", {
-  m2 <- m1 <- dfSAV$labels
-  expect_equal(compare_meta(m2, m1), character())
-  m2[3, "value"] <- 2
-  out <- suppressMessages(compare_meta(m2, m1))
-  expect_equal(out, "VAR1")
-  m2 <- m1
-  m2[7, "missings"] <- "valid"
-  m2[4, "valLabel"] <- "test"
-  expect_message(compare_meta(m2, m1), "The following variables have different meta data on value level: VAR2, VAR3")
-  out <- suppressMessages(compare_meta(m2, m1))
-  expect_equal(out, c("VAR2", "VAR3"))
-
-})
-
-test_that("compare_meta for one with only missing meta data and one no value level meta data", {
-  df1_miss <- reuseMeta(df1, "ID1", dfSAV, "VAR3")
-  expect_equal(compare_meta(df1_miss, df1), character(0))
-})
 
 
