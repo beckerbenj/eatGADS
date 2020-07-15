@@ -1,4 +1,6 @@
 
+# load(file = "tests/testthat/helper_data.rda")
+load(file = "helper_data.rda")
 # dfSAV <- import_spss(file = "c:/Benjamin_Becker/02_Repositories/packages/eatGADS/tests/testthat/helper_spss_missings.sav")
 dfSAV <- import_spss(file = "helper_spss_missings.sav")
 
