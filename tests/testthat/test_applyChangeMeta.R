@@ -1,0 +1,138 @@
+
+# load(file = "tests/testthat/helper_data.rda")
+load(file = "helper_data.rda")
+# dfSAV <- import_spss(file = "tests/testthat/helper_spss_missings.sav")
+dfSAV <- import_spss(file = "helper_spss_missings.sav")
+
+### Meta changes
+changes_var <- getChangeMeta(dfSAV)
+changes_val <- getChangeMeta(dfSAV, level = "value")
+
+var_changes_list <- getChangeMeta(expected_bigList, level = "variable")
+val_changes_list <- getChangeMeta(expected_bigList, level = "value")
+
+
+test_that("Changes to GADSdat on variable level", {
+  # varName
+  changes_var[1, "varName_new"] <- "new1"
+  g1 <- applyChangeMeta(changes_var, dfSAV)
+  expect_equal(g1$labels[, -1], dfSAV$labels[, -1])
+  expect_equal(g1$labels$varName, c(rep("new1", 3), rep("VAR2", 2), rep("VAR3", 2)))
+  expect_equal(names(g1$dat), c("new1", "VAR2", "VAR3"))
+  # others
+  changes_var[2, "varLabel_new"] <- "new1"
+  g2 <- applyChangeMeta(changes_var, dfSAV)
+  expect_equal(g2$labels$varLabel, c(rep("Variable 1", 3), rep("new1", 2), rep("Variable 3", 2)))
+})
+
+test_that("Changes to GADSdat on value level", {
+  changes_val2 <- changes_val
+  changes_val2[1, "valLabel_new"] <- "new_miss"
+  changes_val2[2, "valLabel_new"] <- "new_miss2"
+  g2 <- applyChangeMeta(changes_val2, dfSAV)
+  expect_equal(g2$labels[, -7], dfSAV$labels[, -7])
+  expect_equal(g2$labels$valLabel, c("new_miss", "new_miss2", "One", "missing", NA, "missing", NA))
+  expect_equal(names(g2$dat), names(dfSAV$dat))
+})
+
+test_that("Changes to GADSdat: recoding", {
+  changes_val[3, "value_new"] <- 10
+  g1 <- applyChangeMeta(changes_val, dfSAV)
+  expect_equal(g1$labels$value[3], 10)
+  expect_equal(g1$dat[1, 1], 10)
+  changes_val[4, "value_new"] <- "test"
+  expect_error(applyChangeMeta(changes_val, dfSAV))
+})
+
+test_that("recoding if potential danger of overwriting old values!", {
+  df_rec <- data.frame(v1 = c("x", "y", "z"), b = c("b", "a", "d"), stringsAsFactors = TRUE)
+  df_rec <- import_DF(df_rec)
+  chang <- getChangeMeta(df_rec, level = "value")
+  chang2 <- chang
+  chang2[, "value_new"] <- c(3, 4, 1, NA, NA, NA)
+  out <-  applyChangeMeta(chang2, df_rec)
+  expect_equal(out$labels$value, c(3, 4, 1, 1, 2, 3))
+  expect_equal(out$dat$v1, c(3, 4, 1))
+  ## partial recoding, multiple variables
+  chang[, "value_new"] <- c(3, NA, 1, 2, 1, 2)
+  out <-  applyChangeMeta(chang, df_rec)
+  expect_equal(out$labels$value, c(3, 2, 1, 2, 1, 2))
+  expect_equal(out$dat$v1, 3:1)
+  expect_equal(out$dat$b, c(1, 2, 2))
+})
+
+
+changes_val2 <- rbind(changes_val, data.frame(varName = "VAR1", value = NA, valLabel = NA, missings = NA, value_new = 2, valLabel_new = "Two", missings_new = "valid", stringsAsFactors = FALSE))
+
+test_that("Expand labels", {
+  out <- expand_labels(df1$labels, new_varName_vec = c("ID1", "ID1", "V1"))
+  expect_equal(out$varName, c("ID1", "ID1", "V1"))
+  expect_equal(out$labeled, c("yes", "yes", "no"))
+  out2 <- expand_labels(df2$labels, new_varName_vec = c("ID1", "V2", "V2"))
+  expect_equal(out2$varName, c("ID1", "V2", "V2"))
+  expect_equal(out2$labeled, c("no", "yes", "yes"))
+  expect_equal(out2$varLabel, c(NA, "Variable 2", "Variable 2"))
+  expect_equal(out2$value, c(NA, 99, NA))
+  out3 <- expand_labels(dfSAV$labels, changes_val2$varName)
+  expect_equal(out3[1:4, "value"], c(-99, -96, 1, NA))
+  expect_equal(out3[1:4, "varName"], rep("VAR1", 4))
+})
+
+test_that("Adding value labels for values without labels", {
+  out <- recode_labels(dfSAV$labels, changes_val2)
+  expect_equal(out$value[1:4], c(-99, -96, 1, 2))
+  expect_equal(dim(out), c(8, 8))
+
+  applyChangeMeta(changes_val2, dfSAV)
+  # to do
+  # checken, dass keine Probleme in recode_dat auftauchen
+  # loest das nicht teilweise errors aus, da nicht kompatibel mit altem labels-df? wenn nein, wieso nicht?
+})
+
+test_that("update labeled helper", {
+  g <- import_DF(mtcars)
+  g$labels[1, "value"] <- 1
+  out <- update_labeled_col(g$labels)
+  expect_equal(out[1, "labeled"], "yes")
+  expect_equal(out[2, "labeled"], "no")
+})
+
+test_that("Adding value labels to an unlabeled variable", {
+  iris2 <- as.data.frame(iris, stringsAsFactors = TRUE)
+  suppressMessages(g <- import_DF(iris2))
+  changer <- getChangeMeta(g, level = "value")
+
+  changer[1, "value_new"] <- 99
+  changer[1, "valLabel_new"] <- "some label"
+  changer[1, "missings_new"] <- "valid"
+  out <- applyChangeMeta(changer, g)
+
+  expect_equal(out[[2]][1, ][6:8], data.frame(value = 99, valLabel = "some label", missings = "valid", stringsAsFactors = FALSE))
+  expect_equal(out[[2]][1, ][5], data.frame(labeled = "yes", stringsAsFactors = FALSE))
+})
+
+test_that("Changes to all_GADSdat on variable level", {
+  var_changes_list2 <- var_changes_list
+  var_changes_list2$df1[1, "varName_new"] <- "test1"
+  var_changes_list2$df2[2, "varName_new"] <- "test2"
+  g1 <- applyChangeMeta(var_changes_list2, expected_bigList)
+  expect_equal(g1$allLabels$varName, c("test1", "V1", "ID1", "test2"))
+  expect_equal(names(g1$datList$df1), c("test1", "V1"))
+  var_changes_list$df1[1, "varLabel_new"] <- "test1"
+  var_changes_list$df2[2, "varLabel_new"] <- "test2"
+  g1 <- applyChangeMeta(var_changes_list, expected_bigList)
+  expect_equal(g1$allLabels$varLabel, c("test1", NA, NA, "test2"))
+})
+
+test_that("Changes to all_GADSdat on value level", {
+  val_changes_list2 <- val_changes_list
+  val_changes_list2$df2[2, "valLabel_new"] <- "test1"
+  g1 <- applyChangeMeta(val_changes_list2, expected_bigList)
+  expect_equal(g1$allLabels$valLabel, c(NA, NA, NA, "test1"))
+  # values
+  val_changes_list$df2[2, "value_new"] <- -99
+  g1 <- applyChangeMeta(val_changes_list, expected_bigList)
+  expect_equal(g1$allLabels$value, c(NA, NA, NA, -99))
+  # values that don't have a label
+  val_changes_list$df2[2, "value_new"] <- -99
+})
