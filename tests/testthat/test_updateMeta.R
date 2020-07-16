@@ -29,6 +29,8 @@ test_that("Update Meta GADSdat", {
   out_both <- updateMeta(df1, newDat)
   expect_equal(suppressMessages(updateMeta(df1, df1$dat)), df1)
 
+  newTibble <- tibble::as_tibble(newDat)
+  expect_error(updateMeta(df1, newTibble), "newDat needs to be a data.frame. Use as.data.frame is necessary.")
 })
 
 test_that("Update Meta all_GADSdat", {

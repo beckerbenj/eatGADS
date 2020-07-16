@@ -69,7 +69,7 @@ test_that("Check haven behaviour", {
   # but it is difficult to produce a minimal reprex
 })
 
-
+### documentation haven bug for long strings and specific variable names
 #df <- data.frame(Pflub1516_c = 1, Pflub1516_d = paste(rep("a", 1000), collapse = ""), stringsAsFactors = FALSE)
 #haven::write_sav(df, path = "tests/testthat/helper_longstring.sav")
 

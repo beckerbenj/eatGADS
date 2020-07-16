@@ -10,6 +10,7 @@ check_GADSdat <- function(GADSdat) {
   if(!is.list(GADSdat) && length(GADSdat) == 2) stop("GADSdat has to be a list with length two", call. = FALSE)
   if(!identical(names(GADSdat), c("dat", "labels"))) stop("List elements of a GADSdat object have to be 'dat' and 'labels'", call. = FALSE)
   if(!is.data.frame(GADSdat$dat)) stop("dat element has to be a data frame", call. = FALSE)
+  if(tibble::is_tibble(GADSdat$dat)) stop("dat element has to be a data frame and can not be a tibble.", call. = FALSE)
   if(!is.data.frame(GADSdat$labels)) stop("labels element has to be a data frame", call. = FALSE)
   if(!(identical(names(GADSdat$labels), c("varName", "varLabel", "format", "display_width", "labeled", "value", "valLabel", "missings")) ||
        identical(names(GADSdat$labels), c("varName", "varLabel", "format", "display_width", "labeled", "value", "valLabel", "missings", "data_table")))) {

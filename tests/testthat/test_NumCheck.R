@@ -1,5 +1,3 @@
-context("Recode multi mc based on text variables")
-
 
 ################# Match values and variables labels ---------------------------------------------------
 mt2 <- data.frame(num1 = 1:4, num2 = c(14, 50, 13, NA), fac1 = factor(NA, "Eng", "Aus", "Aus2"), text2 = c(NA, "Franz", NA, "Ger"),stringsAsFactors = FALSE)
