@@ -1,0 +1,106 @@
+---
+title: "`getGADS`: Using a relational eatGADS data base"
+author: "Benjamin Becker"
+date: "`r Sys.Date()`"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{getGADS: Using a relational eatGADS data base}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+```
+
+Relational data bases created by `eatGADS` provide a variety of advantages compared to common alternative ways of storing hierarchically structured data (e.g. from educational large-scale assessments):
+
+* the data set is often smaller on disk (especially compare to `.sav` files)
+* meta data can be accessed without loading the actually data set
+* no need for reshaping, as the different hierarchy levels can be accessed independently
+* saving working memory: often R struggles with large data sets; with `eatGADS` we can choose which variables to load into `R`
+* flexible automation how value labels and missing codes should be applied for analyses in `R`
+
+This vignette illustrates how a relational `eatGADS` data base can be accessed and used. For illustrative purposes we use a small example data base based on the campus files of the German PISA Plus assessment. The complete campus files and the original data set can be accessed [here](https://www.iqb.hu-berlin.de/fdz/Datenzugang/CF-Antrag/AntragsformularCF) and [here](https://www.iqb.hu-berlin.de/fdz/Datenzugang/SUF-Antrag). The data base is installed alongside `eatGADS` and the path can be accessed via the `system.fiel()` function.
+
+```{r setup}
+library(eatGADS)
+db_path <- system.file("extdata", "pisa.db", package = "eatGADS")
+db_path
+```
+
+## Inspecting the data base
+We can inspect the data base structure with the `namesGADS()` function. The function returns a named `list`. Every list element represents a hierarchy level. The corresponding character vector contains all variables names on this hierarchy level. 
+
+```{r structure}
+nam <- namesGADS(db_path)
+nam
+```
+
+The example data base contains two hierarchy levels: A student level (`noImp`) and a plausible value level (`PVs`). We can access meta information of the variables in the data set using the `extractMeta()` function. 
+
+```{r extractMeta}
+# Meta data for one variable
+extractMeta(db_path, "idstud")
+
+# Meta data for multiple variables
+extractMeta(db_path, c("idstud", "schtype"))
+```
+
+To supply variables names we can also use the named list `nam` extracted earlier. This way, we can extract all meta information available for a hierarchy level.
+
+```{r extractMeta all}
+extractMeta(db_path, nam$PVs)
+```
+
+Commonly the most informative columns are `varLabel` (containing variable labels), `value` (referencing labeled values), `valLabel` (containing value labels) and `missings` (is a labeled value a missing value `"miss"` or not `"valid"`).  
+
+## Extract data from data base
+
+To extract a data set from the data base, we can use the function `getGADS()` (if the data base is stored on a server drive, `getGADS_fast()` substantially increases the performance). With the `vSelect` argument we specify our variable selection. It is important to note that `getGADS()` returns a so called `GADSdat` object. This object is comparable to a `SPSS` data set, as it contains similar meta data. We can still use the `extractMeta()` function to access the meta data.     
+
+```{r getGADS}
+gads1 <- getGADS(db_path, vSelect = c("idstud", "schtype"))
+class(gads1)
+extractMeta(gads1)
+```
+
+If we want to use the data for analyses in `R` we have to extract it from the `GADSdat` object via the function `extractData`. In doing so, we have to make two important decisions: (a) how should values marked as missing values be treated (`convertMiss`)? And (b) how should labeled values in general be treated (`convertLabels`, `dropPartialLabels`, `convertVariables`)? 
+
+```{r extractdata}
+dat1 <- extractData(gads1)
+class(dat1)
+head(dat1)
+```
+
+A great feature of `eatGADS` relational data bases are that data sets are automatically returned on the correct hierarchy level. If only variables from the student level are extracted, the data has exactly this format. If additionally Plausible Values variables are extracted, the data automatically adopts the necessary long format.
+
+```{r different hierarchy levels}
+dim(dat1)
+
+gads2 <- getGADS(db_path, vSelect = c("idstud", "schtype", "value"))
+dat2 <- extractData(gads2)
+dim(dat2)
+head(dat2)
+```
+
+This example highlights another feature of `getgads()`. Only variables of substantial interest have to be selected for extraction. The correct ID variables are added automatically.
+
+## Trend data bases
+
+In educational large-scale assessments a common challenge is reporting longitudinal developments (trends). `getTrendGADS` allows extracting data from two data bases with identical variables in it. Linking errors can be automatically merged via the `lePath` argument.
+
+```{r getTrendGADS, eval=FALSE}
+gads_trend <- getTrendGADS(filePath1 = db_path, filePath2 = db_path2, lePath = le_path,
+                 vSelect = c("idstud", "schtype"), years = c(2012, 2013), fast = FALSE)
+dat_trend <- extractData(gads_trend)
+```
+
+
+
+
+
+

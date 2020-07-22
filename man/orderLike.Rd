@@ -2,20 +2,20 @@
 % Please edit documentation in R/orderLike.R
 \name{orderLike}
 \alias{orderLike}
-\title{Order the variables in a GADSdat.}
+\title{Order the variables in a \code{GADSdat}.}
 \usage{
 orderLike(GADSdat, newOrder)
 }
 \arguments{
-\item{GADSdat}{\code{GADSdat} object imported via eatGADS.}
+\item{GADSdat}{A \code{GADSdat} object.}
 
 \item{newOrder}{A character vector containing the order of variables.}
 }
 \value{
-Returns a GADSdat object.
+Returns a \code{GADSdat} object.
 }
 \description{
-Order the variables in a GADSdat according to a character vector. If there are discrepancies between the two sets, a warning is issued.
+Order the variables in a \code{GADSdat} according to a character vector. If there are discrepancies between the two sets, a warning is issued.
 }
 \details{
 The variables in the \code{dat} and in the \code{labels} section are ordered. Variables not contained in the character vector are moved to the end of the data.

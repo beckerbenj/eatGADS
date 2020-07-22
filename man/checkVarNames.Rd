@@ -2,7 +2,7 @@
 % Please edit documentation in R/checkVarNames.R
 \name{checkVarNames}
 \alias{checkVarNames}
-\title{Check names for SQLite conventions.}
+\title{Check names for \code{SQLite} conventions.}
 \usage{
 checkVarNames(GADSdat)
 }
@@ -16,7 +16,8 @@ Returns the original object with updated variable names.
 Applies variable names changes to \code{GADSdat} or \code{all_GADSdat} objects.
 }
 \details{
-tbd.
+Illegal names in a \code{SQLite} data base include \code{SQLite} keywords (see \code{\link[eatDB]{sqlite_keywords}}) and names
+with a \code{"."} in it.
 }
 \examples{
 # Example data set

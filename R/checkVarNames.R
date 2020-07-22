@@ -1,11 +1,12 @@
 
 #### Check Names
 #############################################################################
-#' Check names for SQLite conventions.
+#' Check names for \code{SQLite} conventions.
 #'
 #' Applies variable names changes to \code{GADSdat} or \code{all_GADSdat} objects.
 #'
-#' tbd.
+#' Illegal names in a \code{SQLite} data base include \code{SQLite} keywords (see \code{\link[eatDB]{sqlite_keywords}}) and names
+#' with a \code{"."} in it.
 #'
 #'@param GADSdat \code{GADSdat} or \code{all_GADSdat} object imported via eatGADS.
 #'

@@ -1,8 +1,10 @@
 ---
-title: "createGADS: Creating a relational data base"
+title: "`createGADS`: Creating a relational data base"
+author: "Benjamin Becker"
+date: "`r Sys.Date()`"
 output: rmarkdown::html_vignette
 vignette: >
-  %\VignetteIndexEntry{createGADS}
+  %\VignetteIndexEntry{createGADS: Creating a relational data base}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 ---
@@ -14,7 +16,7 @@ knitr::opts_chunk$set(
 )
 ```
 
-In the context of educational large-scale assessments (but also in other contexts) we frequently encounter data sets which have an hierarchical structure. In educational large-scale assessments these can, for example, be pupils nested in schools. Additional, hidden nested structures occur, if missing data are treated with multiple imputations or person parameters are estimated using plausible values. In these cases it is inefficient to store all the data in one rectangular data set. In other data science applications the use of relational data bases is a widespread measure to tackle this challange. 
+In the context of educational large-scale assessments (but also in other contexts) we frequently encounter data sets which have an hierarchical structure. In educational large-scale assessments these can, for example, be pupils nested in schools. Additional, hidden nested structures occur, if missing data are treated with multiple imputations or person parameters are estimated using plausible values. In these cases it is inefficient to store all the data in one rectangular data set. In other data science applications the use of relational data bases is a widespread measure to tackle this challenge. 
 
 `eatGADS` supports creating such relational data bases (based on the open source software `SQLite3` and the `R` package `eatDB`) while maintaining its meta data and providing a very user friendly interface for data users that are unfamiliar with relational data bases. In doing so, it allows the handling of large data sets even on limited hardware settings. Furthermore, this approach allows the extraction of data from different hierarchy levels, which means that data has to be reshaped very rarely. 
 
@@ -26,7 +28,7 @@ library(eatGADS)
 
 We can import an `.sav` data set via the `import_spss()` function. Checks on variable names for `SQLite3` compliance are performed automatically. Changes to the variable names are reported to the console.
 
-```{r import spss, message=FALSE}
+```{r import spss}
 sav_path <- system.file("extdata", "pisa.zsav", package = "eatGADS")
 dat <- import_spss(sav_path)
 ```
@@ -45,7 +47,7 @@ noImp_gads <- extractGADSdat(splitted_gads, "noImp")
 pvs_wide_gads <- extractGADSdat(splitted_gads, "PVs")
 ```
 
-For reshaping data we highly recommend the `R` package `tidyr`. Its performance might be less optimized than for example the `data.table` package, however it is very intuitive and beginner friendly. For our example data set we need to reshape the `PVs` from wide to long format and then separte the resulting column into two columns, containing the `dimension` and imputation number (`imp`). For this, we directly access the data in the `GADSdat` object via `pvs_wide_gads$dat`. Finally, we clean the `imp` column and transform it to numeric.
+For reshaping data we highly recommend the `R` package `tidyr`. Its performance might be less optimized than for example the `data.table` package, however it is very intuitive and beginner friendly. For our example data set we need to reshape the `PVs` from wide to long format and then separate the resulting column into two columns, containing the `dimension` and imputation number (`imp`). For this, we directly access the data in the `GADSdat` object via `pvs_wide_gads$dat`. Finally, we clean the `imp` column and transform it to numeric.
 
 ```{r reshape PVs}
 # Wide format
@@ -59,7 +61,7 @@ pvs_long2$imp <- as.numeric(gsub("pv", "", pvs_long2$imp))
 head(as.data.frame(pvs_long2))
 ```
 
-After reshaping we adapt the meta data in our initial `GADSdat` object via `updateMeta()`. Now we have to add some variable labels, as most of the old variable labels got lost due to the reshaping. For an extensive tutorial see the vignette handling meta data.
+After reshaping we adapt the meta data in our initial `GADSdat` object via `updateMeta()`. Now we have to add some variable labels, as most of the old variable labels got lost due to the reshaping. For an extensive tutorial see the vignette [Handling Meta Data](import_raw.html).
 
 ```{r updateMeta}
 pvs_long_gads <- updateMeta(pvs_wide_gads, newDat = as.data.frame(pvs_long2))
@@ -93,4 +95,4 @@ temp_path <- paste0(tempfile(), ".db")
 #           filePath = temp_path) ## waiting for bugfix eatDB
 ```
 
-For a detailed tutorial on how to use a relational `eatGADS` data base see the vignette ...
+For a detailed tutorial on how to use a relational `eatGADS` data base see the vignette [`getGADS`: Using a relational eatGADS data base](getGADS.html).

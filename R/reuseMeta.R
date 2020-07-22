@@ -4,7 +4,8 @@
 #'
 #' Transfer meta information from one \code{GADSdat} to another.
 #'
-#' tbd.
+#' Transfer of meta information can mean substituting the complete meta information, only adding value labels, or adding only
+#' \code{"valid"} missing labels. See the arguments \code{missingLabels} and \code{addValueLabels} for further information.
 #'
 #'@param GADSdat \code{GADSdat} object imported via \code{eatGADS}.
 #'@param varName Name of the variable that should get the new meta data.

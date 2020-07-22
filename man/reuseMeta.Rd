@@ -33,7 +33,8 @@ Returns the original object with updated meta data.
 Transfer meta information from one \code{GADSdat} to another.
 }
 \details{
-tbd.
+Transfer of meta information can mean substituting the complete meta information, only adding value labels, or adding only
+\code{"valid"} missing labels. See the arguments \code{missingLabels} and \code{addValueLabels} for further information.
 }
 \examples{
 # Example data set

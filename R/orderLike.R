@@ -1,15 +1,15 @@
 #### Order like a character vector
 #############################################################################
-#' Order the variables in a GADSdat.
+#' Order the variables in a \code{GADSdat}.
 #'
-#' Order the variables in a GADSdat according to a character vector. If there are discrepancies between the two sets, a warning is issued.
+#' Order the variables in a \code{GADSdat} according to a character vector. If there are discrepancies between the two sets, a warning is issued.
 #'
 #' The variables in the \code{dat} and in the \code{labels} section are ordered. Variables not contained in the character vector are moved to the end of the data.
 #'
-#'@param GADSdat \code{GADSdat} object imported via eatGADS.
+#'@param GADSdat A \code{GADSdat} object.
 #'@param newOrder A character vector containing the order of variables.
 #'
-#'@return Returns a GADSdat object.
+#'@return Returns a \code{GADSdat} object.
 #'
 #'@examples
 #'# Example data set

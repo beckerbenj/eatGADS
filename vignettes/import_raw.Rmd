@@ -40,7 +40,7 @@ devtools::install_github("beckerbenj/eatGADS")
 library(eatGADS)
 ```
 
-## Importing data into the GADSdat format
+## Importing data into the `GADSdat` format
 
 ### Importing from SPSS
 
@@ -53,7 +53,7 @@ gads <- import_spss("path/example.sav")
 
 ### Importing from Excel etc.
 
-All other file types should be imported into `R` first and then supplied as `data.frames` to `import_raw`. Below is a small selection of functions that import data as `data.frames`. For an extensive overview of importing functions using the package `readr` see also <https://r4ds.had.co.nz/data-import.html>, while the package `readxl` is explained in more detail under <https://readxl.tidyverse.org/>. As these files are plain data files, meta data has to be supplied as separate data sheets.
+All other file types should be imported into `R` first and then supplied as `data.frames` to `import_raw`. Below is a small selection of functions that import data as `data.frames`. For an extensive overview of importing functions using the package `readr` see also [this book chapter](https://r4ds.had.co.nz/data-import.html), while the package `readxl` is explained in more detail on this [homepage] (https://readxl.tidyverse.org/). As these files are plain data files, meta data has to be supplied as separate data sheets.
 
 Note that none of the `data.frames` can contain variables of the class `factor`, as this in itself constitutes meta data. If using base `R` to import data make sure to use the argument `stringsAsFactors = FALSE`. If necessary, convert `factors` to character via `as.character`.  
 
@@ -95,7 +95,7 @@ valLabels
 gads <- import_raw(df = df, varLabels = varLabels, valLabels = valLabels)
 ```
 
-## GADSdat class
+## `GADSdat` class
 
 The resulting object is of the class `GADSdat` and contains a data sheet and a meta data sheet.
 
@@ -104,9 +104,9 @@ The resulting object is of the class `GADSdat` and contains a data sheet and a m
 gads 
 ```
 
-### Saving GADSdat objects
+### Saving `GADSdat` objects
 
-GADSdat objects can for example be saved as `RDS` files. This is also the preferred data format for distributing `GADSdat` objects to the FDZ.
+`GADSdat` objects can for example be saved as `RDS` files. This is also the preferred data format for distributing `GADSdat` objects to the FDZ.
 
 ```{r save gads, eval = FALSE}
 # Inpsect resulting object 
@@ -114,7 +114,7 @@ saveRDS(gads, "path/gads.RDS")
 ```
 
 
-### Using GADSdat objects in R
+### Using `GADSdat` objects in R
 
 `eatGADS` provides convenient functions for extracting data and meta data from `GADSdat` objects. `extractMeta` is used to access the meta data for specific variables (or all variables, if no specific variable name is provided).  
 
@@ -136,7 +136,7 @@ dat2
 
 ```
 
-## Modifying GADSdat objects
+## Modifying `GADSdat` objects
 
 `GADSdat` objects can also be modified even though only a certain amount of operations are supported. For smaller changes to the meta data and data a number of convenience functions exists. These functions allow modifying variable labels (`chagenVarLabels`), modifying variable names (`changeVarNames`) and recoding values (`recodeGADS`).
 
