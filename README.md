@@ -14,7 +14,17 @@
 
 ```R
 # Install eatGADS from GitHub via
-devtools::install_github("beckerbenj/eatGADS")
+devtools::install_github("beckerbenj/eatGADS", build_vignettes = TRUE)
+```
+
+## Vignettes
+
+```R
+## See vignettes for exhaustive documentation
+# overview over all vignettes
+vignette(package = "eatGADS")
+# see a specific vignette
+vignette("getGADS")
 ```
 
 ## Usage
