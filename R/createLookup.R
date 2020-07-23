@@ -4,9 +4,11 @@
 #'
 #' Extract unique values from one or multiple variables of a \code{GADSdat} object for recoding (e.g. via an Excel spreadsheet).
 #'
-#' If recoding of one or multiple variables is more complex, a lookup table can be created for later application via \code{\link{applyLookup}} or \code{\link{applyLookup_expandVar}}.
-#'  The function allows the extraction of the values of multiple variables and sorting of these unique values via \code{variable} and/or \code{values}.
-#' If \code{addCols} are specified the lookup table has to be formatted via \code{\link{collapseColumns}}, before it can be applied to recode data.
+#' If recoding of one or multiple variables is more complex, a lookup table can be created for later application via
+#' \code{\link{applyLookup}} or \code{\link{applyLookup_expandVar}}. The function allows the extraction of the values
+#' of multiple variables and sorting of these unique values via \code{variable} and/or \code{values}.
+#' If \code{addCols} are specified the lookup table has to be formatted via \code{\link{collapseColumns}},
+#' before it can be applied to recode data.
 #'
 #'@param GADSdat A \code{GADSdat} object.
 #'@param recodeVars Character vector of variable names which should be recoded.
@@ -27,6 +29,10 @@
 #'
 #' # create Lookup table for recoding
 #' lookup <- createLookup(gads, recodeVars = c("var1", "var2"), sort_by = c("value", "variable"))
+#'
+#' # create Lookup table for recoding by multiple recoders
+#' lookup2 <- createLookup(gads, recodeVars = c("var1", "var2"), sort_by = c("value", "variable"),
+#'                         addCols = c("value_recoder1", "value_recoder2"))
 #'
 #'@export
 createLookup <- function(GADSdat, recodeVars, sort_by = NULL, addCols = c("value_new")) {

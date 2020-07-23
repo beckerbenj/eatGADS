@@ -3,9 +3,18 @@
 #' Recode via lookup table into multiple variables.
 #'
 #' Recode one or multiple variables based on a lookup table created via \code{\link{createLookup}}. In contrast to \code{\link{applyLookup}},
-#' this function allows the creation of multiple resulting variables from a single input variable.
+#' this function allows the creation of multiple resulting variables from a single input variable. All variables in \code{lookup}, except
+#' \code{variable} and \code{value} are treated as recode columns.
 #'
-#' tbd
+#' If a variable contains information that should be split into multiple variables via manual recoding, \code{applyLookup_expandVar} can be used.
+#' If there are missing values in any recode colum, \code{NAs} are inserted as new values. A \code{warning} is issued only for the first column.
+#'
+#' The complete work flow when using a lookup table to expand variables in a \code{GADSdat} based on manual recoding could be: (1) create a
+#' lookup table with \code{\link{createLookup}}. Save the lookup table to \code{.xlsx} with \code{\link[eatAnalysis]{write_xlsx}}. (3) fill out the
+#' lookup table via \code{Excel}. (4) Import the lookup table back to \code{R} via \code{\link[readxl]{read_xlsx}}. (5) Apply the final
+#' lookup table with \code{applyLookup_expandVar}.
+#'
+#' See \code{\link{applyLookup}} for simply recoding variables in a GADSdat.
 #'
 #'@param GADSdat A \code{GADSdat} object.
 #'@param lookup Lookup table created by \code{\link{createLookup}}.
@@ -13,7 +22,20 @@
 #'@return Returns a recoded \code{GADSdat}.
 #'
 #'@examples
-#'#to be done
+#'## create an example GADSdat
+#'example_df <- data.frame(ID = 1:6,
+#'                         citizenship = c("germ", "engl", "germ, usa", "china",
+#'                                         "austral, morocco", "nothin"),
+#'                         stringsAsFactors = FALSE)
+#'gads <- import_DF(example_df)
+#'
+#'## create Lookup
+#'lu <- createLookup(gads, recodeVars = "citizenship", addCol = c("cit_1", "cit_2"))
+#'lu$cit_1 <- c("German", "English", "German", "Chinese", "Australian", NA)
+#'lu$cit_2 <- c(NA, NA, "USA", NA, "Morocco", NA)
+#'
+#'## apply lookup table
+#'gads2 <- applyLookup_expandVar(gads, lookup = lu)
 #'
 #'@export
 applyLookup_expandVar <- function(GADSdat, lookup) {
@@ -30,6 +52,7 @@ applyLookup_expandVar.GADSdat <- function(GADSdat, lookup) {
     # 1) divide lookup table
     single_lookup <- lookup[, c(1, 2, 2 + i)]
     names(single_lookup)[3] <- "value_new"
+    # check first recode column more thoroughly than later columns (same warning as in check_lookup)
     if(i == 1) check_lookup(single_lookup, GADSdat = GADSdat)
 
     # 2) apply recode; new variable with number as suffix?
@@ -41,4 +64,13 @@ applyLookup_expandVar.GADSdat <- function(GADSdat, lookup) {
 
   check_GADSdat(GADSdat_new)
   GADSdat_new
+}
+
+## deprecated, check_lookup is used for first column
+check_lookup_expandVar <- function(lookup, GADSdat) {
+  # checks as in check_lookup
+  if(!all(lookup$variable %in% namesGADS(GADSdat))) stop("Some of the variables are not variables in the GADSdat.")
+  if(!identical(names(lookup)[1:2], c("variable", "value"))) stop("'lookup' table has to be formatted correctly.")
+  if(sum(is.na(lookup$value)) > 1) stop("In more than 1 row value is missing.")
+  if(any(is.na(lookup[, 3]))) warning("Not all values have a recode value assigned in new value column 1 (missings in new values).")
 }

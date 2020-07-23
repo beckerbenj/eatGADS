@@ -1,23 +1,38 @@
 
 #### Collapse an MC and a text variable.
 #############################################################################
-#' Recode MC variable based on text.
+#' Recode a multiple choice variable according to a character variable.
 #'
-#' Use an additional text variable to recode an existing MC variable.
+#' Recode an labeled integer variable (based on an multiple choice item), according to a character variable (e.g. an open answer item).
 #'
-#' to be written
+#' Multiple choice variables can be represented as labeled integer variables in a \code{GADSdat}. Multiple choice items with a forced choice
+#' frequently contain an open answer category. However, sometimes open answers overlap with the existing categories in the multiple choice
+#' item. \code{collapseMC_Text} allows recoding the multiple choice variable based on the open answer variable.
+#'
+#' \code{mc_code4text} indicates when entries in the \code{text_var} should be used. Additionally, entries in the \code{text_var} are also
+#' used when there are missings on the \code{mc_var}. New values for the \code{mc_var} are added in the meta data, while preserving the initial
+#' ordering of the value labels. Newly added value labels are sorted alphabetically.
 #'
 #'@param GADSdat A \code{GADSdat} object.
-#'@param mc_var A single variable name of the multiple choice variable.
-#'@param text_var A single variable name of the text variable.
-#'@param mc_code4text The value in the MC variable that signals that information from the text variable should be used.
-#'@param var_suffix Variable suffix for the newly created \code{GADSdat}.
-#'@param label_suffix Suffix added to variable label for the newly created variable in the \code{GADSdat}.
+#'@param mc_var The variable name of the multiple choice variable.
+#'@param text_var The variable name of the text variable.
+#'@param mc_code4text The value label in \code{mc_var} that indicates that information from the text variable should be used.
+#'@param var_suffix Variable name suffix for the newly created variables.
+#'@param label_suffix Variable label suffix for the newly created variable (only added in the meta data).
 #'
 #'@return Returns a \code{GADSdat} containing the newly computed variable.
 #'
 #'@examples
-#'#to be done
+#'# Example gads
+#'example_df <- data.frame(ID = 1:5, mc = c("blue", "blue", "green", "other", "other"),
+#'                         open = c(NA, NA, NA, "yellow", "blue"),
+#'                         stringsAsFactors = FALSE)
+#'example_df$mc <- as.factor(example_df$mc)
+#'gads <- import_DF(example_df)
+#'
+#'# recode
+#'gads2 <- collapseMC_Text(gads, mc_var = "mc", text_var = "open",
+#'                         mc_code4text = "other")
 #'
 #'@export
 collapseMC_Text <- function(GADSdat, mc_var, text_var, mc_code4text, var_suffix = "_r", label_suffix = "(recoded)") {
@@ -26,8 +41,13 @@ collapseMC_Text <- function(GADSdat, mc_var, text_var, mc_code4text, var_suffix 
 
 #'@export
 collapseMC_Text.GADSdat <- function(GADSdat, mc_var, text_var, mc_code4text, var_suffix = "_r", label_suffix = "(recoded)") {
-  if(!mc_var %in% namesGADS(GADSdat)) stop("mc_var is not a variable in the GADSdat.")
-  if(!text_var %in% namesGADS(GADSdat)) stop("text_var is not a variable in the GADSdat.")
+  if(!mc_var %in% namesGADS(GADSdat)) stop("'mc_var' is not a variable in the GADSdat.")
+  if(!text_var %in% namesGADS(GADSdat)) stop("'text_var' is not a variable in the GADSdat.")
+  if(!is.numeric(GADSdat$dat[, mc_var]) || GADSdat$labels[GADSdat$labels$varName == mc_var, "labeled"][1] != "yes"){
+    stop("'mc_var' must be a labeled integer.")
+  }
+  if(!is.character(mc_code4text) || length(mc_code4text) != 1) stop("'mc_code4text' must be a character of length 1.")
+  if(!mc_code4text %in% GADSdat$labels[GADSdat$labels$varName == mc_var, "valLabel"]) stop("'mc_code4text' must be a 'valLabel' entry for 'mc_var'.")
 
   mc_var_new <- paste0(mc_var, var_suffix)
   MC_dat <- GADSdat$dat[, mc_var, drop = FALSE]

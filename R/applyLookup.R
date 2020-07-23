@@ -2,18 +2,43 @@
 #############################################################################
 #' Recode via lookup table.
 #'
-#' Recode one or multiple variables based on a lookup table created via \code{\link{createLookup}}.
+#' Recode one or multiple variables based on a lookup table created via \code{\link{createLookup}}
+#' (and potentially formatted by \code{\link{collapseColumns}}).
 #'
-#' tbd
+#' If there are missing values in the column \code{value_new}, \code{NAs} are inserted as new values
+#' and a \code{warning} is issued.
+#'
+#' The complete work flow when using a lookup table to recode multiple variables in a \code{GADSdat} could be: (1) create a lookup table
+#' with \code{\link{createLookup}}. Save the lookup table to \code{.xlsx} with \code{\link[eatAnalysis]{write_xlsx}}. (3) fill out the
+#' lookup table via \code{Excel}. (4) Import the lookup table back to \code{R} via \code{\link[readxl]{read_xlsx}}. (5) Apply the final
+#' lookup table with \code{applyLookup}.
+#'
+#' See \code{\link{applyLookup_expandVar}} for recoding a single variable into multiple variables.
 #'
 #'@param GADSdat A \code{GADSdat} object.
-#'@param lookup Lookup table created by \code{\link{createLookup}} and - if necessary -  collapsed by \code{\link{collapseColumns}}. Column names should be \code{c("variable", "value", "value_new")}.
+#'@param lookup Lookup table created by \code{\link{createLookup}} and - if necessary -  collapsed by \code{\link{collapseColumns}}.
+#'Column names must be \code{c("variable", "value", "value_new")}.
 #'@param suffix Suffix to add to the existing variable names. If \code{NULL} the old variables will be overwritten.
 #'
 #'@return Returns a recoded \code{GADSdat}.
 #'
 #'@examples
-#'#to be done
+#'## create an example GADSdat
+#'iris2 <- iris
+#'iris2$Species <- as.character(iris2$Species)
+#'gads <- import_DF(iris2)
+#'
+#'## create Lookup
+#'lu <- createLookup(gads, recodeVars = "Species")
+#'lu$value_new <- c("plant 1", "plant 2", "plant 3")
+#'
+#'## apply lookup table
+#'gads2 <- applyLookup(gads, lookup = lu, suffix = "_r")
+#'
+#'## only recode some values
+#'lu2 <- createLookup(gads, recodeVars = "Species")
+#'lu2$value_new <- c("plant 1", "plant 2", NA)
+#'gads3 <- applyLookup(gads, lookup = lu2, suffix = "_r")
 #'
 #'@export
 applyLookup <- function(GADSdat, lookup, suffix = NULL) {
@@ -71,12 +96,10 @@ applyLookup.GADSdat <- function(GADSdat, lookup, suffix = NULL) {
 }
 
 
-
-
 check_lookup <- function(lookup, GADSdat) {
   if(!all(lookup$variable %in% namesGADS(GADSdat))) stop("Some of the variables are not variables in the GADSdat.")
-  if(!identical(names(lookup), c("variable", "value", "value_new"))) stop("LookUp table has to be formatted correctly.")
+  if(!identical(names(lookup), c("variable", "value", "value_new"))) stop("'lookup' table has to be formatted correctly.")
   if(sum(is.na(lookup$value)) > 1) stop("In more than 1 row value is missing.")
-  if(all(is.na(lookup$value_new))) stop("All values have no recode value assigned (missings in value_new).")
-  if(any(is.na(lookup$value_new))) warning("Some values have no recode value assigned (missings in value_new).")
+  if(all(is.na(lookup$value_new))) stop("No values have a recode value assigned (missings in value_new).")
+  if(any(is.na(lookup$value_new))) warning("Not all values have a recode value assigned (missings in value_new).")
 }

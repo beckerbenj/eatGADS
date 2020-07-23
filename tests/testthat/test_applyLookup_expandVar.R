@@ -12,13 +12,21 @@ l_gads <- import_DF(l)
 test_that("Errors for apply lookup with expanding into multiple variables", {
   lookup4 <- lookup2 <- lookup3 <- lookup
   names(lookup2)[1] <- "v"
-  expect_error(applyLookup_expandVar(l_gads, lookup2), "LookUp table has to be formatted correctly.")
+  expect_error(applyLookup_expandVar(l_gads, lookup2), "'lookup' table has to be formatted correctly.")
 
   lookup3$value[1:2] <- NA
   expect_error(applyLookup_expandVar(l_gads, lookup3), "In more than 1 row value is missing.")
 
   lookup4$new_value1[1] <- NA
   expect_warning(applyLookup_expandVar(l_gads, lookup4),)
+})
+
+test_that("Warnings for missings in first recode column (apply lookup with expanding into multiple variables)", {
+  lookup3 <- lookup
+  lookup3[1, 3] <- NA
+  expect_warning(applyLookup_expandVar(l_gads, lookup3),
+                 "Not all values have a recode value assigned (missings in value_new).", fixed = TRUE)
+
 })
 
 test_that("Apply lookup with expanding into multiple variables", {

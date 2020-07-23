@@ -16,12 +16,34 @@ Returns a recoded \code{GADSdat}.
 }
 \description{
 Recode one or multiple variables based on a lookup table created via \code{\link{createLookup}}. In contrast to \code{\link{applyLookup}},
-this function allows the creation of multiple resulting variables from a single input variable.
+this function allows the creation of multiple resulting variables from a single input variable. All variables in \code{lookup}, except
+\code{variable} and \code{value} are treated as recode columns.
 }
 \details{
-tbd
+If a variable contains information that should be split into multiple variables via manual recoding, \code{applyLookup_expandVar} can be used.
+If there are missing values in any recode colum, \code{NAs} are inserted as new values. A \code{warning} is issued only for the first column.
+
+The complete work flow when using a lookup table to expand variables in a \code{GADSdat} based on manual recoding could be: (1) create a
+lookup table with \code{\link{createLookup}}. Save the lookup table to \code{.xlsx} with \code{\link[eatAnalysis]{write_xlsx}}. (3) fill out the
+lookup table via \code{Excel}. (4) Import the lookup table back to \code{R} via \code{\link[readxl]{read_xlsx}}. (5) Apply the final
+lookup table with \code{applyLookup_expandVar}.
+
+See \code{\link{applyLookup}} for simply recoding variables in a GADSdat.
 }
 \examples{
-#to be done
+## create an example GADSdat
+example_df <- data.frame(ID = 1:6,
+                        citizenship = c("germ", "engl", "germ, usa", "china",
+                                        "austral, morocco", "nothin"),
+                        stringsAsFactors = FALSE)
+gads <- import_DF(example_df)
+
+## create Lookup
+lu <- createLookup(gads, recodeVars = "citizenship", addCol = c("cit_1", "cit_2"))
+lu$cit_1 <- c("German", "English", "German", "Chinese", "Australian", NA)
+lu$cit_2 <- c(NA, NA, "USA", NA, "Morocco", NA)
+
+## apply lookup table
+gads2 <- applyLookup_expandVar(gads, lookup = lu)
 
 }

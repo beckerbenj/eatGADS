@@ -9,7 +9,8 @@ applyLookup(GADSdat, lookup, suffix = NULL)
 \arguments{
 \item{GADSdat}{A \code{GADSdat} object.}
 
-\item{lookup}{Lookup table created by \code{\link{createLookup}} and - if necessary -  collapsed by \code{\link{collapseColumns}}. Column names should be \code{c("variable", "value", "value_new")}.}
+\item{lookup}{Lookup table created by \code{\link{createLookup}} and - if necessary -  collapsed by \code{\link{collapseColumns}}.
+Column names must be \code{c("variable", "value", "value_new")}.}
 
 \item{suffix}{Suffix to add to the existing variable names. If \code{NULL} the old variables will be overwritten.}
 }
@@ -17,12 +18,36 @@ applyLookup(GADSdat, lookup, suffix = NULL)
 Returns a recoded \code{GADSdat}.
 }
 \description{
-Recode one or multiple variables based on a lookup table created via \code{\link{createLookup}}.
+Recode one or multiple variables based on a lookup table created via \code{\link{createLookup}}
+(and potentially formatted by \code{\link{collapseColumns}}).
 }
 \details{
-tbd
+If there are missing values in the column \code{value_new}, \code{NAs} are inserted as new values
+and a \code{warning} is issued.
+
+The complete work flow when using a lookup table to recode multiple variables in a \code{GADSdat} could be: (1) create a lookup table
+with \code{\link{createLookup}}. Save the lookup table to \code{.xlsx} with \code{\link[eatAnalysis]{write_xlsx}}. (3) fill out the
+lookup table via \code{Excel}. (4) Import the lookup table back to \code{R} via \code{\link[readxl]{read_xlsx}}. (5) Apply the final
+lookup table with \code{applyLookup}.
+
+See \code{\link{applyLookup_expandVar}} for recoding a single variable into multiple variables.
 }
 \examples{
-#to be done
+## create an example GADSdat
+iris2 <- iris
+iris2$Species <- as.character(iris2$Species)
+gads <- import_DF(iris2)
+
+## create Lookup
+lu <- createLookup(gads, recodeVars = "Species")
+lu$value_new <- c("plant 1", "plant 2", "plant 3")
+
+## apply lookup table
+gads2 <- applyLookup(gads, lookup = lu, suffix = "_r")
+
+## only recode some values
+lu2 <- createLookup(gads, recodeVars = "Species")
+lu2$value_new <- c("plant 1", "plant 2", NA)
+gads3 <- applyLookup(gads, lookup = lu2, suffix = "_r")
 
 }

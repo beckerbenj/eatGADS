@@ -2,7 +2,7 @@
 % Please edit documentation in R/collapseMC_Text.R
 \name{collapseMC_Text}
 \alias{collapseMC_Text}
-\title{Recode MC variable based on text.}
+\title{Recode a multiple choice variable according to a character variable.}
 \usage{
 collapseMC_Text(
   GADSdat,
@@ -16,26 +16,41 @@ collapseMC_Text(
 \arguments{
 \item{GADSdat}{A \code{GADSdat} object.}
 
-\item{mc_var}{A single variable name of the multiple choice variable.}
+\item{mc_var}{The variable name of the multiple choice variable.}
 
-\item{text_var}{A single variable name of the text variable.}
+\item{text_var}{The variable name of the text variable.}
 
-\item{mc_code4text}{The value in the MC variable that signals that information from the text variable should be used.}
+\item{mc_code4text}{The value label in \code{mc_var} that indicates that information from the text variable should be used.}
 
-\item{var_suffix}{Variable suffix for the newly created \code{GADSdat}.}
+\item{var_suffix}{Variable name suffix for the newly created variables.}
 
-\item{label_suffix}{Suffix added to variable label for the newly created variable in the \code{GADSdat}.}
+\item{label_suffix}{Variable label suffix for the newly created variable (only added in the meta data).}
 }
 \value{
 Returns a \code{GADSdat} containing the newly computed variable.
 }
 \description{
-Use an additional text variable to recode an existing MC variable.
+Recode an labeled integer variable (based on an multiple choice item), according to a character variable (e.g. an open answer item).
 }
 \details{
-to be written
+Multiple choice variables can be represented as labeled integer variables in a \code{GADSdat}. Multiple choice items with a forced choice
+frequently contain an open answer category. However, sometimes open answers overlap with the existing categories in the multiple choice
+item. \code{collapseMC_Text} allows recoding the multiple choice variable based on the open answer variable.
+
+\code{mc_code4text} indicates when entries in the \code{text_var} should be used. Additionally, entries in the \code{text_var} are also
+used when there are missings on the \code{mc_var}. New values for the \code{mc_var} are added in the meta data, while preserving the initial
+ordering of the value labels. Newly added value labels are sorted alphabetically.
 }
 \examples{
-#to be done
+# Example gads
+example_df <- data.frame(ID = 1:5, mc = c("blue", "blue", "green", "other", "other"),
+                        open = c(NA, NA, NA, "yellow", "blue"),
+                        stringsAsFactors = FALSE)
+example_df$mc <- as.factor(example_df$mc)
+gads <- import_DF(example_df)
+
+# recode
+gads2 <- collapseMC_Text(gads, mc_var = "mc", text_var = "open",
+                        mc_code4text = "other")
 
 }
