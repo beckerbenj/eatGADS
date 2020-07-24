@@ -22,9 +22,9 @@ collapseMC_Text(
 
 \item{mc_code4text}{The value label in \code{mc_var} that indicates that information from the text variable should be used.}
 
-\item{var_suffix}{Variable name suffix for the newly created variables.}
+\item{var_suffix}{Variable name suffix for the newly created variables. If \code{NULL}, variables are overwritten.}
 
-\item{label_suffix}{Variable label suffix for the newly created variable (only added in the meta data).}
+\item{label_suffix}{Variable label suffix for the newly created variable (only added in the meta data). If \code{NULL} no suffix is added.}
 }
 \value{
 Returns a \code{GADSdat} containing the newly computed variable.

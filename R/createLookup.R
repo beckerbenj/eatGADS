@@ -24,7 +24,7 @@
 #' # create example GADS
 #' dat <- data.frame(ID = 1:4, var1 = c(NA, "Eng", "Aus", "Aus2"),
 #'                   var2 = c(NA, "French", "Ger", "Ita"),
-#'                   stringsAsFactors = TRUE)
+#'                   stringsAsFactors = FALSE)
 #' gads <- import_DF(dat)
 #'
 #' # create Lookup table for recoding

@@ -17,8 +17,8 @@
 #'@param mc_var The variable name of the multiple choice variable.
 #'@param text_var The variable name of the text variable.
 #'@param mc_code4text The value label in \code{mc_var} that indicates that information from the text variable should be used.
-#'@param var_suffix Variable name suffix for the newly created variables.
-#'@param label_suffix Variable label suffix for the newly created variable (only added in the meta data).
+#'@param var_suffix Variable name suffix for the newly created variables. If \code{NULL}, variables are overwritten.
+#'@param label_suffix Variable label suffix for the newly created variable (only added in the meta data). If \code{NULL} no suffix is added.
 #'
 #'@return Returns a \code{GADSdat} containing the newly computed variable.
 #'
@@ -68,11 +68,14 @@ collapseMC_Text.GADSdat <- function(GADSdat, mc_var, text_var, mc_code4text, var
                                  value_new = GADSdat$labels[GADSdat$labels$varName == mc_var, "value"],
                                  stringsAsFactors = FALSE)
 
-  GADSdat_dat <- cbind(GADSdat$dat, MC_new, stringsAsFactors = FALSE)
-  names(GADSdat_dat)[ncol(GADSdat_dat)] <- mc_var_new
+  #GADSdat_dat <- cbind(GADSdat$dat, MC_new, stringsAsFactors = FALSE)
+  #names(GADSdat_dat)[ncol(GADSdat_dat)] <- mc_var_new
+  GADSdat_dat <- GADSdat$dat
+  GADSdat_dat[, mc_var_new] <- MC_new
   GADSdat_dat2 <- updateMeta(GADSdat, GADSdat_dat)
 
   # use lookup tables
+  #GADSdat_dat2$dat <- GADSdat_dat2$dat[, -2] ### mh, this works?
   suppressWarnings(suppressMessages(GADSdat_dat3 <- applyLookup(GADSdat_dat2, lookup = lookup_oldValues)))
 
   # create and use lookup tables for new value levels
@@ -102,8 +105,7 @@ collapseMC_Text.GADSdat <- function(GADSdat, mc_var, text_var, mc_code4text, var
 
 ## append a suffix to a variable label safely
 append_varLabel <- function(GADSdat, varName, label_suffix) {
-  stopifnot(length(label_suffix) == 1)
-  if(nchar(label_suffix) == 0) return(GADSdat)
+  if(is.null(label_suffix) || nchar(label_suffix) == 0) return(GADSdat)
   old_varLabel <- extractMeta(GADSdat, varName)[1, "varLabel"]
   new_varLabel <- ifelse(is.na(old_varLabel), yes = label_suffix,
                          no = paste(old_varLabel, label_suffix, sep = " "))
