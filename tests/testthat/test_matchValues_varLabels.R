@@ -27,3 +27,11 @@ test_that("Match values and variable names by variable labels", {
 
   #expect_equal(out$v2, c(NA, NA, NA, "k"))
 })
+
+
+test_that("matchValues_varLabels multiple matches", {
+  mt4_gads <- changeVarLabels(mt3_gads, varName = "mc2", varLabel = "Lang: US Eng")
+  expect_error(matchValues_varLabels(mt4_gads, mc_vars = c("mc1", "mc2", "mc3"),
+                                     values = c("Aus", "Eng", "Eng"), label_by_hand = c("other" = "mc3")),
+               "Multiple matches found for Eng. There must be always exactly 1 match.")
+})

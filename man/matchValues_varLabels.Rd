@@ -20,10 +20,16 @@ Returns a named character vector. Values of the vector are the variable names in
 are the regular expressions.
 }
 \description{
-Using variable labels, the function matches a vector of regular expressions to a set of variable names.
+Using variable labels, \code{matchValues_varLabels} matches a vector of regular expressions to a set of variable names.
 }
 \details{
-Note that all variables in \code{mc_vars} have to be assigned a value. If a variable name is missing in the output,
+Multiple choice items can be stored as multiple dichotomous variables with the information about the variable
+stored in the variable labels. The function \code{\link{collapseMultiMC_Text}} can be used to collapse such dichotomous
+variables and a character variable, but requires a character vector with variables names of the multiplce choice variables.
+\code{matchValues_varLabels} creates such a vector based on matching regular expressions (\code{values}) to variable labels.
+
+Note that all variables in \code{mc_vars} have to be assigned exactly one value (and vice versa).
+If a variable name is missing in the output,
 an error will be thrown. In this case, the \code{label_by_hand} argument should be used to specify the regular expression
 variable name pair manually.
 }
