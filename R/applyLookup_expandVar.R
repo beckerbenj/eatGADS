@@ -7,14 +7,14 @@
 #' \code{variable} and \code{value} are treated as recode columns.
 #'
 #' If a variable contains information that should be split into multiple variables via manual recoding, \code{applyLookup_expandVar} can be used.
-#' If there are missing values in any recode colum, \code{NAs} are inserted as new values. A \code{warning} is issued only for the first column.
+#' If there are missing values in any recode column, \code{NAs} are inserted as new values. A \code{warning} is issued only for the first column.
 #'
 #' The complete work flow when using a lookup table to expand variables in a \code{GADSdat} based on manual recoding could be: (1) create a
 #' lookup table with \code{\link{createLookup}}. Save the lookup table to \code{.xlsx} with \code{\link[eatAnalysis]{write_xlsx}}. (3) fill out the
 #' lookup table via \code{Excel}. (4) Import the lookup table back to \code{R} via \code{\link[readxl]{read_xlsx}}. (5) Apply the final
 #' lookup table with \code{applyLookup_expandVar}.
 #'
-#' See \code{\link{applyLookup}} for simply recoding variables in a GADSdat.
+#' See \code{\link{applyLookup}} for simply recoding variables in a \code{GADSdat}.
 #'
 #'@param GADSdat A \code{GADSdat} object.
 #'@param lookup Lookup table created by \code{\link{createLookup}}.
