@@ -40,9 +40,16 @@ test_that("Combine mc and text",{
 })
 
 
-## this is an old problem, that I did not detect; either test and forbid or make possible!
 test_that("Combine mc and text into old variables",{
   test <- collapseMC_Text(mt_gads, mc_var = "mc", text_var = "text", mc_code4text = "other", var_suffix = NULL, label_suffix = NULL)
+  expect_false("mc_r" %in% names(test$dat))
+  expect_equal(test$dat$mc, c(2, 4, 1, 1))
+  test_dat <- extractData(test)
+  expect_equal(test_dat$mc, c("Ger", "Eng", "Aus", "Aus"))
+})
+
+test_that("Combine mc and text into old variables via empty string",{
+  test <- collapseMC_Text(mt_gads, mc_var = "mc", text_var = "text", mc_code4text = "other", var_suffix = "", label_suffix = NULL)
   expect_false("mc_r" %in% names(test$dat))
   expect_equal(test$dat$mc, c(2, 4, 1, 1))
   test_dat <- extractData(test)

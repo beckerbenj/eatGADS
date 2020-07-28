@@ -68,14 +68,11 @@ collapseMC_Text.GADSdat <- function(GADSdat, mc_var, text_var, mc_code4text, var
                                  value_new = GADSdat$labels[GADSdat$labels$varName == mc_var, "value"],
                                  stringsAsFactors = FALSE)
 
-  #GADSdat_dat <- cbind(GADSdat$dat, MC_new, stringsAsFactors = FALSE)
-  #names(GADSdat_dat)[ncol(GADSdat_dat)] <- mc_var_new
   GADSdat_dat <- GADSdat$dat
   GADSdat_dat[, mc_var_new] <- MC_new
   GADSdat_dat2 <- updateMeta(GADSdat, GADSdat_dat)
 
   # use lookup tables
-  #GADSdat_dat2$dat <- GADSdat_dat2$dat[, -2] ### mh, this works?
   suppressWarnings(suppressMessages(GADSdat_dat3 <- applyLookup(GADSdat_dat2, lookup = lookup_oldValues)))
 
   # create and use lookup tables for new value levels
