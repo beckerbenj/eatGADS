@@ -25,7 +25,7 @@ Using variable labels, \code{matchValues_varLabels} matches a vector of regular 
 \details{
 Multiple choice items can be stored as multiple dichotomous variables with the information about the variable
 stored in the variable labels. The function \code{\link{collapseMultiMC_Text}} can be used to collapse such dichotomous
-variables and a character variable, but requires a character vector with variables names of the multiplce choice variables.
+variables and a character variable, but requires a character vector with variables names of the multiple choice variables.
 \code{matchValues_varLabels} creates such a vector based on matching regular expressions (\code{values}) to variable labels.
 
 Note that all variables in \code{mc_vars} have to be assigned exactly one value (and vice versa).

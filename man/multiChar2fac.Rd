@@ -2,7 +2,7 @@
 % Please edit documentation in R/multiChar2fac.R
 \name{multiChar2fac}
 \alias{multiChar2fac}
-\title{Multiple character variables to factors with identical levels.}
+\title{Transform Multiple character variables to factors with identical levels.}
 \usage{
 multiChar2fac(GADSdat, vars, var_suffix = "_r", label_suffix = "(recoded)")
 }
@@ -22,8 +22,9 @@ Returns a \code{GADSdat} containing the newly computed variable.
 Convert multiple character variables to factors, while creating a common set of value labels, which is identical across variables.
 }
 \details{
-If a set of variables has the same possible values, it is desirable that these variables share the same value labels, even if
-some of the values do not occur on the individual variables. This function allows the transformation of multiple character variables
+If a set of variables has the same possible values, it is desirable that these variables share the same
+value labels, even if some of the values do not occur on the individual variables. This function allows
+the transformation of multiple character variables
 to factors while assimilating the value labels.
 The SPSS format of the newly created variables is set to \code{F10.0}.
 }

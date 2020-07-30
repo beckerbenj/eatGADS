@@ -1,27 +1,36 @@
 #### Collapse multi MC and multi text variables.
 #############################################################################
-#' Recode MC variable with multiple variables based on text.
+#' Recode multiple choice variable with multiple variables.
 #'
-#' Recode a multiple variable multiple choice item based on a multiple variable text field.
+#' Recode multiple variables (representing a single multiple choice item) based on multiple character variables
+#' (representing a text field).
 #'
-#' If a multiple choice item can be answered with crossing multiple boxes, multiple variables in the data set are necessary
-#' to represent this item. In this case, an additional text field for further answers can also contain multiple values at once.
-#' This function allows to recode multiple MC items of this kind based on multiple text variables. Additionally, the \code{mc_var_4text}
+#' If a multiple choice item can be answered with ticking multiple boxes, multiple variables in the data
+#' set are necessary to represent this item. In this case, an additional text field for further answers can also
+#' contain multiple values at once. However, some of the answers in the text field might be redundant to
+#' the dummy variables. \code{collapseMultiMC_Text} allows to recode multiple MC items of this
+#' kind based on multiple text variables. The recoding can be prepared by expanding the single text variable
+#' (\code{\link{createLookup}} and \code{\link{applyLookup_expandVar}}) and by matching the dummy variables
+#' to its underlying values stored in variable labels (\code{\link{matchValues_varLabels}}).
+#'
+#' The function recodes the dummy variables according to the character variables. Additionally, the \code{mc_var_4text}
 #' variable is recoded according to the final status of the \code{text_vars}.
 #'
-#' Missing values in the text variables can be represented either by \code{NAs} or by empty characters. The multiple choice variables
-#' specified with \code{mc_vars} can only contain the values \code{0}, \code{1} and missing codes. If necessary, use
-#' \code{\link{recodeGADS}} for recoding.
+#' Missing values in the text variables can be represented either by \code{NAs} or by empty characters.
+#' The multiple choice variables specified with \code{mc_vars} can only contain the values \code{0},
+#' \code{1} and missing codes. The value \code{1} must always represent "this category applies".
+#' If necessary, use \code{\link{recodeGADS}} for recoding.
 #'
 #'@param GADSdat A \code{GADSdat} object.
-#'@param mc_vars A character vector with the variable names of the multiple choice variable. Names of the character vector are
-#'the corresponding values that are represented by the individual variables.
+#'@param mc_vars A character vector with the variable names of the multiple choice variable. Names of the character
+#' vector are the corresponding values that are represented by the individual variables.
+#' Creation by \code{\link{matchValues_varLabels}} is recommended.
 #'@param text_vars A character vector with the names of the text variables which should be collapsed.
 #'@param mc_var_4text The name of the multiple choice variable that signals that information from the text variable should be used. This variable is recoded according to the final status of the text variables.
 #'@param var_suffix Variable suffix for the newly created \code{GADSdat}. If an empty character, the existing variables are overwritten.
 #'@param label_suffix Suffix added to variable label for the newly created or modified variables in the \code{GADSdat}.
 #'
-#'@return Returns a \code{GADSdat} containing the newly computed variable.
+#'@return Returns a \code{GADSdat} containing the newly computed variables.
 #'
 #'@examples
 #' # Prepare example data
