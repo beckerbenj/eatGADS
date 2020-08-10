@@ -2,7 +2,7 @@
 % Please edit documentation in R/recodeGADS.R
 \name{recodeGADS}
 \alias{recodeGADS}
-\title{Recode a variable.}
+\title{Recode a labeled variable.}
 \usage{
 recodeGADS(GADSdat, varName, oldValues, newValues, newValueLabels = NULL)
 }
@@ -13,21 +13,42 @@ recodeGADS(GADSdat, varName, oldValues, newValues, newValueLabels = NULL)
 
 \item{oldValues}{Vector containing the old values.}
 
-\item{newValues}{Vector containing the new values, in identical order as \code{oldNames}.}
+\item{newValues}{Vector containing the new values (in the respective order as \code{oldValues}).}
 
-\item{newValueLabels}{Named vector containing new value labels for the new values. All new values have to get labels. Slightly experimental implementation.}
+\item{newValueLabels}{[optional] Named vector containing new value labels for the new values.
+All new values have to get labels. Very experimental implementation.}
 }
 \value{
-Returns the \code{GADSdat} object with changed variable names.
+Returns a \code{GADSdat}.
 }
 \description{
-Recode a variable as part of a \code{GADSdat} or \code{all_GADSdat} object.
+Recode a labeled variable as part of a \code{GADSdat} or \code{all_GADSdat} object.
 }
 \details{
-Applied to a \code{GADSdat} or \code{all_GADSdat} object, this function is a wrapper of \code{\link{getChangeMeta}} and \code{\link{applyChangeMeta}}
+Applied to a \code{GADSdat} or \code{all_GADSdat} object, this function is a wrapper of \code{\link{getChangeMeta}} and \code{\link{applyChangeMeta}}.
+\code{oldValues} and \code{newValues} are matched by ordering in the function call.
+
+Functionality including \code{newValueLabels} is still very experimental. The argument can be used to simultaneously change value labels. However,
+all existing (new) values need to be assigned a new label.
+
+For recoding character variables, using lookup tables via \code{\link{createLookup}} is recommended.
 }
 \examples{
-# Example data set
-#to be done
+# Example gads
+example_df <- data.frame(ID = 1:5, color = c("blue", "blue", "green", "other", "other"),
+                        animal = c("dog", "Dog", "cat", "hors", "horse"),
+                        age = c(NA, 16, 15, 23, 50),
+                        stringsAsFactors = FALSE)
+example_df$animal <- as.factor(example_df$animal)
+gads <- import_DF(example_df)
+
+# simple recode
+gads2 <- recodeGADS(gads, varName = "animal",
+                   oldValues = c(3, 4), newValues = c(2, 5))
+
+# recode while changing value labels
+gads3 <- recodeGADS(gads, varName = "animal",
+                   oldValues = c(1, 3, 4), newValues = c(1, 2, 5),
+                   newValueLabels = c('1' = "cats", '2' = "dogs", '5' = "horses"))
 
 }
