@@ -42,7 +42,7 @@ matchValues_varLabels <- function(GADSdat, mc_vars, values, label_by_hand = char
   check_GADSdat(GADSdat)
   if(!is.vector(values) & length(values) > 0) stop("values needs to be a character vector of at least length 1.")
 
-  values <- unique(values)
+  values <- unique(values[!is.na(values)])
   labels <- unique(extractMeta(GADSdat, mc_vars)[, c("varName", "varLabel")])
 
   ## test label_by_hand (all in names, all in varLabel)

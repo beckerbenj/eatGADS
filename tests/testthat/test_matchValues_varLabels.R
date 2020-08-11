@@ -28,6 +28,12 @@ test_that("Match values and variable names by variable labels", {
   #expect_equal(out$v2, c(NA, NA, NA, "k"))
 })
 
+test_that("Match values and variable names by variable labels with NAs", {
+  out <- matchValues_varLabels(mt3_gads, mc_vars = c("mc1", "mc2", "mc3"), values = c("Aus", NA, "Eng", "Eng", NA), label_by_hand = c("other" = "mc3"))
+  expect_equal(unname(out), c("mc1", "mc2", "mc3"))
+  expect_equal(names(out), c("Eng", "Aus", "other"))
+})
+
 
 test_that("matchValues_varLabels multiple matches", {
   mt4_gads <- changeVarLabels(mt3_gads, varName = "mc2", varLabel = "Lang: US Eng")
