@@ -1,0 +1,73 @@
+---
+title: "`import_spss`: Importing data from 'SPSS'"
+author: "Benjamin Becker"
+date: "`r Sys.Date()`"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{import_spss}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+```
+
+`import_spss()` allows importing data from `SPSS` (`.sav` and `.zsav` files) into `R` by using the great `R` package `haven`. 
+
+This vignette illustrates a typical workflow of importing a `SPSS` file using `import_spss()` and `extractData()`. For illustrative purposes we use a small example data set from the campus files of the German PISA Plus assessment. The complete campus files and the original data set can be accessed [here](https://www.iqb.hu-berlin.de/fdz/Datenzugang/CF-Antrag/AntragsformularCF) and [here](https://www.iqb.hu-berlin.de/fdz/Datenzugang/SUF-Antrag). 
+
+```{r setup}
+library(eatGADS)
+```
+
+We can import an `.sav` data set via the `import_spss()` function. Checks on variable names (for data base compatibility) are performed automatically. Changes to the variable names are reported to the console. This behaviour can be suppressed by setting `checkVarNames = FALSE`.
+
+```{r import spss}
+sav_path <- system.file("extdata", "pisa.zsav", package = "eatGADS")
+gads_obj <- import_spss(sav_path)
+```
+
+## `GADSdat` objects
+
+The resulting object is of the class `GADSdat`. It is basically a named list containing the actual data (`dat`) and the meta data (`labels`). 
+
+```{r class}
+class(gads_obj)
+names(gads_obj)
+```
+
+The names of the variables in a `GADSdat` object can be accessed via the `namesGADS()` function. The meta data of variables can be accessed via the `extractMeta()` function.
+
+```{r names_and_meta}
+namesGADS(gads_obj)
+extractMeta(gads_obj, vars = c("schtype", "idschool"))
+```
+
+Commonly the most informative columns are `varLabel` (containing variable labels), `value` (referencing labeled values), `valLabel` (containing value labels) and `missings` (is a labeled value a missing value (`"miss"`) or not (`"valid"`)).  
+
+
+## Extracting data from `GADSdat`
+
+If we want to use the data for analyses in `R` we have to extract it from the `GADSdat` object via the function `extractData()`. In doing so, we have to make two important decisions: (a) how should values marked as missing values be treated (`convertMiss`)? And (b) how should labeled values in general be treated (`convertLabels`, `dropPartialLabels`, `convertVariables`)? See `?extractData` for more details.
+
+```{r extractdata}
+## convert labeled variables to characters
+dat1 <- extractData(gads_obj, convertLabels = "character")
+dat1[1:5, 1:10]
+
+## leave labeled variables as numeric
+dat2 <- extractData(gads_obj, convertLabels = "numeric")
+dat2[1:5, 1:10]
+
+## leave labeled variables as numeric but convert some variables to character
+dat3 <- extractData(gads_obj, convertLabels = "character", 
+                    convertVariables = c("gender", "language"))
+dat3[1:5, 1:10]
+```
+
+In general, we recommend leaving labeled variables as numeric and converting values with missing codes to `NA`. If required, values labels can always be accessed via using `extractMeta()` on the `GADSdat` object or the data base.
+

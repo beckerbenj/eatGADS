@@ -23,8 +23,10 @@ devtools::install_github("beckerbenj/eatGADS", build_vignettes = TRUE)
 ## See vignettes for exhaustive documentation
 # overview over all vignettes
 vignette(package = "eatGADS")
-# see a specific vignette
-vignette("getGADS")
+
+# see a specific vignettes
+vignette("import_spss") # how to import spss data?
+vignette("getGADS") # how to use a eatGADS data base?
 ```
 
 ## Usage
@@ -58,7 +60,4 @@ gads <- getGADS(filePath = "someDB.db", vSelect = c("ID1", "var1", "var2"))
 
 ### Extract data
 df <- extractData(gads)
-
-### FDZ anonymization
-?fdz
 ```
