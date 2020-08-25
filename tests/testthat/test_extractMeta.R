@@ -42,3 +42,12 @@ test_that("Extract Meta from DB path", {
   expect_error(extractMeta(expected_bigList, c("ID1", "v1")))
   expect_equal(extractMeta(expected_bigList), expected_bigList$allLabels)
 })
+
+test_that("Extract meta from trendGADS", {
+  trend_g <- getTrendGADS(filePath1 = "helper_dataBase.db", filePath2 = "helper_dataBase2.db", years = c(2012, 2018),
+                      fast = FALSE)
+  out <- extractMeta(trend_g)
+  expect_equal(dim(out), c(8, 9))
+  expect_equal(out$data_table, c(rep("gads2012", 4), rep("gads2018", 4)))
+
+})

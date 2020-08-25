@@ -77,6 +77,10 @@ check_all_GADSdat <- function(all_GADSdat, GADSdatChecks = TRUE) {
   if(!"data_table" %in% names(all_GADSdat[["allLabels"]])) stop("data_table column is missing in labels data frame.")
   # avoid infinite functions calls with extractGADSdat
   if(!GADSdatChecks) return()
+  # make this work for trendGADSdat with empty LEs, but maybe should rethink this class design?
+  if("LEs" %in% names(all_GADSdat[["datList"]]) && is.null(all_GADSdat$datList$LEs)) {
+    all_GADSdat$datList <- all_GADSdat$datList[1:2]
+  }
   for(i in names(all_GADSdat[["datList"]])) {
     # browser()
     temp_gads <- extractGADSdat(all_GADSdat = all_GADSdat, name = i)

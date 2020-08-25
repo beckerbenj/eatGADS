@@ -1,6 +1,6 @@
 
 
-# load(file = "c:/Benjamin_Becker/02_Repositories/packages/eatGADS/tests/testthat/helper_data.rda")
+# load(file = "tests/testthat/helper_data.rda")
 load(file = "helper_data.rda")
 
 
@@ -14,4 +14,15 @@ test_that("Checks performed correctly", {
 test_that("Extract GADSdat performed correctly", {
   expect_equal(extractGADSdat(expected_bigList, "df1"), df1)
   expect_equal(extractGADSdat(expected_bigList, "df2"), df2)
+})
+
+
+test_that("Extract GADSdat for trendGADSdat", {
+  out <- getTrendGADS(filePath1 = "helper_dataBase.db", filePath2 = "helper_dataBase2.db", years = c(2012, 2018),
+                      fast = FALSE)
+  g1 <- extractGADSdat(out, name = "gads2012")
+  g2 <- extractGADSdat(out, name = "gads2018")
+  g1 <- removeVars(g1, "year")
+  g2 <- removeVars(g2, "year")
+  expect_equal(g1, g2)
 })

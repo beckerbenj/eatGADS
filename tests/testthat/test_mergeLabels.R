@@ -30,3 +30,9 @@ test_that("Check manually created all_GADSdat objects", {
   expect_error(eatGADS:::check_all_GADSdat(expected_bigList), "data_table column is missing in labels data frame.")
 })
 
+test_that("Check all_GADSdat works for trendGADSdat", {
+  #out <- getTrendGADS(filePath1 = "tests/testthat/helper_dataBase.db", filePath2 = "tests/testthat/helper_dataBase2.db", years = c(2012, 2018), fast = FALSE)
+  out <- getTrendGADS(filePath1 = "helper_dataBase.db", filePath2 = "helper_dataBase2.db", years = c(2012, 2018),
+                      fast = FALSE)
+  expect_silent(check_all_GADSdat(out))
+})
