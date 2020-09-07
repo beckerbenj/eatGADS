@@ -35,16 +35,16 @@ recodeString2NA <- function(GADSdat, recodeVars = namesGADS(GADSdat), string = "
 
 #'@export
 recodeString2NA.GADSdat <- function(GADSdat, recodeVars = namesGADS(GADSdat), string = "") {
-  if(!is.character(recodeVars) || length(recodeVars) < 1) stop("recodeVars needs to be character vector of at least lenght 1.")
-  if(!all(recodeVars %in% namesGADS(GADSdat))) stop("All variables names in recodeVars need to be variables in the GADSdat.")
-  if(!is.character(string) || length(string) != 1) stop("string needs to be a character vector of exactly length 1.")
+  if(!is.character(recodeVars) || length(recodeVars) < 1) stop("'recodeVars' needs to be character vector of at least length 1.")
+  if(!all(recodeVars %in% namesGADS(GADSdat))) stop("All variables names in 'recodeVars' need to be variables in the GADSdat.")
+  if(!is.character(string) || length(string) != 1) stop("'string' needs to be a character vector of exactly length 1.")
 
   if(length(which(GADSdat$labels[GADSdat$labels$varName %in% recodeVars, "value"] == string)) > 0) {
-    stop("Specified string is labeled in at least one of the recodeVars.")
+    stop("'string' is labeled in at least one of the recodeVars.")
   }
 
   for(recodeVar in recodeVars) {
-    log_vec <- GADSdat[["dat"]][, recodeVar] == string
+    log_vec <- which(GADSdat[["dat"]][, recodeVar] == string)
     GADSdat[["dat"]][log_vec, recodeVar] <- NA
     message("Recodes in variable ", recodeVar, ": ", sum(log_vec))
   }

@@ -1,7 +1,7 @@
 
 ################# Recode string to NA ---------------------------------------------------
-mc <- as.factor(c("Ger", "other", "other", "Aus"))
-mt <- data.frame(ID = 1:4, mc = mc, text = c(NA, "Eng", "Aus", "Aus2"), stringsAsFactors = FALSE)
+mc <- as.factor(c("Ger", "other", NA, "Aus"))
+mt <- data.frame(ID = 1:4, mc = mc, text = c(NA, "", "Aus", "Aus2"), stringsAsFactors = FALSE)
 mt_gads <- import_DF(mt)
 
 txt <- data.frame(ID = 1:4, var1 = c("", "Eng", "Aus", "Aus2"),
@@ -18,9 +18,15 @@ test_that("Recodestring2NA", {
   expect_equal(mess[[2]], "Recodes in variable var1: 1\n")
 })
 
+test_that("Recodestring2NA mixed data and missings in string", {
+  mess2 <- capture_messages(out <- recodeString2NA(mt_gads))
+  expect_equal(out$dat$text, c(NA, NA, "Aus", "Aus2"))
+})
+
+
 test_that("Errors for Recodestring2NA", {
-  expect_error(out <- recodeString2NA(txt_gads, string = c("", "la")), "string needs to be a character vector of exactly length 1.")
-  expect_error(out <- recodeString2NA(mt_gads, string = c("1")), "Specified string is labeled in at least one of the recodeVars.")
+  expect_error(out <- recodeString2NA(txt_gads, string = c("", "la")), "'string' needs to be a character vector of exactly length 1.")
+  expect_error(out <- recodeString2NA(mt_gads, string = c("1")), "'string' is labeled in at least one of the recodeVars.")
 })
 
 
