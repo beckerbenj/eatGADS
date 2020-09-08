@@ -40,6 +40,9 @@ item. \code{collapseMC_Text} allows recoding the multiple choice variable based 
 \code{mc_code4text} indicates when entries in the \code{text_var} should be used. Additionally, entries in the \code{text_var} are also
 used when there are missings on the \code{mc_var}. New values for the \code{mc_var} are added in the meta data, while preserving the initial
 ordering of the value labels. Newly added value labels are sorted alphabetically.
+
+For more details see the help vignette:
+\code{vignette("recoding_forcedChoice", package = "eatGADS")}.
 }
 \examples{
 # Example gads

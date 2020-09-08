@@ -8,17 +8,19 @@
 #' If there are missing values in the column \code{value_new}, \code{NAs} are inserted as new values
 #' and a \code{warning} is issued.
 #'
-#' The complete work flow when using a lookup table to recode multiple variables in a \code{GADSdat} could be: (1) create a lookup table
-#' with \code{\link{createLookup}}. Save the lookup table to \code{.xlsx} with \code{\link[eatAnalysis]{write_xlsx}}. (3) fill out the
-#' lookup table via \code{Excel}. (4) Import the lookup table back to \code{R} via \code{\link[readxl]{read_xlsx}}. (5) Apply the final
-#' lookup table with \code{applyLookup}.
+#' The complete work flow when using a lookup table to recode multiple variables in a \code{GADSdat} could be:
+#' (1) create a lookup table with \code{\link{createLookup}}.
+#' (2) Save the lookup table to \code{.xlsx} with \code{\link[eatAnalysis]{write_xlsx}}.
+#' (3) fill out the lookup table via \code{Excel}.
+#' (4) Import the lookup table back to \code{R} via \code{\link[readxl]{read_xlsx}}.
+#' (5) Apply the final lookup table with \code{applyLookup}.
 #'
 #' See \code{\link{applyLookup_expandVar}} for recoding a single variable into multiple variables.
 #'
 #'@param GADSdat A \code{GADSdat} object.
 #'@param lookup Lookup table created by \code{\link{createLookup}} and - if necessary -  collapsed by \code{\link{collapseColumns}}.
 #'Column names must be \code{c("variable", "value", "value_new")}.
-#'@param suffix Suffix to add to the existing variable names. If \code{NULL} the old variables will be overwritten.
+#'@param suffix Suffix to add to the existing variable names. If \code{NULL}, the old variables will be overwritten.
 #'
 #'@return Returns a recoded \code{GADSdat}.
 #'
