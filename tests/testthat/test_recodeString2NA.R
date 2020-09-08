@@ -21,6 +21,7 @@ test_that("Recodestring2NA", {
 test_that("Recodestring2NA mixed data and missings in string", {
   mess2 <- capture_messages(out <- recodeString2NA(mt_gads))
   expect_equal(out$dat$text, c(NA, NA, "Aus", "Aus2"))
+  expect_equal(mess2[[3]], "Recodes in variable text: 1\n")
 })
 
 

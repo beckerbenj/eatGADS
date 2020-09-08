@@ -46,7 +46,7 @@ recodeString2NA.GADSdat <- function(GADSdat, recodeVars = namesGADS(GADSdat), st
   for(recodeVar in recodeVars) {
     log_vec <- which(GADSdat[["dat"]][, recodeVar] == string)
     GADSdat[["dat"]][log_vec, recodeVar] <- NA
-    message("Recodes in variable ", recodeVar, ": ", sum(log_vec))
+    message("Recodes in variable ", recodeVar, ": ", length(log_vec))
   }
   GADSdat
 }

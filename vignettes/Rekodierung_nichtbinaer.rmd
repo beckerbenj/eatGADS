@@ -16,7 +16,7 @@ knitr::opts_chunk$set(
 )
 ```
 
-If a multiple choice item is administered, sometimes not all possible answers can be covered by predefined response options. In such cases, often an additional response option (e.g. "other option", "something else", ...) is given accompanied by an open text field. An example of such a multiple choice item is given below.
+If a multiple choice item is administered, sometimes not all possible answers can be covered by predefined response options. In such cases, often an additional response option (e.g. "other option", "something else", ...) is given accompanied by an open text field. An example of such a multiple choice item is asking for the birthplace of a person:
 
 &nbsp;
 
@@ -30,7 +30,7 @@ However, in the resulting data set such an item will often be stored as two sepa
 * transform open answers which refer to existing response options (e.g. if a test taker overlooked a response option)
 * summarize both remaining variables into a single numerical, labeled variable
 
-To illustrate the steps we will create a very simple `GADS` example.
+To illustrate the steps we will create a very simple `GADSdat` example.
 
 ```{r setup}
 library(eatGADS)
@@ -72,10 +72,10 @@ lookup <- createLookup(GADSdat = gads, recodeVars = "stringvar", sort_by = 'valu
 lookup
 ```
 
-Now you have to add the desired values for recoding. You should use the existing value labels of the corresponding numerical, labeled variable and consistent new ones. Take care to use the same spelling, otherwise different values will result!   
+Now you have to add the desired values for recoding. You should use (a) the existing value labels of the corresponding numerical, labeled variable and (b) consistent new values that can serve as value labels later. Spelling mistakes within the recoding will result in  different values!   
 To fill in the columns you can use R (see the example). Alternatively, you can use `eatAnalysis::write_xlsx()` to create an excel file in which you can fill in the values. The excel file can be read in back to R via `readxl::read_xlsx()`.
 
-If you have more than one person working on the variable or if you want to use templates, you may have 2 different possible values for the unique strings. You can fill in both in the lookup table (for example: `new` and `new2`) and then choose which one you want to prioritize later.
+If you have more than one person working on the variable or if you want to use templates, you may have 2 different possible recode values (in our example: `new` and `new2`) . You can fill in both in the lookup table and then choose which one you want to prioritize later.
 
 ```{r fill in values}
 lookup
@@ -84,7 +84,7 @@ lookup$new2 <- c("miss", "England", "England", NA, "Germany", "Italy", "Italy")
 lookup
 ```
 
-You can use the `collapseColumns()` function to get the correct layout and to merge both columns containing the new values. By using the `prioritize` argument you can decide which column will be preferred. Only if there is an `NA` the other one will be used instead.
+You can use the `collapseColumns()` function to get the correct layout for the final look up table. The function merges both columns containing the new values. By using the `prioritize` argument you can decide which column will be preferred. Only if there is an `NA` in the prioritized column, the other column will be used instead.
 
 ```{r collapse the columns}
 lookup_formatted <- collapseColumns(lookup = lookup, recodeVars = c("new", "new2"), prioritize = "new")
