@@ -143,3 +143,14 @@ test_that("Workflow multiple columns, collapse, apply",{
   expect_equal(testM2$dat$VAR1_r, c(1, -2, 3, 4))
 })
 
+
+test_that("Specific warning for empty strings (necessary due to readxl)",{
+  df <- data.frame(v1 = c(1, 1, 2), v2 = c("lala", "", ""), stringsAsFactors = FALSE)
+  gads <-import_DF(df)
+  l <- createLookup(gads, recodeVars = "v2")
+  l[2, 2] <- NA
+  l$value_new <- c("Germany", "missing")
+  warns <- capture_warnings(applyLookup(gads, l, suffix = "_r"))
+
+  expect_equal(warns[3], "Empty strings are values in the data but not in the look up table. Using recodeString2NA() is recommended.")
+})

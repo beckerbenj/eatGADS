@@ -9,6 +9,7 @@
 #' and a \code{warning} is issued.
 #'
 #' The complete work flow when using a lookup table to recode multiple variables in a \code{GADSdat} could be:
+#' (0) optional: Recode empty strings to \code{NA} (necessary, if the look up table is written to excel).
 #' (1) create a lookup table with \code{\link{createLookup}}.
 #' (2) Save the lookup table to \code{.xlsx} with \code{\link[eatAnalysis]{write_xlsx}}.
 #' (3) fill out the lookup table via \code{Excel}.
@@ -73,6 +74,7 @@ applyLookup.GADSdat <- function(GADSdat, lookup, suffix = NULL) {
     suppressWarnings(test <- compare_and_order(rec_df[[nam]], set2 = sub_lu[[nam]]))
     if(length(test$not_in_set1) != 0) warning("For variable ", nam, " the following values are in the lookup table but not in the data: ", paste(test$not_in_set1, collapse = ", "))
     if(length(test$not_in_set2) != 0) warning("For variable ", nam, " the following values are in the data but not in the lookup table: ", paste(test$not_in_set2, collapse = ", "))
+    if(length(test$not_in_set2) != 0 && "" %in% test$not_in_set2) warning("Empty strings are values in the data but not in the look up table. Using recodeString2NA() is recommended.")
 
     old_nam <- nam
     if(!is.null(suffix)) {

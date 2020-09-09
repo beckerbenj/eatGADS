@@ -26,6 +26,7 @@ If there are missing values in the column \code{value_new}, \code{NAs} are inser
 and a \code{warning} is issued.
 
 The complete work flow when using a lookup table to recode multiple variables in a \code{GADSdat} could be:
+(0) optional: Recode empty strings to \code{NA} (necessary, if the look up table is written to excel).
 (1) create a lookup table with \code{\link{createLookup}}.
 (2) Save the lookup table to \code{.xlsx} with \code{\link[eatAnalysis]{write_xlsx}}.
 (3) fill out the lookup table via \code{Excel}.

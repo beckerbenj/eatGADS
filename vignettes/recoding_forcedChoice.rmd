@@ -20,7 +20,7 @@ Forced choice items are multiple choice items with exclusive answer options (onl
 
 &nbsp;
 
-![](nichtbinaer.PNG)
+![](forcedChoice.PNG)
 
 &nbsp;
 
@@ -38,13 +38,14 @@ library(eatGADS)
 mcvar <- factor(c("other", "Poland", "other", "other", "other", NA, 
                   "Germany", "Poland", "other", "other"), 
                 levels = c("Germany", "Poland", "other", "missing"))
+# create example character variable
+stringvar <- c(NA, "Italy", "England", "Ita", "Eng", "German", 
+               "Germ", NA, "", "Eng")
 
 #create example GADS
 dat <- data.frame(ID = 1:10, mcvar = mcvar,
-                  stringvar = c(NA, "Italy", "England", "Ita", "Eng", "German", "Germ", 
-                                NA, "", "Eng"),
-                  stringsAsFactors = TRUE)
-dat$stringvar <- as.character(dat$stringvar)
+                  stringvar = stringvar,
+                  stringsAsFactors = FALSE)
 gads <- import_DF(dat)
 
 # recode missings to common numerical value
@@ -59,7 +60,7 @@ The variable names of the data set above are connected to the multiple choice qu
 
 &nbsp;
 
-![](nichtbinaer2.PNG)
+![](forcedChoice_labeled.PNG)
 
 ## Preparing the data set
 
@@ -120,8 +121,9 @@ With the `mc_code4text` argument you can choose the value that signals that you 
 
 
 ```{r collapse the data}
-gads_final <- collapseMC_Text(GADSdat = gads_string, mc_var = "mcvar", text_var = "stringvar_r", 
-                              mc_code4text = "other", var_suffix = "_r", label_suffix = "(recoded)")
+gads_final <- collapseMC_Text(GADSdat = gads_string, mc_var = "mcvar", 
+                              text_var = "stringvar_r", mc_code4text = "other", 
+                              var_suffix = "_r", label_suffix = "(recoded)")
 
 gads_final$dat
 extractMeta(gads_final, "mcvar_r")
