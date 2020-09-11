@@ -2,7 +2,7 @@
 % Please edit documentation in R/import_RDS.R
 \name{import_RDS}
 \alias{import_RDS}
-\title{Import RDS object}
+\title{Import \code{RDS} file}
 \usage{
 import_RDS(filePath, checkVarNames = TRUE)
 }
@@ -15,9 +15,9 @@ import_RDS(filePath, checkVarNames = TRUE)
 Returns a list with the actual data \code{dat} and a data frame with all meta information in long format \code{labels}.
 }
 \description{
-Function to import \code{.RDS} files while extracting value labels from factors.
+Function to import a \code{data.frame} stored as a \code{.RDS} file while extracting value labels from factors.
 }
 \details{
 Factors are integers with labeled variable levels. \code{import_RDS} extracts these labels and stores them in a separate meta data data.frame.
-See \code{\link{import_DF}} for detailed information.
+See \code{\link{import_DF}} for detailed information. This function is a wrapper around \code{\link{import_DF}}.
 }

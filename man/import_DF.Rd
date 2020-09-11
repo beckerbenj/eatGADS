@@ -2,7 +2,7 @@
 % Please edit documentation in R/import_DF.R
 \name{import_DF}
 \alias{import_DF}
-\title{Import R data frame}
+\title{Import R \code{data.frame}}
 \usage{
 import_DF(df, checkVarNames = TRUE)
 }

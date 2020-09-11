@@ -1,6 +1,6 @@
 #### Import R-data
 #############################################################################
-#' Import R data frame
+#' Import R \code{data.frame}
 #'
 #' Function to import a \code{data.frame} object for use in \code{eatGADS} while extracting value labels from factors.
 #'
@@ -24,6 +24,10 @@
 #'@export
 import_DF <- function(df, checkVarNames = TRUE) {
   if(!is.data.frame(df)) stop("df needs to be a data frame.")
+  zeroLevels <- sapply(df, function(dfVar) is.factor(dfVar) && identical(levels(dfVar), character(0)))
+  if(any(zeroLevels)) stop("The following variables in the data are factors with zero valid levels: ",
+                           paste(names(zeroLevels)[zeroLevels], collapse = ", "))
+
   out <- prepare_labels(rawDat = df, checkVarNames = checkVarNames, labeledStrings = FALSE)
   out
 }

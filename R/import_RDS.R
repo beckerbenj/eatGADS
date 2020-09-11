@@ -1,12 +1,12 @@
 
 #### Import RDS
 #############################################################################
-#' Import RDS object
+#' Import \code{RDS} file
 #'
-#' Function to import \code{.RDS} files while extracting value labels from factors.
+#' Function to import a \code{data.frame} stored as a \code{.RDS} file while extracting value labels from factors.
 #'
 #' Factors are integers with labeled variable levels. \code{import_RDS} extracts these labels and stores them in a separate meta data data.frame.
-#' See \code{\link{import_DF}} for detailed information.
+#' See \code{\link{import_DF}} for detailed information. This function is a wrapper around \code{\link{import_DF}}.
 #'
 #'@param filePath Source file location, ending on \code{.RDS}.
 #'@param checkVarNames Should variable names be checked for violations of \code{SQLite} and \code{R} naming rules?
@@ -16,19 +16,7 @@
 #'
 #'@export
 import_RDS <- function(filePath, checkVarNames = TRUE) {
-  df <- load_R(filePath = filePath)
-  out <- prepare_labels(rawDat = df, checkVarNames = checkVarNames, labeledStrings = FALSE)
-  out
+  rawDat <- readRDS(file = filePath)
+  import_DF(rawDat, checkVarNames = checkVarNames)
 }
 
-# Load data depending on format ---------------------------------------------------------
-# import (keep NAs how they are coded to later mark values as missings but keep them seperatable)
-load_R <- function(filePath) {
-  rawDat <- readRDS(file = filePath)
-  new_data.frame(rawDat)
-}
-# create S3 object RDat for internal use
-new_data.frame <- function(rawDat) {
-  stopifnot(is.data.frame(rawDat))
-  rawDat
-}
