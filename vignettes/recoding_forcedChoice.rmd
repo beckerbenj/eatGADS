@@ -64,7 +64,7 @@ The variable names of the data set above are connected to the multiple choice qu
 
 ## Preparing the data set
 
-Depending on the format, data can be loaded into `R` in the `GADSdat` format via the functions `import_spss()`,`import_DF()` or `import_raw()`. Depending on the original format, omitted responses to open text fields might be stored as empty strings instead of `NAs`. In these cases, the `recodeString2NA()` function should be used to recode these values to `NA`.
+Data can be loaded into `R` in the `GADSdat` format via the functions `import_spss()`,`import_DF()` or `import_raw()`. Depending on the original format, omitted responses to open text fields might be stored as empty strings instead of `NAs`. In these cases, the `recodeString2NA()` function should be used to recode these values to `NA`.
 
 ```{r recodeString2NA}
 gads <- recodeString2NA(gads, string = "")
@@ -73,7 +73,7 @@ gads <- recodeString2NA(gads, string = "")
 
 ## Creating and editing a lookup table
 
-With `createLookup()`, you can create a lookup table which allows recoding one or multiple variables..  
+With `createLookup()`, you can create a lookup table which allows recoding one or multiple variables.  
 You can choose which string variables in a `GADS` object you would like to recode by using the `recodeVars` argument. In case you want to sort the output to make recoding easier, the argument `sort_by` can be used. Extra columns can be added to the look up table by the argument `addCols`.
 
 ```{r lookup}

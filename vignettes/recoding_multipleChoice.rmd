@@ -1,0 +1,157 @@
+--- 
+title: "Recoding a multiple choice item with a text field"
+author: "Benjamin Becker, Johanna Busse"
+date: "`r Sys.Date()`"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Recoding a multiple choice item with a text field}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+```
+
+If a multiple choice item is administered, sometimes not all possible answers can be covered by predefined response options. In such cases, often an additional response option (e.g. "other") is given accompanied by an open text field. An example of such a multiple choice item is asking for languages a person is able to speak:
+
+&nbsp;
+
+![](multipleChoice.PNG)
+
+&nbsp;
+
+In the resulting data set, such an item will often be stored as multiple separate variables: a dichotomous and numeric ('dummy')  variable for each multiple choice option (with variable labels describing the response option) and an additional character variable (containing the answers in the text field). For data analysis it is usually necessary to integrate the information from the character variable into the dummy variables. Often the following steps are required:
+
+* recode the character variable manually (e.g. to eliminate spelling mistakes and to separate distinct answers)
+* transform open answers which refer to existing response options (e.g. if a test taker overlooked a response option)
+
+To illustrate the steps we will create a simple `GADSdat` example.
+
+```{r setup}
+library(eatGADS)
+#create example GADS
+dat <- data.frame(ID = 1:10, mcvar1 = c("yes", "yes", "no", "no", "no", NA, NA, NA, "yes", "no"),
+                  mcvar2 = c("yes", NA, "no", "no", "yes", "yes", NA, NA, "no", "no"),
+                  mcother = c("yes", NA, "no", "yes", "yes", "yes", NA, NA, "no", "no"),
+                  stringvar = c(NA, "Italian, Eng, Polish", "English, Germ", "Ita, Polish", 
+                                "Eng, Germ", "Ger, Italian", "Germ", "Polish", NA, "Eng"),
+                  stringsAsFactors = TRUE)
+dat$stringvar <- as.character(dat$stringvar)
+gads <- import_DF(dat)
+
+gads$labels$varLabel <- c("ID", "German", "German", "English", "English", "extra", "extra", "extra")
+
+values_mc <- c("no", "yes")
+names(values_mc) <- c(0, 1)
+
+gads <- recodeGADS(GADSdat = gads, varName = "mcvar1", oldValues = c(1, 2), newValues = c(0, 1), 
+                   newValueLabels = values_mc)
+gads <- recodeGADS(GADSdat = gads, varName = "mcvar2", oldValues = c(1, 2), newValues = c(0, 1), 
+                   newValueLabels = values_mc)
+gads <- recodeGADS(GADSdat = gads, varName = "mcother", oldValues = c(1, 2), newValues = c(0, 1), 
+                   newValueLabels = values_mc)
+```
+
+&nbsp;
+
+![](multipleChoice_labeled.PNG)
+
+## Preparing the data set
+
+Data can be loaded into `R` in the `GADSdat` format via the functions `import_spss()`,`import_DF()` or `import_raw()`. Depending on the original format, omitted responses to open text fields might be stored as empty strings instead of `NAs`. In these cases, the `recodeString2NA()` function should be used to recode these values to `NA`.
+
+```{r recodeString2NA}
+gads <- recodeString2NA(gads, string = "")
+```
+
+
+## Creating and editing a lookup table
+
+With `createLookup()`, you can create a lookup table which allows recoding one or multiple variables.  
+You can choose which string variables in a `GADS` object you would like to recode by using the `recodeVars` argument. In case you want to sort the output to make recoding easier, the argument `sort_by` can be used. Extra columns can be added to the look up table by the argument `addCols`. As test takers can insert multiple languages in the text field, you have to add multiple recode columns to the look up table.
+
+```{r lookup}
+lookup <- createLookup(GADSdat = gads, recodeVars = "stringvar", sort_by = 'value', 
+                       addCols = c("language", "language2", "language3"))
+
+lookup
+```
+
+Now you have to add the desired values for recoding. You should use (a) unique parts of the existing variable labels of the corresponding dummy variables (see the next section for explanation) and (b) consistent new values that can serve as variable labels later. Spelling mistakes within the recoding will result in additional columns in the final data set! Later you can choose how many new variables you want to create. If there are too many values for one ID they become a missing value. If there are less values than columns you can leave them as NA.    
+To fill in the columns you can use R (see the example). Alternatively, you can use `eatAnalysis::write_xlsx()` to create an excel file in which you can fill in the values. The excel file can be read in back to R via `readxl::read_xlsx()`. Detailed information on how missing values should be recoded is provided in the last section of this vignette.
+
+```{r editing lookup}
+lookup$language <- c("missing", "English", "English", "English", "German", "German", "Italian", 
+                     "Italian", "Polish")
+lookup$language2 <- c(NA, NA, "German", "German", "Italian", NA, "Polish", "English", NA)
+lookup$language3 <- c(NA, NA, NA, NA, NA, NA, NA, "Polish", NA)
+
+lookup
+```
+
+## Apply look up to `GADSdat`
+
+You perform the actual data recoding using the `applyLookup_expandVar()` function. It applies the recodes defined in the look up table, thereby creating as many character variables as there are additional columns in the look up table. Variable names are generated automatically.
+
+```{r integrate the Lookup table}
+gads_string <- applyLookup_expandVar(GADSdat = gads, lookup = lookup)
+
+gads_string$dat
+```
+
+## Match values to variable labels
+
+When integrating character variables into multiple dummy variables, there has to be a clear correspondence between values in the character variable and dummy variables. `eatGADS` requires this information as a named character vector with the dummy variable names as values and values of the text variable as names. Such a vector can be automatically generated by the  `matchValues_varLabels()` function. The function takes a character vector (`values`) as input and matches all values in this vector to the variable labeles of the dummy variables (`mc_vars`).
+
+In case that not every already existing variable label is part of the lookup table you can use the `label_by_hand` argument.
+
+```{r named character vector, error=TRUE}
+value_string <- c(lookup$language, lookup$language2, lookup$language3)
+named_char_vec <- matchValues_varLabels(GADSdat = gads, mc_vars = c("mcvar1", "mcvar2", "mcother"), 
+                                        values = value_string, label_by_hand = c("extra"="mcother"))
+named_char_vec
+```
+
+## Integrate character and numeric variables
+
+By using the expanded `GADS` and the named character vector you can collapse the information of the strings with the already existing numeric variables. For that the binary numeric variables must have the structure: 1 = true and 0 = false. If there is a match of a string and a numeric variable but its set to 0 the function will set it to 1 and if it is the only string value the indicator variable will be set to 0. You also need a vector of the new built string variables in the `GADS` object for the `text_vars` argument.  
+DIE MISSINGSETZUNG HIER DANN NOCHMAL MIT AKTUALISIEREN
+
+```{r collapse, error=TRUE}
+gads_string2 <- collapseMultiMC_Text(GADSdat = gads_string, mc_vars = named_char_vec, 
+                                     text_vars = c("stringvar_1", "stringvar_2", "stringvar_3"), 
+                                     mc_var_4text = "mcother", var_suffix = "_r", 
+                                     label_suffix = "(recoded)")
+
+gads_string2$dat
+```
+
+## Mulitple character variables to labeled integers
+
+Now you only have unique new values in the string variables left. By using the `multiChar2fac()` function they will turn to numeric variables and after that `checkMissings()` helps to define the missing codes. 
+
+```{r multiChar2fac, error=TRUE}
+gads_numeric <- multiChar2fac(GADSdat = gads_string2, vars = c("stringvar_1", "stringvar_2"), 
+                              var_suffix = "_r", label_suffix = "(recoded)")
+
+gads_numeric$dat
+
+gads_numeric <- checkMissings(GADSdat = gads_numeric, missingLabel = "missing", addMissingCode = TRUE)
+```
+
+## Trim down variables
+
+Then you can use `remove2NAchar()` to decide how many variables you finally want to have(`max_num`). If there are more values for one ID there will be a missing code for all cases that you can define with `na_value`.
+
+```{r remove2NAchar, error=TRUE}
+gads_final <- remove2NAchar(GADSdat = gads_numeric, vars = c("stringvar_1_r", "stringvar_2_r"), 
+                              max_num = 2, na_value = -1)
+
+gads_final$dat
+```
+
+In a last step you can remove unnecessary variables from the `GADS` object by using `removeVars()`.

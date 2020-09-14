@@ -70,7 +70,7 @@ out_gads <- collapseMultiMC_Text(mt3_gads, mc_vars = mc_vars,
 
 out_gads2 <- multiChar2fac(out_gads, vars = c("text1_r", "text2_r"))
 
-final_gads <- remove_2NA_char(out_gads2, vars = c("text1_r_r", "text2_r_r"),
+final_gads <- remove2NAchar(out_gads2, vars = c("text1_r_r", "text2_r_r"),
                               max_num = 1, na_value = -99)
 
 }
