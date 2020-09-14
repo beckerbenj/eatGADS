@@ -84,7 +84,7 @@ lookup
 ```
 
 Now you have to add the desired values for recoding. You should use (a) the existing value labels of the corresponding numerical, labeled variable and (b) consistent new values that can serve as value labels later. Spelling mistakes within the recoding will result in  different values!   
-To fill in the columns you can use R (see the example). Alternatively, you can use `eatAnalysis::write_xlsx()` to create an excel file in which you can fill in the values. The excel file can be read in back to R via `readxl::read_xlsx()`.
+To fill in the columns you can use R (see the example). Alternatively, you can use `eatAnalysis::write_xlsx()` to create an excel file in which you can fill in the values. The excel file can be read in back to R via `readxl::read_xlsx()`. Detailed information on how missing values should be recoded is provided in the last section of this vignette.
 
 If you have more than one person working on the variable or if you want to use templates, you may have 2 different possible recode values (in our example: `new` and `new2`) . You can fill in both in the lookup table and then choose which one you want to prioritize later.
 
@@ -138,7 +138,6 @@ extractMeta(gads_final, "mcvar_r")
 ```
 
 
-
 ## Remove variables from `GADSdat`
 
 In a last step you can remove intermediate or superfluous variables from the `GADSdat` by using the function `removeVars()`.
@@ -146,4 +145,37 @@ In a last step you can remove intermediate or superfluous variables from the `GA
 ```{r removing unnecessary variables}
 gads_final <- removeVars(GADSdat = gads_final, vars = c("mcvar", "stringvar_r"))
 gads_final$dat
+```
+
+
+## Missing value codes
+
+In some scenarios, you might differentiate between different missing codes in the data (e.g. invalid responses, item not administered, omission). In these cases, different priorities of missing codes might be desirable when summarizing the numerical, labeled variable and the character variable.
+
+`collapseMC_Text()` prefers information from the two variables depending on the information in the character variable. If the missing is incidacted via an explicit missing code, this missing code is prefered to missing codes from the numerical, labeled variable. If the missing is indicated via an actual `NA` in the character variable, the information from the numerical, labeled variable is prefered.
+
+The described behavior is illustrated in the example below:
+
+```{r missing treatment}
+# set up example gads with all possible combinations
+mc <- factor(rep(c("other", "valid", "missing omitted", "special missing"), 3),
+                levels = c("valid", "other", "missing omitted", "special missing"))
+string <- c(rep("valid", 4), rep("missing omitted", 4),
+            rep("special missing", 4))
+dat <- data.frame(ID = 1:12, mc = mc, string = string, stringsAsFactors = FALSE)
+gads <- import_DF(dat)
+gads <- recodeGADS(gads, "mc", oldValues = c(3,4), newValues = c(-99, -98))
+gads <- checkMissings(gads, missingLabel = "missing")
+gads
+
+# create and edit look up table
+lookup <- createLookup(GADSdat = gads, recodeVars = "string")
+lookup$value_new <- c("new valid", NA, "special missing")
+
+# recode string variable
+gads <- applyLookup(gads, lookup, "_r")
+
+# summarize numerical, labeled variable and character variable
+gads <- collapseMC_Text(gads, "mc", "string_r", mc_code4text = "other", "_r", "recoded")
+gads$dat
 ```
