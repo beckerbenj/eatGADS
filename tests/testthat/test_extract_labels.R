@@ -65,6 +65,7 @@ test_that("Value label of single variable extracted correctly for R type variabl
   expect_equal(extract_value_level(c("a", "b"), "VAR1"), NULL)
   expect_equal(extract_value_level(factor(c("a", "b"), levels = c("a", "b")), "fac_var"),
                data.frame(varName = rep("fac_var", 2), value = c(1, 2), valLabel = c("a", "b"), missings = c("valid", "valid"), stringsAsFactors = FALSE))
+  expect_equal(extract_value_level(factor(c(NA, NA)), "VAR1"), NULL)
 })
 
 

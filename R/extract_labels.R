@@ -76,6 +76,7 @@ extract_value_level.default <- function(var, varName, labeledStrings) {
 # single variable for R (factors!)
 #'@export
 extract_value_level.factor <- function(var, varName, labeledStrings) {
+  if(length(levels(var)) == 0) return(NULL)
   df <- data.frame(varName = rep(varName, length(levels(var))),
                    value = seq_along(levels(var)),
                    valLabel = levels(var),

@@ -25,7 +25,7 @@
 import_DF <- function(df, checkVarNames = TRUE) {
   if(!is.data.frame(df)) stop("df needs to be a data frame.")
   zeroLevels <- sapply(df, function(dfVar) is.factor(dfVar) && identical(levels(dfVar), character(0)))
-  if(any(zeroLevels)) stop("The following variables in the data are factors with zero valid levels: ",
+  if(any(zeroLevels)) warning("The following variables in the data are factors with zero valid levels: ",
                            paste(names(zeroLevels)[zeroLevels], collapse = ", "))
 
   out <- prepare_labels(rawDat = df, checkVarNames = checkVarNames, labeledStrings = FALSE)
