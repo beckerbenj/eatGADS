@@ -9,7 +9,7 @@ multiChar2fac(GADSdat, vars, var_suffix = "_r", label_suffix = "(recoded)")
 \arguments{
 \item{GADSdat}{A \code{data.frame} or \code{GADSdat} object.}
 
-\item{vars}{A single variable name of the multiple choice variable.}
+\item{vars}{A character vector with all variables that should be transformed to factor.}
 
 \item{var_suffix}{Variable suffix for the newly created \code{GADSdat}. If an empty character, the existing variables are overwritten.}
 

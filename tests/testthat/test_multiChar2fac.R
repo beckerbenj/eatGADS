@@ -3,6 +3,11 @@
 mt4 <- data.frame(text1 = c(NA, "Eng", "Aus", "Aus2"), text2 = c("Ger", "Franz", "Eng", NA), stringsAsFactors = FALSE)
 mt4_gads <- import_DF(mt4)
 
+mt5 <- data.frame(text1 = c(NA, "Eng", "Aus", "Aus2"), text2 = c("Ger", "Franz", "Eng", NA),
+                  other_text = factor(c("apple", "pear", NA, NA)), stringsAsFactors = FALSE)
+mt5_gads <- import_DF(mt5)
+
+
 mt4_gads_2 <- changeVarLabels(mt4_gads, varName = "text1", varLabel = "text var 1")
 mt4_gads_2$dat[1, "text1"] <- -99
 mt4_gads_2$labels[1, c("value")] <- c(-99)
@@ -35,4 +40,12 @@ test_that("Multiple text variables to factors, change spss.format", {
   out <- multiChar2fac(mt4_gads_2, vars = namesGADS(mt4_gads))
 
   expect_silent(check_var_type(out))
+})
+
+test_that("Multiple text variables to factors with other factor in data set", {
+  out <- multiChar2fac(mt5_gads, vars = namesGADS(mt4_gads))
+  expect_equal(out$dat$text1_r, c(NA, 3, 1, 2))
+  expect_equal(out$dat$text2_r, c(5, 4, 3, NA))
+  expect_equal(out$labels[out$labels$varName == "text1_r", "value"], out$labels[out$labels$varName == "text2_r", "value"])
+  expect_equal(out$labels[out$labels$varName == "text1_r", "valLabel"], c("Aus", "Aus2", "Eng", "Franz", "Ger"))
 })

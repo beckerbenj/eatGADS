@@ -11,7 +11,7 @@
 #' The SPSS format of the newly created variables is set to \code{F10.0}.
 #'
 #'@param GADSdat A \code{data.frame} or \code{GADSdat} object.
-#'@param vars A single variable name of the multiple choice variable.
+#'@param vars A character vector with all variables that should be transformed to factor.
 #'@param var_suffix Variable suffix for the newly created \code{GADSdat}. If an empty character, the existing variables are overwritten.
 #'@param label_suffix Suffix added to variable label for the newly created variable in the \code{GADSdat}.
 #'

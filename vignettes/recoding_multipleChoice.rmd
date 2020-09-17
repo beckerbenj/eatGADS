@@ -34,26 +34,40 @@ To illustrate the steps we will create a simple `GADSdat` example.
 ```{r setup}
 library(eatGADS)
 #create example GADS
-dat <- data.frame(ID = 1:10, mcvar1 = c("yes", "yes", "no", "no", "no", NA, NA, NA, "yes", "no"),
-                  mcvar2 = c("yes", NA, "no", "no", "yes", "yes", NA, NA, "no", "no"),
-                  mcother = c("yes", NA, "no", "yes", "yes", "yes", NA, NA, "no", "no"),
-                  stringvar = c(NA, "Italian, Eng, Polish", "English, Germ", "Ita, Polish", 
-                                "Eng, Germ", "Ger, Italian", "Germ", "Polish", NA, "Eng"),
+dat <- data.frame(ID = 1:10, 
+                  mcvar1 = c("yes", "yes", "no", "no", rep("missing by design", 3), 
+                                        rep("missing invalid resp", 3)),
+                  mcvar2 = c("yes", "no", "no", "yes", rep("missing by design", 3), 
+                             "no", "missing invalid resp", "yes"),
+                  mcother = c("yes", "missing invalid resp", "no", "yes", 
+                              rep("missing by design", 3), 
+                              rep("missing invalid resp", 2), "no"),
+                  stringvar = rep("missing by design", 10),
                   stringsAsFactors = TRUE)
-dat$stringvar <- as.character(dat$stringvar)
 gads <- import_DF(dat)
 
-gads$labels$varLabel <- c("ID", "German", "German", "English", "English", "extra", "extra", "extra")
+# variable labels
+gads <- changeVarLabels(gads, "mcvar1", varLabel = "German")
+gads <- changeVarLabels(gads, "mcvar2", varLabel = "English")
+gads <- changeVarLabels(gads, "stringvar", varLabel = "other")
 
-values_mc <- c("no", "yes")
-names(values_mc) <- c(0, 1)
+# recode values
+oldValues <- 1:4
+newValues <- c(-94, -98, 0, 1)
+for(varName in c("mcvar1", "mcvar2", "mcother")) {
+  gads <- recodeGADS(GADSdat = gads, varName = varName, 
+                     oldValues = oldValues, newValues = newValues)
+}
+gads <- recodeGADS(GADSdat = gads, varName = "stringvar", 
+                     oldValues = 1, newValues = -99)
 
-gads <- recodeGADS(GADSdat = gads, varName = "mcvar1", oldValues = c(1, 2), newValues = c(0, 1), 
-                   newValueLabels = values_mc)
-gads <- recodeGADS(GADSdat = gads, varName = "mcvar2", oldValues = c(1, 2), newValues = c(0, 1), 
-                   newValueLabels = values_mc)
-gads <- recodeGADS(GADSdat = gads, varName = "mcother", oldValues = c(1, 2), newValues = c(0, 1), 
-                   newValueLabels = values_mc)
+# fill in strings
+gads$dat$stringvar <- c("", "Italian, Eng, Polish", - 99, "English, Germ", -99,
+                        "Ita, Polish, French", -99, "Polish, all", "", "all")
+
+# Missing codes
+gads <- checkMissings(gads)
+gads
 ```
 
 &nbsp;
@@ -85,10 +99,10 @@ Now you have to add the desired values for recoding. You should use (a) unique p
 To fill in the columns you can use R (see the example). Alternatively, you can use `eatAnalysis::write_xlsx()` to create an excel file in which you can fill in the values. The excel file can be read in back to R via `readxl::read_xlsx()`. Detailed information on how missing values should be recoded is provided in the last section of this vignette.
 
 ```{r editing lookup}
-lookup$language <- c("missing", "English", "English", "English", "German", "German", "Italian", 
-                     "Italian", "Polish")
-lookup$language2 <- c(NA, NA, "German", "German", "Italian", NA, "Polish", "English", NA)
-lookup$language3 <- c(NA, NA, NA, NA, NA, NA, NA, "Polish", NA)
+lookup$language <- c(NA, "missing by", "English", "Italian", "Italian", 
+                     "Polish", "missing invalid resp")
+lookup$language2 <- c(NA, NA, "German", "Polish", "English", NA, NA)
+lookup$language3 <- c(NA, NA, NA, "French", "Polish", NA, NA)
 
 lookup
 ```
@@ -111,8 +125,10 @@ In case that not every already existing variable label is part of the lookup tab
 
 ```{r named character vector, error=TRUE}
 value_string <- c(lookup$language, lookup$language2, lookup$language3)
-named_char_vec <- matchValues_varLabels(GADSdat = gads, mc_vars = c("mcvar1", "mcvar2", "mcother"), 
-                                        values = value_string, label_by_hand = c("extra"="mcother"))
+named_char_vec <- matchValues_varLabels(GADSdat = gads, 
+                                        mc_vars = c("mcvar1", "mcvar2", "mcother"), 
+                                        values = value_string, 
+                                        label_by_hand = c("other"="mcother"))
 named_char_vec
 ```
 
@@ -130,28 +146,32 @@ gads_string2 <- collapseMultiMC_Text(GADSdat = gads_string, mc_vars = named_char
 gads_string2$dat
 ```
 
+## Trim down variables
+
+Sometimes the number of additional entries should be limited. This means that the number of character variables is 'trimmed'. For this you can use `remove2NAchar()` to decide how many variables you finally want to have(`max_num`). If there are more values for one ID there will be a missing code for all cases that you can define with `na_value`.
+
+```{r remove2NAchar, error=TRUE}
+gads_string3 <- remove2NAchar(GADSdat = gads_string2, 
+                              vars = c("stringvar_1_r", "stringvar_2_r", "stringvar_3_r"), 
+                              max_num = 2, na_value = -97)
+
+gads_string3$dat
+```
+
 ## Mulitple character variables to labeled integers
 
-Now you only have unique new values in the string variables left. By using the `multiChar2fac()` function they will turn to numeric variables and after that `checkMissings()` helps to define the missing codes. 
+After using `collapseMultiMC_Text()`, only new, additional values are left in the character variables. You can use the `multiChar2fac()` function to transform these to numeric, labeled variables. After that `checkMissings()` helps to define the missing codes. 
 
 ```{r multiChar2fac, error=TRUE}
-gads_numeric <- multiChar2fac(GADSdat = gads_string2, vars = c("stringvar_1", "stringvar_2"), 
+gads_numeric <- multiChar2fac(GADSdat = gads_string3, vars = c("stringvar_1_r", "stringvar_2_r"), 
                               var_suffix = "_r", label_suffix = "(recoded)")
 
 gads_numeric$dat
 
-gads_numeric <- checkMissings(GADSdat = gads_numeric, missingLabel = "missing", addMissingCode = TRUE)
+gads_final<- checkMissings(GADSdat = gads_numeric, missingLabel = "missing", addMissingCode = TRUE)
+extractMeta(gads_final)[, c("varName", "value", "valLabel", "missings")]
 ```
 
-## Trim down variables
-
-Then you can use `remove2NAchar()` to decide how many variables you finally want to have(`max_num`). If there are more values for one ID there will be a missing code for all cases that you can define with `na_value`.
-
-```{r remove2NAchar, error=TRUE}
-gads_final <- remove2NAchar(GADSdat = gads_numeric, vars = c("stringvar_1_r", "stringvar_2_r"), 
-                              max_num = 2, na_value = -1)
-
-gads_final$dat
-```
+## Clean data set
 
 In a last step you can remove unnecessary variables from the `GADS` object by using `removeVars()`.
