@@ -26,7 +26,7 @@ If a multiple choice item is administered, sometimes not all possible answers ca
 
 In the resulting data set, such an item will often be stored as multiple separate variables: dichotomous and numeric ('dummy') variables for each multiple choice option (with variable labels describing the response option) and an additional character variable (containing the answers in the text field). For data analysis it is usually necessary to integrate the information from the character variable into the dummy variables. Often the following steps are required:
 
-* recode the character variable manually (e.g. to eliminate spelling mistakes) and separate the answers into multiple variables (often, this is a single step)
+* recode the character variable manually (e.g. to eliminate spelling mistakes) and separate the answers into multiple variables
 * transform open answers which refer to existing response options (e.g. if a test taker overlooked a response option)
 * transform the remaining open answers to numeric, labeled variables
 
@@ -35,36 +35,37 @@ To illustrate these steps, we will create a simple `GADSdat` example.
 ```{r setup}
 library(eatGADS)
 #create example GADS
-dat <- data.frame(ID = 1:10, 
-                  mcvar1 = c("yes", "yes", "no", "no", rep("missing by design", 3), 
-                                        rep("missing invalid resp", 3)),
-                  mcvar2 = c("yes", "no", "no", "yes", rep("missing by design", 3), 
-                             "no", "missing invalid resp", "yes"),
-                  mcother = c("yes", "missing invalid resp", "no", "yes", 
-                              rep("missing by design", 3), 
-                              rep("missing invalid resp", 2), "no"),
-                  stringvar = rep("missing by design", 10),
+dat <- data.frame(ID = 1:45,
+                  mcvar1 = c(rep(c(rep("yes", 5), rep("no", 5), rep("missing", 5)), 3)),
+                  mcother = c(rep("yes", 15), rep("no", 15), rep("missing", 15)),
+                  stringvar = rep("missing by design", 45),
                   stringsAsFactors = TRUE)
 gads <- import_DF(dat)
 
+
+
 # variable labels
 gads <- changeVarLabels(gads, "mcvar1", varLabel = "German")
-gads <- changeVarLabels(gads, "mcvar2", varLabel = "English")
 gads <- changeVarLabels(gads, "stringvar", varLabel = "other")
 
 # recode values
-oldValues <- 1:4
-newValues <- c(-94, -98, 0, 1)
-for(varName in c("mcvar1", "mcvar2", "mcother")) {
-  gads <- recodeGADS(GADSdat = gads, varName = varName, 
+oldValues <- 1:3
+newValues <- c(-94, 0, 1)
+for(varName in c("mcvar1", "mcother")) {
+  gads <- recodeGADS(GADSdat = gads, varName = varName,
                      oldValues = oldValues, newValues = newValues)
 }
-gads <- recodeGADS(GADSdat = gads, varName = "stringvar", 
-                     oldValues = 1, newValues = -99)
+gads <- recodeGADS(GADSdat = gads, varName = "stringvar",
+                   oldValues = 1, newValues = -99)
 
 # fill in strings
-gads$dat$stringvar <- c("", "Italian, Eng, Polish", - 99, "English, Germ", -99,
-                        "Ita, Polish, French", -99, "Polish, all", "", "all")
+gads$dat$stringvar <- rep(c("Germ, Eng", "Germ, Ita, Eng", "Eng, Ita", "German", -99), 3)
+
+# assign variable labels
+gads <- changeVarLabels(gads, varName = c("mcvar1", "mcother", "stringvar"),
+                varLabel = c("Language: German",
+                             "Language: other",
+                             "Language: text"))
 
 # Missing codes
 gads <- checkMissings(gads)
@@ -102,10 +103,9 @@ Now you have to add the desired values for recoding. You should use (a) unique p
 To fill in the columns you can use R (see the example). Alternatively, you can use `eatAnalysis::write_xlsx()` to create an excel file in which you can fill in the values. The excel file can be read in back to R via `readxl::read_xlsx()`. Detailed information on how missing values should be recoded is provided in the last section of this vignette.
 
 ```{r editing lookup}
-lookup$language <- c(NA, "missing by", "English", "Italian", "Italian", 
-                     "Polish", "missing invalid resp")
-lookup$language2 <- c(NA, NA, "German", "Polish", "English", NA, NA)
-lookup$language3 <- c(NA, NA, NA, "French", "Polish", NA, NA)
+lookup$language <- c(NA, "English", "German", "German", "German")
+lookup$language2 <- c(NA, "Italian", "English", "Italian", NA)
+lookup$language3 <- c(NA, NA, NA, "English", NA)
 
 lookup
 ```
@@ -129,7 +129,7 @@ In case that not every already existing variable label is part of the lookup tab
 ```{r named character vector, error=TRUE}
 value_string <- c(lookup$language, lookup$language2, lookup$language3)
 named_char_vec <- matchValues_varLabels(GADSdat = gads, 
-                                        mc_vars = c("mcvar1", "mcvar2", "mcother"), 
+                                        mc_vars = c("mcvar1", "mcother"), 
                                         values = value_string, 
                                         label_by_hand = c("other"="mcother"))
 named_char_vec
