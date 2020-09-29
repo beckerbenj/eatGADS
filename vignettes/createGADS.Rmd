@@ -4,7 +4,7 @@ author: "Benjamin Becker"
 date: "`r Sys.Date()`"
 output: rmarkdown::html_vignette
 vignette: >
-  %\VignetteIndexEntry{createGADS: Creating a relational data base}
+  %\VignetteIndexEntry{`createGADS`: Creating a relational data base}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 ---

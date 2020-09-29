@@ -4,7 +4,7 @@ author: "Benjamin Becker"
 date: "`r Sys.Date()`"
 output: rmarkdown::html_vignette
 vignette: >
-  %\VignetteIndexEntry{getGADS: Using a relational eatGADS data base}
+  %\VignetteIndexEntry{`getGADS`: Using a relational eatGADS data base}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 ---

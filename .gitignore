@@ -30,3 +30,5 @@ rsconnect/
 # Ignore folder with other code
 /otherCode
 inst/doc
+doc
+Meta

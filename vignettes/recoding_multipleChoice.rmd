@@ -35,10 +35,12 @@ To illustrate these steps, we will create a simple `GADSdat` example.
 ```{r setup}
 library(eatGADS)
 #create example GADS
-dat <- data.frame(ID = 1:45,
-                  mcvar1 = c(rep(c(rep("yes", 5), rep("no", 5), rep("missing", 5)), 3)),
-                  mcother = c(rep("yes", 15), rep("no", 15), rep("missing", 15)),
-                  stringvar = rep("missing by design", 45),
+dat <- data.frame(ID = 1:11,
+                  mcvar1 = c("yes", "missing", "no", "yes", "missing", "no", 
+                             "yes", "missing", "no","yes", "missing"),
+                  mcother = c("missing", "no", "yes","missing", "no", "yes",
+                              "missing", "no", "yes","missing", "no"),
+                  stringvar = rep("missing by design", 11),
                   stringsAsFactors = TRUE)
 gads <- import_DF(dat)
 
@@ -59,17 +61,18 @@ gads <- recodeGADS(GADSdat = gads, varName = "stringvar",
                    oldValues = 1, newValues = -99)
 
 # fill in strings
-gads$dat$stringvar <- rep(c("Germ, Eng", "Germ, Ita, Eng", "Eng, Ita", "German", -99), 3)
+gads$dat$stringvar <- c("German", "Ger", "Ger", "", "Eng, Pol, Ita", "Pol, Ita, Germ", "eng, ita", "germ, pol", "polish", "eng, ita", -99)
 
 # assign variable labels
 gads <- changeVarLabels(gads, varName = c("mcvar1", "mcother", "stringvar"),
-                varLabel = c("Language: German",
-                             "Language: other",
-                             "Language: text"))
+                        varLabel = c("Language: German",
+                                     "Language: other",
+                                     "Language: text"))
 
 # Missing codes
 gads <- checkMissings(gads)
 gads
+
 ```
 
 The variable names of the data set above are connected to the multiple choice question as indicated:
@@ -103,9 +106,12 @@ Now you have to add the desired values for recoding. You should use (a) unique p
 To fill in the columns you can use R (see the example). Alternatively, you can use `eatAnalysis::write_xlsx()` to create an excel file in which you can fill in the values. The excel file can be read in back to R via `readxl::read_xlsx()`. Detailed information on how missing values should be recoded is provided in the last section of this vignette.
 
 ```{r editing lookup}
-lookup$language <- c(NA, "English", "German", "German", "German")
-lookup$language2 <- c(NA, "Italian", "English", "Italian", NA)
-lookup$language3 <- c(NA, NA, NA, "English", NA)
+lookup$language <- c(NA, NA, "English", "German", "German", 
+                     "Polish", "English", "German", "Polish")
+lookup$language2 <- c(NA, NA, "Polish", NA, NA, 
+                      "Italian", "Italian", "Polish", NA)
+lookup$language3 <- c(NA, NA, "Italian", NA, NA, 
+                      "German", NA, NA, NA)
 
 lookup
 ```

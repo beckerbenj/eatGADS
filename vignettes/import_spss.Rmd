@@ -4,7 +4,7 @@ author: "Benjamin Becker"
 date: "`r Sys.Date()`"
 output: rmarkdown::html_vignette
 vignette: >
-  %\VignetteIndexEntry{import_spss}
+  %\VignetteIndexEntry{`import_spss`: Importing data from 'SPSS'}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 ---
