@@ -4,7 +4,7 @@
 \alias{remove2NAchar}
 \title{Shorten multiple text variables while giving NA codes.}
 \usage{
-remove2NAchar(GADSdat, vars, max_num = 2, na_value)
+remove2NAchar(GADSdat, vars, max_num = 2, na_value, na_label)
 }
 \arguments{
 \item{GADSdat}{A \code{GADSdat} object.}

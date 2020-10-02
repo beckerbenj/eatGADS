@@ -162,7 +162,7 @@ Sometimes the number of additional entries should be limited. This means that th
 ```{r remove2NAchar, error=TRUE}
 gads_string3 <- remove2NAchar(GADSdat = gads_string2, 
                               vars = c("stringvar_1_r", "stringvar_2_r", "stringvar_3_r"), 
-                              max_num = 2, na_value = -97)
+                              max_num = 2, na_value = -97, na_label = "missing: excessive answers")
 
 gads_string3$dat
 ```

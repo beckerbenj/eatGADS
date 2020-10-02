@@ -6,8 +6,9 @@
 #'
 #' Function to obtain a data frame from a \code{GADSdat} object for for changes to meta data on variable or on value level.
 #'
-#' Changes on variable level include variable names (\code{varName}), to variable labels (\code{varLabel}), SPSS format ((\code{format}))
-#' and display width (\code{display_width}). Changes on value level include values (\code{value}), to value labels (\code{valLabel}) and
+#' Changes on variable level include variable names (\code{varName}), variable labels (\code{varLabel}),
+#' SPSS format ((\code{format})) and display width (\code{display_width}).
+#' Changes on value level include values (\code{value}), value labels (\code{valLabel}) and
 #' missing codes (\code{missings}).
 #'
 #'@param GADSdat \code{GADSdat} object imported via \code{eatGADS}.

@@ -18,21 +18,29 @@
 #'#to be done
 #'
 #'@export
-remove2NAchar <- function(GADSdat, vars, max_num = 2, na_value) {
+remove2NAchar <- function(GADSdat, vars, max_num = 2, na_value, na_label) {
   UseMethod("remove2NAchar")
 }
 
 #'@export
-remove2NAchar.GADSdat <- function(GADSdat, vars, max_num = 2, na_value) {
+remove2NAchar.GADSdat <- function(GADSdat, vars, max_num = 2, na_value, na_label) {
   check_GADSdat(GADSdat)
-  if(!is.numeric(max_num) && length(max_num) == 1 && max_num > 0) stop("max_num needs to be a single numeric value greater than 0.")
+  if(!is.numeric(max_num) || length(max_num) != 1 && max_num > 0) stop("'max_num' needs to be a single numeric value greater than 0.")
+  if(!is.numeric(na_value) || length(na_value) != 1) stop("'na_value' needs to be a single numeric value.")
+  if(!is.character(na_label) || length(na_label) != 1) stop("'na_label' needs to be a single character value.")
 
   dat <- max_num_strings2NA(GADSdat$dat, vars = vars, max_num = max_num, na_value = na_value)
   # cut text variables
   remove_vars <- vars[-(1:max_num)]
   dat2 <- dat[, !names(dat) %in% remove_vars, drop = FALSE]
 
-  updateMeta(GADSdat, dat2)
+  ## modify meta deta (maybe make this to and addValueLabel function?)
+  GADSdat_out <- updateMeta(GADSdat, dat2)
+  for(i in vars[!vars %in% remove_vars]) {
+    GADSdat_out <- changeValLabels(GADSdat_out, varName = i, value = na_value, valLabel = na_label)
+    GADSdat_out <- changeMissings(GADSdat_out, varName = i, value = na_value, missings = "miss")
+  }
+  GADSdat_out
 }
 
 # count text variables, give missings if more than x left

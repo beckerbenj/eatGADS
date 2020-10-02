@@ -2,7 +2,7 @@
 #############################################################################
 #' Change value labels.
 #'
-#' Change value labels of a variable as part of a \code{GADSdat} or \code{all_GADSdat} object.
+#' Change or add value labels of a variable as part of a \code{GADSdat} or \code{all_GADSdat} object.
 #'
 #' Applied to a \code{GADSdat} or \code{all_GADSdat} object, this function is a wrapper of \code{\link{getChangeMeta}} and
 #' \code{\link{applyChangeMeta}}.
@@ -26,8 +26,27 @@ changeValLabels <- function(GADSdat, varName, value, valLabel) {
 changeValLabels.GADSdat <- function(GADSdat, varName, value, valLabel) {
   checkValLabelInput(varName = varName, value = value, valLabel = valLabel, labels = GADSdat$labels)
   changeTable <- getChangeMeta(GADSdat, level = "value")
-  for(i in seq_along(value)) {
-    changeTable[changeTable$varName == varName & changeTable$value == value[i], "valLabel_new"] <- valLabel[i]
+
+  existing_values <- value[value %in% changeTable[changeTable$varName == varName, "value"]]
+  existing_valLabels <- valLabel[value %in% changeTable[changeTable$varName == varName, "value"]]
+  new_values <- value[!value %in% changeTable[changeTable$varName == varName, "value"]]
+  new_valLabels <- valLabel[!value %in% changeTable[changeTable$varName == varName, "value"]]
+
+  for(i in seq_along(existing_values)) {
+    changeTable[changeTable$varName == varName & changeTable$value == value[i], "valLabel_new"] <- existing_valLabels[i]
+  }
+  for(i in seq_along(new_values)) {
+    change_row <- changeTable[changeTable$varName == varName, ][1, ]
+
+    # if no other value labels exist in the first place, omit original row
+    if(i == 1 && nrow(changeTable[changeTable$varName == varName, ]) == 1) {
+      changeTable <- changeTable[changeTable$varName != varName, ]
+    }
+
+    change_row[, "value"] <- NA
+    change_row[, "value_new"] <- new_values[i]
+    change_row[, "valLabel_new"] <- new_valLabels[i]
+    changeTable <- rbind(changeTable, change_row)
   }
   applyChangeMeta(GADSdat, changeTable = changeTable)
 }
@@ -41,6 +60,7 @@ checkValLabelInput <- function(varName, value, valLabel, labels) {
   if(!is.character(varName) || !length(varName) == 1) stop("varName is not a character vector of length 1.")
   if(!varName %in% labels$varName) stop("varName is not a variable name in the GADSdat.")
   if(length(value) != length(valLabel)) stop("value and valLabel are not of identical length.", call. = FALSE)
-  if(!all(value %in% labels[labels$varName == varName, "value"])) stop("values are not existing values for the variable.", call. = FALSE)
   return()
 }
+
+

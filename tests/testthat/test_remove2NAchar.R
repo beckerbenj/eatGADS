@@ -19,24 +19,39 @@ test_that("Too many strings to missing", {
   expect_equal(as.character(out[4, ]), c(NA_character_, NA, NA))
 })
 
+test_that("Input errors", {
+  expect_error(remove2NAchar(mt4_gads, vars = namesGADS(mt4_gads), max_num = 1:2, na_value = -99, na_label = "missing"),
+               "'max_num' needs to be a single numeric value greater than 0.")
+  expect_error(remove2NAchar(mt4_gads, vars = namesGADS(mt4_gads), max_num = "2", na_value = -99, na_label = "missing"),
+               "'max_num' needs to be a single numeric value greater than 0.")
+  expect_error(remove2NAchar(mt4_gads, vars = namesGADS(mt4_gads), max_num = 1, na_value = "-99", na_label = "missing"),
+               "'na_value' needs to be a single numeric value.")
+  expect_error(remove2NAchar(mt4_gads, vars = namesGADS(mt4_gads), max_num = 2, na_value = -99, na_label = c("m", 2)),
+               "'na_label' needs to be a single character value.")
+})
 
 test_that("Too many strings to missing and NA coding", {
-  out <- remove2NAchar(mt4_gads, vars = namesGADS(mt4_gads), max_num = 1, na_value = -99)
+  out <- remove2NAchar(mt4_gads, vars = namesGADS(mt4_gads), max_num = 1, na_value = -99, na_label = "missing")
   expect_equal(out$dat$text1, c(-99, -99, -99, "Aus2"))
   expect_equal(dim(out$dat), c(4, 1))
+  expect_equal(out$labels$value, -99)
+  expect_equal(out$labels$missings, "miss")
+  expect_equal(out$labels$labeled, "yes")
 
-  out <- remove2NAchar(mt3_gads, vars = c("text1", "text2"), max_num = 1, na_value = -99)
+  out <- remove2NAchar(mt3_gads, vars = c("text1", "text2"), max_num = 1, na_value = -99, na_label = "missing")
   expect_equal(out$dat$text1, c(NA, -99, "Aus", -99))
   expect_equal(dim(out$dat), c(4, 5))
+  expect_equal(out$labels[5, "value"], -99)
+  expect_equal(out$labels[5, "missings"], "miss")
 })
 
 test_that("remove2NAchar and numeric variables", {
-  out <- remove2NAchar(mt3_gads, vars = c("mc1", "mc2"), max_num = 1, na_value = -99)
+  out <- remove2NAchar(mt3_gads, vars = c("mc1", "mc2"), max_num = 1, na_value = -99, na_label = "missing")
   expect_equal(out$dat$mc1, c(-99, -99, -99, -99))
 })
 
 test_that("remove2NAchar max_num which exceeds number of strings", {
-  out <- remove2NAchar(mt4_gads, vars = namesGADS(mt4_gads), max_num = 3, na_value = -99)
+  out <- remove2NAchar(mt4_gads, vars = namesGADS(mt4_gads), max_num = 3, na_value = -99, na_label = "missing")
   expect_equal(out$dat, mt4_gads$dat)
 })
 
