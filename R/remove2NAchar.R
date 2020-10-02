@@ -11,6 +11,7 @@
 #'@param vars A character vector with the names of the text variables.
 #'@param max_num Maximum number of text variables. Additional text variables will be removed and NA codes given accordingly.
 #'@param na_value Which NA value should be given in cases of too many values on text variables.
+#'@param na_label Which value label should be given to the \code{na_value}.
 #'
 #'@return Returns the modified \code{GADSdat}.
 #'
@@ -25,7 +26,7 @@ remove2NAchar <- function(GADSdat, vars, max_num = 2, na_value, na_label) {
 #'@export
 remove2NAchar.GADSdat <- function(GADSdat, vars, max_num = 2, na_value, na_label) {
   check_GADSdat(GADSdat)
-  if(!is.numeric(max_num) || length(max_num) != 1 && max_num > 0) stop("'max_num' needs to be a single numeric value greater than 0.")
+  if(!is.numeric(max_num) || length(max_num) != 1) stop("'max_num' needs to be a single numeric value greater than 0.")
   if(!is.numeric(na_value) || length(na_value) != 1) stop("'na_value' needs to be a single numeric value.")
   if(!is.character(na_label) || length(na_label) != 1) stop("'na_label' needs to be a single character value.")
 

@@ -51,7 +51,7 @@
 #' out_gads2 <- multiChar2fac(out_gads, vars = c("text1_r", "text2_r"))
 #'
 #' final_gads <- remove2NAchar(out_gads2, vars = c("text1_r_r", "text2_r_r"),
-#'                               max_num = 1, na_value = -99)
+#'                               max_num = 1, na_value = -99, na_label = "missing: excessive answers")
 #'
 #'@export
 collapseMultiMC_Text <- function(GADSdat, mc_vars, text_vars, mc_var_4text, var_suffix = "_r", label_suffix = "(recoded)") {

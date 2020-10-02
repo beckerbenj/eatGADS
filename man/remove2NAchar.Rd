@@ -14,6 +14,8 @@ remove2NAchar(GADSdat, vars, max_num = 2, na_value, na_label)
 \item{max_num}{Maximum number of text variables. Additional text variables will be removed and NA codes given accordingly.}
 
 \item{na_value}{Which NA value should be given in cases of too many values on text variables.}
+
+\item{na_label}{Which value label should be given to the \code{na_value}.}
 }
 \value{
 Returns the modified \code{GADSdat}.
