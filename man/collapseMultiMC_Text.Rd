@@ -45,7 +45,8 @@ kind based on multiple text variables. The recoding can be prepared by expanding
 to its underlying values stored in variable labels (\code{\link{matchValues_varLabels}}).
 
 The function recodes the dummy variables according to the character variables. Additionally, the \code{mc_var_4text}
-variable is recoded according to the final status of the \code{text_vars}.
+variable is recoded according to the final status of the \code{text_vars} (exception: if the text variables were
+originally \code{NA}, \code{mc_var_4text} is left as it was).
 
 Missing values in the text variables can be represented either by \code{NAs} or by empty characters.
 The multiple choice variables specified with \code{mc_vars} can only contain the values \code{0},

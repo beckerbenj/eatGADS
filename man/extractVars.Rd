@@ -25,7 +25,17 @@ Both functions simply perform the variable removal or extraction from the underl
 in the \code{GADSdat} object followed by calling \code{\link{updateMeta}}.
 }
 \examples{
-# Example data set
-#to be done
+## create an example GADSdat
+example_df <- data.frame(ID = 1:4,
+                        age = c(12, 14, 16, 13),
+                        citizenship1 = c("German", "English", "Polish", "Chinese"),
+                        citizenship2 = c(NA, "German", "Chinese", "Polish"),
+                        stringsAsFactors = TRUE)
+gads <- import_DF(example_df)
 
+## remove variables from GADSdat
+gads2 <- removeVars(gads, vars = c("citizenship2", "age"))
+
+## extract GADSdat with specific variables
+gads3 <- extractVars(gads, vars = c("ID", "citizenship1"))
 }

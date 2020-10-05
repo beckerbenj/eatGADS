@@ -1,14 +1,17 @@
 #### Multiple Strings to Labeled Variables
 #############################################################################
-#' Transform Multiple character variables to factors with identical levels.
+#' Transform multiple character variables to factors with identical levels.
 #'
 #' Convert multiple character variables to factors, while creating a common set of value labels, which is identical across variables.
 #'
 #' If a set of variables has the same possible values, it is desirable that these variables share the same
 #' value labels, even if some of the values do not occur on the individual variables. This function allows
-#' the transformation of multiple character variables
-#' to factors while assimilating the value labels.
+#' the transformation of multiple character variables to factors while assimilating the value labels.
 #' The SPSS format of the newly created variables is set to \code{F10.0}.
+#'
+#' If necessary, missing codes can be set after transformation via \code{\link{checkMissings}} for setting missing codes
+#' depending on value labels for all variables or
+#' \code{\link{changeMissings}} for setting missing codes for specific values in a specific variable.
 #'
 #'@param GADSdat A \code{data.frame} or \code{GADSdat} object.
 #'@param vars A character vector with all variables that should be transformed to factor.
@@ -18,7 +21,18 @@
 #'@return Returns a \code{GADSdat} containing the newly computed variable.
 #'
 #'@examples
-#'#to be done
+#'## create an example GADSdat
+#'example_df <- data.frame(ID = 1:4,
+#'                         citizenship1 = c("German", "English", "missing by design", "Chinese"),
+#'                         citizenship2 = c("missing", "German", "missing by design", "Polish"),
+#'                         stringsAsFactors = FALSE)
+#'gads <- import_DF(example_df)
+#'
+#'## transform multiple strings
+#'gads2 <- multiChar2fac(gads, vars = c("citizenship1", "citizenship2"))
+#'
+#'## set values to missings
+#'gads3 <- checkMissings(gads2, missingLabel = "missing")
 #'
 #'@export
 multiChar2fac <- function(GADSdat, vars, var_suffix = "_r", label_suffix = "(recoded)") {

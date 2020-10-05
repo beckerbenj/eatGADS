@@ -3,9 +3,13 @@
 #############################################################################
 #' Shorten multiple text variables while giving NA codes.
 #'
-#' Remove text variables from a certain number from \code{GADSdat} while coding overflowing answers as complete missings.
+#' Shorten text variables from a certain number on while coding overflowing answers as complete missings.
 #'
 #' In some cases, multiple text variables contain the information of one variable (e.g. multiple answers to an open item).
+#' If this is a case, sometimes the number text variables displaying this variable should be limited. \code{remove2NAchar}
+#' allows shortening multiple character variables, this means character variables after \code{max_num} are removed
+#' from the \code{GADSdat}. Cases, which had valid responses on these removed variables are coded as missings (using
+#' \code{na_value} and \code{na_label}).
 #'
 #'@param GADSdat A \code{GADSdat} object.
 #'@param vars A character vector with the names of the text variables.
@@ -16,7 +20,18 @@
 #'@return Returns the modified \code{GADSdat}.
 #'
 #'@examples
-#'#to be done
+#'## create an example GADSdat
+#'example_df <- data.frame(ID = 1:4,
+#'                         citizenship1 = c("German", "English", "missing by design", "Chinese"),
+#'                         citizenship2 = c(NA, "German", "missing by design", "Polish"),
+#'                         citizenship3 = c(NA, NA, NA, "German"),
+#'                         stringsAsFactors = FALSE)
+#'gads <- import_DF(example_df)
+#'
+#'## shorten character variables
+#'gads2 <- remove2NAchar(gads, vars = c("citizenship1", "citizenship2", "citizenship3"),
+#'                       na_value = -99, na_label = "missing: too many answers")
+#'
 #'
 #'@export
 remove2NAchar <- function(GADSdat, vars, max_num = 2, na_value, na_label) {

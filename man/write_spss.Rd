@@ -19,7 +19,8 @@ Write a \code{GADSdat} object, which contains meta information as value and vari
 See 'details' for some important limitations.
 }
 \details{
-The provided functionality relies on \code{havens} \code{\link[haven]{write_sav}} function. Currently known limitations are:
+The provided functionality relies on \code{havens} \code{\link[haven:read_spss]{write_sav}} function.
+Currently known limitations are:
 (a) Missing codes for all character variables are dropped, (b) value labels for long character variables (> \code{A10}) are
 dropped, (c) under specific conditions very long character variables (> \code{A254}) are incorrectly displayed as multiple
 character variables in \code{SPSS}. Furthermore, \code{write_spss} currently does not support exporting date or time variables.

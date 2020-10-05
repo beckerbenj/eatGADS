@@ -19,10 +19,14 @@ l_gads <- import_DF(l)
 
 ################# Combine multi MC and text ---------------------------------------------------
 test_that("Errors wrong codes MC variables",{
-  expect_error(check_01_mc_in_gadsdat(l_gads, "v1"), "MC variables must be coded 0 and 1. Variable v1 contains values: a, b, b, f")
+  expect_error(check_01_mc_in_gadsdat(l_gads, "v1"),
+               "MC variables must be coded 0 (no) and 1 (yes):\nv1 contains values: a, b, b, f", fixed = TRUE)
+  expect_error(check_01_mc_in_gadsdat(l_gads, c("v1", "v2")),
+               "MC variables must be coded 0 (no) and 1 (yes):\nv1 contains values: a, b, b, f\nv2 contains values: a, k, h", fixed = TRUE)
 
   mc_gads <- import_DF(data.frame(ID = 1:3, mc = c(0, 2, 2)))
-  expect_error(check_01_mc_in_gadsdat(mc_gads, "mc"), "MC variables must be coded 0 and 1. Variable mc contains values: 0, 2")
+  expect_error(check_01_mc_in_gadsdat(mc_gads, "mc"),
+               "MC variables must be coded 0 (no) and 1 (yes):\nmc contains values: 0, 2", fixed = TRUE)
 })
 
 
@@ -45,11 +49,16 @@ test_that("Errors in combine multi mc and text", {
   mc_vars <- matchValues_varLabels(mt3_gads, mc_vars = c("mc1", "mc2", "mc3"), values = c("Aus", "Eng", "other"))
   mt3_gads_err <- mt3_gads
   mt3_gads_err$dat[3, "text2"] <- "Aus"
-  expect_error(collapseMultiMC_Text(mt3_gads_err, mc_vars = mc_vars, text_vars = c("text1", "text2"), mc_var_4text = "mc3"), "Duplicate values in row 3.")
+  expect_error(collapseMultiMC_Text(mt3_gads_err, mc_vars = mc_vars, text_vars = c("text1", "text2"), mc_var_4text = "mc3"),
+               "Duplicate values in row 3.")
 
-  expect_error(collapseMultiMC_Text(mt3_gads, mc_vars = mc_vars, text_vars = c("text1", "text2"), mc_var_4text = c("mc3", "mc1")), "mc_var_4text needs to be a character of lenth one.")
+  expect_error(collapseMultiMC_Text(mt3_gads, mc_vars = mc_vars, text_vars = c("text1", "text2"),
+                                    mc_var_4text = c("mc3", "mc1")),
+               "mc_var_4text needs to be a character of lenth one.")
 
-  expect_error(collapseMultiMC_Text(mt3_gads, mc_vars = mc_vars[1:2], text_vars = c("text1", "text2"), mc_var_4text = c("mc3")), "mc_var_4text is not part of mc_vars.")
+  expect_error(collapseMultiMC_Text(mt3_gads, mc_vars = mc_vars[1:2], text_vars = c("text1", "text2"),
+                                    mc_var_4text = c("mc3")),
+               "mc_var_4text is not part of mc_vars.")
 })
 
 
@@ -85,5 +94,13 @@ test_that("Combine multi mc and text with empty text variables", {
 
   expect_equal(as.character(test$dat[1, c("text1", "text2")]), c("", ""))
   expect_equal(as.character(test$dat[1, c("text1_r", "text2_r")]), c("", ""))
+  # if other 1 and text variable originally empty, keep 1 in other
   expect_equal(as.numeric(test$dat[1, c("mc3", "mc3_r")]), c(1, 1))
+  # if other 1 and text variable with values which move into mcs, set other to 0
+  expect_equal(as.numeric(test$dat[3, c("mc3", "mc3_r")]), c(1, 0))
 })
+
+
+
+
+

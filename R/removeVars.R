@@ -13,9 +13,20 @@
 #'@return Returns a \code{GADSdat} object.
 #'
 #'@examples
-#'# Example data set
-#'#to be done
+#'## create an example GADSdat
+#'example_df <- data.frame(ID = 1:4,
+#'                         age = c(12, 14, 16, 13),
+#'                         citizenship1 = c("German", "English", "Polish", "Chinese"),
+#'                         citizenship2 = c(NA, "German", "Chinese", "Polish"),
+#'                         stringsAsFactors = TRUE)
+#'gads <- import_DF(example_df)
 #'
+#'## remove variables from GADSdat
+#'gads2 <- removeVars(gads, vars = c("citizenship2", "age"))
+#'
+#'## extract GADSdat with specific variables
+#'gads3 <- extractVars(gads, vars = c("ID", "citizenship1"))
+
 #'@export
 extractVars <- function(GADSdat, vars) {
   UseMethod("extractVars")
@@ -23,7 +34,7 @@ extractVars <- function(GADSdat, vars) {
 #'@export
 extractVars.GADSdat <- function(GADSdat, vars) {
   check_GADSdat(GADSdat)
-  if(!all(vars %in% namesGADS(GADSdat))) stop("All 'vars' have to be variables in the GADSdat.")
+  check_vars_in_GADSdat(GADSdat, vars = vars)
 
   new_dat <- GADSdat$dat[, names(GADSdat$dat) %in% vars, drop = FALSE]
   updateMeta(GADSdat, newDat = new_dat)
@@ -37,8 +48,23 @@ UseMethod("removeVars")
 #'@export
 removeVars.GADSdat <- function(GADSdat, vars) {
   check_GADSdat(GADSdat)
-  if(!all(vars %in% namesGADS(GADSdat))) stop("All 'vars' have to be variables in the GADSdat.")
+  check_vars_in_GADSdat(GADSdat, vars = vars)
 
   new_dat <- GADSdat$dat[, !names(GADSdat$dat) %in% vars, drop = FALSE]
   updateMeta(GADSdat, newDat = new_dat)
 }
+
+check_vars_in_GADSdat <- function(GADSdat, vars) {
+  dup_vars <- vars[duplicated(vars)]
+  if(length(dup_vars) > 0) stop("There are duplicates in 'vars': ",
+                                paste(dup_vars, collapse = ", "))
+
+  other_vars <- vars[!vars %in% namesGADS(GADSdat)]
+  if(length(other_vars) > 0) stop("The following 'vars' are not variables in the GADSdat: ",
+                                  paste(other_vars, collapse = ", "))
+  return()
+}
+
+
+
+

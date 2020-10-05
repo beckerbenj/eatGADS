@@ -2,17 +2,21 @@
 #############################################################################
 #' Recode via lookup table into multiple variables.
 #'
-#' Recode one or multiple variables based on a lookup table created via \code{\link{createLookup}}. In contrast to \code{\link{applyLookup}},
-#' this function allows the creation of multiple resulting variables from a single input variable. All variables in \code{lookup}, except
+#' Recode one or multiple variables based on a lookup table created via \code{\link{createLookup}}.
+#' In contrast to \code{\link{applyLookup}}, this function allows the creation of multiple resulting
+#' variables from a single input variable. All variables in \code{lookup} except
 #' \code{variable} and \code{value} are treated as recode columns.
 #'
-#' If a variable contains information that should be split into multiple variables via manual recoding, \code{applyLookup_expandVar} can be used.
-#' If there are missing values in any recode column, \code{NAs} are inserted as new values. A \code{warning} is issued only for the first column.
+#' If a variable contains information that should be split into multiple variables via manual recoding,
+#' \code{applyLookup_expandVar} can be used. If there are missing values in any recode column,
+#' \code{NAs} are inserted as new values. A \code{warning} is issued only for the first column.
 #'
-#' The complete work flow when using a lookup table to expand variables in a \code{GADSdat} based on manual recoding could be: (1) create a
-#' lookup table with \code{\link{createLookup}}. Save the lookup table to \code{.xlsx} with \code{\link[eatAnalysis]{write_xlsx}}. (3) fill out the
-#' lookup table via \code{Excel}. (4) Import the lookup table back to \code{R} via \code{\link[readxl]{read_xlsx}}. (5) Apply the final
-#' lookup table with \code{applyLookup_expandVar}.
+#' The complete work flow when using a lookup table to expand variables in a \code{GADSdat} based on manual recoding could be:
+#' (1) create a lookup table with \code{\link{createLookup}}.
+#' (2) Save the lookup table to \code{.xlsx} with \code{\link[eatAnalysis]{write_xlsx}}.
+#' (3) fill out the lookup table via \code{Excel}.
+#' (4) Import the lookup table back to \code{R} via \code{\link[readxl]{read_excel}}.
+#' (5) Apply the final lookup table with \code{applyLookup_expandVar}.
 #'
 #' See \code{\link{applyLookup}} for simply recoding variables in a \code{GADSdat}.
 #'
@@ -53,7 +57,8 @@ applyLookup_expandVar.GADSdat <- function(GADSdat, lookup) {
     single_lookup <- lookup[, c(1, 2, 2 + i)]
     names(single_lookup)[3] <- "value_new"
     # check first recode column more thoroughly than later columns (same warning as in check_lookup)
-    if(i == 1) check_lookup(single_lookup, GADSdat = GADSdat)
+    #if(i == 1) check_lookup(single_lookup, GADSdat = GADSdat)
+    if(i == 1) GADSdat_new <- applyLookup(GADSdat_new, lookup = single_lookup, suffix = paste0("_", i))
 
     # 2) apply recode; new variable with number as suffix?
     suppressWarnings(GADSdat_new <- applyLookup(GADSdat_new, lookup = single_lookup, suffix = paste0("_", i)))
@@ -66,7 +71,7 @@ applyLookup_expandVar.GADSdat <- function(GADSdat, lookup) {
   GADSdat_new
 }
 
-## deprecated, check_lookup is used for first column
+######### deprecated, check_lookup is used for first column ###################
 check_lookup_expandVar <- function(lookup, GADSdat) {
   # checks as in check_lookup
   if(!all(lookup$variable %in% namesGADS(GADSdat))) stop("Some of the variables are not variables in the GADSdat.")

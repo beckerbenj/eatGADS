@@ -14,7 +14,8 @@
 #' to its underlying values stored in variable labels (\code{\link{matchValues_varLabels}}).
 #'
 #' The function recodes the dummy variables according to the character variables. Additionally, the \code{mc_var_4text}
-#' variable is recoded according to the final status of the \code{text_vars}.
+#' variable is recoded according to the final status of the \code{text_vars} (exception: if the text variables were
+#' originally \code{NA}, \code{mc_var_4text} is left as it was).
 #'
 #' Missing values in the text variables can be represented either by \code{NAs} or by empty characters.
 #' The multiple choice variables specified with \code{mc_vars} can only contain the values \code{0},
@@ -124,13 +125,17 @@ collapseMultiMC_Text.GADSdat <- function(GADSdat, mc_vars, text_vars, mc_var_4te
 }
 
 check_01_mc_in_gadsdat <- function(GADSdat, mcs) {
+  violating_vars <- character()
   for(mc in mcs) {
     suppressMessages(one_GADSdat <- removeVars(GADSdat, namesGADS(GADSdat)[namesGADS(GADSdat) != mc]))
     dat <- extractData(one_GADSdat, convertMiss = TRUE, convertLabels = "numeric")
     unique_values <- sort(unique(dat[[mc]]))
-    if(!all(unique_values %in% c(0, 1))) stop("MC variables must be coded 0 and 1. Variable ", mc, " contains values: ",
-                                              paste(unique_values, collapse = ", "))
+    if(!all(unique_values %in% c(0, 1))) {
+      violating_vars <- c(violating_vars, paste0(mc, " contains values: ", paste(unique_values, collapse = ", ")))
+    }
   }
+  violating_list <- paste(violating_vars, collapse = "\n")
+  if(length(violating_vars) > 0) stop(paste0("MC variables must be coded 0 (no) and 1 (yes):\n", violating_list))
   return()
 }
 

@@ -132,7 +132,7 @@ When integrating character variables into multiple dummy variables, there has to
 
 In case that not every already existing variable label is part of the lookup table you can use the `label_by_hand` argument. This is always the case for the variable representing the `other` response option but might be necessary for other response options as well. Alternatively, these values could be added to the `value_string` as well, to enable automatic matching.
 
-```{r named character vector, error=TRUE}
+```{r named character vector}
 value_string <- c(lookup$language, lookup$language2, lookup$language3)
 named_char_vec <- matchValues_varLabels(GADSdat = gads, 
                                         mc_vars = c("mcvar1", "mcother"), 
@@ -146,7 +146,7 @@ named_char_vec
 By using the expanded `GADS` and the named character vector you can collapse the information of the strings with the already existing numeric variables. For that the binary numeric variables must have the structure: 1 = true and 0 = false. If there is a match of a string and a numeric variable but its set to 0 the function will set it to 1 and if it is the only string value the indicator variable will be set to 0. You also need a vector of the new built string variables in the `GADS` object for the `text_vars` argument.  
 DIE MISSINGSETZUNG HIER DANN NOCHMAL MIT AKTUALISIEREN
 
-```{r collapse, error=TRUE}
+```{r collapse}
 gads_string2 <- collapseMultiMC_Text(GADSdat = gads_string, mc_vars = named_char_vec, 
                                      text_vars = c("stringvar_1", "stringvar_2", "stringvar_3"), 
                                      mc_var_4text = "mcother", var_suffix = "_r", 
@@ -159,10 +159,11 @@ gads_string2$dat
 
 Sometimes the number of additional entries should be limited. This means that the number of character variables is 'trimmed'. For this you can use `remove2NAchar()` to decide how many variables you finally want to have(`max_num`). If there are more values for one ID there will be a missing code for all cases that you can define with `na_value`.
 
-```{r remove2NAchar, error=TRUE}
+```{r remove2NAchar}
 gads_string3 <- remove2NAchar(GADSdat = gads_string2, 
                               vars = c("stringvar_1_r", "stringvar_2_r", "stringvar_3_r"), 
-                              max_num = 2, na_value = -97, na_label = "missing: excessive answers")
+                              max_num = 2, na_value = -97, 
+                              na_label = "missing: excessive answers")
 
 gads_string3$dat
 ```
@@ -171,7 +172,7 @@ gads_string3$dat
 
 After using `collapseMultiMC_Text()`, only new, additional values are left in the character variables. You can use the `multiChar2fac()` function to transform these to numeric, labeled variables. After that `checkMissings()` helps to define the missing codes. 
 
-```{r multiChar2fac, error=TRUE}
+```{r multiChar2fac}
 gads_numeric <- multiChar2fac(GADSdat = gads_string3, vars = c("stringvar_1_r", "stringvar_2_r"), 
                               var_suffix = "_r", label_suffix = "(recoded)")
 
@@ -184,3 +185,7 @@ extractMeta(gads_final)[, c("varName", "value", "valLabel", "missings")]
 ## Clean data set
 
 In a last step you can remove unnecessary variables from the `GADS` object by using `removeVars()`.
+```{r remove vars}
+gads_final2 <- removeVars(gads_final, vars = c("stringvar_1", "stringvar_2", "stringvar_3",
+                                               "stringvar_1_r", "stringvar_2_r"))
+```
