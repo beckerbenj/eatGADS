@@ -178,7 +178,8 @@ gads_numeric <- multiChar2fac(GADSdat = gads_string3, vars = c("stringvar_1_r", 
 
 gads_numeric$dat
 
-gads_final<- checkMissings(GADSdat = gads_numeric, missingLabel = "missing", addMissingCode = TRUE)
+#gads_final<- checkMissings(GADSdat = gads_numeric, missingLabel = "missing", addMissingCode = TRUE)
+gads_final <- gads_numeric
 extractMeta(gads_final)[, c("varName", "value", "valLabel", "missings")]
 ```
 

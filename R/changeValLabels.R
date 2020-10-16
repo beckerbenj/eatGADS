@@ -27,6 +27,8 @@ changeValLabels.GADSdat <- function(GADSdat, varName, value, valLabel) {
   checkValLabelInput(varName = varName, value = value, valLabel = valLabel, labels = GADSdat$labels)
   changeTable <- getChangeMeta(GADSdat, level = "value")
 
+  #if(identical(varName, "text1")) browser()
+
   existing_values <- value[value %in% changeTable[changeTable$varName == varName, "value"]]
   existing_valLabels <- valLabel[value %in% changeTable[changeTable$varName == varName, "value"]]
   new_values <- value[!value %in% changeTable[changeTable$varName == varName, "value"]]
@@ -39,7 +41,7 @@ changeValLabels.GADSdat <- function(GADSdat, varName, value, valLabel) {
     change_row <- changeTable[changeTable$varName == varName, ][1, ]
 
     # if no other value labels exist in the first place, omit original row
-    if(i == 1 && nrow(changeTable[changeTable$varName == varName, ]) == 1) {
+    if(i == 1 && nrow(changeTable[changeTable$varName == varName, ]) == 1 && is.na(change_row$value)) {
       changeTable <- changeTable[changeTable$varName != varName, ]
     }
 

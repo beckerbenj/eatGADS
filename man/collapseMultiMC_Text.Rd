@@ -10,7 +10,9 @@ collapseMultiMC_Text(
   text_vars,
   mc_var_4text,
   var_suffix = "_r",
-  label_suffix = "(recoded)"
+  label_suffix = "(recoded)",
+  invalid_miss_code = -96,
+  invalid_miss_label = "Missing: Invalid response"
 )
 }
 \arguments{
@@ -27,6 +29,10 @@ Creation by \code{\link{matchValues_varLabels}} is recommended.}
 \item{var_suffix}{Variable suffix for the newly created \code{GADSdat}. If an empty character, the existing variables are overwritten.}
 
 \item{label_suffix}{Suffix added to variable label for the newly created or modified variables in the \code{GADSdat}.}
+
+\item{invalid_miss_code}{Missing code which is given to new character variables if all text entries where recoded into the dichotomous variables.}
+
+\item{invalid_miss_label}{Value label for \code{invalid_miss_code}.}
 }
 \value{
 Returns a \code{GADSdat} containing the newly computed variables.
@@ -48,10 +54,13 @@ The function recodes the dummy variables according to the character variables. A
 variable is recoded according to the final status of the \code{text_vars} (exception: if the text variables were
 originally \code{NA}, \code{mc_var_4text} is left as it was).
 
-Missing values in the text variables can be represented either by \code{NAs} or by empty characters.
+Missing values in the character variables can be represented either by \code{NAs} or by empty characters.
 The multiple choice variables specified with \code{mc_vars} can only contain the values \code{0},
 \code{1} and missing codes. The value \code{1} must always represent "this category applies".
 If necessary, use \code{\link{recodeGADS}} for recoding.
+
+For cases for which the \code{text_vars} contain only values that can be recoded into the \code{mc_vars},
+all new \code{text_vars} are given specific missing codes (see \code{invalid_miss_code} and \code{invalid_miss_label}).
 }
 \examples{
 # Prepare example data

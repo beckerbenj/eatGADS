@@ -17,10 +17,13 @@
 #' variable is recoded according to the final status of the \code{text_vars} (exception: if the text variables were
 #' originally \code{NA}, \code{mc_var_4text} is left as it was).
 #'
-#' Missing values in the text variables can be represented either by \code{NAs} or by empty characters.
+#' Missing values in the character variables can be represented either by \code{NAs} or by empty characters.
 #' The multiple choice variables specified with \code{mc_vars} can only contain the values \code{0},
 #' \code{1} and missing codes. The value \code{1} must always represent "this category applies".
 #' If necessary, use \code{\link{recodeGADS}} for recoding.
+#'
+#' For cases for which the \code{text_vars} contain only values that can be recoded into the \code{mc_vars},
+#' all new \code{text_vars} are given specific missing codes (see \code{invalid_miss_code} and \code{invalid_miss_label}).
 #'
 #'@param GADSdat A \code{GADSdat} object.
 #'@param mc_vars A character vector with the variable names of the multiple choice variable. Names of the character
@@ -30,6 +33,8 @@
 #'@param mc_var_4text The name of the multiple choice variable that signals that information from the text variable should be used. This variable is recoded according to the final status of the text variables.
 #'@param var_suffix Variable suffix for the newly created \code{GADSdat}. If an empty character, the existing variables are overwritten.
 #'@param label_suffix Suffix added to variable label for the newly created or modified variables in the \code{GADSdat}.
+#'@param invalid_miss_code Missing code which is given to new character variables if all text entries where recoded into the dichotomous variables.
+#'@param invalid_miss_label Value label for \code{invalid_miss_code}.
 #'
 #'@return Returns a \code{GADSdat} containing the newly computed variables.
 #'
@@ -55,12 +60,14 @@
 #'                               max_num = 1, na_value = -99, na_label = "missing: excessive answers")
 #'
 #'@export
-collapseMultiMC_Text <- function(GADSdat, mc_vars, text_vars, mc_var_4text, var_suffix = "_r", label_suffix = "(recoded)") {
+collapseMultiMC_Text <- function(GADSdat, mc_vars, text_vars, mc_var_4text, var_suffix = "_r", label_suffix = "(recoded)",
+                                 invalid_miss_code = -96, invalid_miss_label = "Missing: Invalid response") {
   UseMethod("collapseMultiMC_Text")
 }
 
 #'@export
-collapseMultiMC_Text.GADSdat <- function(GADSdat, mc_vars, text_vars, mc_var_4text, var_suffix = "_r", label_suffix = "(recoded)") {
+collapseMultiMC_Text.GADSdat <- function(GADSdat, mc_vars, text_vars, mc_var_4text, var_suffix = "_r", label_suffix = "(recoded)",
+                                         invalid_miss_code = -96, invalid_miss_label = "Missing: Invalid response") {
   if(!all(mc_vars %in% namesGADS(GADSdat))) stop("Not all mc_vars are variables in the GADSdat.")
   if(!all(text_vars %in% namesGADS(GADSdat))) stop("Not all text_vars are variables in the GADSdat.")
   if(!is.character(mc_var_4text) || length(mc_var_4text) != 1) stop("mc_var_4text needs to be a character of lenth one.")
@@ -107,19 +114,20 @@ collapseMultiMC_Text.GADSdat <- function(GADSdat, mc_vars, text_vars, mc_var_4te
     }
   }
 
-  ## careful (old):
-  # - 94 other MC (other missing codes possible, add argument?) should be kept
-  # - 98 other MC
-
-  # better approach:
-  # use new text variable + old; if new text empty look at old text, if discrepancy -> other to 0, otherwise keep original other MC
-  # implement!!!!!!!
-
   ## recode 'other' mc
   GADSdat2$dat[, new_mc_var_4text] <- ifelse(is.na(GADSdat2$dat[[new_text_vars[1]]]), yes = 0, no = 1)
   ## special case: originaly other but empty text
   GADSdat2$dat[, new_mc_var_4text] <- ifelse(GADSdat$dat[[mc_var_4text]] == 1 & is.na(GADSdat$dat[[text_vars[1]]]),
                                              yes = 1, no = GADSdat2$dat[, new_mc_var_4text])
+  ## special case 2: originally other = yes, now other = no: give special missing
+  for(new_text_var in new_text_vars[new_text_vars %in% namesGADS(GADSdat2)]) {
+    GADSdat2$dat[, new_text_var] <- ifelse(GADSdat$dat[[mc_var_4text]] == 1 & GADSdat2$dat[[new_mc_var_4text]] == 0,
+                                               yes = invalid_miss_code, no = GADSdat2$dat[, new_text_var])
+    # create corresponding missing labels for new text variables
+    GADSdat2 <- changeValLabels(GADSdat2, varName = new_text_var, value = invalid_miss_code, valLabel = invalid_miss_label)
+    GADSdat2 <- changeMissings(GADSdat2, varName = new_text_var, value = invalid_miss_code, missings = "miss")
+  }
+
 
   GADSdat2
 }

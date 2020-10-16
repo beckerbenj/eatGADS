@@ -49,3 +49,12 @@ test_that("changevallabel for adding value labels to unlabeled variable", {
   expect_equal(out$labels[3, "value"], 2)
   expect_equal(out$dat, dfUn$dat)
 })
+
+test_that("add value label to a variable with one existing label", {
+  dfT <- data.frame(text1 = c(-96, "g", -99), stringsAsFactors = FALSE)
+  gadsT <- import_DF(dfT)
+  gadsT <- changeValLabels(gadsT, varName = "text1", value = -96, valLabel = "miss")
+  gadsT <- changeMissings(gadsT, varName = "text1", value = -96, missings = "miss")
+  out <- changeValLabels(gadsT, varName = "text1", value = -99, valLabel = "miss")
+  expect_equal(out$labels$value, c(-96, -99))
+})

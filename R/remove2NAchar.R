@@ -49,7 +49,13 @@ remove2NAchar.GADSdat <- function(GADSdat, vars, max_num = 2, na_value, na_label
   # cut text variables
   remove_vars <- vars[-(1:max_num)]
   dat2 <- dat[, !names(dat) %in% remove_vars, drop = FALSE]
+  # restore specific missing codes in character variables
+  missing_values <- unique(GADSdat$labels[which(GADSdat$labels$varName %in% vars & GADSdat$labels$missings == "miss"), "value"])
+  for(i in vars[!vars %in% remove_vars]) {
+    dat2[, i] <- ifelse(GADSdat$dat[, i] %in% missing_values, yes = GADSdat$dat[, i], no = dat2[, i])
+  }
 
+  #if(length(missing_values) >0) browser()
   ## modify meta deta (maybe make this to and addValueLabel function?)
   GADSdat_out <- updateMeta(GADSdat, dat2)
   for(i in vars[!vars %in% remove_vars]) {

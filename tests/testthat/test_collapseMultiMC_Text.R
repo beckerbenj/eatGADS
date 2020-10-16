@@ -66,18 +66,23 @@ test_that("Combine multi mc and text", {
   mc_vars <- matchValues_varLabels(mt3_gads, mc_vars = c("mc1", "mc2", "mc3"), values = c("Aus", "Eng", "other"))
   test <- collapseMultiMC_Text(mt3_gads, mc_vars = mc_vars, text_vars = c("text1", "text2"), mc_var_4text = "mc3")
 
-  expect_equal(test$dat$text1_r, c(NA, "Franz", NA, "Aus2"))
-  expect_equal(test$dat$text2_r, c(NA_character_, NA, NA, "Ger"))
+  expect_equal(test$dat$text1_r, c(NA, "Franz", -96, "Aus2"))
+  expect_equal(test$dat$text2_r, c(NA_character_, NA, -96, "Ger"))
   expect_equal(test$dat$text1, c(NA, "Eng", "Aus", "Aus2"))
   expect_equal(test$dat$mc1_r, c(1, 1, 0, 0))
   expect_equal(test$dat$mc2_r, c(0, 0, 1, 0))
   expect_equal(test$dat$mc3_r, c(1, 1, 0, 1)) ### should be recoded by function according to left over fields!
   expect_equal(test$labels[test$labels$varName == "text1_r", "varLabel"], "(recoded)")
+  expect_equal(test$labels[test$labels$varName == "text1_r", "value"], -96)
+  expect_equal(test$labels[test$labels$varName == "text1_r", "missings"], "miss")
+  expect_equal(test$labels[test$labels$varName == "text1_r", "valLabel"], "Missing: Invalid response")
+  expect_equal(test$labels[test$labels$varName == "text2_r", "value"], -96)
+  expect_equal(test$labels[test$labels$varName == "text2_r", "valLabel"], "Missing: Invalid response")
   expect_equal(test$labels[test$labels$varName == "mc1_r", "varLabel"], "Lang: Eng (recoded)")
 
   test2 <- collapseMultiMC_Text(mt3_gads, mc_vars = mc_vars, text_vars = c("text1", "text2"), mc_var_4text = "mc3", var_suffix = "", label_suffix = "")
-  expect_equal(test2$dat$text1, c(NA, "Franz", NA, "Aus2"))
-  expect_equal(test2$dat$text2, c(NA_character_, NA, NA, "Ger"))
+  expect_equal(test2$dat$text1, c(NA, "Franz", -96, "Aus2"))
+  expect_equal(test2$dat$text2, c(NA_character_, NA, -96, "Ger"))
   expect_equal(test2$labels[test2$labels$varName == "mc1", "varLabel"], "Lang: Eng")
 
   mt3_gads_1 <- mt3_gads

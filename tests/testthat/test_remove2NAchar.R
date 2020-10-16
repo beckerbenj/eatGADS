@@ -55,6 +55,20 @@ test_that("remove2NAchar max_num which exceeds number of strings", {
   expect_equal(out$dat, mt4_gads$dat)
 })
 
+test_that("Text variables with missing codes", {
+  mt4_gads2 <- mt4_gads
+  for(new_text_var in namesGADS(mt4_gads2)) {
+    mt4_gads2 <- changeValLabels(mt4_gads2, varName = new_text_var, value = -96, valLabel = "miss")
+    mt4_gads2 <- changeMissings(mt4_gads2, varName = new_text_var, value = -96, missings = "miss")
+  }
+  mt4_gads2$dat$text1 <- c(-96, "Eng", "Aus", "Aus2")
+  mt4_gads2$dat$text2 <- c(-96, NA, "Eng", NA)
+  out <- remove2NAchar(mt4_gads2, vars = namesGADS(mt4_gads2), max_num = 1, na_value = -99, na_label = "missing")
+  expect_equal(out$dat$text1, c(-96, "Eng", -99, "Aus2"))
+  expect_equal(out$labels$varName, c("text1", "text1"))
+  expect_equal(out$labels$value, c(-96, -99))
+  expect_equal(out$labels$missings, c("miss", "miss"))
+})
 
 
 #mc_vars <- matchValues_varLabels(mt3_gads, mc_vars = c("mc1", "mc2", "mc3"), values = c("Aus", "Eng", "Eng"), label_by_hand = c("other" = "mc3"))
