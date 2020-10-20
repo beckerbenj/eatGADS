@@ -24,39 +24,24 @@ Forced choice items are multiple choice items with exclusive answer options (onl
 
 &nbsp;
 
-However, in the resulting data set such an item will often be stored as two separate variables: a numeric variable with value labels (containing the existing response options) and a character variable (containing the answers in the text field). For data analysis, often a single numerical and labeled variable is desirable. Often the following steps are required:
+However, in the resulting data set such an item will often be stored as two separate variables: a numeric variable with value labels (containing the existing response options) and a character variable (containing the answers in the text field). For data analysis, usually a single numerical and labeled variable is desirable. Often the following steps are required:
 
 * recode the character variable manually (e.g. to eliminate spelling mistakes)
 * transform open answers which refer to existing response options (e.g. if a test taker overlooked a response option)
 * summarize both remaining variables into a single numerical, labeled variable
 
-To illustrate the steps we will create a simple `GADSdat` example.
+To illustrate the steps we have implemented a small `SPSS` example data set in this package. The data set can be loaded using the `import_spss()` function. Note that the data set is a minimal working example, containing only the required variables for this illustration.
 
 ```{r setup}
 library(eatGADS)
-# create example numerical, labeled variable
-mcvar <- factor(c("other", "Poland", "other", "other", "other", NA, 
-                  "Germany", "Poland", "other", "other"), 
-                levels = c("Germany", "Poland", "other", "missing"))
-# create example character variable
-stringvar <- c(NA, "Italy", "England", "Ita", "Eng", "German", 
-               "Germ", NA, "", "Eng")
+data_path <- system.file("extdata", "forcedChoice.sav", package = "eatGADS")
+gads <- import_spss(data_path)
 
-#create example GADS
-dat <- data.frame(ID = 1:10, mcvar = mcvar,
-                  stringvar = stringvar,
-                  stringsAsFactors = FALSE)
-gads <- import_DF(dat)
-
-# recode missings to common numerical value
-gads <- recodeGADS(gads, "mcvar", oldValues = 4, newValues = -99)
-# set missing codes for values labeled "missing"
-gads <- checkMissings(gads, missingLabel = "missing")
-
-extractMeta(gads)
+# Show example data set
+gads
 ```
 
-The variable names of the data set above are connected to the multiple choice question as indicated:
+The variable names of the data set above are connected to the forced choice question as indicated:
 
 &nbsp;
 
@@ -64,7 +49,7 @@ The variable names of the data set above are connected to the multiple choice qu
 
 ## Preparing the data set
 
-Data can be loaded into `R` in the `GADSdat` format via the functions `import_spss()`,`import_DF()` or `import_raw()`. Depending on the original format, omitted responses to open text fields might be stored as empty strings instead of `NAs`. In these cases, the `recodeString2NA()` function should be used to recode these values to `NA`.
+As illustrated, data can be loaded into `R` in the `GADSdat` format via the functions `import_spss()`, `import_DF()` or `import_raw()`. Depending on the original format, omitted responses to open text fields might be stored as empty strings instead of `NAs`. In these cases, the `recodeString2NA()` function should be used to recode these values to `NA`. Per default, matching strings across all variables in the data set are recoded!
 
 ```{r recodeString2NA}
 gads <- recodeString2NA(gads, string = "")
@@ -83,13 +68,23 @@ lookup <- createLookup(GADSdat = gads, recodeVars = "stringvar", sort_by = 'valu
 lookup
 ```
 
-Now you have to add the desired values for recoding. You should use (a) the existing value labels of the corresponding numerical, labeled variable and (b) consistent new values that can serve as value labels later. Spelling mistakes within the recoding will result in  different values!   
-To fill in the columns you can use R (see the example). Alternatively, you can use `eatAnalysis::write_xlsx()` to create an excel file in which you can fill in the values. The excel file can be read in back to R via `readxl::read_xlsx()`. Detailed information on how missing values should be recoded is provided in the last section of this vignette.
+Now you have to add the desired values for recoding. You should use (a) the existing value labels of the corresponding numerical, labeled variable and (b) consistent new values that can serve as value labels later. Spelling mistakes within the recoding will result in different values in the output!   
+To fill in the columns you could use `R` directly to modify the columns. Alternatively, we recommend using `eatAnalysis::write_xlsx()` to create an excel file in which you can fill in the values. The excel file can be read back into `R` via `readxl::read_xlsx()`. Detailed information on how missing values should be recoded is provided in the last section of this vignette.
 
 If you have more than one person working on the variable or if you want to use templates, you may have 2 different possible recode values (in our example: `new` and `new2`) . You can fill in both in the lookup table and then choose which one you want to prioritize later.
 
-```{r fill in values}
+```{r lookup import export, eval=FALSE}
+# write look up table to Excel
+eatAnalysis::write_xlsx(lookup, "lookup_forcedChoice.xlsxl")
+
+### perform recodes in Excel sheet!
+
+# read look up table back to R
+lookup <- readxl::read_xlsx("lookup_forcedChoice.xlsxl")
 lookup
+```
+
+```{r fill in values, echo=FALSE}
 lookup$new <- c("missing", "England", NA, "Germany", "Germany", NA, "Italy")
 lookup$new2 <- c("miss", "England", "England", NA, "Germany", "Italy", "Italy")
 lookup
@@ -106,7 +101,7 @@ lookup_formatted
 
 ## Apply look up to `GADSdat`
 
-You perform the actual data recoding using the `applyLookup()` function. It applies the recodes defined in the look up table. If you define a `suffix`, the old variable wont be overwritten.
+You perform the actual data recoding using the `applyLookup()` function. It applies the recodes defined in the look up table. This means that if the look up table was created for multiple variables, `applyLookup()` performs recoding for all of these variables simultaneously. If you define a `suffix`, the old variable(s) will not be overwritten.
 
 ```{r integrate the Lookup table}
 gads_string <- applyLookup(GADSdat = gads, lookup = lookup_formatted, suffix = "_r")
@@ -117,7 +112,7 @@ gads_string$dat
 ## Integrate character and numeric variable
 
 The next step is to integrate the string variable into the integer via the `collapseMC_Text()` function. The new value labels will be alphabetically ordered and inserted after the already existing ones. 
-With the `mc_code4text` argument you can choose the value that signals that you want to use the new value (besides `NA`).  
+With the `mc_code4text` argument you can choose the value that signals that you want to use the new value (besides `NA`). Note that in contrast to `createLookup()`, `collapseColumns()` and `applyLookup()` this function only works on a single forced choice variable pair. Multiple integrations have to be performed in separate steps.
 
 
 ```{r collapse the data}
@@ -129,7 +124,7 @@ gads_final$dat
 extractMeta(gads_final, "mcvar_r")
 ```
 
-`checkMissings()` is a function for automatically setting missing Values in a `GADSdat`. If new values labels should receive missing codes, `checkMissings()` would be necessary. However, in our example no new value labels for missings have been added, therefore the function does not change the `GADSdat`. 
+`checkMissings()` is a function for automatically setting missing values in a `GADSdat`. If new values should receive missing codes, `checkMissings()` would be necessary. However, in our example no new values representing missings have been added, therefore the function does not change the `GADSdat`. 
 
 ```{r checkMissings}
 gads_final <- checkMissings(GADSdat = gads_final, missingLabel = "missing", 
@@ -152,30 +147,30 @@ gads_final$dat
 
 In some scenarios, you might differentiate between different missing codes in the data (e.g. invalid responses, item not administered, omission). In these cases, different priorities of missing codes might be desirable when summarizing the numerical, labeled variable and the character variable.
 
-`collapseMC_Text()` prefers information from the two variables depending on the information in the character variable. If the missing is incidacted via an explicit missing code, this missing code is prefered to missing codes from the numerical, labeled variable. If the missing is indicated via an actual `NA` in the character variable, the information from the numerical, labeled variable is prefered.
+`collapseMC_Text()` prefers information from the two variables depending on the information in the character variable. If the missing is indicated via an explicit missing code, this missing code is preferred to missing codes from the numerical, labeled variable. If the missing is indicated via an actual `NA` in the character variable, the information from the numerical, labeled variable is preferred.
 
-The described behavior is illustrated in the example below:
+To illustrate the described behavior, we have included an additional `SPSS` data set in the package with a forced choice variable pair including all possible value and missing combinations.
+
+
+```{r setup miss}
+data_path_miss <- system.file("extdata", "forcedChoice_missings.sav", package = "eatGADS")
+gads_miss <- import_spss(data_path_miss)
+
+# Show example data set
+gads_miss
+```
+
+The code below is simplified and just intends to illustrate how different value and missing combinations are treated by `eatGADS`:
 
 ```{r missing treatment}
-# set up example gads with all possible combinations
-mc <- factor(rep(c("other", "valid", "missing omitted", "special missing"), 3),
-                levels = c("valid", "other", "missing omitted", "special missing"))
-string <- c(rep("valid", 4), rep("missing omitted", 4),
-            rep("special missing", 4))
-dat <- data.frame(ID = 1:12, mc = mc, string = string, stringsAsFactors = FALSE)
-gads <- import_DF(dat)
-gads <- recodeGADS(gads, "mc", oldValues = c(3,4), newValues = c(-99, -98))
-gads <- checkMissings(gads, missingLabel = "missing")
-gads
-
 # create and edit look up table
-lookup <- createLookup(GADSdat = gads, recodeVars = "string")
+lookup <- createLookup(GADSdat = gads_miss, recodeVars = "string")
 lookup$value_new <- c("new valid", NA, "special missing")
 
 # recode string variable
-gads <- applyLookup(gads, lookup, "_r")
+gads_miss <- applyLookup(gads_miss, lookup, "_r")
 
 # summarize numerical, labeled variable and character variable
-gads <- collapseMC_Text(gads, "mc", "string_r", mc_code4text = "other", "_r", "recoded")
+gads <- collapseMC_Text(gads_miss, "mc", "string_r", mc_code4text = "other", "_r", "recoded")
 gads$dat
 ```

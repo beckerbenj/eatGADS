@@ -30,49 +30,15 @@ In the resulting data set, such an item will often be stored as multiple separat
 * transform open answers which refer to existing response options (e.g. if a test taker overlooked a response option)
 * transform the remaining open answers to numeric, labeled variables
 
-To illustrate these steps, we will create a simple `GADSdat` example.
+To illustrate the steps we have implemented a small `SPSS` example data set in this package. The data set can be loaded using the `import_spss()` function. Note that the data set is a minimal working example, containing only the required variables for this illustration.
 
 ```{r setup}
 library(eatGADS)
-#create example GADS
-dat <- data.frame(ID = 1:11,
-                  mcvar1 = c("yes", "missing", "no", "yes", "missing", "no", 
-                             "yes", "missing", "no","yes", "missing"),
-                  mcother = c("missing", "no", "yes","missing", "no", "yes",
-                              "missing", "no", "yes","missing", "no"),
-                  stringvar = rep("missing by design", 11),
-                  stringsAsFactors = TRUE)
-gads <- import_DF(dat)
+data_path <- system.file("extdata", "multipleChoice.sav", package = "eatGADS")
+gads <- import_spss(data_path)
 
-
-
-# variable labels
-gads <- changeVarLabels(gads, "mcvar1", varLabel = "German")
-gads <- changeVarLabels(gads, "stringvar", varLabel = "other")
-
-# recode values
-oldValues <- 1:3
-newValues <- c(-94, 0, 1)
-for(varName in c("mcvar1", "mcother")) {
-  gads <- recodeGADS(GADSdat = gads, varName = varName,
-                     oldValues = oldValues, newValues = newValues)
-}
-gads <- recodeGADS(GADSdat = gads, varName = "stringvar",
-                   oldValues = 1, newValues = -99)
-
-# fill in strings
-gads$dat$stringvar <- c("German", "Ger", "Ger", "", "Eng, Pol, Ita", "Pol, Ita, Germ", "eng, ita", "germ, pol", "polish", "eng, ita", -99)
-
-# assign variable labels
-gads <- changeVarLabels(gads, varName = c("mcvar1", "mcother", "stringvar"),
-                        varLabel = c("Language: German",
-                                     "Language: other",
-                                     "Language: text"))
-
-# Missing codes
-gads <- checkMissings(gads)
+# Show example data set
 gads
-
 ```
 
 The variable names of the data set above are connected to the multiple choice question as indicated:
@@ -83,7 +49,7 @@ The variable names of the data set above are connected to the multiple choice qu
 
 ## Preparing the data set
 
-Data can be loaded into `R` in the `GADSdat` format via the functions `import_spss()`,`import_DF()` or `import_raw()`. Depending on the original format, omitted responses to open text fields might be stored as empty strings instead of `NAs`. In these cases, the `recodeString2NA()` function should be used to recode these values to `NA`.
+As illustrated, data can be loaded into `R` in the `GADSdat` format via the functions `import_spss()`,`import_DF()` or `import_raw()`. Depending on the original format, omitted responses to open text fields might be stored as empty strings instead of `NAs`. In these cases, the `recodeString2NA()` function should be used to recode these values to `NA`. Per default, matching strings across all variables in the data set are recoded!
 
 ```{r recodeString2NA}
 gads <- recodeString2NA(gads, string = "")
@@ -103,16 +69,26 @@ lookup
 ```
 
 Now you have to add the desired values for recoding. You should use (a) unique parts of the existing variable labels of the corresponding dummy variables (see the next section for explanation) and (b) consistent new values that can serve as variable labels later. Spelling mistakes within the recoding will result in additional columns in the final data set! If there are less values than columns you can leave the remaining columns `NA`.    
-To fill in the columns you can use R (see the example). Alternatively, you can use `eatAnalysis::write_xlsx()` to create an excel file in which you can fill in the values. The excel file can be read in back to R via `readxl::read_xlsx()`. Detailed information on how missing values should be recoded is provided in the last section of this vignette.
+To fill in the columns you could use `R` directly to modify the columns. Alternatively, we recommend using `eatAnalysis::write_xlsx()` to create an excel file in which you can fill in the values. The excel file can be read back into `R` via `readxl::read_xlsx()`. Detailed information on how missing values should be recoded is provided in the last section of this vignette.
 
-```{r editing lookup}
+```{r lookup import export, eval=FALSE}
+# write look up table to Excel
+eatAnalysis::write_xlsx(lookup, "lookup_multipleChoice.xlsxl")
+
+### perform recodes in Excel sheet!
+
+# read look up table back to R
+lookup <- readxl::read_xlsx("lookup_multipleChoice.xlsxl")
+lookup
+```
+
+```{r editing lookup, echo = FALSE}
 lookup$language <- c(NA, NA, "English", "German", "German", 
                      "Polish", "English", "German", "Polish")
 lookup$language2 <- c(NA, NA, "Polish", NA, NA, 
                       "Italian", "Italian", "Polish", NA)
 lookup$language3 <- c(NA, NA, "Italian", NA, NA, 
                       "German", NA, NA, NA)
-
 lookup
 ```
 
@@ -128,7 +104,7 @@ gads_string$dat
 
 ## Match values to variable labels
 
-When integrating character variables into multiple dummy variables, there has to be a clear correspondence between values in the character variable and dummy variables. `eatGADS` requires this information as a named character vector with the dummy variable names as values and values of the text variable as names. Such a vector can be automatically generated by the  `matchValues_varLabels()` function. The function takes a character vector (`values`) as input and matches all values in this vector to the variable labeles of the dummy variables (`mc_vars`). We provide the content of the character variables as input for the `values` argument as these are all possible new values.
+When integrating character variables into multiple dummy variables, there has to be a clear correspondence between values in the character variable and dummy variables. `eatGADS` requires this information as a named character vector with the dummy variable names as values and values of the text variable as names. Such a vector can be automatically generated by the  `matchValues_varLabels()` function. The function takes a character vector (`values`) as input and matches all values in this vector to the variable labels of the dummy variables (`mc_vars`). We provide the content of the character variables as input for the `values` argument as these are all possible new values.
 
 In case that not every already existing variable label is part of the lookup table you can use the `label_by_hand` argument. This is always the case for the variable representing the `other` response option but might be necessary for other response options as well. Alternatively, these values could be added to the `value_string` as well, to enable automatic matching.
 
@@ -168,7 +144,7 @@ gads_string3 <- remove2NAchar(GADSdat = gads_string2,
 gads_string3$dat
 ```
 
-## Mulitple character variables to labeled integers
+## Multiple character variables to labeled integers
 
 After using `collapseMultiMC_Text()`, only new, additional values are left in the character variables. You can use the `multiChar2fac()` function to transform these to numeric, labeled variables. After that `checkMissings()` helps to define the missing codes. 
 

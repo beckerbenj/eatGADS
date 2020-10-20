@@ -24,7 +24,7 @@ This vignette illustrates a typical workflow of importing a `SPSS` file using `i
 library(eatGADS)
 ```
 
-We can import an `.sav` data set via the `import_spss()` function. Checks on variable names (for data base compatibility) are performed automatically. Changes to the variable names are reported to the console. This behaviour can be suppressed by setting `checkVarNames = FALSE`.
+We can import an `.sav` data set via the `import_spss()` function. Checks on variable names (for data base compatibility) are performed automatically. Changes to the variable names are reported to the console. This behavior can be suppressed by setting `checkVarNames = FALSE`.
 
 ```{r import spss}
 sav_path <- system.file("extdata", "pisa.zsav", package = "eatGADS")
