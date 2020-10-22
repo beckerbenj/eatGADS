@@ -13,7 +13,7 @@ mt4_gads <- import_DF(mt4)
 test_that("Too many strings to missing", {
   df2 <- left_fill(df)
   df2$v3 <- c("a", NA, NA, "b")
-  out <- max_num_strings2NA(df2, vars = names(df), max_num = 2, na_value = NA)
+  out <- max_num_strings2NA(df2, max_num = 2, na_value = NA)
   expect_equal(as.character(out[1, ]), c(NA_character_, NA, NA))
   expect_equal(as.character(out[2, ]), c("i", "i", NA))
   expect_equal(as.character(out[4, ]), c(NA_character_, NA, NA))
@@ -55,24 +55,23 @@ test_that("remove2NAchar max_num which exceeds number of strings", {
   expect_equal(out$dat, mt4_gads$dat)
 })
 
-test_that("Text variables with missing codes", {
+
+test_that("Text variables with (partial) missing codes", {
   mt4_gads2 <- mt4_gads
   for(new_text_var in namesGADS(mt4_gads2)) {
     mt4_gads2 <- changeValLabels(mt4_gads2, varName = new_text_var, value = -96, valLabel = "miss")
     mt4_gads2 <- changeMissings(mt4_gads2, varName = new_text_var, value = -96, missings = "miss")
+    mt4_gads2 <- changeValLabels(mt4_gads2, varName = new_text_var, value = -99, valLabel = "miss")
+    mt4_gads2 <- changeMissings(mt4_gads2, varName = new_text_var, value = -99, missings = "miss")
   }
-  mt4_gads2$dat$text1 <- c(-96, "Eng", "Aus", "Aus2")
-  mt4_gads2$dat$text2 <- c(-96, NA, "Eng", NA)
-  out <- remove2NAchar(mt4_gads2, vars = namesGADS(mt4_gads2), max_num = 1, na_value = -99, na_label = "missing")
-  expect_equal(out$dat$text1, c(-96, "Eng", -99, "Aus2"))
-  expect_equal(out$labels$varName, c("text1", "text1"))
-  expect_equal(out$labels$value, c(-96, -99))
-  expect_equal(out$labels$missings, c("miss", "miss"))
+  mt4_gads2$dat$text1 <- c(-99, "Eng", "Aus", -96)
+  mt4_gads2$dat$text2 <- c(-99, -99, "Eng", -96)
+  out <- remove2NAchar(mt4_gads2, vars = namesGADS(mt4_gads2), max_num = 1, na_value = -95, na_label = "missing")
+  expect_equal(out$dat$text1, c(-99, "Eng", -95, -96))
+  expect_equal(out$labels$varName, c("text1", "text1", "text1"))
+  expect_equal(out$labels$value, c(-96, -99, -95))
+  expect_equal(out$labels$missings, c("miss", "miss", "miss"))
 })
 
 
-#mc_vars <- matchValues_varLabels(mt3_gads, mc_vars = c("mc1", "mc2", "mc3"), values = c("Aus", "Eng", "Eng"), label_by_hand = c("other" = "mc3"))
-#out_gads <- collapseMultiMC_Text(mt3_gads, mc_vars = mc_vars, text_vars = c("text1", "text2"), mc_var_4text = "mc3")
-#out_gads2 <- multiChar2fac(out_gads, vars = c("text1_r", "text2_r"))
-#remove_2NA_char(out_gads2, vars = c("text1", "text2"), max_num = 1, na_value = -99)
 

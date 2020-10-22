@@ -11,8 +11,10 @@ collapseMultiMC_Text(
   mc_var_4text,
   var_suffix = "_r",
   label_suffix = "(recoded)",
-  invalid_miss_code = -96,
-  invalid_miss_label = "Missing: Invalid response"
+  invalid_miss_code = -98,
+  invalid_miss_label = "Missing: Invalid response",
+  notext_miss_code = -99,
+  notext_miss_label = "Missing: By intention"
 )
 }
 \arguments{
@@ -33,6 +35,10 @@ Creation by \code{\link{matchValues_varLabels}} is recommended.}
 \item{invalid_miss_code}{Missing code which is given to new character variables if all text entries where recoded into the dichotomous variables.}
 
 \item{invalid_miss_label}{Value label for \code{invalid_miss_code}.}
+
+\item{notext_miss_code}{Missing code which is given to empty character variables.}
+
+\item{notext_miss_label}{Value label for \code{notext_miss_code}.}
 }
 \value{
 Returns a \code{GADSdat} containing the newly computed variables.
@@ -61,6 +67,7 @@ If necessary, use \code{\link{recodeGADS}} for recoding.
 
 For cases for which the \code{text_vars} contain only values that can be recoded into the \code{mc_vars},
 all new \code{text_vars} are given specific missing codes (see \code{invalid_miss_code} and \code{invalid_miss_label}).
+All remaining \code{NAs} on the character variables are given a specific missing code (\code{notext_miss_code}).
 }
 \examples{
 # Prepare example data
