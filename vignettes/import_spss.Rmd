@@ -16,9 +16,11 @@ knitr::opts_chunk$set(
 )
 ```
 
-`import_spss()` allows importing data from `SPSS` (`.sav` and `.zsav` files) into `R` by using the great `R` package `haven`. 
+`import_spss()` allows importing data from `SPSS` (`.sav` and `.zsav` files) into `R` by using the `R` package `haven`. 
 
 This vignette illustrates a typical workflow of importing a `SPSS` file using `import_spss()` and `extractData()`. For illustrative purposes we use a small example data set from the campus files of the German PISA Plus assessment. The complete campus files and the original data set can be accessed [here](https://www.iqb.hu-berlin.de/fdz/Datenzugang/CF-Antrag/AntragsformularCF) and [here](https://www.iqb.hu-berlin.de/fdz/Datenzugang/SUF-Antrag). 
+
+## Importing
 
 ```{r setup}
 library(eatGADS)
@@ -69,5 +71,5 @@ dat3 <- extractData(gads_obj, convertLabels = "character",
 dat3[1:5, 1:10]
 ```
 
-In general, we recommend leaving labeled variables as numeric and converting values with missing codes to `NA`. If required, values labels can always be accessed via using `extractMeta()` on the `GADSdat` object or the data base.
+In general, we recommend leaving labeled variables as numeric and converting values with missing codes to `NA`. The latter is the default behavior for the argument `checkMissings`. If required, values labels can always be accessed via using `extractMeta()` on the `GADSdat` object or the data base.
 

@@ -23,7 +23,7 @@ When trying to understand data, most often not only the actual data is required,
 
 While the `data.frame` class in `R` supports value labels to a certain degree with the `factor` class, its functionality is limited. Other data formats like `.xlsx` or `.csv` support no meta data at all. Commercial software like `SPSS` provides such functionality but can not compete with the various tools for analyzing data that `R` provides.
 
-`eatGADS` is an `R` package that was developed to bridge this gap. Its main purpose is providing a data format in `R` specifically designed for storing meta data together with data in on place. Therefore it provides an `S3` class called `GADSdat`. The following vignette concentrates on how to import data into the `GADSdat` format and work with it in the `R` environment. In collaboration with the IQB Forschungsdatenzentrum (FDZ) the package can also be used to distribute data.
+`eatGADS` is an `R` package that was developed to bridge this gap. Its main purpose is providing a data format in `R` specifically designed for storing meta data together with data in on place. Therefore it provides an `S3` class called `GADSdat`. The following vignette concentrates on how to import data into the `GADSdat` format and work with it in the `R` environment. In collaboration with the `IQB Forschungsdatenzentrum (FDZ)` the package can also be used to distribute data.
 
 Note that `eatGADS` also allows the handling of large hierarchical data structures via relational data bases. This functionality is explained in more detail in an additional vignette. 
 

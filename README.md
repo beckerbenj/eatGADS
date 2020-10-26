@@ -14,7 +14,8 @@
 
 ```R
 # Install eatGADS from GitHub via
-devtools::install_github("beckerbenj/eatGADS", build_vignettes = TRUE)
+remotes::install_github("beckerbenj/eatGADS", build_vignettes = TRUE,
+                        dependencies = TRUE)
 ```
 
 ## Vignettes
