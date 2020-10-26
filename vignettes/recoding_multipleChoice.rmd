@@ -33,7 +33,7 @@ In the resulting data set, such an item will often be stored as multiple separat
 
 To illustrate the steps we have implemented a small `SPSS` example data set in this package. The data set can be loaded using the `import_spss()` function. Note that the data set is a minimal working example, containing only the required variables for this illustration.
 
-```{r setup}
+```{r setup, warning=FALSE}
 library(eatGADS)
 data_path <- system.file("extdata", "multipleChoice.sav", package = "eatGADS")
 gads <- import_spss(data_path)
@@ -70,7 +70,7 @@ lookup
 ```
 
 Now you have to add the desired values for recoding. You should use (a) unique parts of the existing variable labels of the corresponding dummy variables (see the next section for explanation) and (b) consistent new values that can serve as variable labels later. Spelling mistakes within the recoding will result in additional columns in the final data set! If there are less values than columns you can leave the remaining columns `NA`.    
-To fill in the columns you could use `R` directly to modify the columns. Alternatively, we recommend using `eatAnalysis::write_xlsx()` to create an excel file in which you can fill in the values. The excel file can be read back into `R` via `readxl::read_xlsx()`. Detailed information on how missing values should be recoded is provided in the last section of this vignette.
+To fill in the columns you could use `R` directly to modify the columns. Alternatively, we recommend using `eatAnalysis::write_xlsx()` to create an excel file in which you can fill in the values. The excel file can be read back into `R` via `readxl::read_xlsx()`. If you want to create specific missing codes, you have to insert the desired (numerical!) missing codes (e.g. `-96` in the look up table below).
 
 ```{r lookup import export, eval=FALSE}
 # write look up table to Excel
@@ -103,7 +103,7 @@ gads_string <- applyLookup_expandVar(GADSdat = gads, lookup = lookup)
 gads_string$dat
 ```
 
-In some cases you might have recoded some of the values to specific missing codes. These missing codes have to be now specified by hand as value labels that should be treated as missings.
+In some cases you might have recoded some of the values to specific missing codes. These missing codes have to be now specified by hand as value labels that should be treated as missings. The function `changeValLabels()` is used to give specific value labels and the function `changeMissings()` attaches missing codes. The loop below performs the appropriate labeling and missing coding in a loop for all three new string variables.
 
 ```{r label missings from Lookup table}
 for(nam in paste0("stringvar_", 1:3)) {
@@ -133,21 +133,24 @@ named_char_vec
 
 ## Integrate character and numeric variables
 
-By using the expanded `GADS` and the named character vector you can collapse the information of the strings with the already existing numeric variables. For that the binary numeric variables must have the structure: 1 = true and 0 = false. If there is a match of a string and a numeric variable but its set to 0 the function will set it to 1 and if it is the only string value the indicator variable will be set to 0. You also need a vector of the new built string variables in the `GADS` object for the `text_vars` argument.  
-DIE MISSINGSETZUNG HIER DANN NOCHMAL MIT AKTUALISIEREN
+By using the expanded `GADS` and the named character vector you can collapse the information of the strings with the already existing numeric variables. The following coding of the binary numeric variables is required: `1` = true and `0` = false (for recoding see `recodeGADS()`). The names of the text variables are specified under `text_vars`. 
+
+If there is an entry in the text variables that matches one of the binary numeric variables, this binary numeric variable will be set to `1`. The variable which indicates entries in the text variable (`mc_var_4text`) is recoded accordingly. If for a row all entries in the text variable can be recoded into the binary numeric variables, the `invalid_miss_code` is inserted into the text variables. 
 
 ```{r collapse}
 gads_string2 <- collapseMultiMC_Text(GADSdat = gads_string, mc_vars = named_char_vec, 
                                      text_vars = c("stringvar_1", "stringvar_2", "stringvar_3"), 
                                      mc_var_4text = "mcother", var_suffix = "_r", 
-                                     label_suffix = "(recoded)")
+                                     label_suffix = "(recoded)",
+                                     invalid_miss_code = -98, 
+                                     invalid_miss_label = "Missing: By intention")
 
 gads_string2$dat
 ```
 
 ## Trim down variables
 
-Sometimes the number of additional entries should be limited. This means that the number of character variables is 'trimmed'. For this you can use `remove2NAchar()` to decide how many variables you finally want to have(`max_num`). If there are more values for one ID there will be a missing code for all cases that you can define with `na_value`.
+Sometimes the number of additional entries should be limited (as theoretically there can be infinite additional entries). This means that the number of character variables is 'trimmed'. `remove2NAchar()` performs this trimming. Via `max_num` the maximum number of text variables is defined and all text variables above this number are removed from the data set. If a row in the data set contains valid entries in on of the removed variables, a specific missing code (`na_value`) is inserted into this row on all remaining text variables.
 
 ```{r remove2NAchar}
 gads_string3 <- remove2NAchar(GADSdat = gads_string2, 
@@ -160,7 +163,7 @@ gads_string3$dat
 
 ## Multiple character variables to labeled integers
 
-After using `collapseMultiMC_Text()`, only new, additional values are left in the character variables. You can use the `multiChar2fac()` function to transform these to numeric, labeled variables. After that `checkMissings()` helps to define the missing codes. 
+After using `collapseMultiMC_Text()`, only new, additional values are left in the character variables. `multiChar2fac()` transforms these remaining text variables to numeric, labeled variables. All resulting labeled variables share the exact same value labels.
 
 ```{r multiChar2fac}
 gads_numeric <- multiChar2fac(GADSdat = gads_string3, vars = c("stringvar_1_r", "stringvar_2_r"), 
@@ -168,7 +171,6 @@ gads_numeric <- multiChar2fac(GADSdat = gads_string3, vars = c("stringvar_1_r", 
 
 gads_numeric$dat
 
-#gads_final<- checkMissings(GADSdat = gads_numeric, missingLabel = "missing", addMissingCode = TRUE)
 gads_final <- gads_numeric
 extractMeta(gads_final)[, c("varName", "value", "valLabel", "missings")]
 ```

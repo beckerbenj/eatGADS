@@ -112,7 +112,7 @@ gads_string$dat
 ## Integrate character and numeric variable
 
 The next step is to integrate the string variable into the integer via the `collapseMC_Text()` function. The new value labels will be alphabetically ordered and inserted after the already existing ones. 
-With the `mc_code4text` argument you can choose the value that signals that you want to use the new value (besides `NA`). Note that in contrast to `createLookup()`, `collapseColumns()` and `applyLookup()` this function only works on a single forced choice variable pair. Multiple integrations have to be performed in separate steps.
+With the `mc_code4text` argument you can choose the value that signals that you want to use the new value (besides `NA`). Note that in contrast to `createLookup()`, `collapseColumns()` and `applyLookup()` this function only works on a single forced choice variable pair. Integrating multiple variable pairs has to be performed in separate steps.
 
 
 ```{r collapse the data}
