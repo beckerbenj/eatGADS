@@ -24,6 +24,7 @@
 #'
 #' For cases for which the \code{text_vars} contain only values that can be recoded into the \code{mc_vars},
 #' all new \code{text_vars} are given specific missing codes (see \code{invalid_miss_code} and \code{invalid_miss_label}).
+#' All remaining \code{NAs} on the character variables are given a specific missing code (\code{notext_miss_code}).
 #'
 #'@param GADSdat A \code{GADSdat} object.
 #'@param mc_vars A character vector with the variable names of the multiple choice variable. Names of the character
@@ -35,6 +36,8 @@
 #'@param label_suffix Suffix added to variable label for the newly created or modified variables in the \code{GADSdat}.
 #'@param invalid_miss_code Missing code which is given to new character variables if all text entries where recoded into the dichotomous variables.
 #'@param invalid_miss_label Value label for \code{invalid_miss_code}.
+#'@param notext_miss_code Missing code which is given to empty character variables.
+#'@param notext_miss_label Value label for \code{notext_miss_code}.
 #'
 #'@return Returns a \code{GADSdat} containing the newly computed variables.
 #'
@@ -61,13 +64,15 @@
 #'
 #'@export
 collapseMultiMC_Text <- function(GADSdat, mc_vars, text_vars, mc_var_4text, var_suffix = "_r", label_suffix = "(recoded)",
-                                 invalid_miss_code = -96, invalid_miss_label = "Missing: Invalid response") {
+                                 invalid_miss_code = -98, invalid_miss_label = "Missing: Invalid response",
+                                 notext_miss_code = -99, notext_miss_label = "Missing: By intention") {
   UseMethod("collapseMultiMC_Text")
 }
 
 #'@export
 collapseMultiMC_Text.GADSdat <- function(GADSdat, mc_vars, text_vars, mc_var_4text, var_suffix = "_r", label_suffix = "(recoded)",
-                                         invalid_miss_code = -96, invalid_miss_label = "Missing: Invalid response") {
+                                         invalid_miss_code = -98, invalid_miss_label = "Missing: Invalid response",
+                                         notext_miss_code = -99, notext_miss_label = "Missing: By intention") {
   if(!all(mc_vars %in% namesGADS(GADSdat))) stop("Not all mc_vars are variables in the GADSdat.")
   if(!all(text_vars %in% namesGADS(GADSdat))) stop("Not all text_vars are variables in the GADSdat.")
   if(!is.character(mc_var_4text) || length(mc_var_4text) != 1) stop("mc_var_4text needs to be a character of lenth one.")
@@ -76,8 +81,11 @@ collapseMultiMC_Text.GADSdat <- function(GADSdat, mc_vars, text_vars, mc_var_4te
 
   dat <- GADSdat$dat
   ## check if the the value has been given multiple times in the text fields?
+  #browser()
+  miss_codes <- unique(GADSdat$labels[GADSdat$labels$varName == text_vars & GADSdat$labels$missings == "miss", "value"])
   for(r in seq(nrow(dat))) {
     values_in_row <- as.character(dat[r, text_vars])[!is.na(as.character(dat[r, text_vars]))]
+    values_in_row <- values_in_row[!values_in_row %in% miss_codes]
     dups_in_row <- duplicated(values_in_row[values_in_row != ""])
     #if(mc_var_4text == "Pfluhl_k") browser()
     if(any(dups_in_row)) stop("Duplicate values in row ", r, ".")
@@ -102,7 +110,7 @@ collapseMultiMC_Text.GADSdat <- function(GADSdat, mc_vars, text_vars, mc_var_4te
 
   dat <- remove_values(dat, vars = new_text_vars, values = names(mc_vars))
   dat <- left_fill(dat, vars = new_text_vars)
-  dat <- drop_empty(dat, vars = new_text_vars)
+  dat <- drop_empty(dat, vars = new_text_vars, miss_codes = miss_codes)
 
   GADSdat2 <- updateMeta(GADSdat, dat)
   # fix meta data for newly created variables
@@ -115,17 +123,26 @@ collapseMultiMC_Text.GADSdat <- function(GADSdat, mc_vars, text_vars, mc_var_4te
   }
 
   ## recode 'other' mc
-  GADSdat2$dat[, new_mc_var_4text] <- ifelse(is.na(GADSdat2$dat[[new_text_vars[1]]]), yes = 0, no = 1)
-  ## special case: originaly empty/missing text -> other should stay as it is
-  GADSdat2$dat[, new_mc_var_4text] <- ifelse(is.na(GADSdat$dat[[text_vars[1]]]),
-                                             yes = GADSdat$dat[[mc_var_4text]], no = GADSdat2$dat[, new_mc_var_4text])
+  GADSdat2$dat[, new_mc_var_4text] <- ifelse(is.na(GADSdat2$dat[[new_text_vars[1]]]) | GADSdat$dat[[text_vars[1]]] %in% miss_codes,
+                                             yes = 0, no = 1)
+  ## special case: originaly other but empty text
+  GADSdat2$dat[, new_mc_var_4text] <- ifelse(GADSdat$dat[[mc_var_4text]] == 1 &
+                                               (is.na(GADSdat$dat[[text_vars[1]]]) | GADSdat$dat[[text_vars[1]]] %in% miss_codes),
+                                             yes = 1, no = GADSdat2$dat[, new_mc_var_4text])
+  #browser()
   ## special case 2: originally other = yes, now other = no: give special missing
+  ## additionally: recode all remaining NA to missing code
   for(new_text_var in new_text_vars[new_text_vars %in% namesGADS(GADSdat2)]) {
-    GADSdat2$dat[, new_text_var] <- ifelse(GADSdat$dat[[mc_var_4text]] == 1 & GADSdat2$dat[[new_mc_var_4text]] == 0,
+    GADSdat2$dat[, new_text_var] <- ifelse(!is.na(GADSdat$dat[[text_vars[1]]]) & !GADSdat$dat[[text_vars[1]]] %in% miss_codes &
+                                             GADSdat2$dat[[new_mc_var_4text]] == 0,
                                                yes = invalid_miss_code, no = GADSdat2$dat[, new_text_var])
+    GADSdat2$dat[is.na(GADSdat2$dat[, new_text_var]), new_text_var] <- notext_miss_code
+
     # create corresponding missing labels for new text variables
     GADSdat2 <- changeValLabels(GADSdat2, varName = new_text_var, value = invalid_miss_code, valLabel = invalid_miss_label)
     GADSdat2 <- changeMissings(GADSdat2, varName = new_text_var, value = invalid_miss_code, missings = "miss")
+    GADSdat2 <- changeValLabels(GADSdat2, varName = new_text_var, value = notext_miss_code, valLabel = notext_miss_label)
+    GADSdat2 <- changeMissings(GADSdat2, varName = new_text_var, value = notext_miss_code, missings = "miss")
   }
 
 
@@ -166,9 +183,9 @@ left_fill <- function(dat, vars = names(dat)) {
   dat
 }
 
-drop_empty <- function(dat, vars = names(dat)) {
+drop_empty <- function(dat, vars = names(dat), miss_codes) {
   for(nam in names(dat)) {
-    if(all(is.na(dat[[nam]]))) {
+    if(all(is.na(dat[[nam]]) | dat[[nam]] %in% miss_codes)) {
       warning("In the new variable ", nam, " all values are missing, therefore the variable is dropped. If this behaviour is not desired, contact the package author.")
       dat[[nam]] <- NULL
     }

@@ -45,7 +45,15 @@ remove2NAchar.GADSdat <- function(GADSdat, vars, max_num = 2, na_value, na_label
   if(!is.numeric(na_value) || length(na_value) != 1) stop("'na_value' needs to be a single numeric value.")
   if(!is.character(na_label) || length(na_label) != 1) stop("'na_label' needs to be a single character value.")
 
-  dat <- max_num_strings2NA(GADSdat$dat, vars = vars, max_num = max_num, na_value = na_value)
+  miniGADS <- extractVars(GADSdat, vars = vars)
+  mini_dat_ori <- extractData(miniGADS)
+  mini_dat <- max_num_strings2NA(mini_dat_ori, max_num = max_num, na_value = na_value)
+  # replace old variables (to maintain original column ordering)
+  dat <- GADSdat$dat
+  for(i in names(mini_dat)) {
+    dat[, i] <- mini_dat[, i]
+  }
+
   # cut text variables
   remove_vars <- vars[-(1:max_num)]
   dat2 <- dat[, !names(dat) %in% remove_vars, drop = FALSE]
@@ -55,8 +63,6 @@ remove2NAchar.GADSdat <- function(GADSdat, vars, max_num = 2, na_value, na_label
     dat2[, i] <- ifelse(GADSdat$dat[, i] %in% missing_values, yes = GADSdat$dat[, i], no = dat2[, i])
   }
 
-  #if(length(missing_values) >0) browser()
-  ## modify meta deta (maybe make this to and addValueLabel function?)
   GADSdat_out <- updateMeta(GADSdat, dat2)
   for(i in vars[!vars %in% remove_vars]) {
     GADSdat_out <- changeValLabels(GADSdat_out, varName = i, value = na_value, valLabel = na_label)
@@ -66,17 +72,17 @@ remove2NAchar.GADSdat <- function(GADSdat, vars, max_num = 2, na_value, na_label
 }
 
 # count text variables, give missings if more than x left
-max_num_strings2NA <- function(dat, vars, max_num, na_value) {
+max_num_strings2NA <- function(dat, max_num, na_value) {
   #dat[, vars] <- ifelse(!is.na(dat[, max_num]), yes = NA, no = dat[, vars])
   stopifnot(is.numeric(max_num) && length(max_num) == 1)
-  stopifnot(is.character(vars) && length(vars) > 1)
+  stopifnot(ncol(dat) > 1)
 
-  max_var <- vars[max_num + 1]
-  if(max_num >= length(vars)) return(dat)
+  max_var <- names(dat)[max_num + 1]
+  if(max_num >= ncol(dat)) return(dat)
 
   for(i in seq(nrow(dat))) {
     if(!is.na(dat[i, max_var])) {
-      dat[i, vars] <- na_value
+      dat[i, ] <- na_value
     }
   }
   dat

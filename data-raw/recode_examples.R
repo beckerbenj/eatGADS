@@ -36,12 +36,12 @@ eatGADS::write_spss(gads_miss, filePath = "inst/extdata/forcedChoice_missings.sa
 ## Recoding multiple choice example data sets
 # -----------------------------------------------------------------------------------------------
 #create example GADS
-dat <- data.frame(ID = 1:11,
+dat <- data.frame(ID = 1:12,
                   mcvar1 = c("yes", "missing", "no", "yes", "missing", "no",
-                             "yes", "missing", "no","yes", "missing"),
+                             "yes", "missing", "no","yes", "missing", "no"),
                   mcother = c("missing", "no", "yes","missing", "no", "yes",
-                              "missing", "no", "yes","missing", "no"),
-                  stringvar = rep("missing by design", 11),
+                              "missing", "no", "yes","missing", "no", "yes"),
+                  stringvar = rep("missing by design", 12),
                   stringsAsFactors = TRUE)
 gads_mc <- import_DF(dat)
 # variable labels
@@ -57,7 +57,7 @@ for(varName in c("mcvar1", "mcother")) {
 gads_mc <- recodeGADS(GADSdat = gads_mc, varName = "stringvar",
                    oldValues = 1, newValues = -99)
 # fill in strings
-gads_mc$dat$stringvar <- c("German", "Ger", "Ger", "", "Eng, Pol, Ita", "Pol, Ita, Germ", "eng, ita", "germ, pol", "polish", "eng, ita", -99)
+gads_mc$dat$stringvar <- c("German", "Ger", "Ger", "", "Eng, Pol, Ita", "Pol, Ita, Germ", "eng, ita", "germ, pol", "polish", "eng, ita", -99, "Star Trek")
 # assign variable labels
 gads_mc <- changeVarLabels(gads_mc, varName = c("mcvar1", "mcother", "stringvar"),
                         varLabel = c("Language: German",
