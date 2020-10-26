@@ -105,6 +105,16 @@ test_that("Combine multi mc and text with empty text variables", {
   expect_equal(as.numeric(test$dat[3, c("mc3", "mc3_r")]), c(1, 0))
 })
 
+test_that("Combine multi mc and text with keeping mc other as is", {
+  mc_vars <- matchValues_varLabels(mt3_gads, mc_vars = c("mc1", "mc2", "mc3"), values = c("Aus", "Eng", "other"))
+  mtO_gads <- mt3_gads
+  mtO_gads$dat[c(1, 2), c("mc3")] <- c(0, -94)
+  mtO_gads$dat[2, c("text1", "text2")] <- c(NA, NA)
+  mtO_gads <- changeMissings(mtO_gads, varName = "mc3", value = -94, missings = "miss")
+
+  test <- collapseMultiMC_Text(mtO_gads, mc_vars = mc_vars, text_vars = c("text1", "text2"), mc_var_4text = "mc3")
+  expect_equal(as.numeric(test$dat[, c("mc3_r")]), c(0, -94, 0, 1))
+})
 
 
 
