@@ -29,7 +29,6 @@ test_that("Fast getting GADSdat", {
 test_that("Fast getting GADSdat invalid path", {
   f <- "v:/some_path00/some_file"
   expect_error(getGADS_fast(filePath = f), "v:/some_path00/some_file is not a valid path to a data base")
-
 })
 
 

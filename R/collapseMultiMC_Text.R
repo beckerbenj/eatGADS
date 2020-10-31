@@ -82,7 +82,7 @@ collapseMultiMC_Text.GADSdat <- function(GADSdat, mc_vars, text_vars, mc_var_4te
   dat <- GADSdat$dat
   ## check if the the value has been given multiple times in the text fields?
   #browser()
-  miss_codes <- unique(GADSdat$labels[GADSdat$labels$varName == text_vars & GADSdat$labels$missings == "miss", "value"])
+  miss_codes <- unique(GADSdat$labels[GADSdat$labels$varName %in% text_vars & GADSdat$labels$missings == "miss", "value"])
   for(r in seq(nrow(dat))) {
     values_in_row <- as.character(dat[r, text_vars])[!is.na(as.character(dat[r, text_vars]))]
     values_in_row <- values_in_row[!values_in_row %in% miss_codes]
