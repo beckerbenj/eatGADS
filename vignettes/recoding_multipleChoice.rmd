@@ -50,7 +50,7 @@ The variable names of the data set above are connected to the multiple choice qu
 
 ## Preparing the data set
 
-As illustrated, data can be loaded into `R` in the `GADSdat` format via the functions `import_spss()`,`import_DF()` or `import_raw()`. Depending on the original format, omitted responses to open text fields might be stored as empty strings instead of `NAs`. In these cases, the `recodeString2NA()` function should be used to recode these values to `NA`. Per default, matching strings across all variables in the data set are recoded!
+As illustrated, data can be loaded into `R` in the `GADSdat` format via the functions `import_spss()`,`import_DF()` or `import_raw()`. Depending on the original format, omitted responses to open text fields might be stored as empty strings instead of `NAs`. In these cases, the `recodeString2NA()` function should be used to recode these values to `NA`. Per default, matching strings across all variables in the data set are recoded. Specific variables selection can be specified using the `recodeVars` argument. Note that the function only performs recodings to exact matches of a single, specific string (in our example `""`).
 
 ```{r recodeString2NA}
 gads <- recodeString2NA(gads, string = "")
@@ -60,7 +60,7 @@ gads <- recodeString2NA(gads, string = "")
 ## Creating and editing a lookup table
 
 With `createLookup()`, you can create a lookup table which allows recoding one or multiple variables.  
-You can choose which string variables in a `GADS` object you would like to recode by using the `recodeVars` argument. In case you want to sort the output to make recoding easier, the argument `sort_by` can be used. Extra columns can be added to the look up table by the argument `addCols` (but can also be added later manually e.g. in Excel). As test takers can insert multiple languages in the text field, you have to add multiple recode columns to the look up table. The respective column names are irrelevant and just for convenience purpose. 
+You can choose which string variables in a `GADS` object you would like to recode by using the `recodeVars` argument. The resulting look up table is a long format `data.frame` with rows being variable x value pairings. In case you want to sort the output to make recoding easier, the argument `sort_by` can be used. Extra columns can be added to the look up table by the argument `addCols` (but can also be added later manually e.g. in Excel). As test takers can insert multiple languages in the text field, you have to add multiple recode columns to the look up table. The respective column names are irrelevant and just for convenience purpose. 
 
 ```{r lookup}
 lookup <- createLookup(GADSdat = gads, recodeVars = "stringvar", sort_by = 'value', 
@@ -74,12 +74,12 @@ To fill in the columns you could use `R` directly to modify the columns. Alterna
 
 ```{r lookup import export, eval=FALSE}
 # write look up table to Excel
-eatAnalysis::write_xlsx(lookup, "lookup_multipleChoice.xlsxl")
+eatAnalysis::write_xlsx(lookup, "lookup_multipleChoice.xlsx")
 
 ### perform recodes in Excel sheet!
 
 # read look up table back to R
-lookup <- readxl::read_xlsx("lookup_multipleChoice.xlsxl")
+lookup <- readxl::read_xlsx("lookup_multipleChoice.xlsx")
 lookup
 ```
 

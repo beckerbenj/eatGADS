@@ -49,7 +49,7 @@ The variable names of the data set above are connected to the forced choice ques
 
 ## Preparing the data set
 
-As illustrated, data can be loaded into `R` in the `GADSdat` format via the functions `import_spss()`, `import_DF()` or `import_raw()`. Depending on the original format, omitted responses to open text fields might be stored as empty strings instead of `NAs`. In these cases, the `recodeString2NA()` function should be used to recode these values to `NA`. Per default, matching strings across all variables in the data set are recoded!
+As illustrated, data can be loaded into `R` in the `GADSdat` format via the functions `import_spss()`, `import_DF()` or `import_raw()`. Depending on the original format, omitted responses to open text fields might be stored as empty strings instead of `NAs`. In these cases, the `recodeString2NA()` function should be used to recode these values to `NA`. Per default, matching strings across all variables in the data set are recoded. Specific variables selection can be specified using the `recodeVars` argument. Note that the function only performs recodings to exact matches of a single, specific string (in our example `""`).
 
 ```{r recodeString2NA}
 gads <- recodeString2NA(gads, string = "")
@@ -59,7 +59,7 @@ gads <- recodeString2NA(gads, string = "")
 ## Creating and editing a lookup table
 
 With `createLookup()`, you can create a lookup table which allows recoding one or multiple variables.  
-You can choose which string variables in a `GADS` object you would like to recode by using the `recodeVars` argument. In case you want to sort the output to make recoding easier, the argument `sort_by` can be used. Extra columns can be added to the look up table by the argument `addCols` (but can also be added later manually e.g. in Excel). The respective column names are irrelevant and just for convenience purpose. 
+You can choose which string variables in a `GADS` object you would like to recode by using the `recodeVars` argument. The resulting look up table is a long format `data.frame` with rows being variable x value pairings. In case you want to sort the output to make recoding easier, the argument `sort_by` can be used. Extra columns can be added to the look up table by the argument `addCols` (but can also be added later manually e.g. in Excel). The respective column names are irrelevant and just for convenience purpose. 
 
 ```{r lookup}
 lookup <- createLookup(GADSdat = gads, recodeVars = "stringvar", sort_by = 'value', 
@@ -75,12 +75,12 @@ If you have more than one person working on the variable or if you want to use t
 
 ```{r lookup import export, eval=FALSE}
 # write look up table to Excel
-eatAnalysis::write_xlsx(lookup, "lookup_forcedChoice.xlsxl")
+eatAnalysis::write_xlsx(lookup, "lookup_forcedChoice.xlsx")
 
 ### perform recodes in Excel sheet!
 
 # read look up table back to R
-lookup <- readxl::read_xlsx("lookup_forcedChoice.xlsxl")
+lookup <- readxl::read_xlsx("lookup_forcedChoice.xlsx")
 lookup
 ```
 
@@ -90,7 +90,7 @@ lookup$new2 <- c("miss", "England", "England", NA, "Germany", "Italy", "Italy")
 lookup
 ```
 
-You can use the `collapseColumns()` function to get the correct layout for the final look up table. The function merges both columns containing the new values. By using the `prioritize` argument you can decide which column will be preferred. Only if there is an `NA` in the prioritized column, the other column will be used instead.
+We use the `collapseColumns()` function to get the correct layout for the final look up table. The function merges both columns containing the new values. By using the `prioritize` argument you can decide which column will be preferred. Only if there is an `NA` in the prioritized column, the other column will be used instead.
 
 ```{r collapse the columns}
 lookup_formatted <- collapseColumns(lookup = lookup, recodeVars = c("new", "new2"), 
@@ -111,8 +111,9 @@ gads_string$dat
 
 ## Integrate character and numeric variable
 
-The next step is to integrate the string variable into the integer via the `collapseMC_Text()` function. The new value labels will be alphabetically ordered and inserted after the already existing ones. 
-With the `mc_code4text` argument you can choose the value that signals that you want to use the new value (besides `NA`). Note that in contrast to `createLookup()`, `collapseColumns()` and `applyLookup()` this function only works on a single forced choice variable pair. Integrating multiple variable pairs has to be performed in separate steps.
+The next step is to integrate the string variable into the integer via the `collapseMC_Text()` function. With the `mc_code4text` argument we specify the value in `mc_var` which indicates that `text_var` contains valid information. If the `mc_var` information is missing, `text_var` is also utilized. If there is a valid value in `mc_var` other than `mc_code4text`, information in `text_var` is ignored. New value labels are created for entries in `text_var` without corresponding value labels. The new value labels are ordered alphabetically and inserted after the already existing ones. 
+
+Note that in contrast to `createLookup()`, `collapseColumns()` and `applyLookup()` this function only works on a single forced choice variable pair. Integrating multiple variable pairs has to be performed in separate steps.
 
 
 ```{r collapse the data}
