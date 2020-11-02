@@ -31,7 +31,8 @@ test_that("Input errors", {
 })
 
 test_that("Too many strings to missing and NA coding", {
-  out <- remove2NAchar(mt4_gads, vars = namesGADS(mt4_gads), max_num = 1, na_value = -99, na_label = "missing")
+  mess_out <- capture_messages(out <- remove2NAchar(mt4_gads, vars = namesGADS(mt4_gads), max_num = 1, na_value = -99, na_label = "missing"))
+  expect_equal(length(mess_out), 2)
   expect_equal(out$dat$text1, c(-99, -99, -99, "Aus2"))
   expect_equal(dim(out$dat), c(4, 1))
   expect_equal(out$labels$value, -99)

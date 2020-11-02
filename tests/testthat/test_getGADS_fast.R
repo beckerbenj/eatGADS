@@ -12,6 +12,7 @@ rownames(expected_ID2) <- NULL
 
 
 test_that("Fast getting GADSdat", {
+  #filePath <- file.path(getwd(), "tests/testthat/helper_dataBase.db")
   filePath <- file.path(getwd(), "helper_dataBase.db")
   # sink produces error; if necessary add capture.output
   stuff <- capture_output(out <- eatGADS:::getGADS_fast(vSelect = "ID1", filePath = filePath))
@@ -27,8 +28,9 @@ test_that("Fast getting GADSdat", {
 })
 
 test_that("Fast getting GADSdat invalid path", {
-  f <- "v:/some_path00/some_file"
-  expect_error(getGADS_fast(filePath = f), "v:/some_path00/some_file is not a valid path to a data base")
+  f <- "c:/some_path00/canbeguaranteedtobenotreal/some_file"
+  expect_error(getGADS_fast(filePath = f),
+               "c:/some_path00/canbeguaranteedtobenotreal/some_file is not a valid path to a data base")
 })
 
 

@@ -49,6 +49,7 @@ applyLookup_expandVar <- function(GADSdat, lookup) {
 #'@export
 applyLookup_expandVar.GADSdat <- function(GADSdat, lookup) {
   check_GADSdat(GADSdat)
+  #if("new_value1" %in% names(lookup) && -99 %in% lookup$new_value1) browser()
 
   GADSdat_new <- GADSdat
   recode_colnames <- names(lookup)[3:ncol(lookup)]

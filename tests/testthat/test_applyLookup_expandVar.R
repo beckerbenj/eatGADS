@@ -39,8 +39,12 @@ test_that("Apply lookup with expanding into multiple variables", {
   expect_equal(out$dat$v1_1, c("b", "b", "a"))
   expect_equal(out$dat$v1_2, c("f", "f", "b"))
   expect_equal(out$dat$v2_2, c(NA, NA, "h"))
-
   expect_equal(namesGADS(out), c("v1", "v2", "v1_1", "v1_2", "v2_1", "v2_2"))
+
+  lookup6 <- lookup
+  lookup6[4, "new_value1"] <- -99
+  expect_silent(suppressMessages(out <- applyLookup_expandVar(l_gads, lookup6)))
+
 })
 
 
