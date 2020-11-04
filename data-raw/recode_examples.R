@@ -24,7 +24,7 @@ eatGADS::write_spss(gads, filePath = "inst/extdata/forcedChoice.sav")
 # set up example gads with all possible combinations
 mc <- factor(rep(c("other", "valid", "missing omitted", "special missing"), 3),
              levels = c("valid", "other", "missing omitted", "special missing"))
-string <- c(rep("valid", 4), rep("missing omitted", 4),
+string <- c(rep("new valid", 4), rep(NA, 4),
             rep("special missing", 4))
 dat <- data.frame(ID = 1:12, mc = mc, string = string, stringsAsFactors = FALSE)
 gads_miss <- import_DF(dat)

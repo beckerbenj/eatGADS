@@ -146,12 +146,9 @@ gads_final$dat
 
 ## Missing value codes
 
-In some scenarios, you might differentiate between different missing codes in the data (e.g. invalid responses, item not administered, omission). In these cases, different priorities of missing codes might be desirable when summarizing the numerical, labeled variable and the character variable.
+In some scenarios, there might be conceptual differences between missing codes in the data (e.g. invalid responses, item not administered, omission). These conceptual differences might require different integration of the two variables (numerical & labeled, character) depending on the type of missing. In this section, we illustrate how `collapseMC_Text()` behaves depending on how missings are defined in the data. 
 
-`collapseMC_Text()` prefers information from the two variables depending on the information in the character variable. If the missing is indicated via an explicit missing code, this missing code is preferred to missing codes from the numerical, labeled variable. If the missing is indicated via an actual `NA` in the character variable, the information from the numerical, labeled variable is preferred.
-
-To illustrate the described behavior, we have included an additional `SPSS` data set in the package with a forced choice variable pair including all possible value and missing combinations.
-
+To illustrate the described behavior, we have included an additional `SPSS` data set in the package with a forced choice variable pair including all possible value and missing combinations. The possible values in the string variable are `new valid`, indicating a valid entry, `NA` indicating for example an omission and `special missing`, indicating for example an invalid entry.
 
 ```{r setup miss}
 data_path_miss <- system.file("extdata", "forcedChoice_missings.sav", package = "eatGADS")
@@ -161,17 +158,11 @@ gads_miss <- import_spss(data_path_miss)
 gads_miss
 ```
 
-The code below is simplified and just intends to illustrate how different value and missing combinations are treated by `eatGADS`:
+
+If both variables have valid but contradicting entries, `collapseMC_Text()` prefers information from the numerical, labeled variable. If both entries are missing, the behavior of `collapseMC_Text()` depends on the missing type in the character variable. If the missing is indicated via an explicit missing definition (`special missing` in the example), this missing code is preferred to missing codes from the numerical, labeled variable. If the missing is indicated via an actual `NA` in the character variable, the information from the numerical, labeled variable is preferred.
 
 ```{r missing treatment}
-# create and edit look up table
-lookup <- createLookup(GADSdat = gads_miss, recodeVars = "string")
-lookup$value_new <- c("new valid", NA, "special missing")
-
-# recode string variable
-gads_miss <- applyLookup(gads_miss, lookup, "_r")
-
 # summarize numerical, labeled variable and character variable
-gads <- collapseMC_Text(gads_miss, "mc", "string_r", mc_code4text = "other", "_r", "recoded")
+gads <- collapseMC_Text(gads_miss, "mc", "string", mc_code4text = "other", "_r", "recoded")
 gads$dat
 ```
