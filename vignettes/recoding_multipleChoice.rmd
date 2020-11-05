@@ -78,15 +78,15 @@ To fill in the columns you could use `R` directly to modify the columns. Alterna
 eatAnalysis::write_xlsx(lookup, "lookup_forcedChoice.xlsx")
 ```
 
-![](multipleChoice_excel.PNG)
+![](multipleChoice_excel_empty.PNG)
 
 &nbsp;
 
-After filling out the excel sheet the look up table might look like this:
+After filling out the excel sheet the look up table might look like this: 
 
 &nbsp;
 
-![](multipleChoice_excel2.PNG)
+![](multipleChoice_excel_full.PNG)
 
 &nbsp;
 
