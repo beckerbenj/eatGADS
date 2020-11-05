@@ -69,16 +69,20 @@ lookup
 ```
 
 Now you have to add the desired values for recoding. You should use (a) the existing value labels of the corresponding numerical, labeled variable and (b) consistent new values that can serve as value labels later. Spelling mistakes within the recoding will result in different values in the output!   
-To fill in the columns you could use `R` directly to modify the columns. Alternatively, we recommend using `eatAnalysis::write_xlsx()` to create an excel file in which you can fill in the values. The excel file can be read back into `R` via `readxl::read_xlsx()`. Detailed information on how missing values should be recoded is provided in the last section of this vignette.
+To fill in the columns you could use `R` directly to modify the columns. Alternatively, we recommend using `eatAnalysis::write_xlsx()` to create an excel file in which you can fill in the values. 
+
+```{r lookup export, eval=FALSE}
+# write look up table to Excel
+eatAnalysis::write_xlsx(lookup, "lookup_forcedChoice.xlsx")
+```
+
+After filling out the excel sheet the look up table might look like this:
+
+The excel file can be read back into `R` via `readxl::read_xlsx()`. Detailed information on how missing values should be recoded is provided in the last section of this vignette.
 
 If you have more than one person working on the variable or if you want to use templates, you may have 2 different possible recode values (in our example: `new` and `new2`) . You can fill in both in the lookup table and then choose which one you want to prioritize later.
 
-```{r lookup import export, eval=FALSE}
-# write look up table to Excel
-eatAnalysis::write_xlsx(lookup, "lookup_forcedChoice.xlsx")
-
-### perform recodes in Excel sheet!
-
+```{r lookup reimport, eval=FALSE}
 # read look up table back to R
 lookup <- readxl::read_xlsx("lookup_forcedChoice.xlsx")
 lookup
@@ -111,7 +115,7 @@ gads_string$dat
 
 ## Integrate character and numeric variable
 
-The next step is to integrate the string variable into the integer via the `collapseMC_Text()` function. With the `mc_code4text` argument we specify the value in `mc_var` which indicates that `text_var` contains valid information. If the `mc_var` information is missing, `text_var` is also utilized. If there is a valid value in `mc_var` other than `mc_code4text`, information in `text_var` is ignored. New value labels are created for entries in `text_var` without corresponding value labels. The new value labels are ordered alphabetically and inserted after the already existing ones. 
+The next step is to integrate the string variable into the integer via the `collapseMC_Text()` function. With `mc_var` and `text_var` we specify the variables used for recoding. With the `mc_code4text` argument we specify the value label of `mc_var` which indicates that `text_var` contains valid information (in our example `"other"`). If the `mc_var` is missing, `text_var` is also utilized (e.g. row 6). If there is a valid value in `mc_var` other than the code for `mc_code4text`, information in `text_var` is ignored (e.g. row 2). New value labels are created for entries in `text_var` without corresponding value labels. The new value labels are ordered alphabetically and inserted after the already existing ones. Additional information on how missings are treated by the function can be found in the last section of the vignette.
 
 Note that in contrast to `createLookup()`, `collapseColumns()` and `applyLookup()` this function only works on a single forced choice variable pair. Integrating multiple variable pairs has to be performed in separate steps.
 
@@ -148,18 +152,19 @@ gads_final$dat
 
 In some scenarios, there might be conceptual differences between missing codes in the data (e.g. invalid responses, item not administered, omission). These conceptual differences might require different integration of the two variables (numerical & labeled, character) depending on the type of missing. In this section, we illustrate how `collapseMC_Text()` behaves depending on how missings are defined in the data. 
 
-To illustrate the described behavior, we have included an additional `SPSS` data set in the package with a forced choice variable pair including all possible value and missing combinations. The possible values in the string variable are `new valid`, indicating a valid entry, `NA` indicating for example an omission and `special missing`, indicating for example an invalid entry.
+To illustrate the described behavior, we have included an additional `SPSS` data set in the package with a forced choice variable pair including all possible value and missing combinations. The possible values in the string variable are `new valid`, indicating an arbitrary valid entry, `NA` indicating for example an omission and `special missing`, indicating for example an invalid entry.
 
 ```{r setup miss}
 data_path_miss <- system.file("extdata", "forcedChoice_missings.sav", package = "eatGADS")
 gads_miss <- import_spss(data_path_miss)
+gads_miss <- recodeString2NA(gads_miss, string = "")
 
 # Show example data set
 gads_miss
 ```
 
 
-If both variables have valid but contradicting entries, `collapseMC_Text()` prefers information from the numerical, labeled variable. If both entries are missing, the behavior of `collapseMC_Text()` depends on the missing type in the character variable. If the missing is indicated via an explicit missing definition (`special missing` in the example), this missing code is preferred to missing codes from the numerical, labeled variable. If the missing is indicated via an actual `NA` in the character variable, the information from the numerical, labeled variable is preferred.
+If both variables have valid but contradicting entries, `collapseMC_Text()` prefers information from the numerical, labeled variable (e.g. row 2). If both entries are missing, the behavior of `collapseMC_Text()` depends on the missing type in the character variable. If the missing is indicated via an explicit missing definition (`special missing` in the example), this missing code is preferred to missing codes from the numerical, labeled variable (e.g. row 11). If the missing is indicated via an actual `NA` in the character variable, the information from the numerical, labeled variable is preferred (e.g. row 7).
 
 ```{r missing treatment}
 # summarize numerical, labeled variable and character variable

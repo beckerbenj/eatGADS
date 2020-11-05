@@ -70,7 +70,28 @@ lookup
 ```
 
 Now you have to add the desired values for recoding. You should use (a) unique parts of the existing variable labels of the corresponding dummy variables (see the next section for explanation) and (b) consistent new values that can serve as variable labels later. Spelling mistakes within the recoding will result in additional columns in the final data set! If there are less values than columns you can leave the remaining columns `NA`.    
-To fill in the columns you could use `R` directly to modify the columns. Alternatively, we recommend using `eatAnalysis::write_xlsx()` to create an excel file in which you can fill in the values. The excel file can be read back into `R` via `readxl::read_xlsx()`. If you want to create specific missing codes, you have to insert the desired (numerical!) missing codes into all columns (e.g. `-96` in the look up table below). The corresponding value labels will be assigned in a later step.
+
+To fill in the columns you could use `R` directly to modify the columns. Alternatively, we recommend using `eatAnalysis::write_xlsx()` to create an excel file in which you can fill in the values. 
+
+```{r lookup export, eval=FALSE}
+# write look up table to Excel
+eatAnalysis::write_xlsx(lookup, "lookup_forcedChoice.xlsx")
+```
+
+![](multipleChoice_excel.PNG)
+
+&nbsp;
+
+After filling out the excel sheet the look up table might look like this:
+
+&nbsp;
+
+![](multipleChoice_excel2.PNG)
+
+&nbsp;
+
+The excel file can be read back into `R` via `readxl::read_xlsx()`. 
+If you want to create specific missing codes, you have to insert the desired (numerical!) missing codes into all columns (e.g. `-96` in the look up table below). The corresponding value labels will be assigned in a later step.
 
 ```{r lookup import export, eval=FALSE}
 # write look up table to Excel
@@ -135,7 +156,7 @@ named_char_vec
 
 By using the expanded `GADS` and the named character vector you can collapse the information of the strings with the already existing numeric variables. The following coding of the binary numeric variables is required: `1` = true and `0` = false (for recoding see `recodeGADS()`). The names of the text variables are specified under `text_vars`. 
 
-If there is an entry in the text variables that matches one of the binary numeric variables, this binary numeric variable will be set to `1`. The variable which indicates entries in the text variable (`mc_var_4text`) is recoded accordingly. If for a row all entries in the text variable can be recoded into the binary numeric variables, the `invalid_miss_code` is inserted into the text variables and `mc_var_4text` is changed from `1` to `0`. If there were no valid entries in `text_vars` to begin with, `mc_var_4text` is left as is. All empty entries in the `text_vars` are assigned missing codes (`notext_miss_code`).
+If there is an entry in the text variables that matches one of the binary numeric variables, this binary numeric variable will be set to `1`. The variable which indicates entries in the text variable (`mc_var_4text`) is recoded accordingly. If for a row all entries in the text variable can be recoded into the binary numeric variables, the `invalid_miss_code` is inserted into the text variables and `mc_var_4text` is changed to `0`. If there are valid entries beside the binary numeric variables `mc_var_4text` is set to `1`. If there were no valid entries in `text_vars` to begin with, `mc_var_4text` is left as is. All empty entries in the `text_vars` are assigned missing codes (`notext_miss_code`).
 
 ```{r collapse}
 gads_string2 <- collapseMultiMC_Text(GADSdat = gads_string, mc_vars = named_char_vec, 
