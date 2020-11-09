@@ -9,7 +9,7 @@ getChangeMeta(GADSdat, level = "variable")
 \arguments{
 \item{GADSdat}{\code{GADSdat} object imported via \code{eatGADS}.}
 
-\item{level}{\code{variable} or \code{value}.}
+\item{level}{\code{'variable'} or \code{'value'}.}
 }
 \value{
 Returns the meta data sheet for all variables including the corresponding change columns.

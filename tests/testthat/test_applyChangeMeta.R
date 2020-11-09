@@ -136,3 +136,29 @@ test_that("Changes to all_GADSdat on value level", {
   # values that don't have a label
   val_changes_list$df2[2, "value_new"] <- -99
 })
+
+
+test_that("Changes to GADSdat if tibble, varNames", {
+  # varName
+  changes_var_tbl <- changes_var
+  changes_var_tbl[1, "varName_new"] <- "new1"
+  changes_var_tbl <- tibble::as_tibble(changes_var_tbl)
+
+  g1 <- applyChangeMeta(changes_var_tbl, dfSAV)
+  expect_equal(g1$labels[, -1], dfSAV$labels[, -1])
+  expect_equal(g1$labels$varName, c(rep("new1", 3), rep("VAR2", 2), rep("VAR3", 2)))
+  expect_equal(names(g1$dat), c("new1", "VAR2", "VAR3"))
+
+})
+
+test_that("Changes to GADSdat if tibble, value labels", {
+  changes_val_tbl <- changes_val
+  changes_val_tbl[1, "valLabel_new"] <- "new_miss"
+  changes_val_tbl[2, "valLabel_new"] <- "new_miss2"
+  changes_val_tbl <- tibble::as_tibble(changes_val_tbl)
+
+  g2 <- applyChangeMeta(changes_val_tbl, dfSAV)
+  expect_equal(g2$labels[, -7], dfSAV$labels[, -7])
+  expect_equal(g2$labels$valLabel, c("new_miss", "new_miss2", "One", "missing", NA, "missing", NA))
+  expect_equal(names(g2$dat), names(dfSAV$dat))
+})
