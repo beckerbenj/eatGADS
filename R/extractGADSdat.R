@@ -13,8 +13,7 @@
 #'@return Returns an \code{GADSdat} object.
 #'
 #'@examples
-#'# Example data set
-#'#to be done
+#'# see createGADS vignette
 #'
 #'@export
 extractGADSdat <- function(all_GADSdat, name) {

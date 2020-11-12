@@ -25,16 +25,8 @@ data from SPSS, while storing this meta-information separately in a long format 
 to identify missing values (see \code{\link{checkMissings}}). Time and date variables are converted to character.
 }
 \examples{
-\dontrun{
-dat <- import_spss("t:/_R_Tutorials/R_Workshops/01_Allgemeine Einfuehrung/
-                  IQB-LV-2011_SchuelerInnen-Eltern_CF.sav",
-                  checkVarNames = FALSE)
-
-# Inspect Meta data
-extractMeta(dat)
-
-# Extract Data
-dat <- extractData(dat, convertLabels = "character")
-}
+# Use spss data from within package
+spss_path <- system.file("extdata", "pisa.zsav", package = "eatGADS")
+pisa_gads <- import_spss(spss_path)
 
 }

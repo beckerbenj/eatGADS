@@ -24,7 +24,8 @@ Applied to a \code{GADSdat} or \code{all_GADSdat} object, this function is a wra
 \code{\link{applyChangeMeta}}
 }
 \examples{
-# Example data set
-#to be done
+# Change multiple variable name
+pisa2 <- changeVarNames(pisa, oldNames = c("idstud", "idschool"),
+                        newNames = c("IDstud", "IDschool"))
 
 }

@@ -13,9 +13,6 @@
 #'
 #'@return Returns the \code{GADSdat} object with with the changed variable.
 #'
-#'@examples
-#'# Example data set
-#'#to be done
 #'
 #'@export
 stringAsNumeric <- function(GADSdat, varName) {

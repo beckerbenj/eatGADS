@@ -21,7 +21,6 @@ in which the objects are supplied, which is then used for the merging order in \
 the separate lists of meta information for each \code{GADSdat} are merged and a data frame unique identifier is added.
 }
 \examples{
-# Example data set
-#to be done
+# see createGADS vignette
 
 }

@@ -15,8 +15,10 @@
 #'@return Returns the \code{GADSdat} object with changed meta data.
 #'
 #'@examples
-#'# Example data set
-#'#to be done
+#'# Change existing value labels
+#' pisa2 <- changeValLabels(pisa, varName = "repeated",
+#'                         value = c(1, 2),
+#'                         valLabel = c("no grade repetition", "grade repitition"))
 #'
 #'@export
 changeValLabels <- function(GADSdat, varName, value, valLabel) {

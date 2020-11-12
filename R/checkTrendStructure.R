@@ -13,8 +13,6 @@
 #'
 #'@return Returns a report list.
 #'
-#'@examples
-#'# See vignette.
 #'
 #'@export
 checkTrendStructure <- function(filePath1, filePath2) {

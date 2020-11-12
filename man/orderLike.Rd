@@ -20,8 +20,3 @@ Order the variables in a \code{GADSdat} according to a character vector. If ther
 \details{
 The variables in the \code{dat} and in the \code{labels} section are ordered. Variables not contained in the character vector are moved to the end of the data.
 }
-\examples{
-# Example data set
-#to be done
-
-}

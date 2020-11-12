@@ -17,9 +17,6 @@
 #'
 #'@return Returns a \code{GADSdat} object.
 #'
-#'@examples
-#'# Example data set
-#'#to be done
 #'
 #'@export
 merge.GADSdat <- function(x, y, by, all = TRUE, all.x = all, all.y = all, ...) {

@@ -17,8 +17,11 @@
 #'@return Returns the meta data sheet for all variables including the corresponding change columns.
 #'
 #'@examples
-#'# Example data set
-#'#to be done
+#'# For changes on variable level
+#'varChangeTable <- getChangeMeta(pisa, level = "variable")
+#'
+#'# For changes on value level
+#'valChangeTable <- getChangeMeta(pisa, level = "value")
 #'
 #'@export
 getChangeMeta <- function(GADSdat, level = "variable") {

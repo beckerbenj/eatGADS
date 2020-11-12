@@ -16,7 +16,7 @@
 #'@return Creates a data base in the given path, returns \code{NULL}.
 #'
 #'@examples
-#'# see createDB
+#'# see createDB vignette
 #'
 #'@export
 createGADS <- function(allList, pkList, fkList, filePath) {

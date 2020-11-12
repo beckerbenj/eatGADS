@@ -27,9 +27,9 @@ If a variable contains information that should be split into multiple variables 
 
 The complete work flow when using a lookup table to expand variables in a \code{GADSdat} based on manual recoding could be:
 (1) create a lookup table with \code{\link{createLookup}}.
-(2) Save the lookup table to \code{.xlsx} with \code{\link[eatAnalysis]{write_xlsx}}.
+(2) Save the lookup table to \code{.xlsx} with \code{write_xlsx} from \code{eatAnalysis}.
 (3) fill out the lookup table via \code{Excel}.
-(4) Import the lookup table back to \code{R} via \code{\link[readxl]{read_excel}}.
+(4) Import the lookup table back to \code{R} via \code{read_excel} from \code{readxl}.
 (5) Apply the final lookup table with \code{applyLookup_expandVar}.
 
 See \code{\link{applyLookup}} for simply recoding variables in a \code{GADSdat}.

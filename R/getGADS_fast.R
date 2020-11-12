@@ -18,15 +18,6 @@
 #'
 #'@return Returns a \code{GADSdat} object.
 #'
-#'@examples
-#'\dontrun{
-#'gads10 <- getGADS_fast(vSelect = c("idstud", "wgt", "jkzone", "jkrep", "imp", "domain", "score"),
-#'                       filePath = "t:/_R_Tutorials/R_Workshops/04_eatPakete/minigads_2010.db")
-#'# View Meta Data
-#'metaData <- extractMeta(gads10)
-#'# Extract Data for Analysis
-#'dat <- extractData(gads10)
-#'}
 #'
 #'@export
 getGADS_fast <- function(vSelect = NULL, filePath, tempPath = tempdir()) {

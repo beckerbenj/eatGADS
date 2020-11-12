@@ -15,8 +15,9 @@
 #'@return Returns the \code{GADSdat} object with changed variable names.
 #'
 #'@examples
-#'# Example data set
-#'#to be done
+#'# Change multiple variable name
+#' pisa2 <- changeVarNames(pisa, oldNames = c("idstud", "idschool"),
+#'                         newNames = c("IDstud", "IDschool"))
 #'
 #'@export
 changeVarNames <- function(GADSdat, oldNames, newNames) {

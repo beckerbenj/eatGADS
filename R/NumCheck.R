@@ -7,7 +7,6 @@
 #' All numerical variables without value labels in a \code{GADSdat} are selected and a \code{data.frame} is created, which allows the specification
 #' of minima and maxima.
 #'
-#' tbd
 #'
 #'@param GADSdat A \code{GADSdat} object.
 #'
@@ -60,7 +59,6 @@ createNumCheck.GADSdat <- function(GADSdat) {
 #'
 #' Applies recodes as specified by a \code{numCheck} \code{data.frame}, as created by \code{\link{createNumCheck}}.
 #'
-#' tbd
 #'
 #'@param GADSdat A \code{GADSdat} object.
 #'@param numCheck A \code{data.frame} as created by \code{\link{createNumCheck}}.

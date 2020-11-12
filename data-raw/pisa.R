@@ -2,9 +2,10 @@
 
 ## prepare Campus Files for internal use in extdata
 # -----------------------------------------------------------------------------------------------
-pisa <- import_spss("C:/Users/benjb/Documents/Promotion/Campusfiles/PISA-Plus-2012-2013_CF_v1/SPSS/PISA-Plus-2012-2013_Dataset_CF.sav")
+#pisa <- import_spss("C:/Users/benjb/Documents/Promotion/Campusfiles/PISA-Plus-2012-2013_CF_v1/SPSS/PISA-Plus-2012-2013_Dataset_CF.sav")
+pisa_ori <- import_spss("C:/Benjamin_Becker/21_IQB_Projekte/Campus Files/PISA-Plus-2012-2013_CF_v1/SPSS/PISA-Plus-2012-2013_Dataset_CF.sav")
 
-pisat1 <- removeVars(pisa, vars = c("Version_v1_2020_04_18", grep("t2$", namesGADS(pisa), value = TRUE)))
+pisat1 <- removeVars(pisa_ori, vars = c("Version_v1_2020_04_18", grep("t2$", namesGADS(pisa), value = TRUE)))
 
 t1names <- grep("t1$", namesGADS(pisat1), value = TRUE)
 pisa_s <- changeVarNames(pisat1, t1names, gsub("_t1$", "", t1names))
@@ -59,7 +60,9 @@ namesGADS("inst/extdata/pisa.db")
 
 ## Create GADSdat and all_GADSdat objects for internal use
 # -----------------------------------------------------------------------------------------------
-usethis::use_data("pisa")
+pisa <- pisa_s
+
+usethis::use_data(pisa)
 
 
 

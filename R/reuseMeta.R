@@ -17,8 +17,7 @@
 #'@return Returns the original object with updated meta data.
 #'
 #'@examples
-#'# Example data set
-#'#to be done
+#'# see createGADS vignette
 #'
 #'@export
 reuseMeta <- function(GADSdat, varName, other_GADSdat, other_varName = NULL, missingLabels = NULL, addValueLabels = FALSE) {

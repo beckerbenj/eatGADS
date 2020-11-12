@@ -4,10 +4,12 @@
 #'
 #' Recode a labeled variable as part of a \code{GADSdat} or \code{all_GADSdat} object.
 #'
-#' Applied to a \code{GADSdat} or \code{all_GADSdat} object, this function is a wrapper of \code{\link{getChangeMeta}} and \code{\link{applyChangeMeta}}.
+#' Applied to a \code{GADSdat} or \code{all_GADSdat} object, this function is a wrapper of \code{\link{getChangeMeta}}
+#' and \code{\link{applyChangeMeta}}.
 #' \code{oldValues} and \code{newValues} are matched by ordering in the function call.
 #'
-#' Functionality including \code{newValueLabels} is still very experimental. The argument can be used to simultaneously change value labels. However,
+#' Functionality including \code{newValueLabels} is still very experimental. The argument can be used to simultaneously
+#' change value labels. However,
 #' all existing (new) values need to be assigned a new label.
 #'
 #' For recoding character variables, using lookup tables via \code{\link{createLookup}} is recommended.

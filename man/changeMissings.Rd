@@ -26,7 +26,17 @@ Applied to a \code{GADSdat} or \code{all_GADSdat} object, this function is a wra
 \code{\link{applyChangeMeta}}.
 }
 \examples{
-# Example data set
-#to be done
+# Set a specific value to missing
+pisa2 <- changeMissings(pisa, varName = "computer_age",
+                        value = 5, missings = "miss")
+
+# Set multiple values to missing
+pisa3 <- changeMissings(pisa, varName = "computer_age",
+                        value = 1:4,
+                        missings = c("miss", "miss", "miss", "miss"))
+
+# Set a specific value to not missing
+pisa4 <- changeMissings(pisa2, varName = "computer_age",
+                        value = 5, missings = "valid")
 
 }

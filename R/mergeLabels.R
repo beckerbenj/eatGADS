@@ -14,8 +14,7 @@
 #'@return Returns an \code{all_GADSdat} object, which consists of list with a list of all data frames \code{"datList"} and a single data frame containing all meta data information \code{"allLabels"}.
 #'
 #'@examples
-#'# Example data set
-#'#to be done
+#'# see createGADS vignette
 #'
 #'@export
 mergeLabels <- function(...) {

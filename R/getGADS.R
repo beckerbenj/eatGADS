@@ -14,14 +14,9 @@
 #'@return Returns a \code{GADSdat} object.
 #'
 #'@examples
-#'\dontrun{
-#'gads10 <- getGADS(vSelect = c("idstud", "wgt", "jkzone", "jkrep", "imp", "domain", "score"),
-#'                  filePath = "t:/_R_Tutorials/R_Workshops/04_eatPakete/minigads_2010.db")
-#'# View Meta Data
-#'metaData <- extractMeta(gads10)
-#'# Extract Data for Analysis
-#'dat <- extractData(gads10)
-#'}
+#'# Use data base within package
+#'db_path <- system.file("extdata", "pisa.db", package = "eatGADS")
+#'pisa_gads <- getGADS(db_path, vSelect = c("schtype", "sameteach"))
 #'
 #'@export
 getGADS <- function(vSelect = NULL, filePath) {

@@ -15,8 +15,11 @@
 #'@return Returns a \code{GADSdat} object.
 #'
 #'@examples
-#'# Example data set
-#'#to be done
+#'# Change example data set (create a value label with incorrect missing code)
+#' pisa2 <- changeValLabels(pisa, varName = "computer_age",
+#'                         value = 5, valLabel = "missing: No computer use")
+#'
+#' pisa3 <- checkMissings(pisa2)
 #'
 #'@export
 checkMissings <- function(GADSdat, missingLabel = "missing", addMissingCode = TRUE, addMissingLabel = FALSE) {

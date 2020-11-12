@@ -24,7 +24,10 @@ Changes on value level include values (\code{value}), value labels (\code{valLab
 missing codes (\code{missings}).
 }
 \examples{
-# Example data set
-#to be done
+# For changes on variable level
+varChangeTable <- getChangeMeta(pisa, level = "variable")
+
+# For changes on value level
+valChangeTable <- getChangeMeta(pisa, level = "value")
 
 }

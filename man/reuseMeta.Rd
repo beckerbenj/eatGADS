@@ -37,7 +37,6 @@ Transfer of meta information can mean substituting the complete meta information
 \code{"valid"} missing labels. See the arguments \code{missingLabels} and \code{addValueLabels} for further information.
 }
 \examples{
-# Example data set
-#to be done
+# see createGADS vignette
 
 }

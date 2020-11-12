@@ -26,7 +26,9 @@ Applied to a \code{GADSdat} or \code{all_GADSdat} object, this function is a wra
 \code{\link{applyChangeMeta}}.
 }
 \examples{
-# Example data set
-#to be done
+# Change existing value labels
+pisa2 <- changeValLabels(pisa, varName = "repeated",
+                        value = c(1, 2),
+                        valLabel = c("no grade repetition", "grade repitition"))
 
 }

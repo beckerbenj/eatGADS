@@ -23,7 +23,8 @@ Change the SPSS format of a variable as part of a \code{GADSdat} or \code{all_GA
 Applied to a \code{GADSdat} or \code{all_GADSdat} object, this function is a wrapper of \code{\link{getChangeMeta}} and \code{\link{applyChangeMeta}}.
 }
 \examples{
-# Example data set
-#to be done
+pisa2 <- changeSPSSformat(pisa, varName = "idstud",
+                        format = "F10.0")
+
 
 }

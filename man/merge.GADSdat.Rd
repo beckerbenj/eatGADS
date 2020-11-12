@@ -31,8 +31,3 @@ Is a secure way to merge the data and the meta data of two \code{GADSdat} object
 If there are duplicate variables (except the variables specified in the \code{by} argument), these variables are removed from y.
 The meta data is joined for the remaining variables via \code{rbind}.
 }
-\examples{
-# Example data set
-#to be done
-
-}

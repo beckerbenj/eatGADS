@@ -21,8 +21,3 @@ Transform a string variable within a \code{GADSdat} or \code{all_GADSdat} object
 Applied to a \code{GADSdat} or \code{all_GADSdat} object, this function uses \code{\link[eatTools]{asNumericIfPossible}} to
 change the variable class and changes the \code{format} column in the meta data.
 }
-\examples{
-# Example data set
-#to be done
-
-}

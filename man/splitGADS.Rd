@@ -24,7 +24,6 @@ Hierarchy level of a variable is also accessible in the meta data via the column
 are included in the \code{nameList}, the missing variables will be dropped.
 }
 \examples{
-# Example data set
-#to be done
+# see createGADS vignette
 
 }

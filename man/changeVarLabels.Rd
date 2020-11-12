@@ -24,7 +24,8 @@ Applied to a \code{GADSdat} or \code{all_GADSdat} object, this function is a wra
 \code{\link{applyChangeMeta}}.
 }
 \examples{
-# Example data set
-#to be done
+# Change one variable label
+pisa2 <- changeVarLabels(pisa, varName = "repeated",
+                        varLabel = c("Has a grade been repeated?"))
 
 }

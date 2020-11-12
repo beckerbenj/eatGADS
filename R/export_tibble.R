@@ -13,7 +13,7 @@
 #'@return Returns a \code{tibble}.
 #'
 #'@examples
-#'# tbd
+#'pisa_tbl <- export_tibble(pisa)
 #'
 #'@export
 export_tibble <- function(GADSdat) {

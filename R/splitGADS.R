@@ -16,8 +16,7 @@
 #'a single data frame containing all meta data information \code{"allLabels"}. For more details see also \code{\link{mergeLabels}}.
 #'
 #'@examples
-#'# Example data set
-#'#to be done
+#'# see createGADS vignette
 #'
 #'@export
 splitGADS <- function(GADSdat, nameList) {

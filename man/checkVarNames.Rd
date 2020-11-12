@@ -20,7 +20,10 @@ Illegal names in a \code{SQLite} data base include \code{SQLite} keywords (see \
 with a \code{"."} in it.
 }
 \examples{
-# Example data set
-#to be done
+# Change example data set (create an invalid variable name)
+pisa2 <- changeVarNames(pisa, oldNames = "computer_age",
+                        newNames = "computer.age")
+
+pisa3 <- checkVarNames(pisa2)
 
 }

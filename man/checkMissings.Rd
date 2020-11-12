@@ -31,7 +31,10 @@ The function compares value labels \code{"valLabels"} and missing codes \code{"m
 meta data information. Mismatches are reported and can be automatically adjusted.
 }
 \examples{
-# Example data set
-#to be done
+# Change example data set (create a value label with incorrect missing code)
+pisa2 <- changeValLabels(pisa, varName = "computer_age",
+                        value = 5, valLabel = "missing: No computer use")
+
+pisa3 <- checkMissings(pisa2)
 
 }

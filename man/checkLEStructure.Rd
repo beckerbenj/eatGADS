@@ -24,7 +24,3 @@ of two \code{eatGADS} data bases see \code{\link{checkTrendStructure}}.
 This function inspects whether all linking error variables correspond to variables in the \code{eatGADS} data base and if the key variables
 also correspond to existing variables in the trend \code{eatGADS} data bases.
 }
-\examples{
-# See vignette.
-
-}

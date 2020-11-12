@@ -13,5 +13,8 @@ test_that("SPSS format wrapper", {
   expect_error(changeSPSSformat(dfSAV, varName = "VAR1", format = "S10"), "format has to start with A (string) or F (numeric).", fixed = TRUE)
   expect_error(changeSPSSformat(dfSAV, varName = "VAR1", format = "110"), "format has to start with A (string) or F (numeric).", fixed = TRUE)
   expect_error(changeSPSSformat(dfSAV, varName = "VAR1", format = "FF0"), "format can only have numbers (width) after its type.", fixed = TRUE)
+
+  out <- changeSPSSformat(dfSAV, varName = "VAR1", format = "F10.0")
+  expect_equal(out$labels[1, "format"], "F10.0")
 })
 

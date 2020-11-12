@@ -26,6 +26,6 @@ Uses \code{\link[eatDB]{createDB}} from the \code{eatDB} package to create a rel
 keys see the documentation of \code{\link[eatDB]{createDB}}.
 }
 \examples{
-# see createDB
+# see createDB vignette
 
 }

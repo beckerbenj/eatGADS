@@ -20,6 +20,6 @@ Returns a \code{tibble}.
 This function is mainly intended for internal use.
 }
 \examples{
-# tbd
+pisa_tbl <- export_tibble(pisa)
 
 }

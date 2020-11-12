@@ -22,7 +22,6 @@ Function to extract a single \code{GADSdat} from an \code{all_GADSdat} object.
 reverse action, extracting a single \code{GADSdat} object.
 }
 \examples{
-# Example data set
-#to be done
+# see createGADS vignette
 
 }

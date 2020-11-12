@@ -16,8 +16,7 @@
 #'@return Returns the original object with updated meta data (and removes factors from the data).
 #'
 #'@examples
-#'# Example data set
-#'#to be done
+#' # see createGADS vignette
 #'
 #'@export
 updateMeta <- function(GADSdat, newDat) {

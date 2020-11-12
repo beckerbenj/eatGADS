@@ -13,8 +13,9 @@
 #'@return Returns the \code{GADSdat} object with changed meta data..
 #'
 #'@examples
-#'# Example data set
-#'#to be done
+#' pisa2 <- changeSPSSformat(pisa, varName = "idstud",
+#'                         format = "F10.0")
+#'
 #'
 #'@export
 changeSPSSformat <- function(GADSdat, varName, format) {
@@ -26,8 +27,9 @@ changeSPSSformat.GADSdat <- function(GADSdat, varName, format) {
   if(!all(varName %in% namesGADS(GADSdat))) stop("varName are not all variables in the GADSdat.")
   if(!is.character(format) || length(format) != 1) stop("format has to be a single character value.")
   if(!grepl("^A|^F", format)) stop("format has to start with A (string) or F (numeric).")
-  if(nchar(format) > 4) stop("format has to have maximum 3 numbers (width) after its type.")
-  format_numbers <- substr(format, 2, nchar(format))
+  format_for_check <- gsub("\\.", "", format)
+  if(nchar(format_for_check) > 4) stop("format has to have maximum 3 numbers (width) after its type.")
+  format_numbers <- substr(format_for_check, 2, nchar(format))
   if(!grepl("^[0-9]*$", format_numbers)) stop("format can only have numbers (width) after its type.")
 
   changeTable <- getChangeMeta(GADSdat, level = "variable")

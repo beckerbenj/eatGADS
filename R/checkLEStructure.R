@@ -14,8 +14,6 @@
 #'
 #'@return Returns a report list.
 #'
-#'@examples
-#'# See vignette.
 #'
 #'@export
 checkLEStructure <- function(filePath1, filePath2, lePath) {

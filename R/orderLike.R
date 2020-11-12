@@ -11,9 +11,6 @@
 #'
 #'@return Returns a \code{GADSdat} object.
 #'
-#'@examples
-#'# Example data set
-#'#to be done
 #'
 #'@export
 orderLike <- function(GADSdat, newOrder) {

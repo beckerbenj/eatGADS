@@ -20,9 +20,8 @@ Variable, value and missing labels as stored in the original SPSS-files and fact
 storage in the data base. \code{labelsGADS} returns them as a long format data frame.
 }
 \examples{
-\dontrun{
-metaData <- labelsGADS("t:/_R_Tutorials/R_Workshops/04_eatPakete/minigads_2010.db")
-View(metaData)
-}
+# Extract Meta data from data base
+db_path <- system.file("extdata", "pisa.db", package = "eatGADS")
+metaData <- labelsGADS(db_path)
 
 }

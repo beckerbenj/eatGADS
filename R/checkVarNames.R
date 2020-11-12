@@ -13,8 +13,11 @@
 #'@return Returns the original object with updated variable names.
 #'
 #'@examples
-#'# Example data set
-#'#to be done
+#'# Change example data set (create an invalid variable name)
+#' pisa2 <- changeVarNames(pisa, oldNames = "computer_age",
+#'                         newNames = "computer.age")
+#'
+#' pisa3 <- checkVarNames(pisa2)
 #'
 #'@export
 checkVarNames <- function(GADSdat) {

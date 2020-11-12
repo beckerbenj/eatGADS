@@ -25,7 +25,6 @@ If variables have been added, empty meta data is added for these variables. Fact
 and their levels added to the meta data set.
 }
 \examples{
-# Example data set
-#to be done
+# see createGADS vignette
 
 }

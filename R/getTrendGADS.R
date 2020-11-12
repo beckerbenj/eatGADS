@@ -26,20 +26,8 @@
 #'@return Returns a \code{GADSdat} object.
 #'
 #'@examples
-#'\dontrun{
-#'trend_gads <- getTrendGADS(filePath1 = "t:/_R_Tutorials/R_Workshops/04_eatPakete/minigads_2010.db",
-#'                           filePath2 = "t:/_R_Tutorials/R_Workshops/04_eatPakete/minigads_2015.db",
-#'                           lePath = "t:/_R_Tutorials/R_Workshops/04_eatPakete/les_2010_2015.db",
-#'                           years = c(2010, 2015),
-#'                           vSelect = c("idstud", "wgt", "jkzone", "jkrep", "imp", "domain", "score"))
+#' # See getGADS vignette
 #'
-#'# Extract Data
-#'dat <- extractData(trend_gads)
-#'
-#'# Extract Meta Data
-#'extractMeta(trend_gads)
-#'
-#'}
 #'
 #'@export
 getTrendGADS <- function(filePath1, filePath2, lePath = NULL, vSelect = NULL, years, fast = TRUE, tempPath = tempdir()) {

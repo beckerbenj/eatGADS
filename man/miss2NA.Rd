@@ -10,17 +10,12 @@ miss2NA(GADSdat)
 \item{GADSdat}{A \code{GADSdat} object.}
 }
 \value{
-Returns the data frame with \code{NA} instead of missing codes.
+Returns a \code{data.frame} with \code{NA} instead of missing codes.
 }
 \description{
 Recode Missings to \code{NA} according to missing labels in label \code{data.frame}.
 }
 \details{
 Missings are imported as their values via \code{\link{import_spss}}. Using the value labels in the labels \code{data.frame},
-\code{miss2NA} recodes these missings codes to \code{NA}.
-}
-\examples{
-# Example data set
-#to be done
-
+\code{miss2NA} recodes these missings codes to \code{NA}. This function is mainly intended for internal use.
 }

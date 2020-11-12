@@ -13,8 +13,10 @@
 #'@return Returns the modified \code{GADSdat} object.
 #'
 #'@examples
-#'# Example data set
-#'#to be done
+#'# Change a variable name and label
+#'varChangeTable <- getChangeMeta(pisa, level = "variable")
+#'varChangeTable[1, c("varName_new", "varLabel_new")] <- c("IDstud", "Person ID")
+#'pisa2 <- applyChangeMeta(varChangeTable, GADSdat = pisa)
 #'
 #'@export
 applyChangeMeta <- function(changeTable, GADSdat) {

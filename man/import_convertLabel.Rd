@@ -18,9 +18,5 @@ Returns a list with the actual data \code{dat} and a data frame with all meta in
 Function to import a \code{data.frame} object created by \code{convertLabel} for use in \code{eatGADS}. If possible, importing data via \code{\link{import_spss}} should always be preferred.
 }
 \details{
-\code{\link[eatAnalysis]{convertLabel}} converts an object imported via \code{\link[foreign]{read.spss}} (from the \code{foreign} package) to a \code{data.frame} with factors and variable labels stored in variable attributes.
-}
-\examples{
-# no examples
-
+\code{convertLabel} from \code{R} package \code{eatAnalysis} converts an object imported via \code{read.spss} (from the \code{foreign} package) to a \code{data.frame} with factors and variable labels stored in variable attributes.
 }

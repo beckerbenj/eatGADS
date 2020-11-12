@@ -23,15 +23,11 @@ Meta data is stored tidily in all \code{GADSdat} objects as a separate long form
 multiple variables.
 }
 \examples{
-\dontrun{
 # Extract Meta data from data base
-metaData <- extractMeta(GADSobject = "t:/_R_Tutorials/R_Workshops/04_eatPakete/minigads_2010.db",
-                       vars = "domain")
+db_path <- system.file("extdata", "pisa.db", package = "eatGADS")
+extractMeta(db_path, vars = c("schtype", "sameteach"))
 
-# Extract Meta data from loaded GADS
-gads10 <- getGADS(vSelect = c("idstud", "wgt", "jkzone", "jkrep", "imp", "domain", "score"),
-                 filePath = "t:/_R_Tutorials/R_Workshops/04_eatPakete/minigads_2010.db")
-metaData <- extractMeta(gads10, vars = "domain")
-}
+# Extract Meta data from loaded/imported GADS
+extractMeta(pisa, vars = c("schtype", "sameteach"))
 
 }

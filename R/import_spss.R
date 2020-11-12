@@ -15,17 +15,9 @@
 #'@return Returns a list with the actual data \code{dat} and a data frame with all meta information in long format \code{labels}.
 #'
 #'@examples
-#'\dontrun{
-#'dat <- import_spss("t:/_R_Tutorials/R_Workshops/01_Allgemeine Einfuehrung/
-#'                   IQB-LV-2011_SchuelerInnen-Eltern_CF.sav",
-#'                   checkVarNames = FALSE)
-#'
-#'# Inspect Meta data
-#'extractMeta(dat)
-#'
-#'# Extract Data
-#'dat <- extractData(dat, convertLabels = "character")
-#'}
+#'# Use spss data from within package
+#'spss_path <- system.file("extdata", "pisa.zsav", package = "eatGADS")
+#'pisa_gads <- import_spss(spss_path)
 #'
 #'@export
 import_spss <- function(filePath, checkVarNames = TRUE, labeledStrings = FALSE) {

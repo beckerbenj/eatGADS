@@ -22,19 +22,14 @@
 #'@return Returns a data frame.
 #'
 #'@examples
-#'\dontrun{
-#'gads10 <- getGADS(vSelect = c("idstud", "wgt", "jkzone", "jkrep", "imp", "domain", "score"),
-#'                  filePath = "t:/_R_Tutorials/R_Workshops/04_eatPakete/minigads_2010.db")
-#'
 #'# Extract Data for Analysis
-#'dat <- extractData(gads10)
+#'dat <- extractData(pisa)
 #'
 #'# convert labeled variables to factors
-#'dat <- extractData(gads10, convertLabels = "factor")
+#'dat <- extractData(pisa, convertLabels = "factor")
 #'
 #'# convert only some variables to factor
-#'dat <- extractData(gads10, convertLabels = "factor", convertVariables = c("domain"))
-#'}
+#'dat <- extractData(pisa, convertLabels = "factor", convertVariables = c("schtype", "ganztag"))
 #'
 #'@export
 extractData <- function(GADSdat, convertMiss = TRUE, convertLabels = "character", dropPartialLabels = TRUE, convertVariables) {

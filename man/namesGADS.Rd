@@ -21,15 +21,11 @@ applied to a \code{all_GADSdat} object or to the path of a \code{eatGADS} data b
 represents a data table in the object.
 }
 \examples{
-\dontrun{
-varNames <- namesGADS("t:/_R_Tutorials/R_Workshops/04_eatPakete/minigads_2010.db")
+# Extract variable names from data base
+db_path <- system.file("extdata", "pisa.db", package = "eatGADS")
+namesGADS(db_path)
 
-# all variable names sorted by data table
-varNames
-
-# variables in a specific data table
-varNames$allDat
-
-}
+# Extract variable names  from loaded/imported GADS
+namesGADS(pisa)
 
 }
