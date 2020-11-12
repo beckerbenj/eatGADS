@@ -5,7 +5,7 @@
 \alias{pisa}
 \title{PISA Plus Example Data}
 \format{
-A data.frame with 500 rows and 139 variables, including:
+A data.frame with 500 rows and 133 variables, including:
 \describe{
   \item{idstud}{Person ID variable}
   \item{idschool}{School ID variable}
