@@ -17,6 +17,9 @@ A recoded \code{GADSdat}.
 \description{
 Applies recodes as specified by a \code{numCheck} \code{data.frame}, as created by \code{\link{createNumCheck}}.
 }
+\details{
+This function is currently under development.
+}
 \examples{
 # tbd
 

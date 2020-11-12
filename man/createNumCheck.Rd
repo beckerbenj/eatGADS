@@ -21,6 +21,9 @@ A data.frame with the following variables:
 All numerical variables without value labels in a \code{GADSdat} are selected and a \code{data.frame} is created, which allows the specification
 of minima and maxima.
 }
+\details{
+This function is currently under development.
+}
 \examples{
 # tbd
 

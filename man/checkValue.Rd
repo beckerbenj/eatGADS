@@ -15,10 +15,10 @@ checkValue(GADSdat, value)
 Returns \code{NULL}.
 }
 \description{
-Function to look for occurences of a specific value in a \code{GADSdat}.
+Function to look for occurrences of a specific value in a \code{GADSdat}.
 }
 \details{
-The function checks occurences of a specific value in all variables in the \code{GADSdat} and outputs a message
+The function checks occurrences of a specific value in all variables in the \code{GADSdat} and outputs a message
 containing a list of variables in which the value occurs.
 }
 \examples{
