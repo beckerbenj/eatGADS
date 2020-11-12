@@ -69,6 +69,17 @@ applyChangeMeta.valChanges <- function(changeTable, GADSdat) {
   new_GADSdat(dat = dat, labels = labels2)
 }
 
+
+## Workaround for tibbles, as readxl is recommended for excel re-import
+#'@export
+applyChangeMeta.tbl_df <- function(changeTable, GADSdat) {
+  #browser()
+  if(all(c("varName", "varName_new") %in% names(changeTable))) changeTable_new <- new_varChanges(changeTable)
+  if(all(c("value", "value_new") %in% names(changeTable))) changeTable_new <- new_valChanges(changeTable)
+  applyChangeMeta(changeTable_new, GADSdat = GADSdat)
+}
+
+
 #'@export
 applyChangeMeta.list <- function(changeTable, GADSdat) {
   check_all_GADSdat(GADSdat)
@@ -88,7 +99,7 @@ check_changeTable <- function(GADSdat, changeTable) {
   class(newDat) <- "data.frame"
 
   row.names(oldDat) <- row.names(newDat) <- NULL
-  if(!identical(oldDat, newDat)) stop("GADSdat and changeTable are not compatible. Columns without '_new' should not be changed in the changeTable.", call. = FALSE)
+  if(!isTRUE(all.equal(oldDat, newDat))) stop("GADSdat and changeTable are not compatible. Columns without '_new' should not be changed in the changeTable.", call. = FALSE)
   return()
 }
 

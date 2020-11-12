@@ -76,7 +76,17 @@ To fill in the columns you could use `R` directly to modify the columns. Alterna
 eatAnalysis::write_xlsx(lookup, "lookup_forcedChoice.xlsx")
 ```
 
-After filling out the excel sheet the look up table might look like this:
+![](forcedChoice_excel_empty.PNG)
+
+&nbsp;
+
+After filling out the excel sheet the look up table might look like this: 
+
+&nbsp;
+
+![](forcedChoice_excel_full.PNG)
+
+&nbsp;
 
 The excel file can be read back into `R` via `readxl::read_xlsx()`. Detailed information on how missing values should be recoded is provided in the last section of this vignette.
 

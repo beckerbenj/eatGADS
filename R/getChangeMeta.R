@@ -12,7 +12,7 @@
 #' missing codes (\code{missings}).
 #'
 #'@param GADSdat \code{GADSdat} object imported via \code{eatGADS}.
-#'@param level \code{variable} or \code{value}.
+#'@param level \code{'variable'} or \code{'value'}.
 #'
 #'@return Returns the meta data sheet for all variables including the corresponding change columns.
 #'
