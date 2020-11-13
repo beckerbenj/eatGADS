@@ -1,3 +1,7 @@
+## Resubmission
+This is a resubmission. In this version I have 
+* fixed a DOI in a reference formerly formatted as a URL
+
 ## Test environments
 * local R installation, R 4.0.2
 * OS X (on travis-ci), release
