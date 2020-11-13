@@ -18,8 +18,10 @@
 #'@return Writes \code{sav} file to disc, returns \code{NULL}.
 #'
 #'@examples
+#'\dontrun{
 #'tmp <- tempfile(fileext = ".sav")
 #'write_spss(pisa, tmp)
+#'}
 #'
 #'@export
 write_spss <- function(GADSdat, filePath) {
