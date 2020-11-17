@@ -22,8 +22,8 @@ test_that("Fast getting GADSdat", {
   #expect_error(getGADS_fast(vSelect = "ID1", filePath = filePath, tempPath = "C:/"), "User has no writing permission for tempPath.")
 
   filePath2 <- gsub("/", "\\\\", filePath)
-  stuff <- capture_output(out2 <- eatGADS:::getGADS_fast(vSelect = "ID1", filePath = filePath))
-  expect_equal(out2$dat, expected_ID2)
+  #stuff <- capture_output(out2 <- eatGADS:::getGADS_fast(vSelect = "ID1", filePath = filePath))
+  #expect_equal(out2$dat, expected_ID2)
 
 })
 
