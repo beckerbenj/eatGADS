@@ -1,6 +1,6 @@
 ## Resubmission
 This is a resubmission. In this version I have 
-* set an example for writing to disc to not run to prevent detritus in the temp directory
+* replaced all calls to tempdir() in tests with tempfile()
 
 ## Test environments
 * local R installation, R 4.0.2
