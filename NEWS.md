@@ -1,3 +1,3 @@
-# eatGADS 0.15.0
+# eatGADS 0.15.1
 
 * Initial release on CRAN.
