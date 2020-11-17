@@ -7,8 +7,8 @@ test_that("Write spss 2", {
                                          valLabel = c("miss1", "miss2", "miss1"),
                                          missings = c("miss", "miss", "miss"), stringsAsFactors = FALSE))
   g <- changeSPSSformat(g, varName = "var1", format = "A3")
-  f_txt <- paste0(tempfile(), ".txt")
-  f_sps <- paste0(tempfile(), ".sps")
+  f_txt <- tempfile(fileext = ".txt")
+  f_sps <- tempfile(fileext = ".sps")
   write_spss2(g, filePath = f_txt, syntaxPath = f_sps)
 
   out <- read.table(f_txt, stringsAsFactors = FALSE)

@@ -19,7 +19,7 @@ expected_V2 <- list(label = "Variable 2",
 ### write SPSS
 test_that("GADSdat correctly written to sav", {
   # write_spss("c:/Benjamin_Becker/02_Repositories/packages/eatGADS/tests/testthat/helper_write_spss.sav")
-  sav_path <- file.path(tempdir(), "helper_write_spss.sav")
+  sav_path <- tempfile(fileext = ".sav")
   write_spss(df, filePath = sav_path)
 
   #test_df <- export_tibble(df)
@@ -76,7 +76,7 @@ test_that("Check haven behaviour", {
 test_that("Write strings longer than 255", {
   #g <- import_spss("tests/testthat/helper_longstring.sav")
   suppressWarnings(g <- import_spss("helper_longstring.sav"))
-  f <- paste0(tempfile(), ".sav")
+  f <- tempfile(fileext = ".sav")
   write_spss(g, filePath = f)
   out <- haven::read_spss(f)
   expect_equal(dim(out), c(1, 2))
@@ -84,7 +84,7 @@ test_that("Write strings longer than 255", {
 
 test_that("Haven and eatGADS import and export missing codes correctly", {
   rawDat_missings <- haven::read_spss("helper_spss_missings.sav", user_na = TRUE)
-  f <- paste0(tempfile(), ".sav")
+  f <- tempfile(fileext = ".sav")
   haven::write_sav(rawDat_missings, f)
   out <- haven::read_spss(f, user_na = TRUE)
 
@@ -106,7 +106,7 @@ test_that("Write variables with missing codes", {
                                          valLabel = c("miss1", "miss2", "miss1"),
                                          missings = c("miss", "miss", "miss"), stringsAsFactors = FALSE))
   g <- changeSPSSformat(g, varName = "v1", format = "A3")
-  f <- paste0(tempfile(), ".sav")
+  f <- tempfile(fileext = ".sav")
   write_spss(g, filePath = f)
   out <- haven::read_spss(f, user_na = TRUE)
 

@@ -50,12 +50,12 @@ test_that("Value labels work correctly for character variable with and without S
   g$labels[2, "format"] <- "A10"
   out <- export_tibble(g)
   expect_true(is.character(attr(out$groupVar, "labels")))
-  expect_silent(write_spss(g, filePath = paste0(tempdir(), ".sav")))
+  expect_silent(write_spss(g, filePath = tempfile(fileext = ".sav")))
 
   # with SPSS format
   out2 <- export_tibble(g2)
   expect_true(is.character(attr(out2$groupVar, "labels")))
-  expect_silent(write_spss(g2, filePath = paste0(tempdir(), ".sav")))
+  expect_silent(write_spss(g2, filePath = tempfile(fileext = ".sav")))
 })
 
 ### check export_tibble: all variable label adding (with one variable)
