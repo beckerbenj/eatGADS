@@ -1,6 +1,7 @@
 ## Resubmission
 This is a resubmission. In this version I have 
-* replaced all calls to tempdir() in tests with tempfile()
+* put software names in the description in single quotes
+* removed \dontrun{} from the examples
 
 ## Test environments
 * local R installation, R 4.0.2

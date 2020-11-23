@@ -5,17 +5,12 @@
 #'
 #' Deprecated. The cached data base is now cleaned when the R sessions ends automatically.
 #'
-#' Cleans the temporary cache, specified by \code{tempdir()}. This function should always be executed at the end of an \code{R} session if
-#' \code{\link{getGADS_fast}} or \code{\link{getTrendGADS}} with \code{fast = TRUE} has been used.
+#' Cleans the temporary cache, specified by \code{tempdir()}. This function had to be executed at the end of an \code{R} session if
+#' \code{\link{getGADS_fast}} or \code{\link{getTrendGADS}} with \code{fast = TRUE} had been used.
 #'
 #'@param tempPath Local directory in which the data base was temporarily be stored.
 #'
 #'@return Returns nothing.
-#'
-#'@examples
-#'\dontrun{
-#'clean_cache()
-#'}
 #'
 #'@export
 clean_cache <- function(tempPath = tempdir()) {

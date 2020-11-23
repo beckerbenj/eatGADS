@@ -26,9 +26,7 @@ dropped, (c) under specific conditions very long character variables (> \code{A2
 character variables in \code{SPSS}. Furthermore, \code{write_spss} currently does not support exporting date or time variables.
 }
 \examples{
-\dontrun{
 tmp <- tempfile(fileext = ".sav")
 write_spss(pisa, tmp)
-}
 
 }
