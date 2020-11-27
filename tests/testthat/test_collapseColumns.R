@@ -11,6 +11,16 @@ test_that("collapse columns for two recodeVars",{
   lu_r <- collapseColumns(lu1, recodeVars = c("r1", "r2"), prioritize = "r2")
   expect_equal(lu_r$value_new, c(1, -2, 3, 4, 5))
 })
+
+test_that("collapse columns for two recodeVars and specific names",{
+  lu1$r1 <- c(1, 2, NA, 4, NA)
+  lu1$r2 <- c(NA, -2, 3, 4, 5)
+  names(lu1)[3:4] <- c("value_new", "value_old")
+
+  lu_r <- collapseColumns(lu1, recodeVars = c("value_new", "value_old"), prioritize = "value_old")
+  expect_equal(lu_r$value_new, c(1, -2, 3, 4, 5))
+})
+
 test_that("collapse columns for one recodeVars",{
   lu1$r1 <- c(1, 2, NA, 4, NA)
 

@@ -58,8 +58,12 @@ collapseColumns <- function(lookup, recodeVars, prioritize) {
   if(length(prioritize) != 1) stop("'prioritize' must be of length 1.")
   if(!all(prioritize %in% recodeVars)) stop("All variables names in 'prioritize' need to be in 'recodeVars'.")
 
-  lookup[, "value_new"] <- ifelse(is.na(lookup[[prioritize]]),
+  #if("value_new" %in% recodeVars) browser()
+
+  lookup[, ncol(lookup) + 1] <- ifelse(is.na(lookup[[prioritize]]),
                                   yes = lookup[[recodeVars[!recodeVars %in% prioritize]]],
                                   no = lookup[[prioritize]])
-  lookup[, names(lookup)[!names(lookup) %in% recodeVars]]
+  lookup_out <- lookup[, names(lookup)[!names(lookup) %in% recodeVars]]
+  names(lookup_out)[3] <- "value_new"
+  as.data.frame(lookup_out)
 }
