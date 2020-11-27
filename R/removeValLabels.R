@@ -4,26 +4,53 @@
 #'
 #' Remove value labels of a variable as part of a \code{GADSdat} or \code{all_GADSdat} object.
 #'
+#' If the argument \code{valLabel} is provided the function checks for \code{value} and \code{valLabel} pairs in the
+#' meta data that match both arguments.
+#'
 #'@param GADSdat \code{GADSdat} object imported via \code{eatGADS}.
 #'@param varName Character string of a variable name.
 #'@param value Numeric values.
+#'@param valLabel [optional] Regular expressions in the value labels corresponding to \code{value}.
 #'
 #'@return Returns the \code{GADSdat} object with changed meta data.
 #'
 #'@examples
-#'# Example data set
-#'#to be done
+#'# Remove a label based on value
+#'extractMeta(pisa, "schtype")
+#'pisa2 <- removeValLabels(pisa, varName = "schtype", value = 1)
+#'extractMeta(pisa2, "schtype")
+#'
+#'# Remove multiple labels based on value
+#'extractMeta(pisa, "schtype")
+#'pisa3 <- removeValLabels(pisa, varName = "schtype", value = 1:3)
+#'extractMeta(pisa3, "schtype")
+#'
+#'# Remove multiple labels based on value - valLabel combination
+#'extractMeta(pisa, "schtype")
+#'pisa4 <- removeValLabels(pisa, varName = "schtype",
+#'                         value = 1:3, valLabel = c("Gymnasium", "other", "several courses"))
+#'extractMeta(pisa4, "schtype")
 #'
 #'@export
-removeValLabels <- function(GADSdat, varName, value) {
+removeValLabels <- function(GADSdat, varName, value, valLabel = NULL) {
   UseMethod("removeValLabels")
 }
 #'@export
-removeValLabels.GADSdat <- function(GADSdat, varName, value) {
+removeValLabels.GADSdat <- function(GADSdat, varName, value, valLabel = NULL) {
   checkValRemoveInput(varName = varName, value = value, labels = GADSdat$labels)
 
   all_rows <- which(GADSdat$labels$varName == varName)
   remove_rows <- which(GADSdat$labels$varName == varName & GADSdat$labels$value %in% value)
+
+  if(!is.null(valLabel)) {
+    if(length(value) != length(valLabel)) stop("'value' and 'valLabel' need to be of identical length.")
+    remove_rows <- integer(0)
+    for(i in seq_along(value)) {
+      remove_rows <- c(remove_rows, which(GADSdat$labels$varName == varName &
+                                            GADSdat$labels$value == value[i] &
+                                            grepl(valLabel[i], GADSdat$labels$valLabel)))
+    }
+  }
 
   if(length(remove_rows) == 0) {
     warning("None of 'value' are labeled 'values'. Meta data are unchanged.")
@@ -42,7 +69,7 @@ removeValLabels.GADSdat <- function(GADSdat, varName, value) {
 }
 
 #'@export
-removeValLabels.all_GADSdat <- function(GADSdat, varName, value) {
+removeValLabels.all_GADSdat <- function(GADSdat, varName, value, valLabel = NULL) {
   stop("This method has not been implemented yet")
 }
 

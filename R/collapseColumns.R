@@ -16,8 +16,8 @@
 #' This simply renames the single variable specified under \code{recodeVars}.
 #'
 #'@param lookup For example a lookup table \code{data.frame} as created via \code{\link{createLookup}}.
-#'@param recodeVars Character vector of variable names which should be collapsed (currently only up to two variables are supported).
-#'@param prioritize Character vector of length 1. Which of the variables in \code{recodeVars} should be prioritized,
+#'@param recodeVars Character vector of column names which should be collapsed (currently only up to two variables are supported).
+#'@param prioritize Character vector of length 1. Which of the columns in \code{recodeVars} should be prioritized,
 #'if multiple values are available? If \code{recodeVars} is of length 1, this argument can be omitted.
 #'
 #'@return Returns a \code{data.frame} that can be used for \code{\link{applyLookup}}, with the columns:

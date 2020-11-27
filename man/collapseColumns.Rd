@@ -9,9 +9,9 @@ collapseColumns(lookup, recodeVars, prioritize)
 \arguments{
 \item{lookup}{For example a lookup table \code{data.frame} as created via \code{\link{createLookup}}.}
 
-\item{recodeVars}{Character vector of variable names which should be collapsed (currently only up to two variables are supported).}
+\item{recodeVars}{Character vector of column names which should be collapsed (currently only up to two variables are supported).}
 
-\item{prioritize}{Character vector of length 1. Which of the variables in \code{recodeVars} should be prioritized,
+\item{prioritize}{Character vector of length 1. Which of the columns in \code{recodeVars} should be prioritized,
 if multiple values are available? If \code{recodeVars} is of length 1, this argument can be omitted.}
 }
 \value{

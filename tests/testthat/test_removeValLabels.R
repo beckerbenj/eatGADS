@@ -18,6 +18,11 @@ test_that("removeValLabels", {
   expect_equal(nrow(out$labels[out$labels$varName == "VAR1", ]), 2)
   expect_equal(out$labels[out$labels$varName == "VAR1", "value"], c(-99, -96))
 
+  out2 <- removeValLabels(dfSAV, varName = "VAR2", value = -99)
+  expect_equal(nrow(out2$labels[out2$labels$varName == "VAR2", ]), 1)
+  expect_equal(out2$labels[out2$labels$varName == "VAR2", "value"], c(-96))
+
+
   out <- removeValLabels(dfSAV, varName = "VAR1", value = c(-96, -99))
   expect_equal(nrow(out$labels[out$labels$varName == "VAR1", ]), 1)
   expect_equal(out$labels[out$labels$varName == "VAR1", "value"], c(1))
@@ -32,4 +37,25 @@ test_that("no valid values", {
   expect_silent(out2 <- removeValLabels(dfSAV, varName = "VAR1", value = c(1, 3)))
   expect_equal(nrow(out2$labels[out2$labels$varName == "VAR1", ]), 2)
   expect_equal(out2$labels[out2$labels$varName == "VAR1", "value"], c(-99, -96))
+})
+
+test_that("removeValLabels with matching valLabels", {
+  expect_error(removeValLabels(dfSAV, varName = "VAR1", value = 1:2, valLabel = "One"),
+               "'value' and 'valLabel' need to be of identical length.")
+
+  out <- removeValLabels(dfSAV, varName = "VAR1", value = 1, valLabel = "One")
+  expect_equal(nrow(out$labels[out$labels$varName == "VAR1", ]), 2)
+  expect_equal(out$labels[out$labels$varName == "VAR1", "value"], c(-99, -96))
+
+  out2 <- removeValLabels(dfSAV, varName = "VAR1", value = 1, valLabel = "ne")
+  expect_equal(nrow(out2$labels[out2$labels$varName == "VAR1", ]), 2)
+  expect_equal(out2$labels[out2$labels$varName == "VAR1", "value"], c(-99, -96))
+
+  out3 <- removeValLabels(dfSAV, varName = "VAR1", value = c(-96, -99), valLabel = c("Om", "design"))
+  expect_equal(nrow(out3$labels[out3$labels$varName == "VAR1", ]), 1)
+  expect_equal(out3$labels[out3$labels$varName == "VAR1", "value"], c(1))
+
+  out4 <- removeValLabels(dfSAV, varName = "VAR1", value = c(-96, -99), valLabel = c("Om", "other"))
+  expect_equal(nrow(out4$labels[out4$labels$varName == "VAR1", ]), 2)
+  expect_equal(out4$labels[out4$labels$varName == "VAR1", "value"], c(-99, 1))
 })

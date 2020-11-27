@@ -5,7 +5,7 @@
 #' Function to look for occurrences of a specific value in a \code{GADSdat}.
 #'
 #' The function checks occurrences of a specific value in all variables in the \code{GADSdat} and outputs a vector
-#' containing the count of occurences for all variables in which the value occurs.
+#' containing the count of occurrences for all variables in which the value occurs.
 #'
 #'@param GADSdat \code{GADSdat} object imported via \code{eatGADS}.
 #'@param value Single string indicating how missing labels are commonly named in the value labels.

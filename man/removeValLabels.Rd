@@ -4,7 +4,7 @@
 \alias{removeValLabels}
 \title{Remove value labels.}
 \usage{
-removeValLabels(GADSdat, varName, value)
+removeValLabels(GADSdat, varName, value, valLabel = NULL)
 }
 \arguments{
 \item{GADSdat}{\code{GADSdat} object imported via \code{eatGADS}.}
@@ -12,6 +12,8 @@ removeValLabels(GADSdat, varName, value)
 \item{varName}{Character string of a variable name.}
 
 \item{value}{Numeric values.}
+
+\item{valLabel}{[optional] Regular expressions in the value labels corresponding to \code{value}.}
 }
 \value{
 Returns the \code{GADSdat} object with changed meta data.
@@ -19,8 +21,25 @@ Returns the \code{GADSdat} object with changed meta data.
 \description{
 Remove value labels of a variable as part of a \code{GADSdat} or \code{all_GADSdat} object.
 }
+\details{
+If the argument \code{valLabel} is provided the function checks for \code{value} and \code{valLabel} pairs in the
+meta data that match both arguments.
+}
 \examples{
-# Example data set
-#to be done
+# Remove a label based on value
+extractMeta(pisa, "schtype")
+pisa2 <- removeValLabels(pisa, varName = "schtype", value = 1)
+extractMeta(pisa2, "schtype")
+
+# Remove multiple labels based on value
+extractMeta(pisa, "schtype")
+pisa3 <- removeValLabels(pisa, varName = "schtype", value = 1:3)
+extractMeta(pisa3, "schtype")
+
+# Remove multiple labels based on value - valLabel combination
+extractMeta(pisa, "schtype")
+pisa4 <- removeValLabels(pisa, varName = "schtype",
+                        value = 1:3, valLabel = c("Gymnasium", "other", "several courses"))
+extractMeta(pisa4, "schtype")
 
 }
