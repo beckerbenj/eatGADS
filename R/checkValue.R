@@ -4,17 +4,16 @@
 #'
 #' Function to look for occurrences of a specific value in a \code{GADSdat}.
 #'
-#' The function checks occurrences of a specific value in all variables in the \code{GADSdat} and outputs a message
-#' containing a list of variables in which the value occurs.
+#' The function checks occurrences of a specific value in all variables in the \code{GADSdat} and outputs a vector
+#' containing the count of occurences for all variables in which the value occurs.
 #'
 #'@param GADSdat \code{GADSdat} object imported via \code{eatGADS}.
 #'@param value Single string indicating how missing labels are commonly named in the value labels.
 #'
-#'@return Returns \code{NULL}.
+#'@return A named integer.
 #'
 #'@examples
-#'# Example data set
-#'#to be done
+#'checkValue(pisa, 99)
 #'
 #'@export
 checkValue <- function(GADSdat, value) {
@@ -24,17 +23,16 @@ checkValue <- function(GADSdat, value) {
 #'@export
 checkValue.GADSdat <- function(GADSdat, value) {
   check_GADSdat(GADSdat)
+  if(!length(value) == 1) stop("'value' needs to be of length 1.")
 
   name_indicator <- logical(length(namesGADS(GADSdat)))
   names(name_indicator) <- namesGADS(GADSdat)
+
   for(nam in namesGADS(GADSdat)) {
-    name_indicator[nam] <- value %in% GADSdat[["dat"]][, nam]
+    name_indicator[nam] <- length(which(GADSdat[["dat"]][, nam] == value))
   }
 
-  if(any(name_indicator)) {
-    message("The following variables have occurences of 'value' in the GADSdat:\n",
-            paste(names(name_indicator)[name_indicator], collapse = ", "))
-  }
-
-  return(NULL)
+  name_indicator_out <- name_indicator[name_indicator > 0]
+  if(length(name_indicator_out) == 0) return(integer(0))
+  name_indicator_out
 }

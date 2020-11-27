@@ -12,17 +12,16 @@ checkValue(GADSdat, value)
 \item{value}{Single string indicating how missing labels are commonly named in the value labels.}
 }
 \value{
-Returns \code{NULL}.
+A named integer.
 }
 \description{
 Function to look for occurrences of a specific value in a \code{GADSdat}.
 }
 \details{
-The function checks occurrences of a specific value in all variables in the \code{GADSdat} and outputs a message
-containing a list of variables in which the value occurs.
+The function checks occurrences of a specific value in all variables in the \code{GADSdat} and outputs a vector
+containing the count of occurences for all variables in which the value occurs.
 }
 \examples{
-# Example data set
-#to be done
+checkValue(pisa, 99)
 
 }
