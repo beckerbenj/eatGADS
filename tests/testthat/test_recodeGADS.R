@@ -20,15 +20,3 @@ test_that("Recode wrapper errors", {
 
 })
 
-
-test_that("Recode wrapper with new value labels", {
-  expect_error(recodeGADS(dfSAV, varName = "VAR1", oldValues = c(1), newValues = c(10), newValueLabels = c('10' = "la", '11' = "muh")), "The following variables are not in set2: 11")
-  expect_error(recodeGADS(dfSAV, varName = "VAR1", oldValues = c(1, 2), newValues = c(10, 11), newValueLabels = c('11' = "muh")), "The following variables are not in set1: 10")
-  expect_error(recodeGADS(dfSAV, varName = "VAR1", oldValues = c(1), newValues = c(10), newValueLabels = c('10' = "muh")), "The following variables are not in set1: -99, -96")
-  expect_error(recodeGADS(dfSAV, varName = "VAR1", oldValues = c(1), newValues = c(10), newValueLabels = c("muh")), "newValueLabels needs to be named.")
-
-  out <- recodeGADS(dfSAV, varName = "VAR1", oldValues = c(1, -99, -96), newValues = c(1, -9, -9), newValueLabels = c('1' = "new_one", '-9' = "new_miss"))
-  expect_equal(nrow(out$labels), 6)
-  expect_equal(out$labels$value[1:2], c(1, -9))
-  expect_equal(out$labels$valLabel[1:2], c("new_one", "new_miss"))
-})
