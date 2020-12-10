@@ -1,5 +1,8 @@
 # eatGADS 0.15.2.9000
 
+* `recodeGADS()` allows recoding of of `NA` now
+* `recode2NA()` allows recoding of numeric and character values to `NA`
+* `recodeString2NA()` has been deprecated
 * bug fix `collapseColumns()` (now supports `new_value` as column name in look up table)
 * `checkValue()` now returns occurrence count as vector instead of giving a message
 * `removeValLabels()` now can remove only specific `value` - `valLabel` pairs if required 

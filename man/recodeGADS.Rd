@@ -26,6 +26,8 @@ Applied to a \code{GADSdat} or \code{all_GADSdat} object, this function is a wra
 and \code{\link{applyChangeMeta}}.
 \code{oldValues} and \code{newValues} are matched by ordering in the function call.
 
+Missing values (\code{NA}) are supported in \code{oldValues} but not in \code{newValues}. For recoding values to
+\code{NA} see \code{\link{recode2NA}} instead.
 For recoding character variables, using lookup tables via \code{\link{createLookup}} is recommended. For changing
 value labels see \code{\link{changeValLabels}}.
 }

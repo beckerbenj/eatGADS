@@ -18,5 +18,17 @@ test_that("Recode wrapper errors", {
   expect_error(recodeGADS(g, varName = "v3", oldValues = c(1), newValues = c(10)), "'varName' is not a real variable name.")
   expect_error(recodeGADS(g, varName = "v2", oldValues = c(1), newValues = c(10)), "'varName' needs to be a labeled variable in the GADS.")
 
+  expect_error(recodeGADS(dfSAV, varName = "VAR1", oldValues = c(1), newValues = c(NA)),
+               "Missing value(s) in 'newValues'. Recode to NA using recodeString2NA() if required.", fixed = TRUE)
 })
 
+
+test_that("Recode wrapper with NA in oldValues", {
+  dfSAV2 <- dfSAV
+  dfSAV2$dat[1, 1] <- NA
+  out <- recodeGADS(dfSAV2, varName = "VAR1", oldValues = c(NA), newValues = c(10))
+  expect_equal(out$dat$VAR1, c(10, -99, -96, 2))
+
+  out2 <- recodeGADS(dfSAV2, varName = "VAR1", oldValues = c(NA, -96), newValues = c(10, 20))
+  expect_equal(out2$dat$VAR1, c(10, -99, 20, 2))
+})

@@ -8,6 +8,8 @@
 #' and \code{\link{applyChangeMeta}}.
 #' \code{oldValues} and \code{newValues} are matched by ordering in the function call.
 #'
+#' Missing values (\code{NA}) are supported in \code{oldValues} but not in \code{newValues}. For recoding values to
+#' \code{NA} see \code{\link{recode2NA}} instead.
 #' For recoding character variables, using lookup tables via \code{\link{createLookup}} is recommended. For changing
 #' value labels see \code{\link{changeValLabels}}.
 #'
@@ -42,7 +44,11 @@ recodeGADS.GADSdat <- function(GADSdat, varName, oldValues, newValues) {
   if(all(is.na(GADSdat$labels[GADSdat$labels$varName == varName, "value"]))) stop("'varName' needs to be a labeled variable in the GADS.")
   changeTable <- getChangeMeta(GADSdat, level = "value")
   for(i in seq_along(oldValues)) {
-    changeTable[changeTable$varName == varName & changeTable$value == oldValues[i], "value_new"] <- newValues[i]
+    if(is.na(oldValues[i])) {
+      GADSdat$dat[is.na(GADSdat$dat[, varName]), varName] <- newValues[i]
+    } else {
+      changeTable[changeTable$varName == varName & changeTable$value == oldValues[i], "value_new"] <- newValues[i]
+    }
   }
   applyChangeMeta(GADSdat, changeTable = changeTable)
 }
@@ -60,14 +66,16 @@ recodeGADS.all_GADSdat <- function(GADSdat, varName, oldValues, newValues) {
 }
 
 checkRecodeVectors <- function(oldValues, newValues, varName, dat) {
-  if(length(oldValues) != length(newValues)) stop("oldValues and newValues are not of identical length.", call. = FALSE)
+  if(length(oldValues) != length(newValues)) stop("'oldValues' and 'newValues' are not of identical length.", call. = FALSE)
   if(!varName %in% names(dat)) stop("'varName' is not a real variable name.", call. = FALSE)
+  #if(any(is.na(oldValues))) stop("Missing value(s) in 'oldValues'. Recode NAs directly in the 'dat' entry if required.", call. = FALSE)
+  if(any(is.na(newValues))) stop("Missing value(s) in 'newValues'. Recode to NA using recodeString2NA() if required.", call. = FALSE)
   return()
 }
 
 checkNewValueLabels <- function(newValueLabels, newValues) {
-  if(!is.character(newValueLabels)) stop("newValueLabels is not a character.")
-  if(any(duplicated(names(newValueLabels)))) stop("Duplicated values in newValueLabels.")
-  if(length(names(newValueLabels)) == 0) stop("newValueLabels needs to be named.")
+  if(!is.character(newValueLabels)) stop("'newValueLabels' is not a character.")
+  if(any(duplicated(names(newValueLabels)))) stop("Duplicated values in 'newValueLabels'.")
+  if(length(names(newValueLabels)) == 0) stop("'newValueLabels' needs to be named.")
   compare_and_order(set1 = names(newValueLabels), set2 = unique(newValues), FUN = stop)
 }

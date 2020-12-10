@@ -17,24 +17,5 @@ recodeString2NA(GADSdat, recodeVars = namesGADS(GADSdat), string = "")
 Returns the recoded \code{GADSdat}.
 }
 \description{
-Recode a string in multiple variables in a \code{GADSdat} to \code{NA}.
-}
-\details{
-A check is performed, whether there are no value labels given to the specified string. Number of recodes per variable are reported.
-
-If a data set is imported from \code{.sav} character variables frequently contain empty strings. Especially if parts of the
-data are written to \code{.xlsx} this can cause problems (e.g. as look up tables from \code{\link{createLookup}}),
-as most function which write to \code{.xlsx} convert empty strings to \code{NAs}. \code{recodeString2NA} can be
-used to recode all empty strings to \code{NA} beforehand.
-}
-\examples{
-# create example GADS
-dat <- data.frame(ID = 1:4, var1 = c("", "Eng", "Aus", "Aus2"),
-                  var2 = c("", "French", "Ger", "Ita"),
-                  stringsAsFactors = FALSE)
-gads <- import_DF(dat)
-
-# recode empty strings
-gads2 <- recodeString2NA(gads)
-
+Deprecated, use \code{\link{recode2NA}} instead..
 }
