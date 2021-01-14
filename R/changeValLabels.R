@@ -20,6 +20,12 @@
 #'                         value = c(1, 2),
 #'                         valLabel = c("no grade repetition", "grade repitition"))
 #'
+#'# Add value label to unlabeled value
+#' mtcars_g <- import_DF(mtcars)
+#' mtcars_g2 <- changeValLabels(mtcars_g, varName = "cyl",
+#'                              value = c(4, 6, 8),
+#'                              valLabel = c("four", "six", "eight"))
+#'
 #'@export
 changeValLabels <- function(GADSdat, varName, value, valLabel) {
   UseMethod("changeValLabels")
