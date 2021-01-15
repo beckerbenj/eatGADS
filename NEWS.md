@@ -1,5 +1,6 @@
 # eatGADS 0.15.2.9000
 
+* `compareGADS()` for comparing multiple variables between two `GADSdats`
 * `recodeGADS()` allows recoding of of `NA` now
 * `recode2NA()` allows recoding of numeric and character values to `NA`
 * `recodeString2NA()` has been deprecated
@@ -7,6 +8,7 @@
 * `checkValue()` now returns occurrence count as vector instead of giving a message
 * `removeValLabels()` now can remove only specific `value` - `valLabel` pairs if required 
 * changing value labels inside of `recodeGADS()` via `newValueLabels` deprecated (use `changeValLabels()`instead)
+
 
 # eatGADS 0.15.2
 
