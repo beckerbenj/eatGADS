@@ -18,7 +18,7 @@ checkMissings(
 
 \item{addMissingCode}{If \code{TRUE}, missing codes are added according to occurrence of \code{"missingLabel"} in \code{"valLabel"}.}
 
-\item{addMissingLabel}{If \code{TRUE}, \code{"generic missing"} is added according to occurrence of \code{"mis"} in \code{"missings"}. As often various value labels for missings are used, this argument should be used with great care.}
+\item{addMissingLabel}{If \code{TRUE}, \code{"generic missing"} is added according to occurrence of \code{"miss"} in \code{"missings"}. As often various value labels for missings are used, this argument should be used with great care.}
 }
 \value{
 Returns a \code{GADSdat} object.

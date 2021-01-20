@@ -10,7 +10,7 @@
 #'@param GADSdat \code{GADSdat} object imported via \code{eatGADS}.
 #'@param missingLabel Single string indicating how missing labels are commonly named in the value labels.
 #'@param addMissingCode If \code{TRUE}, missing codes are added according to occurrence of \code{"missingLabel"} in \code{"valLabel"}.
-#'@param addMissingLabel If \code{TRUE}, \code{"generic missing"} is added according to occurrence of \code{"mis"} in \code{"missings"}. As often various value labels for missings are used, this argument should be used with great care.
+#'@param addMissingLabel If \code{TRUE}, \code{"generic missing"} is added according to occurrence of \code{"miss"} in \code{"missings"}. As often various value labels for missings are used, this argument should be used with great care.
 #'
 #'@return Returns a \code{GADSdat} object.
 #'
