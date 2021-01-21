@@ -9,7 +9,7 @@ test_that("errors", {
                "The following 'vars' are not variables in the GADSdat: other")
 })
 
-test_that("Compare GADS list output", {
+test_that("standard functionality", {
   df1_b <- df1
   df1_b$dat[, 2] <- c(9, 9)
   out <- compareGADS(df1, df1_b, varNames = namesGADS(df1))
@@ -34,6 +34,30 @@ test_that("Compare GADS list output", {
                                      stringsAsFactors = FALSE))
 })
 
+test_that("recodes in NA", {
+  df1_c <- df1_b <- df1
+  df1_b$dat[, 2] <- c(NA, NA)
+  df1_c$dat[, 2] <- c(9, 9)
+  out <- compareGADS(df1_b, df1_c, varNames = namesGADS(df1))
+
+  expect_equal(out[[1]], "all equal")
+  expect_equal(out[[2]], data.frame(value = c(NA_character_), frequency = c(2),
+                                    valLabel = c(NA_character_), missings = c(NA_character_),
+                                    stringsAsFactors = FALSE))
+
+  df1_c <- df1_b <- df1
+  df1_c$dat[, 2] <- c(NA, NA)
+  df1_b$dat[, 2] <- c(9, 9)
+  out2 <- compareGADS(df1_b, df1_c, varNames = namesGADS(df1))
+
+  expect_equal(out2[[1]], "all equal")
+  expect_equal(out2[[2]], data.frame(value = c("9"), frequency = c(2),
+                                    valLabel = c(NA_character_), missings = c(NA_character_),
+                                    stringsAsFactors = FALSE))
+
+
+})
+
 test_that("Compare GADS data.frame and aggregate output", {
   dfSAV2 <- dfSAV
   # create duplicate changed values across variables
@@ -56,4 +80,13 @@ test_that("Compare GADS data.frame and aggregate output", {
                                 valLabel = c("missing", NA, NA),
                                 missings = c("miss", NA, "miss"),
                                 stringsAsFactors = FALSE))
+})
+
+test_that("data.frame and aggregate output with all equals", {
+  dfSAV2 <- dfSAV
+
+  out2 <- compareGADS(dfSAV2, dfSAV, varNames = namesGADS(dfSAV), output = "data.frame")
+  expect_equal(out2, "all equal")
+  out3 <- compareGADS(dfSAV2, dfSAV, varNames = namesGADS(dfSAV), output = "aggregated")
+  expect_equal(out3, "all equal")
 })

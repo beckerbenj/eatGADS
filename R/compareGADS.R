@@ -46,10 +46,14 @@ compareGADS.GADSdat <- function(GADSdat_old, GADSdat_new, varNames, output = c("
   out_list <- as.list(rep("all equal", length(varNames)))
   names(out_list) <- varNames
   for(nam in varNames) {
-    old_unequals <- GADSdat_old$dat[which(GADSdat_old$dat[, nam] != GADSdat_new$dat[, nam]), nam]
+     #if(any(is.na(GADSdat_old$dat[, nam]))) browser()
+    old_unequals1 <- GADSdat_old$dat[which(GADSdat_old$dat[, nam] != GADSdat_new$dat[, nam]), nam]
+    old_unequals2 <- GADSdat_old$dat[is.na(GADSdat_old$dat[, nam]) & !is.na(GADSdat_new$dat[, nam]), nam]
+    old_unequals3 <- GADSdat_old$dat[!is.na(GADSdat_old$dat[, nam]) & is.na(GADSdat_new$dat[, nam]), nam]
+    old_unequals <- c(old_unequals1, old_unequals2, old_unequals3)
 
     if(length(old_unequals) > 0) {
-      out <- as.data.frame(table(old_unequals))
+      out <- as.data.frame(table(old_unequals, useNA = "ifany"))
       names(out) <- c("value", "frequency")
       out[, "value"] <- as.character(out[, "value"])
       out[, c("valLabel", "missings")] <- NA
@@ -59,7 +63,11 @@ compareGADS.GADSdat <- function(GADSdat_old, GADSdat_new, varNames, output = c("
         #browser()
         i <- eatTools::asNumericIfPossible(i, force.string = FALSE)
         value_meta <- GADSdat_old$labels[GADSdat_old$labels$varName == nam & GADSdat_old$labels$value == i, c("valLabel", "missings")]
-        if(nrow(value_meta) > 0) out[out$value == i, c("valLabel", "missings")] <- value_meta
+        if(nrow(value_meta) > 0 && is.na(i)) {
+          out[is.na(out$value), c("valLabel", "missings")] <- value_meta
+        } else if(nrow(value_meta) > 0) {
+          out[out$value == i, c("valLabel", "missings")] <- value_meta
+        }
       }
       out_list[[nam]] <- out
     }
@@ -68,6 +76,8 @@ compareGADS.GADSdat <- function(GADSdat_old, GADSdat_new, varNames, output = c("
   # restructure output according to output argument
   if(!identical(output, "list")) {
     out_list <- out_list[sapply(out_list, function(x) !identical(x, "all equal"))]
+    if(length(out_list) < 1) return("all equal")
+
     out_list <- eatTools::do_call_rbind_withName(out_list, colName = "variable")
     if(identical(output, "aggregated")) {
       out_list <- unique(out_list[, c("value", "valLabel", "missings")])
