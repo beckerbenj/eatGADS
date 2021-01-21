@@ -16,7 +16,7 @@ test_that("standard functionality", {
 
   expect_equal(out[[1]], "all equal")
   expect_equal(out[[2]], data.frame(value = c("3", "5"), frequency = c(1, 1),
-                                    valLabel = c(NA_character_, NA), missings = c(NA_character_, NA),
+                                    valLabel = c(NA, NA), missings = c(NA, NA),
                                     stringsAsFactors = FALSE))
 
   dfSAV_b <- dfSAV
@@ -52,11 +52,44 @@ test_that("recodes in NA", {
 
   expect_equal(out2[[1]], "all equal")
   expect_equal(out2[[2]], data.frame(value = c("9"), frequency = c(2),
-                                    valLabel = c(NA_character_), missings = c(NA_character_),
+                                    valLabel = c(NA), missings = c(NA),
                                     stringsAsFactors = FALSE))
 
-
 })
+
+test_that("recodes in NA with labeled NAs", {
+  ## with multiple NA labels but unique NA label for changed value
+  dfSAV2 <- dfSAV
+  dfSAV2$labels[c(1, 4:5), "value"] <- NA
+  dfSAV3 <- dfSAV2
+  dfSAV2$dat[1:2, 1] <- NA
+  expect_silent(out3 <- compareGADS(dfSAV2, dfSAV3, varNames = namesGADS(dfSAV3)))
+  expect_equal(out3[[2]], "all equal")
+  expect_equal(out3[["VAR1"]], data.frame(value = NA_character_, frequency = 2, valLabel = "By design", missings = "miss",
+                                          stringsAsFactors = FALSE))
+
+  ## with multiple NA labels and duplicated NA labels for changed value
+  dfSAV4 <- dfSAV
+  dfSAV4$dat[1:2, 1] <- NA
+  dfSAV4$labels[c(1:2, 4:5), "value"] <- NA
+  dfSAV5 <- dfSAV4
+  dfSAV5$dat[1:2, 1] <- -99
+  expect_error(out4 <- compareGADS(dfSAV4, dfSAV5, varNames = namesGADS(dfSAV5)),
+               "Meta information on value level is not unique for variable: VAR1 and value: NA")
+
+  ## with multiple NA labels and duplicated NA labels for changed value
+  dfSAV4 <- dfSAV
+  dfSAV4$dat[1:2, 1] <- -99
+  dfSAV4$labels[c(1:2, 4:5), "value"] <- NA
+  dfSAV5 <- dfSAV4
+  dfSAV5$dat[1:2, 1] <- NA
+  expect_silent(out5 <- compareGADS(dfSAV4, dfSAV5, varNames = namesGADS(dfSAV5)))
+  expect_equal(out5[[2]], "all equal")
+  expect_equal(out5[["VAR1"]], data.frame(value = "-99", frequency = 2, valLabel = NA, missings = NA,
+                                          stringsAsFactors = FALSE))
+})
+
+
 
 test_that("Compare GADS data.frame and aggregate output", {
   dfSAV2 <- dfSAV

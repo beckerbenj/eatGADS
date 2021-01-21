@@ -46,7 +46,6 @@ compareGADS.GADSdat <- function(GADSdat_old, GADSdat_new, varNames, output = c("
   out_list <- as.list(rep("all equal", length(varNames)))
   names(out_list) <- varNames
   for(nam in varNames) {
-     #if(any(is.na(GADSdat_old$dat[, nam]))) browser()
     old_unequals1 <- GADSdat_old$dat[which(GADSdat_old$dat[, nam] != GADSdat_new$dat[, nam]), nam]
     old_unequals2 <- GADSdat_old$dat[is.na(GADSdat_old$dat[, nam]) & !is.na(GADSdat_new$dat[, nam]), nam]
     old_unequals3 <- GADSdat_old$dat[!is.na(GADSdat_old$dat[, nam]) & is.na(GADSdat_new$dat[, nam]), nam]
@@ -60,13 +59,16 @@ compareGADS.GADSdat <- function(GADSdat_old, GADSdat_new, varNames, output = c("
 
       ## add value labels and missing codes
       for(i in out[, "value"]) {
-        #browser()
         i <- eatTools::asNumericIfPossible(i, force.string = FALSE)
-        value_meta <- GADSdat_old$labels[GADSdat_old$labels$varName == nam & GADSdat_old$labels$value == i, c("valLabel", "missings")]
-        if(nrow(value_meta) > 0 && is.na(i)) {
-          out[is.na(out$value), c("valLabel", "missings")] <- value_meta
-        } else if(nrow(value_meta) > 0) {
-          out[out$value == i, c("valLabel", "missings")] <- value_meta
+        value_meta <- GADSdat_old$labels[which(GADSdat_old$labels$varName == nam & GADSdat_old$labels$value == i), c("valLabel", "missings")]
+        if(is.na(i)) {
+          value_meta <- GADSdat_old$labels[GADSdat_old$labels$varName == nam & is.na(GADSdat_old$labels$value), c("valLabel", "missings")]
+          if(nrow(value_meta) > 1) stop("Meta information on value level is not unique for variable: ", nam, " and value: NA")
+        }
+
+        if(nrow(value_meta) > 0) {
+          if(is.na(i)) { out[is.na(out$value), c("valLabel", "missings")] <- value_meta
+          } else out[out$value == i, c("valLabel", "missings")] <- value_meta
         }
       }
       out_list[[nam]] <- out
