@@ -7,7 +7,7 @@ load(file = "helper_data.rda")
 
 
 test_that("Object validater for GADSdat objects",{
-  testM5 <- testM4 <- testM3 <- testM2 <- testM
+  testM6 <- testM5 <- testM4 <- testM3 <- testM2 <- testM
   testM$dat[, "newVar"] <- NA
   expect_error(check_GADSdat(testM), "The following variables are in the data but do not have meta data: newVar")
   testM2$labels[7, "varName"] <- "newVar"
@@ -19,6 +19,10 @@ test_that("Object validater for GADSdat objects",{
   testM5$labels[4:5, "value"] <- -99
   expect_error(check_GADSdat(testM5), "The following variable has duplicate values rows in its meta data: VAR2")
 
+  ## but does tolerate NAs (because these are assigned to labeled strings!)
+  testM6$labels[4:5, "value"] <- NA
+  expect_silent(check_GADSdat(testM6))
+
   df1_3 <- df1_1 <- df1_2 <- df1
   df1_1$labels[2, c("value")] <- -99
   df1_2$labels[2, c("valLabel")] <- "some"
@@ -28,3 +32,5 @@ test_that("Object validater for GADSdat objects",{
   df1_3$labels[2, c("value")] <- "-99"
   expect_error(check_GADSdat(df1_3), "Column 'value' in the meta data is not numeric.")
 })
+
+

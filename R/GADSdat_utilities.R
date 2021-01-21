@@ -41,8 +41,10 @@ check_GADSdat <- function(GADSdat) {
       }
     })
   }
+
+  # maybe later remove this test due to performance?
   by(GADSdat$labels, GADSdat$labels$varName, function(labels) {
-    if(any(duplicated(labels$value))) {
+    if(any(duplicated(labels$value[!is.na(labels$value)]))) {
       stop("The following variable has duplicate values rows in its meta data: ", unique(labels$varName))
     }
   })
