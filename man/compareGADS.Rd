@@ -4,7 +4,12 @@
 \alias{compareGADS}
 \title{Compare two GADS.}
 \usage{
-compareGADS(GADSdat_old, GADSdat_new, varNames)
+compareGADS(
+  GADSdat_old,
+  GADSdat_new,
+  varNames,
+  output = c("list", "data.frame", "aggregated")
+)
 }
 \arguments{
 \item{GADSdat_old}{\code{GADSdat} object imported via \code{eatGADS}.}
@@ -12,9 +17,11 @@ compareGADS(GADSdat_old, GADSdat_new, varNames)
 \item{GADSdat_new}{\code{GADSdat} object imported via \code{eatGADS}.}
 
 \item{varNames}{Character string of variable names to be compared.}
+
+\item{output}{How should the output be structured?}
 }
 \value{
-Returns a list with \code{"all equal"} or a \code{data.frame}.
+Returns either a list with \code{"all equal"} and \code{data.frames} or a single \code{data.frame}.
 }
 \description{
 Compare multiple variables of two \code{GADSdat} or \code{all_GADSdat} objects.
@@ -28,8 +35,15 @@ after recoding.
 # Recode a GADS
 pisa2 <- recodeGADS(pisa, varName = "schtype",
                         oldValues = 3, newValues = 9)
+pisa2 <- recodeGADS(pisa2, varName = "language",
+                        oldValues = 1, newValues = 15)
 
 # Compare
-compareGADS(pisa, pisa2, varNames = c("ganztag", "schtype"))
+compareGADS(pisa, pisa2,
+            varNames = c("ganztag", "schtype", "language"), output = "list")
+compareGADS(pisa, pisa2,
+            varNames = c("ganztag", "schtype", "language"), output = "data.frame")
+compareGADS(pisa, pisa2,
+             varNames = c("ganztag", "schtype", "language"), output = "aggregated")
 
 }

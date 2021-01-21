@@ -11,27 +11,37 @@
 #'@param GADSdat_old \code{GADSdat} object imported via \code{eatGADS}.
 #'@param GADSdat_new \code{GADSdat} object imported via \code{eatGADS}.
 #'@param varNames Character string of variable names to be compared.
+#'@param output How should the output be structured?
 #'
-#'@return Returns a list with \code{"all equal"} or a \code{data.frame}.
+#'@return Returns either a list with \code{"all equal"} and \code{data.frames} or a single \code{data.frame}.
 #'
 #'@examples
 #'# Recode a GADS
 #' pisa2 <- recodeGADS(pisa, varName = "schtype",
 #'                         oldValues = 3, newValues = 9)
+#' pisa2 <- recodeGADS(pisa2, varName = "language",
+#'                         oldValues = 1, newValues = 15)
 #'
 #'# Compare
-#' compareGADS(pisa, pisa2, varNames = c("ganztag", "schtype"))
+#' compareGADS(pisa, pisa2,
+#'             varNames = c("ganztag", "schtype", "language"), output = "list")
+#' compareGADS(pisa, pisa2,
+#'             varNames = c("ganztag", "schtype", "language"), output = "data.frame")
+#' compareGADS(pisa, pisa2,
+#'              varNames = c("ganztag", "schtype", "language"), output = "aggregated")
 #'
 #'@export
-compareGADS <- function(GADSdat_old, GADSdat_new, varNames) {
+compareGADS <- function(GADSdat_old, GADSdat_new, varNames, output = c("list", "data.frame", "aggregated")) {
   UseMethod("compareGADS")
 }
 #'@export
-compareGADS.GADSdat <- function(GADSdat_old, GADSdat_new, varNames) {
+compareGADS.GADSdat <- function(GADSdat_old, GADSdat_new, varNames, output = c("list", "data.frame", "aggregated")) {
   check_GADSdat(GADSdat_old)
   check_GADSdat(GADSdat_new)
   check_vars_in_GADSdat(GADSdat_old, varNames)
   check_vars_in_GADSdat(GADSdat_new, varNames)
+
+  output <- match.arg(output)
 
   out_list <- as.list(rep("all equal", length(varNames)))
   names(out_list) <- varNames
@@ -52,6 +62,15 @@ compareGADS.GADSdat <- function(GADSdat_old, GADSdat_new, varNames) {
         if(nrow(value_meta) > 0) out[out$value == i, c("valLabel", "missings")] <- value_meta
       }
       out_list[[nam]] <- out
+    }
+  }
+
+  # restructure output according to output argument
+  if(!identical(output, "list")) {
+    out_list <- out_list[sapply(out_list, function(x) !identical(x, "all equal"))]
+    out_list <- eatATA:::do_call_rbind_withName(out_list, colName = "variable")[, c(5, 1:4)]
+    if(identical(output, "aggregated")) {
+      out_list <- unique(out_list[, c("value", "valLabel", "missings")])
     }
   }
 

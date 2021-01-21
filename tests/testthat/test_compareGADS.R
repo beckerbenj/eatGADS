@@ -9,7 +9,7 @@ test_that("errors", {
                "The following 'vars' are not variables in the GADSdat: other")
 })
 
-test_that("Compare GADS", {
+test_that("Compare GADS list output", {
   df1_b <- df1
   df1_b$dat[, 2] <- c(9, 9)
   out <- compareGADS(df1, df1_b, varNames = namesGADS(df1))
@@ -32,4 +32,28 @@ test_that("Compare GADS", {
   expect_equal(out2[[3]], data.frame(value = c("-98", "1"), frequency = c(1, 3),
                                      valLabel = NA_character_, missings = c("miss", NA),
                                      stringsAsFactors = FALSE))
+})
+
+test_that("Compare GADS data.frame and aggregate output", {
+  dfSAV2 <- dfSAV
+  # create duplicate changed values across variables
+  dfSAV2$dat[1, 2:3] <- -96
+  dfSAV2$labels[4, "missings"] <- "miss"
+  dfSAV2$labels[c(4, 6), "value"] <- -96
+
+  dfSAV_b <- dfSAV2
+  dfSAV_b$dat[, 2] <- c(9, 9, 9, 9)
+  dfSAV_b$dat[, 3] <- c(9, 9, 9, 9)
+
+  out2 <- compareGADS(dfSAV2, dfSAV_b, varNames = namesGADS(dfSAV), output = "data.frame")
+  expect_equal(out2, data.frame(variable = c(rep("VAR2", 2), rep("VAR3", 3)),
+                                value = c("-96", "1", "-98", "-96", "1"), frequency = c(1, 3, 1, 1, 2),
+                                          valLabel = c("missing", NA, NA, "missing", NA),
+                                          missings = c("miss", NA, "miss", "miss", NA),
+                                          stringsAsFactors = FALSE))
+  out3 <- compareGADS(dfSAV2, dfSAV_b, varNames = namesGADS(dfSAV), output = "aggregated")
+  expect_equal(out3, data.frame(value = c("-96", "1", "-98"),
+                                valLabel = c("missing", NA, NA),
+                                missings = c("miss", NA, "miss"),
+                                stringsAsFactors = FALSE))
 })
