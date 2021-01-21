@@ -9,6 +9,9 @@
 * `removeValLabels()` now can remove only specific `value` - `valLabel` pairs if required 
 * changing value labels inside of `recodeGADS()` via `newValueLabels` deprecated (use `changeValLabels()`instead)
 
+## Internal
+* `check_GADSdat()` now checks for duplicate value rows
+
 
 # eatGADS 0.15.2
 

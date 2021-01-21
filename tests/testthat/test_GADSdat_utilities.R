@@ -7,7 +7,7 @@ load(file = "helper_data.rda")
 
 
 test_that("Object validater for GADSdat objects",{
-  testM4 <- testM3 <- testM2 <- testM
+  testM5 <- testM4 <- testM3 <- testM2 <- testM
   testM$dat[, "newVar"] <- NA
   expect_error(check_GADSdat(testM), "The following variables are in the data but do not have meta data: newVar")
   testM2$labels[7, "varName"] <- "newVar"
@@ -16,6 +16,8 @@ test_that("Object validater for GADSdat objects",{
   expect_error(check_GADSdat(testM3), "The following variable has inconsistent meta information on variable level: VAR1")
   testM4$dat <- tibble::as_tibble(testM4$dat)
   expect_error(check_GADSdat(testM4), "dat element has to be a data frame and can not be a tibble.")
+  testM5$labels[4:5, "value"] <- -99
+  expect_error(check_GADSdat(testM5), "The following variable has duplicate values rows in its meta data: VAR2")
 
   df1_3 <- df1_1 <- df1_2 <- df1
   df1_1$labels[2, c("value")] <- -99
