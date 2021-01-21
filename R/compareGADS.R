@@ -68,7 +68,7 @@ compareGADS.GADSdat <- function(GADSdat_old, GADSdat_new, varNames, output = c("
   # restructure output according to output argument
   if(!identical(output, "list")) {
     out_list <- out_list[sapply(out_list, function(x) !identical(x, "all equal"))]
-    out_list <- eatTools::do_call_rbind_withName(out_list, colName = "variable")[, c(5, 1:4)]
+    out_list <- eatTools::do_call_rbind_withName(out_list, colName = "variable")
     if(identical(output, "aggregated")) {
       out_list <- unique(out_list[, c("value", "valLabel", "missings")])
     }
