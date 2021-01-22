@@ -8,6 +8,7 @@
 * `checkValue()` now returns occurrence count as vector instead of giving a message
 * `removeValLabels()` now can remove only specific `value` - `valLabel` pairs if required 
 * changing value labels inside of `recodeGADS()` via `newValueLabels` deprecated (use `changeValLabels()`instead)
+* `applyChangeMeta()` now works with `data.frames` (for compatability with `excel` import and export)
 
 ## Internal
 * `check_GADSdat()` now checks for duplicate value rows

@@ -70,10 +70,15 @@ applyChangeMeta.valChanges <- function(changeTable, GADSdat) {
 }
 
 
-## Workaround for tibbles, as readxl is recommended for excel re-import
+## Workaround for tibbles or data.frames, as readxl is recommended for excel re-import (or other excel imports might be used)
 #'@export
 applyChangeMeta.tbl_df <- function(changeTable, GADSdat) {
-  #browser()
+  if(all(c("varName", "varName_new") %in% names(changeTable))) changeTable_new <- new_varChanges(changeTable)
+  if(all(c("value", "value_new") %in% names(changeTable))) changeTable_new <- new_valChanges(changeTable)
+  applyChangeMeta(changeTable_new, GADSdat = GADSdat)
+}
+#'@export
+applyChangeMeta.data.frame <- function(changeTable, GADSdat) {
   if(all(c("varName", "varName_new") %in% names(changeTable))) changeTable_new <- new_varChanges(changeTable)
   if(all(c("value", "value_new") %in% names(changeTable))) changeTable_new <- new_valChanges(changeTable)
   applyChangeMeta(changeTable_new, GADSdat = GADSdat)
