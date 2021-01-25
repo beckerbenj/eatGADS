@@ -49,16 +49,16 @@ test_that("Extract list of meta change tables for all_GADSdat", {
 })
 
 test_that("Check changeTable function", {
-  changes_var2 <- changes_var1 <- changes_var
+  changes_var3 <- changes_var2 <- changes_var1 <- changes_var
   dfSAV2 <- dfSAV
   changes_var1[1, "varLabel"] <- "sth"
   changes_val1 <- changes_val
   changes_val1[1, "varName"] <- "sth"
 
   expect_error(check_changeTable(dfSAV, changes_var1),
-               "GADSdat and changeTable are not compatible. Columns without '_new' should not be changed in the changeTable.")
+               "GADSdat and changeTable are not compatible in column 'varLabel'. Columns without '_new' should not be changed in the changeTable.")
   expect_error(check_changeTable(dfSAV, changes_val1),
-               "GADSdat and changeTable are not compatible. Columns without '_new' should not be changed in the changeTable.")
+               "GADSdat and changeTable are not compatible in column 'varName'. Columns without '_new' should not be changed in the changeTable.")
   expect_silent(check_changeTable(dfSAV, changes_var))
   expect_silent(check_changeTable(dfSAV, changes_val))
   expect_silent(check_changeTable(df1, getChangeMeta(df1, "value")))
@@ -66,4 +66,7 @@ test_that("Check changeTable function", {
   changes_var2[, "display_width"] <- 0L
   dfSAV2$labels$display_width <- 0
   expect_silent(check_changeTable(dfSAV2, changes_var2))
+
+  changes_var3[, "display_width"] <- NA_character_
+  expect_silent(check_changeTable(dfSAV2, changes_var3))
 })
