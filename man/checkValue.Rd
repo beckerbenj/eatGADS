@@ -4,14 +4,14 @@
 \alias{checkValue}
 \title{Check for a specific value}
 \usage{
-checkValue(GADSdat, vars = namesGADS(GADSdat), value)
+checkValue(GADSdat, value, vars = namesGADS(GADSdat))
 }
 \arguments{
 \item{GADSdat}{\code{GADSdat} object imported via \code{eatGADS}.}
 
-\item{vars}{Character vector with the variable names to which \code{checkValue} should be applied.}
-
 \item{value}{Single string indicating how missing labels are commonly named in the value labels.}
+
+\item{vars}{Character vector with the variable names to which \code{checkValue} should be applied.}
 }
 \value{
 A named integer.
