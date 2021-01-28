@@ -12,6 +12,7 @@
 
 ## Internal
 * `check_GADSdat()` now checks for duplicate value rows
+* switch from `travis` and `appVeyor` to `Github Action`
 
 
 # eatGADS 0.15.2
