@@ -9,6 +9,10 @@ df3$dat[1, 1:2] <- 8
 test_that("Input validation", {
   expect_error(checkValue(df1, value = 3:4),
                "'value' needs to be of length 1.")
+  expect_error(checkValue(df1, vars = 1, value = 3),
+               "'vars' needs to be a character of at least length 1.", )
+  expect_error(checkValue(df1, vars = "lala", value = 3),
+               "The following 'vars' are not variables in the GADSdat: lala")
 })
 
 test_that("Value checks raise no false alarms", {
@@ -21,4 +25,11 @@ test_that("Value occurences reported", {
                  c(ID1 = 1L))
   expect_equal(checkValue(df3, value = 8),
                  c(ID1 = 1L, V2 = 2L))
+})
+
+test_that("Value checks for variable subset", {
+  expect_equal(checkValue(df1, vars = "V1", value = 1),
+               integer())
+  expect_equal(checkValue(df3, vars = "V2", value = 8),
+               c(V2 = 2))
 })
