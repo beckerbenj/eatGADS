@@ -14,6 +14,7 @@
 ## Internal
 * `check_GADSdat()` now checks for duplicate value rows
 * switch from `travis` and `appVeyor` to `Github Action`
+* `applyChangeMeta()` checks `format_new` column now for illegal entries
 
 
 # eatGADS 0.15.2

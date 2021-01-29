@@ -18,3 +18,13 @@ test_that("SPSS format wrapper", {
   expect_equal(out$labels[1, "format"], "F10.0")
 })
 
+
+test_that("format vector checks", {
+  expect_silent(check_format_vector("F.2"))
+  expect_silent(check_format_vector(c("F.2", "A.20")))
+  expect_silent(check_format_vector(c(NA, NA)))
+  expect_silent(check_format_vector(c("F.2", NA)))
+
+  expect_error(check_format_vector(c("LALA", NA)),
+               "format has to start with A (string) or F (numeric).", fixed = TRUE)
+})

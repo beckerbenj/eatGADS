@@ -28,6 +28,8 @@ applyChangeMeta.varChanges <- function(changeTable, GADSdat) {
   check_GADSdat(GADSdat)
   check_varChanges(changeTable)
   check_changeTable(GADSdat, changeTable)
+  check_format_vector(changeTable$format_new)
+
   dat <- GADSdat$dat
   labels <- GADSdat$labels
   # 01)  for all but varNames
@@ -48,7 +50,9 @@ applyChangeMeta.varChanges <- function(changeTable, GADSdat) {
     labels[labels$varName == i, "varName"] <- changeNameDF[changeNameDF$varName == i, "varName_new"]
   }
 
-  new_GADSdat(dat = dat, labels = labels)
+  out_GADSdat <- new_GADSdat(dat = dat, labels = labels)
+  check_GADSdat(out_GADSdat)
+  out_GADSdat
 }
 
 #'@export
