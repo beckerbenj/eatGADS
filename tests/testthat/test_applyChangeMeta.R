@@ -54,11 +54,11 @@ test_that("recoding if potential danger of overwriting old values!", {
   expect_equal(out$labels$value, c(3, 4, 1, 1, 2, 3))
   expect_equal(out$dat$v1, c(3, 4, 1))
   ## partial recoding, multiple variables
-  chang[, "value_new"] <- c(3, NA, 1, 2, 1, 2)
+  chang[, "value_new"] <- c(3, NA, 1, 2, 1, 5)
   out <-  applyChangeMeta(chang, df_rec)
-  expect_equal(out$labels$value, c(3, 2, 1, 2, 1, 2))
+  expect_equal(out$labels$value, c(3, 2, 1, 2, 1, 5))
   expect_equal(out$dat$v1, 3:1)
-  expect_equal(out$dat$b, c(1, 2, 2))
+  expect_equal(out$dat$b, c(1, 2, 5))
 })
 
 
@@ -67,7 +67,7 @@ changes_val2 <- rbind(changes_val, data.frame(varName = "VAR1", value = NA, valL
 test_that("Expand labels", {
   out <- expand_labels(df1$labels, new_varName_vec = c("ID1", "ID1", "V1"))
   expect_equal(out$varName, c("ID1", "ID1", "V1"))
-  expect_equal(out$labeled, c("yes", "yes", "no"))
+  expect_equal(out$labeled, rep("no", 3))
   out2 <- expand_labels(df2$labels, new_varName_vec = c("ID1", "V2", "V2"))
   expect_equal(out2$varName, c("ID1", "V2", "V2"))
   expect_equal(out2$labeled, c("no", "yes", "yes"))
@@ -82,6 +82,15 @@ test_that("Adding value labels for values without labels", {
   out <- recode_labels(dfSAV$labels, changes_val2)
   expect_equal(out$value[1:4], c(-99, -96, 1, 2))
   expect_equal(dim(out), c(8, 8))
+
+  df1_changes <- getChangeMeta(df1, level = "value")
+  df1_changes[2, "value_new"] <- 99
+  df1_changes[2, "valLabel_new"] <- "test"
+  out2 <- recode_labels(df1$labels, df1_changes)
+  expect_equal(out2$value, c(NA, 99))
+  expect_equal(dim(out2), c(2, 8))
+  expect_equal(out2$labeled, c("no", "yes"))
+
 
   applyChangeMeta(changes_val2, dfSAV)
   # to do

@@ -20,6 +20,8 @@ test_that("Recode wrapper errors", {
 
   expect_error(recodeGADS(dfSAV, varName = "VAR1", oldValues = c(1), newValues = c(NA)),
                "Missing value(s) in 'newValues'. Recode to NA using recodeString2NA() if required.", fixed = TRUE)
+
+  expect_error(recodeGADS(dfSAV, varName = "VAR1", oldValues = c(-99), newValues = c(1)), "The following variable has duplicate values rows in its meta data: VAR1")
 })
 
 

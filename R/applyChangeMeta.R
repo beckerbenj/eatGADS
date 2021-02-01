@@ -70,7 +70,9 @@ applyChangeMeta.valChanges <- function(changeTable, GADSdat) {
   # 03) if variable was unlabeled before, set to labeled
   labels2 <- update_labeled_col(labels)
 
-  new_GADSdat(dat = dat, labels = labels2)
+  out_GADSdat <- new_GADSdat(dat = dat, labels = labels)
+  check_GADSdat(out_GADSdat)
+  out_GADSdat
 }
 
 
@@ -148,6 +150,10 @@ recode_labels <- function(labels, changeTable) {
       if(!is.na(simpleChange[, k])) labels[i, oldName] <- simpleChange[, k]
     }
   }
+
+  # fix labeled column
+  labels[, "labeled"] <- ifelse(!is.na(labels[, "value"]), yes = "yes", no = labels[, "labeled"])
+
   labels
 }
 
@@ -161,7 +167,7 @@ expand_labels <- function(labels, new_varName_vec) {
       new_rows <- (nrow(labels) + 1):(nrow(labels) + no_rows_2add)
       labels[new_rows, ] <- labels[labels$varName == i, ][1, ]
       labels[new_rows, c("value", "valLabel", "missings")] <- NA
-      labels[labels$varName == i, "labeled"] <- "yes"
+      #labels[labels$varName == i, "labeled"] <- "yes"
     }
   }
   labels[order(match(labels$varName, old_order)), ]
