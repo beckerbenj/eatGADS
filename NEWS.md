@@ -19,6 +19,7 @@
 * switch from `travis` and `appVeyor` to `Github Action`
 * `applyChangeMeta()` checks `format_new` column now for illegal entries
 * `applyChangeMeta()` throws error if result has corrupted meta data
+* Setup `revdepcheck`
 
 
 # eatGADS 0.15.2

@@ -11,5 +11,9 @@
 
 * This is a new release.
 
-## Downstream dependencies
-There are currently no downstream dependencies.
+## revdepcheck results
+
+We checked 1 reverse dependency, comparing R CMD check results across CRAN and dev versions of this package.
+
+ * We saw 0 new problems
+ * We failed to check 0 packages
