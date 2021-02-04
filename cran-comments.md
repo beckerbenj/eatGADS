@@ -1,8 +1,9 @@
 ## Test environments
-* local R installation, R 4.0.2
-* OS X (on travis-ci), release
-* ubuntu 14.04 (on travis-ci), oldrel, release, devel
-* windows (on AppVeyor), release 
+* local windows x86_64-w64-mingw32, R 4.0.2 
+* OS X (on Github Action), release 
+* ubuntu 16.04 (on Github Action), oldrel, release, devel 
+* windows (on Github Action), release  
+* r-hub: windows-x86_64-devel, ubuntu-gcc-release, fedora-clang-devel 
 
 ## R CMD check results
 
