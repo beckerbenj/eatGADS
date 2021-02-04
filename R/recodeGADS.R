@@ -31,7 +31,7 @@
 #'
 #'# simple recode
 #'gads2 <- recodeGADS(gads, varName = "animal",
-#'                    oldValues = c(3, 4), newValues = c(2, 5))
+#'                    oldValues = c(3, 4), newValues = c(7, 8))
 #'
 #'
 #'@export

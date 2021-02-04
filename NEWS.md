@@ -9,12 +9,16 @@
 * `checkValue()` now works on a subset of variables (via argument `vars`)
 * `removeValLabels()` now can remove only specific `value` - `valLabel` pairs if required 
 * changing value labels inside of `recodeGADS()` via `newValueLabels` deprecated (use `changeValLabels()`instead)
-* `applyChangeMeta()` now works with `data.frames` (for compatability with `excel` import and export)
+* `applyChangeMeta()` now works with `data.frames` (for compatibility with `excel` import and export)
+
+## Documentation
+* Added vignette on meta data 
 
 ## Internal
 * `check_GADSdat()` now checks for duplicate value rows
 * switch from `travis` and `appVeyor` to `Github Action`
 * `applyChangeMeta()` checks `format_new` column now for illegal entries
+* `applyChangeMeta()` throws error if result has corrupted meta data
 
 
 # eatGADS 0.15.2
