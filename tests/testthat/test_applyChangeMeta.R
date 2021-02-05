@@ -26,13 +26,18 @@ test_that("Changes to GADSdat on variable level", {
 })
 
 test_that("Changes to GADSdat on value level", {
-  changes_val2 <- changes_val
+  changes_val3 <- changes_val2 <- changes_val
   changes_val2[1, "valLabel_new"] <- "new_miss"
   changes_val2[2, "valLabel_new"] <- "new_miss2"
   g2 <- applyChangeMeta(changes_val2, dfSAV)
   expect_equal(g2$labels[, -7], dfSAV$labels[, -7])
   expect_equal(g2$labels$valLabel, c("new_miss", "new_miss2", "One", "missing", NA, "missing", NA))
   expect_equal(names(g2$dat), names(dfSAV$dat))
+
+  changes_val3[3, "missings_new"] <- "miss"
+  g3 <- applyChangeMeta(changes_val3, dfSAV)
+  expect_equal(g3$labels[, -8], dfSAV$labels[, -8])
+  expect_equal(g3$labels$missings[1:3], rep("miss", 3))
 })
 
 test_that("Changes to GADSdat: recoding", {

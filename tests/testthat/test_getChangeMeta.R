@@ -30,7 +30,8 @@ test_that("Extract value level meta change table", {
   changes_val3$missings_new <- "test"
   changes_val$value_new <- "test"
   changes_val4$value_new[1] <- NA
-  changes_val4$missings_new[1] <- "miss"
+  changes_val4[8, ] <- changes_val4[1, ]
+  changes_val4[8, c("value", "valLabel", "missings", "missings_new")] <- c(rep(NA, 3), "miss")
 
   expect_error(check_valChanges(changes_val2), "Irregular column names in changeTable.")
   expect_error(check_valChanges(changes_val3), "Irregular values in 'missings_new' column.")
