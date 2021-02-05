@@ -141,37 +141,47 @@ recode_labels <- function(labels, changeTable) {
   changeTable <- changeTable[order(match(changeTable$varName, unique(labels$varName))), ]
   simple_change_vars <- c("valLabel_new", "missings_new", "value_new")
   simpleChanges <- changeTable[, c("varName", simple_change_vars), drop = FALSE]
+  simpleChanges[, "row_num_in_labels"] <- seq(nrow(simpleChanges))
+  simpleChanges <- simpleChanges[!(is.na(simpleChanges$valLabel_new) &
+                                     is.na(simpleChanges$missings_new) &
+                                     is.na(simpleChanges$value_new)), ]
+  if(nrow(simpleChanges) == 0) return(labels)
 
   # loop over rows and column names, overwrite if not NA
   for(i in seq(nrow(simpleChanges))) {
     simpleChange <- simpleChanges[i, ]
     for(k in simple_change_vars) {
       oldName <- strsplit(k, "_")[[1]][1]
-      if(!is.na(simpleChange[, k])) labels[i, oldName] <- simpleChange[, k]
+      if(!is.na(simpleChange[, k])) labels[simpleChange$row_num_in_labels, oldName] <- simpleChange[, k]
     }
   }
 
   # fix labeled column
+  # important: this should change a variable to "labeled" to export it later properly to spss
   labels[, "labeled"] <- ifelse(!is.na(labels[, "value"]), yes = "yes", no = labels[, "labeled"])
 
   labels
 }
 
 # if value labels are added, this function adds the necessary rows in the labels df, that are later filled with new values & labels
-# important: this should change a variable to "labeled" to export it later properly to spss
 expand_labels <- function(labels, new_varName_vec) {
   old_order <- unique(labels$varName)
-  for(i in unique(new_varName_vec)) {
-    no_rows_2add <- sum(new_varName_vec == i) - nrow(labels[labels$varName == i, ])
+  new_row_list <- by(labels, labels$varName, function(labels_sub) {
+    i <- unique(labels_sub$varName)
+    no_rows_2add <- sum(new_varName_vec == i) - nrow(labels_sub)
     if(no_rows_2add > 0) {
-      new_rows <- (nrow(labels) + 1):(nrow(labels) + no_rows_2add)
-      labels[new_rows, ] <- labels[labels$varName == i, ][1, ]
-      labels[new_rows, c("value", "valLabel", "missings")] <- NA
-      #labels[labels$varName == i, "labeled"] <- "yes"
+      #browser()
+      new_sub_label_rows <- (nrow(labels_sub) + 1):(nrow(labels_sub) + no_rows_2add)
+      labels_sub[new_sub_label_rows, ] <- labels_sub[1, ]
+      labels_sub[new_sub_label_rows, c("value", "valLabel", "missings")] <- NA
+      return(labels_sub[new_sub_label_rows, ])
     }
-  }
-  labels[order(match(labels$varName, old_order)), ]
+  NULL
+  })
+  labels_out <- rbind(labels, do.call(rbind, new_row_list))
+  labels_out[order(match(labels_out$varName, old_order)), ]
 }
+
 
 # updates the labeled column in the meta data according to the value column
 update_labeled_col <- function(labels) {
