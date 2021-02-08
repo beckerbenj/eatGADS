@@ -4,12 +4,15 @@
 \alias{checkValLabels}
 \title{Check Value Labels}
 \usage{
-checkValLabels(GADSdat, vars = namesGADS(GADSdat))
+checkValLabels(GADSdat, vars = namesGADS(GADSdat), valueRange = NULL)
 }
 \arguments{
 \item{GADSdat}{A \code{GADSdat} object.}
 
 \item{vars}{Character vector with the variable names to which \code{checkValLabels()} should be applied.}
+
+\item{valueRange}{[optional] Numeric vector of length 2: In which range should numeric values be checked? If specified, only numeric values
+are returned and strings are omitted.}
 }
 \value{
 Returns a list of length 2. Each contains a list of the length of \code{vars}.
@@ -25,5 +28,9 @@ Check value labels for (a) value labels with no occurrence in the data and (b) v
 \examples{
 # Check a categorical and a metric variable
 checkValLabels(pisa, vars = c("g8g9", "age"))
+
+# Check while defining a specific value range
+checkValLabels(pisa, vars = c("g8g9", "age", "idschool"),
+              valueRange = c(0, 5))
 
 }
