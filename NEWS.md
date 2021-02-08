@@ -1,5 +1,6 @@
 # eatGADS 0.15.2.9000
 
+* `checkValLabels()` for comparing values in the data and value labels
 * `compareGADS()` for comparing multiple variables between two `GADSdats`
 * `recodeGADS()` allows recoding of of `NA` now
 * `recode2NA()` allows recoding of numeric and character values to `NA`
