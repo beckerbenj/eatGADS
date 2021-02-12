@@ -2,7 +2,8 @@
 
 * `checkValLabels()` for comparing values in the data and value labels
 * `compareGADS()` for comparing multiple variables between two `GADSdats`
-* `recodeGADS()` allows recoding of of `NA` now
+* `recodeGADS()` allows recoding values into existing values now, argument `existingMeta` added
+* `recodeGADS()` allows recoding of `NA` now
 * `recode2NA()` allows recoding of numeric and character values to `NA`
 * `recodeString2NA()` has been deprecated
 * bug fix `collapseColumns()` (now supports `new_value` as column name in look up table)
@@ -20,6 +21,8 @@
 * switch from `travis` and `appVeyor` to `Github Action`
 * `applyChangeMeta()` checks `format_new` column now for illegal entries
 * `applyChangeMeta()` throws error if result has corrupted meta data
+* better performance of `applyChangeMeta()` on value level
+* bugfix for `applyChangeMeta()` if only `missings_new` is changed
 * Setup `revdepcheck`
 
 

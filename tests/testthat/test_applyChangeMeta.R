@@ -64,10 +64,36 @@ test_that("recoding if potential danger of overwriting old values!", {
   expect_equal(out$labels$value, c(3, 2, 1, 2, 1, 5))
   expect_equal(out$dat$v1, 3:1)
   expect_equal(out$dat$b, c(1, 2, 5))
+
+  changes_val2 <- changes_val
+  changes_val2[1:2, "value_new"] <- c(-96, -95)
+  out3 <- applyChangeMeta(changes_val2, dfSAV)
+  expect_equal(out3$labels$value[1:3], c(-96, -95, 1))
+})
+
+test_that("Recoding with value meta data conflicts", {
+  changes_val2 <- changes_val
+  changes_val2[1, "value_new"] <- 1
+  expect_error(out <- recode_labels(dfSAV$labels, changes_val2, existingMeta = "stop"),
+               "Values in 'value_new' with existing meta data in variable VAR1: 1")
+  out <- recode_labels(dfSAV$labels, changes_val2, existingMeta = "keep")
+  comp1 <- dfSAV$labels[-3, ]
+  comp1[1, "value"] <- 1
+  rownames(comp1) <- NULL
+  expect_equal(comp1, out)
+
+  out2 <- recode_labels(dfSAV$labels, changes_val2, existingMeta = "replace")
+  comp2 <- dfSAV$labels[-3, ]
+  comp2[1, "value"] <- 1
+  comp2[1, "valLabel"] <- "One"
+  comp2[1, "missings"] <- "valid"
+  rownames(comp2) <- NULL
+  expect_equal(comp2, out2)
 })
 
 
 changes_val2 <- rbind(changes_val, data.frame(varName = "VAR1", value = NA, valLabel = NA, missings = NA, value_new = 2, valLabel_new = "Two", missings_new = "valid", stringsAsFactors = FALSE))
+changes_val3 <- rbind(changes_val2, data.frame(varName = "VAR1", value = NA, valLabel = NA, missings = NA, value_new = 3, valLabel_new = "Three", missings_new = "valid", stringsAsFactors = FALSE))
 
 test_that("Expand labels", {
   out <- expand_labels(df1$labels, new_varName_vec = c("ID1", "ID1", "V1"))
@@ -96,11 +122,11 @@ test_that("Adding value labels for values without labels", {
   expect_equal(dim(out2), c(2, 8))
   expect_equal(out2$labeled, c("no", "yes"))
 
-
-  applyChangeMeta(changes_val2, dfSAV)
-  # to do
-  # checken, dass keine Probleme in recode_dat auftauchen
-  # loest das nicht teilweise errors aus, da nicht kompatibel mit altem labels-df? wenn nein, wieso nicht?
+  # multiple new value labels
+  out3 <- applyChangeMeta(changes_val3, dfSAV)
+  expect_equal(dim(out3$labels), c(9, 8))
+  expect_equal(out3$labels$value[3:5], 1:3)
+  expect_equal(out3$labels$valLabel[3:5], c("One", "Two", "Three"))
 })
 
 test_that("update labeled helper", {

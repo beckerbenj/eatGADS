@@ -2,14 +2,29 @@
 % Please edit documentation in R/applyChangeMeta.R
 \name{applyChangeMeta}
 \alias{applyChangeMeta}
+\alias{applyChangeMeta.varChanges}
+\alias{applyChangeMeta.valChanges}
 \title{Apply Meta Data Changes.}
 \usage{
-applyChangeMeta(changeTable, GADSdat)
+applyChangeMeta(changeTable, GADSdat, ...)
+
+\method{applyChangeMeta}{varChanges}(changeTable, GADSdat, ...)
+
+\method{applyChangeMeta}{valChanges}(
+  changeTable,
+  GADSdat,
+  existingMeta = c("stop", "keep", "replace"),
+  ...
+)
 }
 \arguments{
 \item{changeTable}{Change table as provided by \code{\link{getChangeMeta}}.}
 
 \item{GADSdat}{\code{GADSdat} object imported via \code{eatGADS}.}
+
+\item{...}{further arguments passed to or from other methods.}
+
+\item{existingMeta}{Should existing entries for values kept, overwritten or reported?}
 }
 \value{
 Returns the modified \code{GADSdat} object.
@@ -18,12 +33,16 @@ Returns the modified \code{GADSdat} object.
 Function to apply meta data changes to a \code{GADSdat} object specified by a change table extracted by \code{\link{getChangeMeta}}.
 }
 \details{
-Values for which the change columns contain \code{NA} remain unchanged.
+Values for which the change columns contain \code{NA} remain unchanged. If changes are performed on value levels, recoding into
+existing values can occur. In these cases, \code{existingMeta} determines how the resulting meta data conflicts are handled,
+either raising an error if any occur \code{"stop"}, keeping the original meta data for the value \code{"keep"} or using the meta
+data in the \code{changeTable} or, if incomplete, from the recoded value \code{"replace"}.
 }
 \examples{
 # Change a variable name and label
 varChangeTable <- getChangeMeta(pisa, level = "variable")
 varChangeTable[1, c("varName_new", "varLabel_new")] <- c("IDstud", "Person ID")
+
 pisa2 <- applyChangeMeta(varChangeTable, GADSdat = pisa)
 
 }

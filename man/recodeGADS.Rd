@@ -4,7 +4,13 @@
 \alias{recodeGADS}
 \title{Recode a labeled variable.}
 \usage{
-recodeGADS(GADSdat, varName, oldValues, newValues)
+recodeGADS(
+  GADSdat,
+  varName,
+  oldValues,
+  newValues,
+  existingMeta = c("stop", "keep", "replace")
+)
 }
 \arguments{
 \item{GADSdat}{\code{GADSdat} object imported via \code{eatGADS}.}
@@ -14,6 +20,8 @@ recodeGADS(GADSdat, varName, oldValues, newValues)
 \item{oldValues}{Vector containing the old values.}
 
 \item{newValues}{Vector containing the new values (in the respective order as \code{oldValues}).}
+
+\item{existingMeta}{Should existing entries for values kept, overwritten or reported?}
 }
 \value{
 Returns a \code{GADSdat}.

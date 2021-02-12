@@ -58,7 +58,7 @@ test_that("Combine mc and text into old variables via empty string",{
 
 
 test_that("Combine mc and text with Missings on mcs",{
-  mt_gads2 <- recodeGADS(mt_gads, varName = "mc", oldValues = c(1, 2, 3), newValues = c(-9, -8, 1))
+  mt_gads2 <- recodeGADS(mt_gads, varName = "mc", oldValues = c(1, 2, 3), newValues = c(-9, -8, 1), existingMeta = "keep")
   mt_gads2 <- changeValLabels(mt_gads2, "mc", value = c(1, -8, -9), c("Aus", "missing other", "missing"))
   mt_gads2 <- checkMissings(mt_gads2)
 
@@ -70,7 +70,7 @@ test_that("Combine mc and text with Missings on mcs",{
 
 
 test_that("Combinations of mc_code4text and missing in text variable",{
-  mt_gads2 <- recodeGADS(mt_gads, varName = "mc", oldValues = c(1, 2, 3), newValues = c(-9, 3, 1))
+  mt_gads2 <- recodeGADS(mt_gads, varName = "mc", oldValues = c(1, 2, 3), newValues = c(-9, 3, 1), existingMeta = "keep")
   mt_gads2 <- changeValLabels(mt_gads2, "mc", value = c(1, 3, -9), c("Aus", "other", "missing"))
   mt_gads2 <- checkMissings(mt_gads2)
 

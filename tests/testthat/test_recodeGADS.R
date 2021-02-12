@@ -15,13 +15,16 @@ test_that("Recode wrapper", {
 test_that("Recode wrapper errors", {
   df <- data.frame(v1 = 1:2, v2 = c("a", "b"), stringsAsFactors = FALSE)
   g <- import_DF(df)
-  expect_error(recodeGADS(g, varName = "v3", oldValues = c(1), newValues = c(10)), "'varName' is not a real variable name.")
-  expect_error(recodeGADS(g, varName = "v2", oldValues = c(1), newValues = c(10)), "'varName' needs to be a labeled variable in the GADS.")
+  expect_error(recodeGADS(g, varName = "v3", oldValues = c(1), newValues = c(10)),
+               "'varName' is not a real variable name.")
+  expect_error(recodeGADS(g, varName = "v2", oldValues = c(1), newValues = c(10)),
+               "'varName' needs to be a labeled variable in the GADS.")
 
   expect_error(recodeGADS(dfSAV, varName = "VAR1", oldValues = c(1), newValues = c(NA)),
                "Missing value(s) in 'newValues'. Recode to NA using recodeString2NA() if required.", fixed = TRUE)
 
-  expect_error(recodeGADS(dfSAV, varName = "VAR1", oldValues = c(-99), newValues = c(1)), "The following variable has duplicate values rows in its meta data: VAR1")
+  expect_error(recodeGADS(dfSAV, varName = "VAR1", oldValues = c(-99), newValues = c(1)),
+               "Values in 'value_new' with existing meta data in variable VAR1: 1")
 })
 
 

@@ -17,6 +17,7 @@
 #'@param varName Name of the variable to be recoded.
 #'@param oldValues Vector containing the old values.
 #'@param newValues Vector containing the new values (in the respective order as \code{oldValues}).
+#'@param existingMeta Should existing entries for values kept, overwritten or reported?
 #'
 #'@return Returns a \code{GADSdat}.
 #'
@@ -35,11 +36,11 @@
 #'
 #'
 #'@export
-recodeGADS <- function(GADSdat, varName, oldValues, newValues) {
+recodeGADS <- function(GADSdat, varName, oldValues, newValues, existingMeta = c("stop", "keep", "replace")) {
   UseMethod("recodeGADS")
 }
 #'@export
-recodeGADS.GADSdat <- function(GADSdat, varName, oldValues, newValues) {
+recodeGADS.GADSdat <- function(GADSdat, varName, oldValues, newValues, existingMeta = c("stop", "keep", "replace")) {
   checkRecodeVectors(oldValues = oldValues, newValues = newValues, varName = varName, dat = GADSdat$dat)
   if(all(is.na(GADSdat$labels[GADSdat$labels$varName == varName, "value"]))) stop("'varName' needs to be a labeled variable in the GADS.")
   changeTable <- getChangeMeta(GADSdat, level = "value")
@@ -50,15 +51,16 @@ recodeGADS.GADSdat <- function(GADSdat, varName, oldValues, newValues) {
       changeTable[changeTable$varName == varName & changeTable$value == oldValues[i], "value_new"] <- newValues[i]
     }
   }
-  applyChangeMeta(GADSdat, changeTable = changeTable)
+  applyChangeMeta(GADSdat, changeTable = changeTable, existingMeta = existingMeta)
 }
 
 #'@export
-recodeGADS.all_GADSdat <- function(GADSdat, varName, oldValues, newValues) {
+recodeGADS.all_GADSdat <- function(GADSdat, varName, oldValues, newValues, existingMeta = c("stop", "keep", "replace")) {
   check_all_GADSdat(GADSdat)
   singleGADS_list <- lapply(names(GADSdat$datList), function(nam ) {
     singleGADS <- extractGADSdat(GADSdat, name = nam)
-    if(varName %in% names(singleGADS$dat)) singleGADS <- recodeGADS(singleGADS, varName = varName, oldValues = oldValues, newValues = newValues)
+    if(varName %in% names(singleGADS$dat)) singleGADS <- recodeGADS(singleGADS, varName = varName, oldValues = oldValues,
+                                                                    newValues = newValues, existingMeta = existingMeta)
     singleGADS
   })
   names(singleGADS_list) <- names(GADSdat$datList)
