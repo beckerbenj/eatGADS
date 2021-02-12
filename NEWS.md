@@ -22,7 +22,7 @@
 * `applyChangeMeta()` checks `format_new` column now for illegal entries
 * `applyChangeMeta()` throws error if result has corrupted meta data
 * better performance of `applyChangeMeta()` on value level
-* bugfix for `applyChangeMeta()` if only `missings_new` is changed
+* bug fix for `applyChangeMeta()` if only `missings_new` is changed
 * Setup `revdepcheck`
 
 
