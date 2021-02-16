@@ -8,48 +8,68 @@ df3 <- df2
 df3$dat[1, 1:2] <- 8
 
 test_that("Input validation", {
-  expect_error(checkValLabels(df1, vars = 3:4),
+  expect_error(checkEmptyValLabels(df1, vars = 3:4),
                "The following 'vars' are not variables in the GADSdat: 3, 4")
-  expect_error(checkValLabels(df1, valueRange = 3:5),
+  expect_error(checkEmptyValLabels(df1, valueRange = 3:5),
                "'valueRange' needs to be a numeric vector of length 2.")
-  expect_error(checkValLabels(df1, valueRange = letters[3:4]),
+  expect_error(checkEmptyValLabels(df1, valueRange = letters[3:4]),
+               "'valueRange' needs to be a numeric vector of length 2.")
+  expect_error(checkMissingValLabels(df1, vars = 3:4),
+               "The following 'vars' are not variables in the GADSdat: 3, 4")
+  expect_error(checkMissingValLabels(df1, valueRange = 3:5),
+               "'valueRange' needs to be a numeric vector of length 2.")
+  expect_error(checkMissingValLabels(df1, valueRange = letters[3:4]),
                "'valueRange' needs to be a numeric vector of length 2.")
 })
 
-test_that("Standard case", {
-  out <- checkValLabels(dfSAV)
-  expect_equal(names(out), c("labels with no values", "not labeled values"))
-  expect_equal(names(out[[1]]), paste0("VAR", 1:3))
-  expect_equal(out[[1]][[1]], numeric(0))
-  expect_equal(out[[1]][[2]], c(-96, -99))
-  expect_equal(out[[1]][[3]], c(-99))
-  expect_equal(out[[2]][[1]], c(2))
-  expect_equal(out[[2]][[3]], c(1))
+test_that("checkEmptyValLabels", {
+  out <- checkEmptyValLabels(dfSAV)
+  expect_equal(names(out), paste0("VAR", 1:3))
+  expect_equal(names(out[[1]]), c("value", "valLabel", "missings"))
+  expect_equal(names(out[[2]]), c("value", "valLabel", "missings"))
+  expect_equal(nrow(out[[1]]), 0)
+  expect_equal(out[[2]]$value, c(-96, -99))
+  expect_equal(out[[2]]$valLabel, c("missing", NA))
+  expect_equal(out[[2]]$missings, c("valid", "miss"))
+  expect_equal(out[[3]]$value, c(-99))
 })
+
+test_that("checkMissingValLabels", {
+  out <- checkMissingValLabels(dfSAV)
+  expect_equal(names(out), paste0("VAR", 1:3))
+  expect_equal(names(out[[1]]), c("varLabel", "missing_labels"))
+  expect_equal(names(out[[2]]), c("varLabel", "missing_labels"))
+  expect_equal(out[[1]]$varLabel, "Variable 1")
+  expect_equal(out[[3]]$varLabel, "Variable 3")
+  expect_equal(out[[1]]$missing_labels, 2)
+  expect_equal(out[[2]]$missing_labels, 1)
+})
+
 
 test_that("With NAs", {
   suppressMessages(dfSAV2 <- recode2NA(dfSAV, value = 1))
-  out <- checkValLabels(dfSAV2)
-  expect_equal(names(out), c("labels with no values", "not labeled values"))
-  expect_equal(names(out[[1]]), paste0("VAR", 1:3))
-  expect_equal(out[[1]][[1]], c(1))
-  expect_equal(out[[1]][[2]], c(-96, -99))
-  expect_equal(out[[1]][[3]], c(-99))
-  expect_equal(out[[2]][[1]], c(2))
-  expect_equal(out[[2]][[3]], numeric(0))
+  out <- checkEmptyValLabels(dfSAV2)
+  expect_equal(out[[2]], checkEmptyValLabels(dfSAV)[[2]])
+  expect_equal(out[[3]], checkEmptyValLabels(dfSAV)[[3]])
+  expect_equal(out[[1]]$value, 1)
+
+  out <- checkMissingValLabels(dfSAV2)
+  expect_equal(out[[1]], checkMissingValLabels(dfSAV)[[1]])
+  expect_equal(out[[2]], NULL)
+  expect_equal(out[[3]], NULL)
 })
 
 
 test_that("with specific value range", {
-  out <- checkValLabels(dfSAV, valueRange = c(-100, 0))
-  expect_equal(names(out), c("labels with no values", "not labeled values"))
-  expect_equal(names(out[[1]]), paste0("VAR", 1:3))
-  expect_equal(out[[1]][[1]], numeric(0))
-  expect_equal(out[[1]][[2]], c(-96, -99))
-  expect_equal(out[[1]][[3]], c(-99))
-  expect_equal(out[[2]][[1]], numeric())
-  expect_equal(out[[2]][[3]], numeric())
+  out <- checkEmptyValLabels(dfSAV, valueRange = c(-97, -100))
+  expect_equal(nrow(out[[1]]), 0)
+  expect_equal(nrow(out[[2]]), 1)
+  expect_equal(nrow(out[[3]]), 1)
 
-  out2 <- checkValLabels(dfSAV, valueRange = c(0, -100))
-  expect_equal(out2, out)
+  out2 <- checkMissingValLabels(dfSAV, valueRange = c(3, -100))
+  expect_equal(out2, checkMissingValLabels(dfSAV))
+
+  out3 <- checkMissingValLabels(dfSAV, valueRange = c(1, -100))
+  expect_equal(out3[[2]], out2[[2]])
+  expect_equal(out3[[1]], NULL)
 })
