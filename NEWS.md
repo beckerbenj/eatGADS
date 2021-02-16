@@ -1,6 +1,6 @@
 # eatGADS 0.15.2.9000
 
-* `checkValLabels()` for comparing values in the data and value labels
+* `checkEmptyValLabels()` and `checkMissingValLabels()` for comparing values in the data and value labels
 * `compareGADS()` for comparing multiple variables between two `GADSdats`
 * `recodeGADS()` allows recoding values into existing values now, argument `existingMeta` added
 * `recodeGADS()` allows recoding of `NA` now

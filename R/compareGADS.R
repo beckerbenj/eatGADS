@@ -68,7 +68,7 @@ compareGADS.GADSdat <- function(GADSdat_old, GADSdat_new, varNames, output = c("
 
         if(nrow(value_meta) > 0) {
           if(is.na(i)) { out[is.na(out$value), c("valLabel", "missings")] <- value_meta
-          } else out[out$value == i, c("valLabel", "missings")] <- value_meta
+          } else out[which(out$value == i), c("valLabel", "missings")] <- value_meta
         }
       }
       out_list[[nam]] <- out

@@ -63,10 +63,12 @@ test_that("recodes in NA with labeled NAs", {
   dfSAV2$labels[c(1, 4:5), "value"] <- NA
   dfSAV3 <- dfSAV2
   dfSAV2$dat[1:2, 1] <- NA
+  dfSAV2$dat[4, 1] <- 1
   expect_silent(out3 <- compareGADS(dfSAV2, dfSAV3, varNames = namesGADS(dfSAV3)))
   expect_equal(out3[[2]], "all equal")
-  expect_equal(out3[["VAR1"]], data.frame(value = NA_character_, frequency = 2, valLabel = "By design", missings = "miss",
-                                          stringsAsFactors = FALSE))
+  expect_equal(out3[["VAR1"]]$value, c("1", NA))
+  expect_equal(out3[["VAR1"]]$frequency, c(1, 2))
+  expect_equal(out3[["VAR1"]]$missings, c("valid", "miss"))
 
   ## with multiple NA labels and duplicated NA labels for changed value
   dfSAV4 <- dfSAV
