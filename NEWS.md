@@ -9,6 +9,7 @@
 * bug fix `collapseColumns()` (now supports `new_value` as column name in look up table)
 * `checkValue()` now returns occurrence count as vector instead of giving a message
 * `checkValue()` now works on a subset of variables (via argument `vars`)
+* `checkValue()` now supports checking for `NA`
 * `removeValLabels()` now can remove only specific `value` - `valLabel` pairs if required 
 * changing value labels inside of `recodeGADS()` via `newValueLabels` deprecated (use `changeValLabels()`instead)
 * `applyChangeMeta()` now works with `data.frames` (for compatibility with `excel` import and export)

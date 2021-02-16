@@ -33,3 +33,12 @@ test_that("Value checks for variable subset", {
   expect_equal(checkValue(df3, vars = "V2", value = 8),
                c(V2 = 2))
 })
+
+test_that("Value checks for NA", {
+  df5 <- df1
+  df5$dat[1:2, "V1"] <- NA
+  expect_equal(checkValue(df5, value = NA),
+               c(V1 = 2L))
+  expect_equal(checkValue(df1, value = NA),
+               integer())
+})
