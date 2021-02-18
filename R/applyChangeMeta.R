@@ -7,12 +7,12 @@
 #'
 #' Values for which the change columns contain \code{NA} remain unchanged. If changes are performed on value levels, recoding into
 #' existing values can occur. In these cases, \code{existingMeta} determines how the resulting meta data conflicts are handled,
-#' either raising an error if any occur \code{"stop"}, keeping the original meta data for the value \code{"keep"} or using the meta
-#' data in the \code{changeTable} or, if incomplete, from the recoded value \code{"replace"}.
+#' either raising an error if any occur (\code{"stop"}), keeping the original meta data for the value (\code{"value"}) or using the meta
+#' data in the \code{changeTable} or, if incomplete, from the recoded value (\code{"value_new"}).
 #'
 #'@param changeTable Change table as provided by \code{\link{getChangeMeta}}.
 #'@param GADSdat \code{GADSdat} object imported via \code{eatGADS}.
-#'@param existingMeta Should existing entries for values kept, overwritten or reported?
+#'@param existingMeta If values are recoded, which meta data should be used (see details)?
 #'@param ... further arguments passed to or from other methods.
 #'
 #'@return Returns the modified \code{GADSdat} object.
@@ -64,7 +64,7 @@ applyChangeMeta.varChanges <- function(changeTable, GADSdat, ...) {
 
 #'@rdname applyChangeMeta
 #'@export
-applyChangeMeta.valChanges <- function(changeTable, GADSdat, existingMeta = c("stop", "keep", "replace"), ...) {
+applyChangeMeta.valChanges <- function(changeTable, GADSdat, existingMeta = c("stop", "value", "value_new"), ...) {
   check_GADSdat(GADSdat)
   check_valChanges(changeTable)
   existingMeta <- match.arg(existingMeta)
@@ -162,7 +162,6 @@ recode_labels <- function(labels, changeTable, existingMeta) {
     if(!var_name %in% simpleChanges$varName) return(single_labels)
 
     single_simpleChanges <- simpleChanges[simpleChanges$varName == var_name, ]
-    #if(identical(single_simpleChanges$value_new, c(-96, -95))) browser()
 
     ## Deal with meta data conflicts:
     # if values will be recoded into each other, do not raise meta data conflict!
@@ -177,12 +176,14 @@ recode_labels <- function(labels, changeTable, existingMeta) {
         stop("Values in 'value_new' with existing meta data in variable ", var_name, ": ",
                                                paste(all_values, collapse = ", "))
       }
-      if(identical(existingMeta, "keep")) {
+      if(identical(existingMeta, "value")) {
         # remove meta data of value which is being recoded
         remove_value_meta <- single_simpleChanges[existing_value_vec, "value_new"]
         remove_rows <- which(single_labels$value %in% remove_value_meta)
+        dups <- duplicated(remove_value_meta)
+        if(any(dups)) stop("Multiple values are recoded into ", remove_value_meta[dups], " for variable ", var_name, ". Value meta data can thus not be used from 'value'. Set 'existingMeta' to 'value_new'.")
       }
-      if(identical(existingMeta, "replace")) {
+      if(identical(existingMeta, "value_new")) {
         # remove meta data of value which is being recoded
         remove_value_meta <- single_simpleChanges[existing_value_vec, "value_new"]
         remove_rows <- which(single_labels$value %in% remove_value_meta)
@@ -216,8 +217,9 @@ recode_labels <- function(labels, changeTable, existingMeta) {
   # fix labeled column
   # important: this should change a variable to "labeled" to export it later properly to spss
   labels[, "labeled"] <- ifelse(!is.na(labels[, "value"]), yes = "yes", no = labels[, "labeled"])
+  # unique rows necessary because of multiple recodes into the same value
+  labels <- unique(labels)
   rownames(labels) <- NULL
-
   labels
 }
 

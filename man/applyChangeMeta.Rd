@@ -13,7 +13,7 @@ applyChangeMeta(changeTable, GADSdat, ...)
 \method{applyChangeMeta}{valChanges}(
   changeTable,
   GADSdat,
-  existingMeta = c("stop", "keep", "replace"),
+  existingMeta = c("stop", "value", "value_new"),
   ...
 )
 }
@@ -24,7 +24,7 @@ applyChangeMeta(changeTable, GADSdat, ...)
 
 \item{...}{further arguments passed to or from other methods.}
 
-\item{existingMeta}{Should existing entries for values kept, overwritten or reported?}
+\item{existingMeta}{If values are recoded, which meta data should be used (see details)?}
 }
 \value{
 Returns the modified \code{GADSdat} object.
@@ -35,8 +35,8 @@ Function to apply meta data changes to a \code{GADSdat} object specified by a ch
 \details{
 Values for which the change columns contain \code{NA} remain unchanged. If changes are performed on value levels, recoding into
 existing values can occur. In these cases, \code{existingMeta} determines how the resulting meta data conflicts are handled,
-either raising an error if any occur \code{"stop"}, keeping the original meta data for the value \code{"keep"} or using the meta
-data in the \code{changeTable} or, if incomplete, from the recoded value \code{"replace"}.
+either raising an error if any occur (\code{"stop"}), keeping the original meta data for the value (\code{"value"}) or using the meta
+data in the \code{changeTable} or, if incomplete, from the recoded value (\code{"value_new"}).
 }
 \examples{
 # Change a variable name and label

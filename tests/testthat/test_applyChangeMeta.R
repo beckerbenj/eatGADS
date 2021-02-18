@@ -76,19 +76,40 @@ test_that("Recoding with value meta data conflicts", {
   changes_val2[1, "value_new"] <- 1
   expect_error(out <- recode_labels(dfSAV$labels, changes_val2, existingMeta = "stop"),
                "Values in 'value_new' with existing meta data in variable VAR1: 1")
-  out <- recode_labels(dfSAV$labels, changes_val2, existingMeta = "keep")
+  out <- recode_labels(dfSAV$labels, changes_val2, existingMeta = "value")
   comp1 <- dfSAV$labels[-3, ]
   comp1[1, "value"] <- 1
   rownames(comp1) <- NULL
   expect_equal(comp1, out)
 
-  out2 <- recode_labels(dfSAV$labels, changes_val2, existingMeta = "replace")
+  out2 <- recode_labels(dfSAV$labels, changes_val2, existingMeta = "value_new")
   comp2 <- dfSAV$labels[-3, ]
   comp2[1, "value"] <- 1
   comp2[1, "valLabel"] <- "One"
   comp2[1, "missings"] <- "valid"
   rownames(comp2) <- NULL
   expect_equal(comp2, out2)
+})
+
+test_that("Recoding multiple value into the same value (with meta data conflicts)", {
+  changes_val2 <- changes_val
+  changes_val2[1:2, "value_new"] <- 1
+  expect_error(out <- recode_labels(dfSAV$labels, changes_val2, existingMeta = "stop"),
+               "Values in 'value_new' with existing meta data in variable VAR1: 1")
+  expect_error(out <- recode_labels(dfSAV$labels, changes_val2, existingMeta = "value"),
+               "Multiple values are recoded into 1 for variable VAR1. Value meta data can thus not be used from 'value'. Set 'existingMeta' to 'value_new'.")
+
+  out2 <- recode_labels(dfSAV$labels, changes_val2, existingMeta = "value_new")
+  comp2 <- dfSAV$labels[-(2:3), ]
+  comp2[1, "value"] <- 1
+  comp2[1, "valLabel"] <- "One"
+  comp2[1, "missings"] <- "valid"
+  rownames(comp2) <- NULL
+  expect_equal(comp2, out2)
+
+  out3 <- applyChangeMeta(changes_val2, GADSdat = dfSAV, existingMeta = "value_new")
+  expect_equal(out3$dat$VAR1, c(1, 1, 1, 2))
+  expect_equal(comp2, out3$labels)
 })
 
 

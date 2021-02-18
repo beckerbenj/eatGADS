@@ -9,7 +9,7 @@ recodeGADS(
   varName,
   oldValues,
   newValues,
-  existingMeta = c("stop", "keep", "replace")
+  existingMeta = c("stop", "value", "value_new")
 )
 }
 \arguments{
@@ -21,7 +21,7 @@ recodeGADS(
 
 \item{newValues}{Vector containing the new values (in the respective order as \code{oldValues}).}
 
-\item{existingMeta}{Should existing entries for values kept, overwritten or reported?}
+\item{existingMeta}{If values are recoded, which meta data should be used (see details)?}
 }
 \value{
 Returns a \code{GADSdat}.
@@ -33,6 +33,11 @@ Recode a labeled variable as part of a \code{GADSdat} or \code{all_GADSdat} obje
 Applied to a \code{GADSdat} or \code{all_GADSdat} object, this function is a wrapper of \code{\link{getChangeMeta}}
 and \code{\link{applyChangeMeta}}.
 \code{oldValues} and \code{newValues} are matched by ordering in the function call.
+
+If changes are performed on value levels, recoding into
+existing values can occur. In these cases, \code{existingMeta} determines how the resulting meta data conflicts are handled,
+either raising an error if any occur (\code{"stop"}), keeping the original meta data for the value (\code{"value"}) or using the meta
+data in the \code{changeTable} or, if incomplete, from the recoded value (\code{"value_new"}).
 
 Missing values (\code{NA}) are supported in \code{oldValues} but not in \code{newValues}. For recoding values to
 \code{NA} see \code{\link{recode2NA}} instead.

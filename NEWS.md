@@ -2,7 +2,7 @@
 
 * `checkEmptyValLabels()` and `checkMissingValLabels()` for comparing values in the data and value labels
 * `compareGADS()` for comparing multiple variables between two `GADSdats`
-* `recodeGADS()` allows recoding values into existing values now, argument `existingMeta` added
+* `recodeGADS()` allows recoding (multiple) values into existing values now, argument `existingMeta` added
 * `recodeGADS()` allows recoding of `NA` now
 * `recode2NA()` allows recoding of numeric and character values to `NA`
 * `recodeString2NA()` has been deprecated
@@ -13,6 +13,7 @@
 * `removeValLabels()` now can remove only specific `value` - `valLabel` pairs if required 
 * changing value labels inside of `recodeGADS()` via `newValueLabels` deprecated (use `changeValLabels()`instead)
 * `applyChangeMeta()` now works with `data.frames` (for compatibility with `excel` import and export)
+* `import_spss()` now supports variables of type `datetime` 
 
 ## Documentation
 * Added vignette on meta data 
