@@ -5,6 +5,9 @@
 #testT <- haven::read_sav("tests/testthat/helper_spss_times.sav", user_na = TRUE)
 testT <- haven::read_sav("helper_spss_times.sav", user_na = TRUE)
 
+#testT2 <- haven::read_sav("tests/testthat/helper_spss_datetime.sav", user_na = TRUE)
+testT2 <- haven::read_sav("helper_spss_datetime.sav", user_na = TRUE)
+
 test_that("Modifiying of variables of class date/time", {
   warns <- capture_warnings(out <- times2character.savDat(testT))
   expect_equal(warns[[1]], "Value labels and missing codes for 'TIMES' variables are not supported by eatGADS. Missing values are converted to NA and labels and missing codes are dropped from meta data for variable VAR1")
@@ -42,3 +45,15 @@ test_that("Errors for import of variables of class date/time", {
   df <- data.frame(vec)
   expect_error(out <- import_DF(df), "POSIXct and POSIXlt are currently not supported by eatGADS.")
 })
+
+
+test_that("Import of variables of class datetime/posx", {
+  # out <- import_spss("c:/Benjamin_Becker/02_Repositories/packages/eatGADS/tests/testthat/helper_spss_datetime.sav")
+  out <- import_spss("helper_spss_datetime.sav")
+
+  expect_equal(out$dat[, 2], c("2012-03-30 13:40:55", "1995-12-05 23:59:59", "1950-03-01 00:01:01"))
+  expect_equal(out$labels[2, "format"], c("ATIME20"))
+})
+
+#x <-"Q:/FDZ/Alle/01_Studien/StEG/StEG Systemmonitoring/Aufbereitung und Pruefung/Bearbeitung/Daten/Arbeitskopie/StEG 2018/(1) Scientific Use File/fc_suf_test.sav"
+#test <-import_spss(x)

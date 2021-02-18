@@ -8,7 +8,7 @@ extract_variable_level <- function(rawDat) {
 extract_variable_level.savDat<- function(rawDat) {
   # check for unknown attributes (mostly to secure against changes in haven)
   all_attr <- unlist(lapply(rawDat, function(var) names(attributes(var))))
-  unknown_attr <- all_attr[!all_attr %in% c("label", "format.spss", "display_width", "class", "labels", "na_range", "na_values")]
+  unknown_attr <- all_attr[!all_attr %in% c("label", "format.spss", "display_width", "class", "tzone", "labels", "na_range", "na_values")]
   if(length(unknown_attr) > 0) stop("Unknown attributes exported from haven:", unknown_attr, ". Please contact package author.")
 
   varClass <- unlist(lapply(rawDat, extract_attribute, attr_name = "class"))
