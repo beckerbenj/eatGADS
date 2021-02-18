@@ -70,7 +70,8 @@ test_that("Text variables with (partial) missing codes", {
   out <- remove2NAchar(mt4_gads2, vars = namesGADS(mt4_gads2), max_num = 1, na_value = -95, na_label = "missing")
   expect_equal(out$dat$text1, c(-99, "Eng", -95, -96))
   expect_equal(out$labels$varName, c("text1", "text1", "text1"))
-  expect_equal(out$labels$value, c(-96, -99, -95))
+  expect_equal(out$labels$value, c(-99, -96, -95))
+  expect_equal(out$labels$valLabel, c("miss", "miss", "missing"))
   expect_equal(out$labels$missings, c("miss", "miss", "miss"))
 })
 

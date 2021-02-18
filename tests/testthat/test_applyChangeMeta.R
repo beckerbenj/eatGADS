@@ -56,12 +56,14 @@ test_that("recoding if potential danger of overwriting old values!", {
   chang2 <- chang
   chang2[, "value_new"] <- c(3, 4, 1, NA, NA, NA)
   out <-  applyChangeMeta(chang2, df_rec)
-  expect_equal(out$labels$value, c(3, 4, 1, 1, 2, 3))
+  expect_equal(out$labels$value, c(1, 3, 4, 1, 2, 3))
+  expect_equal(out$labels$valLabel, c("z", "x", "y", "a", "b", "d"))
   expect_equal(out$dat$v1, c(3, 4, 1))
   ## partial recoding, multiple variables
   chang[, "value_new"] <- c(3, NA, 1, 2, 1, 5)
   out <-  applyChangeMeta(chang, df_rec)
-  expect_equal(out$labels$value, c(3, 2, 1, 2, 1, 5))
+  expect_equal(out$labels$value, c(1, 2, 3, 1, 2, 5))
+  expect_equal(out$labels$valLabel, c("z", "y", "x", "b", "a", "d"))
   expect_equal(out$dat$v1, 3:1)
   expect_equal(out$dat$b, c(1, 2, 5))
 
@@ -79,6 +81,7 @@ test_that("Recoding with value meta data conflicts", {
   out <- recode_labels(dfSAV$labels, changes_val2, existingMeta = "value")
   comp1 <- dfSAV$labels[-3, ]
   comp1[1, "value"] <- 1
+  comp1 <- comp1[c(2, 1, 3:6),]
   rownames(comp1) <- NULL
   expect_equal(comp1, out)
 
@@ -87,6 +90,7 @@ test_that("Recoding with value meta data conflicts", {
   comp2[1, "value"] <- 1
   comp2[1, "valLabel"] <- "One"
   comp2[1, "missings"] <- "valid"
+  comp2 <- comp2[c(2, 1, 3:6),]
   rownames(comp2) <- NULL
   expect_equal(comp2, out2)
 })
@@ -231,3 +235,12 @@ test_that("Changes to GADSdat if tibble or data.frame, value labels", {
   g4 <- applyChangeMeta(changes_val_df, dfSAV)
   expect_equal(g4$labels[, -7], dfSAV$labels[, -7])
 })
+
+
+test_that("sort value labels", {
+  unsorted <- dfSAV$labels[c(3:1), ]
+  out <- sort_value_labels(unsorted)
+
+  expect_equal(out, dfSAV$labels[1:3,])
+})
+

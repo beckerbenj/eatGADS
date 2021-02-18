@@ -10,7 +10,8 @@ test_that("changevallabel wrapper", {
   expect_equal(out$dat, dfSAV$dat)
 
   out2 <- changeValLabels(dfSAV, varName = "VAR2", value = c(-99, -96), valLabel = c("label 3", "label 2"))
-  expect_equal(out2$labels[c(4, 5), "valLabel"], c("label 2", "label 3"))
+  expect_equal(out2$labels[c(4, 5), "value"], c(-99, -96))
+  expect_equal(out2$labels[c(4, 5), "valLabel"], c("label 3", "label 2"))
   expect_equal(out2$dat, dfSAV$dat)
 
   expect_error(changeValLabels(dfSAV, varName = c("VAR1", "VAR2"), value = 1, valLabel = "test label"))
@@ -56,5 +57,5 @@ test_that("add value label to a variable with one existing label", {
   gadsT <- changeValLabels(gadsT, varName = "text1", value = -96, valLabel = "miss")
   gadsT <- changeMissings(gadsT, varName = "text1", value = -96, missings = "miss")
   out <- changeValLabels(gadsT, varName = "text1", value = -99, valLabel = "miss")
-  expect_equal(out$labels$value, c(-96, -99))
+  expect_equal(out$labels$value, c(-99, -96))
 })

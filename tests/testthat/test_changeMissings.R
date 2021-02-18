@@ -9,7 +9,8 @@ test_that("changemissings wrapper", {
   expect_equal(out$dat, dfSAV$dat)
 
   out2 <- changeMissings(dfSAV, varName = "VAR2", value = c(-99, -96), missings = c("valid", "miss"))
-  expect_equal(out2$labels[c(4, 5), "missings"], c("miss", "valid"))
+  expect_equal(out2$labels[c(4, 5), "value"], c(-99, -96))
+  expect_equal(out2$labels[c(4, 5), "missings"], c("valid", "miss"))
   expect_equal(out2$dat, dfSAV$dat)
 
   expect_error(changeMissings(dfSAV, varName = c("VAR1", "VAR2"), value = 1, missings = "miss"),

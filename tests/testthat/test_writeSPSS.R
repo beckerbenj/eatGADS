@@ -118,7 +118,7 @@ test_that("Write variables with missing codes", {
   expect_equal(attributes(out$v2)$labels, c(miss1 = -99))
   expect_equal(attributes(out$v2)$na_values, c(-99))
   # character
-  expect_equal(attributes(out$v1)$labels, c(miss1 = "-96", miss2 = "-99"))
+  expect_equal(attributes(out$v1)$labels, c(miss2 = "-99", miss1 = "-96"))
   ###character variables (na_values not yet implemented, see https://github.com/tidyverse/haven/issues/409)
   #expect_equal(attributes(out$v1)$na_values, c(-96, -99))
 })

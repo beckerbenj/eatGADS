@@ -23,6 +23,7 @@
 * switch from `travis` and `appVeyor` to `Github Action`
 * `applyChangeMeta()` checks `format_new` column now for illegal entries
 * `applyChangeMeta()` throws error if result has corrupted meta data
+* `applyChangeMeta()` orders meta data within a variable (by ascending value)
 * better performance of `applyChangeMeta()` on value level
 * bug fix for `applyChangeMeta()` if only `missings_new` is changed
 * Setup `revdepcheck`

@@ -41,7 +41,8 @@ test_that("import_raw", {
   valLabels <- data.frame(varName = rep("sex", 3), value = c(0, 1, -99), valLabel = c("male", "female", "missing - omission"), missings = c("valid", "valid", "miss"), stringsAsFactors = FALSE)
 
   out2 <- import_raw(df = df, varLabels = varLabels, valLabels = valLabels)
-  expect_equal(out2$labels$value, c(NA, 0, 1, -99, NA))
+  expect_equal(out2$labels$value, c(NA, -99, 0, 1, NA))
+  expect_equal(out2$labels$valLabel, c(NA, "missing - omission", "male", "female", NA))
   expect_equal(out2$labels$labeled, c("no", "yes", "yes", "yes", "no"))
 })
 

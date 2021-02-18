@@ -211,7 +211,7 @@ recode_labels <- function(labels, changeTable, existingMeta) {
     }
 
   if(length(remove_rows) > 0) single_labels <- single_labels[-remove_rows, ]
-  single_labels
+    sort_value_labels(single_labels)
   }))
 
   # fix labeled column
@@ -248,3 +248,10 @@ update_labeled_col <- function(labels) {
   labels$labeled <- ifelse(is.na(labels$value), yes = "no", no = "yes")
   labels
 }
+
+sort_value_labels <- function(value_labels) {
+  value_labels <- value_labels[order(value_labels[, c("value")]), ]
+  row.names(value_labels) <- NULL
+  value_labels
+}
+
