@@ -14,6 +14,7 @@
 * changing value labels inside of `recodeGADS()` via `newValueLabels` deprecated (use `changeValLabels()`instead)
 * `applyChangeMeta()` now works with `data.frames` (for compatibility with `excel` import and export)
 * `import_spss()` now supports variables of type `datetime` 
+* `import_stata()` and `write_stata()` for exporting and importing Stata files
 
 ## Documentation
 * Added vignette on meta data 

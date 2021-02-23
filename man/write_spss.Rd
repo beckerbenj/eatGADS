@@ -2,9 +2,12 @@
 % Please edit documentation in R/write_spss.R
 \name{write_spss}
 \alias{write_spss}
-\title{Write a \code{GADSdat} object to \code{sav}}
+\alias{write_stata}
+\title{Write a \code{GADSdat} object to a file}
 \usage{
 write_spss(GADSdat, filePath)
+
+write_stata(GADSdat, filePath)
 }
 \arguments{
 \item{GADSdat}{A \code{GADSdat} object.}
@@ -12,21 +15,33 @@ write_spss(GADSdat, filePath)
 \item{filePath}{Path of \code{sav} file to write.}
 }
 \value{
-Writes \code{sav} file to disc, returns \code{NULL}.
+Writes file to disc, returns \code{NULL}.
 }
 \description{
-Write a \code{GADSdat} object, which contains meta information as value and variable labels to an SPSS file (\code{sav}).
+Write a \code{GADSdat} object, which contains meta information as value and variable labels to an SPSS file (\code{sav})
+or Stata file (\code{dta}).
 See 'details' for some important limitations.
 }
 \details{
-The provided functionality relies on \code{havens} \code{\link[haven:read_spss]{write_sav}} function.
-Currently known limitations are:
+The provided functionality relies on \code{havens} \code{\link[haven:read_spss]{write_sav}} and
+\code{\link[haven:read_dta]{write_dta}} functions.
+
+Currently known limitations for \code{write_spss} are:
 (a) Missing codes for all character variables are dropped, (b) value labels for long character variables (> \code{A10}) are
 dropped, (c) under specific conditions very long character variables (> \code{A254}) are incorrectly displayed as multiple
 character variables in \code{SPSS}. Furthermore, \code{write_spss} currently does not support exporting date or time variables.
+
+Currently known limitations for \code{write_stata} are:
+(a) Variable format is dropped, (b) missing codes are dropped.
 }
 \examples{
+
+# write to spss
 tmp <- tempfile(fileext = ".sav")
 write_spss(pisa, tmp)
+
+# write to stata
+tmp <- tempfile(fileext = ".dta")
+write_stata(pisa, tmp)
 
 }
