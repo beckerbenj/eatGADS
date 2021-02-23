@@ -1,4 +1,4 @@
-# eatGADS 0.15.2.9000
+# eatGADS 0.16.0
 
 * `checkEmptyValLabels()` and `checkMissingValLabels()` for comparing values in the data and value labels
 * `compareGADS()` for comparing multiple variables between two `GADSdats`
