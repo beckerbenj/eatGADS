@@ -23,6 +23,3 @@ Function to import \code{.dta} files while extracting meta information, e.g. var
 Stata files (\code{.dta}) store variable and value labels and assign specific formatting to variables. \code{import_stata} imports
 data from Stata, while storing this meta-information separately in a long format data frame. Time and date variables are converted to character.
 }
-\examples{
-
-}

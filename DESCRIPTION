@@ -6,6 +6,7 @@ Description: Import 'SPSS' data, handle and change 'SPSS' meta data, store and a
 Depends: R (>= 3.5.0)
 Imports: eatDB (>= 0.4.1), haven (>= 2.1.0), plyr, eatTools (>= 0.4.0), tibble, data.table, hms
 License: GPL (>= 2)
+URL: https://github.com/beckerbenj/eatGADS
 Encoding: UTF-8
 LazyData: true
 Suggests: 

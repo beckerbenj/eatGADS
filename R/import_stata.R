@@ -13,8 +13,6 @@
 #'
 #'@return Returns a list with the actual data \code{dat} and a data frame with all meta information in long format \code{labels}.
 #'
-#'@examples
-#'
 #'@export
 import_stata <- function(filePath, checkVarNames = TRUE, labeledStrings = FALSE) {
   df <- load_stata(filePath = filePath)
