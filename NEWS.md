@@ -16,9 +16,6 @@
 * `import_spss()` now supports variables of type `datetime` 
 * `import_stata()` and `write_stata()` for exporting and importing Stata files
 
-## Documentation
-* Added vignette on meta data 
-
 ## Internal
 * `check_GADSdat()` now checks for duplicate value rows
 * switch from `travis` and `appVeyor` to `Github Action`
