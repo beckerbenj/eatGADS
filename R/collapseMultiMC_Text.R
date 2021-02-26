@@ -88,7 +88,7 @@ collapseMultiMC_Text.GADSdat <- function(GADSdat, mc_vars, text_vars, mc_var_4te
     values_in_row <- values_in_row[!values_in_row %in% miss_codes]
     dups_in_row <- duplicated(values_in_row[values_in_row != ""])
     #if(mc_var_4text == "Pfluhl_k") browser()
-    if(any(dups_in_row)) stop("Duplicate values in row ", r, ".")
+    if(any(dups_in_row)) stop("Duplicate values in 'text_vars' in row ", r, ".")
   }
 
   # create new variables

@@ -55,7 +55,7 @@ test_that("Errors in combine multi mc and text", {
   mt3_gads_err <- mt3_gads
   mt3_gads_err$dat[3, "text2"] <- "Aus"
   expect_error(collapseMultiMC_Text(mt3_gads_err, mc_vars = mc_vars, text_vars = c("text1", "text2"), mc_var_4text = "mc3"),
-               "Duplicate values in row 3.")
+               "Duplicate values in 'text_vars' in row 3.")
 
   expect_error(collapseMultiMC_Text(mt3_gads, mc_vars = mc_vars, text_vars = c("text1", "text2"),
                                     mc_var_4text = c("mc3", "mc1")),
