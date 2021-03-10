@@ -1,3 +1,9 @@
+
+# eatGADS 0.16.0.9000
+
+* `fac2dummies()` for recoding a labeled factor variable to multiple labeled dummy variables
+* `reuseMeta()` now allows only transferring value labels for values coded as missing
+
 # eatGADS 0.16.0
 
 * `checkEmptyValLabels()` and `checkMissingValLabels()` for comparing values in the data and value labels

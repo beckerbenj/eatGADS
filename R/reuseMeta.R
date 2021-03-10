@@ -4,14 +4,15 @@
 #'
 #' Transfer meta information from one \code{GADSdat} to another.
 #'
-#' Transfer of meta information can mean substituting the complete meta information, only adding value labels, or adding only
-#' \code{"valid"} missing labels. See the arguments \code{missingLabels} and \code{addValueLabels} for further information.
+#' Transfer of meta information can mean substituting the complete meta information, only adding value labels, adding only
+#' \code{"valid"} or adding only \code{"miss"} missing labels.
+#' See the arguments \code{missingLabels} and \code{addValueLabels} for further information.
 #'
 #'@param GADSdat \code{GADSdat} object imported via \code{eatGADS}.
 #'@param varName Name of the variable that should get the new meta data.
 #'@param other_GADSdat \code{GADSdat} object imported via \code{eatGADS} including the desired meta information. Can also be a GADS db or an \code{all_GADSdat} object.
 #'@param other_varName Name of the variable that should get the new meta data in the \code{other_GADSdat}.
-#'@param missingLabels How should meta data for missing values be treated? If \code{NULL}, missing values are transferred as all other labels. If \code{"drop"}, missing labels are dropped (useful for imputed data). If \code{"leave"}, missing labels remain untouched.
+#'@param missingLabels How should meta data for missing values be treated? If \code{NULL}, missing values are transferred as all other labels. If \code{"drop"}, missing labels are dropped (useful for imputed data). If \code{"leave"}, missing labels remain untouched. If \code{"only"}, all valid value labels are dropped.
 #'@param addValueLabels Should only value labels be added and all other meta information retained?
 #'
 #'@return Returns the original object with updated meta data.
@@ -25,7 +26,7 @@ reuseMeta <- function(GADSdat, varName, other_GADSdat, other_varName = NULL, mis
 }
 #'@export
 reuseMeta.GADSdat <- function(GADSdat, varName, other_GADSdat, other_varName = NULL, missingLabels = NULL, addValueLabels = FALSE) {
-  if(!is.null(missingLabels) && !missingLabels %in% c("drop", "leave")) stop("Invalid input for argument missingLabels.")
+  if(!is.null(missingLabels) && !missingLabels %in% c("drop", "leave", "only")) stop("Invalid input for argument missingLabels.")
   if(!varName %in% names(GADSdat$dat)) stop("varName is not a variable in the GADSdat.")
   # extract meta data
   if(is.null(other_varName)) other_varName <- varName
@@ -44,6 +45,7 @@ reuseMeta.GADSdat <- function(GADSdat, varName, other_GADSdat, other_varName = N
 
   # special missing value labels treatment
   if(identical(missingLabels, "drop")) new_meta <- drop_missing_labels(new_meta)
+  if(identical(missingLabels, "only")) new_meta <- drop_valid_labels(new_meta)
   if(identical(missingLabels, "leave")) {
     new_meta <- drop_missing_labels(new_meta)
     remove_rows <- which(GADSdat$labels$varName == varName & GADSdat$labels$missings != "miss")
@@ -75,6 +77,19 @@ reuseMeta.GADSdat <- function(GADSdat, varName, other_GADSdat, other_varName = N
 drop_missing_labels <- function(meta) {
   if(length(unique(meta$varName)) != 1) stop("This function only works for meta information of a single variable.")
   meta_new <- meta[which(meta$missings == "valid"), ]
+  if(nrow(meta_new) == 0) {
+    meta_new <- meta[1, ]
+    meta_new$missings <- meta_new$valLabel <- NA_character_
+    meta_new$value <- NA_integer_
+    meta_new$labeled <- "no"
+  }
+  row.names(meta_new) <- NULL
+  meta_new
+}
+
+drop_valid_labels <- function(meta) {
+  if(length(unique(meta$varName)) != 1) stop("This function only works for meta information of a single variable.")
+  meta_new <- meta[which(meta$missings == "miss"), ]
   if(nrow(meta_new) == 0) {
     meta_new <- meta[1, ]
     meta_new$missings <- meta_new$valLabel <- NA_character_

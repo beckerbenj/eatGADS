@@ -22,7 +22,7 @@ reuseMeta(
 
 \item{other_varName}{Name of the variable that should get the new meta data in the \code{other_GADSdat}.}
 
-\item{missingLabels}{How should meta data for missing values be treated? If \code{NULL}, missing values are transferred as all other labels. If \code{"drop"}, missing labels are dropped (useful for imputed data). If \code{"leave"}, missing labels remain untouched.}
+\item{missingLabels}{How should meta data for missing values be treated? If \code{NULL}, missing values are transferred as all other labels. If \code{"drop"}, missing labels are dropped (useful for imputed data). If \code{"leave"}, missing labels remain untouched. If \code{"only"}, all valid value labels are dropped.}
 
 \item{addValueLabels}{Should only value labels be added and all other meta information retained?}
 }
@@ -33,8 +33,9 @@ Returns the original object with updated meta data.
 Transfer meta information from one \code{GADSdat} to another.
 }
 \details{
-Transfer of meta information can mean substituting the complete meta information, only adding value labels, or adding only
-\code{"valid"} missing labels. See the arguments \code{missingLabels} and \code{addValueLabels} for further information.
+Transfer of meta information can mean substituting the complete meta information, only adding value labels, adding only
+\code{"valid"} or adding only \code{"miss"} missing labels.
+See the arguments \code{missingLabels} and \code{addValueLabels} for further information.
 }
 \examples{
 # see createGADS vignette
