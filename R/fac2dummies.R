@@ -34,16 +34,24 @@ fac2dummies.GADSdat <- function(GADSdat, var) {
 
   var_labels <- GADSdat$labels[GADSdat$labels$varName == var, ]
   all_levels <- unique(var_labels[is.na(var_labels$missings) | var_labels$missings != "miss", "value"])
+  all_miss_levels <- var_labels[which(var_labels$missings == "miss"), "value"]
   var_suffix <- letters[seq_along(all_levels)]
-  names(var_suffix) <- all_levels
+  new_dummies <- paste(var, var_suffix, sep = "_")
+  names(new_dummies) <- all_levels
+
+  illegal_dummies <- new_dummies[new_dummies %in% namesGADS(GADSdat)]
+  if(length(illegal_dummies) > 0) stop("The following variables are already in the 'GADSdat' and conflict with dummy variables you are trying to create: ", paste(illegal_dummies, collapse = ", "))
+
 
   valLabel_prefix <- var_labels[1, "varLabel"]
   if(is.na(valLabel_prefix)) valLabel_prefix <- var
 
   for(single_level in all_levels) {
     new_dat <- GADSdat$dat
-    single_dummie <- paste(var, var_suffix[as.character(single_level)], sep = "_")
-    new_dat[, single_dummie] <- ifelse(new_dat[, var] == single_level, yes = 1, no = 0)
+    single_dummie <- new_dummies[as.character(single_level)]
+    #browser()
+    new_dat[, single_dummie] <- ifelse(new_dat[, var] == single_level, yes = 1,
+                                       no = ifelse(new_dat[, var] %in% all_miss_levels, yes = new_dat[, var], no = 0))
 
     suppressMessages(GADSdat <- updateMeta(GADSdat, newDat = new_dat))
     new_val_label <- paste(valLabel_prefix, var_labels[var_labels$value == single_level, "valLabel"], sep = ": ")
@@ -55,5 +63,6 @@ fac2dummies.GADSdat <- function(GADSdat, var) {
     GADSdat <- changeValLabels(GADSdat, varName = single_dummie, value = c(1, 0), valLabel = c("yes", "no"))
   }
 
+  message("The following dummy variables have been created: ", paste(new_dummies, collapse = (", ")))
   GADSdat
 }
