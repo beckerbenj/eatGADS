@@ -48,3 +48,4 @@ test_that("factor 2 dummies no varLabel", {
   expect_equal(out$labels$varLabel[10:11], rep("Species: versicolor", 2))
   expect_equal(out$labels$varLabel[12:13], rep("Species: virginica", 2))
 })
+
