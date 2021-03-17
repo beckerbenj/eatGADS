@@ -34,6 +34,7 @@ test_that("factor 2 dummies", {
   expect_equal(out$dat$fac_a, c(1, 0, 0, 0, 1, 1))
   expect_equal(out$dat$fac_b, c(0, 1, 0, 1, 1, 1))
   expect_equal(out$dat$fac_c, c(0, 1, 1, 0, 0, 1))
+  expect_equal(out$labels$format[8:11], rep("F2.0", 4))
 })
 
 

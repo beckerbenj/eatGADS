@@ -63,6 +63,10 @@ fac2dummies.GADSdat <- function(GADSdat, var) {
     GADSdat <- changeValLabels(GADSdat, varName = single_dummie, value = c(1, 0), valLabel = c("yes", "no"))
   }
 
+  for(i in new_dummies) {
+    GADSdat <- changeSPSSformat(GADSdat, varName = i, format = "F2.0")
+  }
+
   message("The following dummy variables have been created: ", paste(new_dummies, collapse = (", ")))
   GADSdat
 }

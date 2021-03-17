@@ -32,6 +32,7 @@ test_that("factor 2 dummies", {
   expect_equal(out$labels$value[13:16], c(-99, -96, 0, 1))
   expect_equal(out$labels$missings[9:12], c("miss", "miss", NA, NA))
   expect_equal(out$labels$missings[13:16], c("miss", "miss", NA, NA))
+  expect_equal(out$labels$format[9:16], rep("F2.0", 8))
   expect_equal(out$dat$VAR1_a, c(1, -99, -96, 0))
   expect_equal(out$dat$VAR1_b, c(0, -99, -96, 1))
 })
@@ -47,5 +48,6 @@ test_that("factor 2 dummies no varLabel", {
   expect_equal(out$labels$varLabel[8:9], rep("Species: setosa", 2))
   expect_equal(out$labels$varLabel[10:11], rep("Species: versicolor", 2))
   expect_equal(out$labels$varLabel[12:13], rep("Species: virginica", 2))
+  expect_equal(out$labels$format[8:13], rep("F2.0", 6))
 })
 

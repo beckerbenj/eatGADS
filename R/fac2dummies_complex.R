@@ -77,6 +77,10 @@ fac2dummies_complex.GADSdat <- function(GADSdat, var) {
     }
   }
 
+  for(i in new_dummies) {
+    GADSdat <- changeSPSSformat(GADSdat, varName = i, format = "F2.0")
+  }
+
   message("The following dummy variables have been created: ", paste(new_dummies, collapse = (", ")))
   GADSdat
 }
