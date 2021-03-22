@@ -9,12 +9,11 @@
 #'
 #'@param GADSdat A \code{GADSdat} object.
 #'@param vars Character vector with the variable names to which \code{checkValLabels()} should be applied.
-#'@param valueRange [optional] Numeric vector of length 2: In which range should numeric values be checked? If specified, only numeric values
-#'are returned and strings are omitted.
+#'@param valueRange [optional] Numeric vector of length 2: In which range should numeric values be checked?
+#'If specified, only numeric values are returned and strings are omitted.
+#'@param output Should the output structured as a \code{"list"} or a \code{"data.frame"}?
 #'
-#'@return Returns a list of length 2. Each contains a list of the length of \code{vars}.
-#'\item{labels with no values}{Value labels with no occurrence in the data}
-#'\item{not labeled values}{Values in the data with no value labels}
+#'@return Returns a list of length \code{vars} or a \code{data.frame}.
 #'
 #'@examples
 #'# Check a categorical and a metric variable
@@ -29,14 +28,15 @@
 #'
 #' @describeIn checkEmptyValLabels check for superfluous value labels
 #'@export
-checkEmptyValLabels <- function(GADSdat, vars = namesGADS(GADSdat), valueRange = NULL) {
+checkEmptyValLabels <- function(GADSdat, vars = namesGADS(GADSdat), valueRange = NULL, output = c("list", "data.frame")) {
   UseMethod("checkEmptyValLabels")
 }
 
 #'@export
-checkEmptyValLabels.GADSdat <- function(GADSdat, vars = namesGADS(GADSdat), valueRange = NULL) {
+checkEmptyValLabels.GADSdat <- function(GADSdat, vars = namesGADS(GADSdat), valueRange = NULL, output = c("list", "data.frame")) {
   check_GADSdat(GADSdat)
   check_vars_in_GADSdat(GADSdat, vars = vars)
+  output <- match.arg(output)
 
   label_no_values <- vector("list", length = length(vars))
   names(label_no_values) <- vars
@@ -56,7 +56,11 @@ checkEmptyValLabels.GADSdat <- function(GADSdat, vars = namesGADS(GADSdat), valu
     })
 
   }
-  label_no_values
+
+  if(identical(output, "data.frame")) {
+    out <- eatTools::do_call_rbind_withName(label_no_values, colName = "variable")
+  } else out <- lapply(label_no_values, function(x) if(nrow(x) == 0) NULL else x)
+  out
 }
 
 #' @describeIn checkEmptyValLabels check for missing value labels

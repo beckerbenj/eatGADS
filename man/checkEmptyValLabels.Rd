@@ -5,7 +5,12 @@
 \alias{checkMissingValLabels}
 \title{Check Value Labels}
 \usage{
-checkEmptyValLabels(GADSdat, vars = namesGADS(GADSdat), valueRange = NULL)
+checkEmptyValLabels(
+  GADSdat,
+  vars = namesGADS(GADSdat),
+  valueRange = NULL,
+  output = c("list", "data.frame")
+)
 
 checkMissingValLabels(GADSdat, vars = namesGADS(GADSdat), valueRange = NULL)
 }
@@ -14,13 +19,13 @@ checkMissingValLabels(GADSdat, vars = namesGADS(GADSdat), valueRange = NULL)
 
 \item{vars}{Character vector with the variable names to which \code{checkValLabels()} should be applied.}
 
-\item{valueRange}{[optional] Numeric vector of length 2: In which range should numeric values be checked? If specified, only numeric values
-are returned and strings are omitted.}
+\item{valueRange}{[optional] Numeric vector of length 2: In which range should numeric values be checked?
+If specified, only numeric values are returned and strings are omitted.}
+
+\item{output}{Should the output structured as a \code{"list"} or a \code{"data.frame"}?}
 }
 \value{
-Returns a list of length 2. Each contains a list of the length of \code{vars}.
-\item{labels with no values}{Value labels with no occurrence in the data}
-\item{not labeled values}{Values in the data with no value labels}
+Returns a list of length \code{vars} or a \code{data.frame}.
 }
 \description{
 Check value labels for (a) value labels with no occurrence in the data \code{checkEmptyValLabels} and

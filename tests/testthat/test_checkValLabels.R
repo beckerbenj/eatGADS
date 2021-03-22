@@ -14,6 +14,8 @@ test_that("Input validation", {
                "'valueRange' needs to be a numeric vector of length 2.")
   expect_error(checkEmptyValLabels(df1, valueRange = letters[3:4]),
                "'valueRange' needs to be a numeric vector of length 2.")
+  expect_error(checkEmptyValLabels(df1, output = "List"),
+               "'arg' should be one of \"list\", \"data.frame\"")
   expect_error(checkMissingValLabels(df1, vars = 3:4),
                "The following 'vars' are not variables in the GADSdat: 3, 4")
   expect_error(checkMissingValLabels(df1, valueRange = 3:5),
@@ -25,13 +27,22 @@ test_that("Input validation", {
 test_that("checkEmptyValLabels", {
   out <- checkEmptyValLabels(dfSAV)
   expect_equal(names(out), paste0("VAR", 1:3))
-  expect_equal(names(out[[1]]), c("value", "valLabel", "missings"))
+  expect_equal(out[[1]], NULL)
   expect_equal(names(out[[2]]), c("value", "valLabel", "missings"))
-  expect_equal(nrow(out[[1]]), 0)
   expect_equal(out[[2]]$value, c(-96, -99))
   expect_equal(out[[2]]$valLabel, c("missing", NA))
   expect_equal(out[[2]]$missings, c("valid", "miss"))
   expect_equal(out[[3]]$value, c(-99))
+})
+
+test_that("checkEmptyValLabels data.frame", {
+  out <- checkEmptyValLabels(dfSAV, output = "data.frame")
+  expect_equal(names(out), c("variable", "value", "valLabel", "missings"))
+  expect_equal(nrow(out), 3)
+  expect_equal(out$value, c(-96, -99, -99))
+  expect_equal(out$valLabel, c("missing", NA, "missing"))
+  expect_equal(out$missings, c("valid", "miss", "miss"))
+  expect_equal(out$variable, c("VAR2", "VAR2", "VAR3"))
 })
 
 test_that("checkMissingValLabels", {
@@ -62,7 +73,7 @@ test_that("With NAs", {
 
 test_that("with specific value range", {
   out <- checkEmptyValLabels(dfSAV, valueRange = c(-97, -100))
-  expect_equal(nrow(out[[1]]), 0)
+  expect_equal(out[[1]], NULL)
   expect_equal(nrow(out[[2]]), 1)
   expect_equal(nrow(out[[3]]), 1)
 
