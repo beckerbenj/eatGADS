@@ -46,6 +46,7 @@ checkEmptyValLabels.GADSdat <- function(GADSdat, vars = namesGADS(GADSdat), valu
     i_real_values <- unique(GADSdat$dat[, i])[!is.na(unique(GADSdat$dat[, i]))]
     empty_values <- setdiff(i_labeled_values, i_real_values)
     label_no_values[[i]] <- i_meta[i_meta$value %in% empty_values, c("value", "valLabel", "missings")]
+    label_no_values[[i]] <- label_no_values[[i]][order(label_no_values[[i]][, "value"]), ]
   }
 
   if(!is.null(valueRange)) {
@@ -85,7 +86,7 @@ checkMissingValLabels.GADSdat <- function(GADSdat, vars = namesGADS(GADSdat), va
     if(length(missing_values) > 0) {
       not_labeled[[i]] <- list()
       not_labeled[[i]]$varLabel <- i_meta[1, "varLabel"]
-      not_labeled[[i]]$missing_labels <- missing_values
+      not_labeled[[i]]$missing_labels <- sort(missing_values)
     }
   }
 

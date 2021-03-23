@@ -29,9 +29,9 @@ test_that("checkEmptyValLabels", {
   expect_equal(names(out), paste0("VAR", 1:3))
   expect_equal(out[[1]], NULL)
   expect_equal(names(out[[2]]), c("value", "valLabel", "missings"))
-  expect_equal(out[[2]]$value, c(-96, -99))
-  expect_equal(out[[2]]$valLabel, c("missing", NA))
-  expect_equal(out[[2]]$missings, c("valid", "miss"))
+  expect_equal(out[[2]]$value, c(-99, -96))
+  expect_equal(out[[2]]$valLabel, c(NA, "missing"))
+  expect_equal(out[[2]]$missings, c("miss", "valid"))
   expect_equal(out[[3]]$value, c(-99))
 })
 
@@ -39,9 +39,9 @@ test_that("checkEmptyValLabels data.frame", {
   out <- checkEmptyValLabels(dfSAV, output = "data.frame")
   expect_equal(names(out), c("variable", "value", "valLabel", "missings"))
   expect_equal(nrow(out), 3)
-  expect_equal(out$value, c(-96, -99, -99))
-  expect_equal(out$valLabel, c("missing", NA, "missing"))
-  expect_equal(out$missings, c("valid", "miss", "miss"))
+  expect_equal(out$value, c(-99, -96, -99))
+  expect_equal(out$valLabel, c(NA, "missing", "missing"))
+  expect_equal(out$missings, c("miss", "valid", "miss"))
   expect_equal(out$variable, c("VAR2", "VAR2", "VAR3"))
 })
 
@@ -54,6 +54,10 @@ test_that("checkMissingValLabels", {
   expect_equal(out[[3]]$varLabel, "Variable 3")
   expect_equal(out[[1]]$missing_labels, 2)
   expect_equal(out[[2]]$missing_labels, 1)
+
+  dfSAV2 <- removeValLabels(dfSAV, "VAR1", value = c(-99, -96, 1))
+  out2 <- checkMissingValLabels(dfSAV2)
+  expect_equal(out2[[1]]$missing_labels, c(-99, -96, 1, 2))
 })
 
 
