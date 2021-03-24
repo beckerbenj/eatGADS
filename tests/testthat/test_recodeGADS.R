@@ -12,6 +12,14 @@ test_that("Recode wrapper", {
   expect_equal(out2$datList$dfSAV$VAR1, c(10, -99, -96, 2))
 })
 
+test_that("Recode wrapper for unlabeled values", {
+  out <- recodeGADS(dfSAV, varName = "VAR1", oldValues = c(2), newValues = c(10))
+  expect_equal(out$dat$VAR1, c(1, -99, -96, 10))
+  allG <- mergeLabels(dfSAV = dfSAV, df2 = df2)
+  out2 <- recodeGADS(allG, varName = "VAR1", oldValues = c(2), newValues = c(10))
+  expect_equal(out2$datList$dfSAV$VAR1, c(1, -99, -96, 10))
+})
+
 test_that("Recode wrapper errors", {
   df <- data.frame(v1 = 1:2, v2 = c("a", "b"), stringsAsFactors = FALSE)
   g <- import_DF(df)
@@ -25,6 +33,8 @@ test_that("Recode wrapper errors", {
 
   expect_error(recodeGADS(dfSAV, varName = "VAR1", oldValues = c(-99), newValues = c(1)),
                "Values in 'value_new' with existing meta data in variable VAR1: 1")
+  expect_error(out <- recodeGADS(dfSAV, varName = "VAR1", oldValues = c(3), newValues = c(10)),
+               "The following value in 'oldValues' is neither a labeled value in the meta data nor an actual value in the 'GADSdat': 3")
 })
 
 

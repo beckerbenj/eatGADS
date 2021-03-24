@@ -4,6 +4,8 @@
 * `fac2dummies()` and `fac2dummies_complex()` for recoding a labeled factor variable to multiple labeled dummy variables
 * `equalGADS()` for comparing the complete structure and content of two `GADSdat` objects
 * `reuseMeta()` now allows only transferring value labels for values coded as missing
+* `recodeGADS()` now allows recoding of unlabeled values
+* `checkEmptyValLabels()` and `checkMissingValLabels()` provide cleaner output
 
 # eatGADS 0.16.0
 

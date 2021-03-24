@@ -31,7 +31,7 @@ Recode a labeled variable as part of a \code{GADSdat} or \code{all_GADSdat} obje
 }
 \details{
 Applied to a \code{GADSdat} or \code{all_GADSdat} object, this function is a wrapper of \code{\link{getChangeMeta}}
-and \code{\link{applyChangeMeta}}.
+and \code{\link{applyChangeMeta}}. Beyond that, unlabeled values are recoded as well.
 \code{oldValues} and \code{newValues} are matched by ordering in the function call.
 
 If changes are performed on value levels, recoding into

@@ -5,7 +5,7 @@
 #' Recode a labeled variable as part of a \code{GADSdat} or \code{all_GADSdat} object.
 #'
 #' Applied to a \code{GADSdat} or \code{all_GADSdat} object, this function is a wrapper of \code{\link{getChangeMeta}}
-#' and \code{\link{applyChangeMeta}}.
+#' and \code{\link{applyChangeMeta}}. Beyond that, unlabeled values are recoded as well.
 #' \code{oldValues} and \code{newValues} are matched by ordering in the function call.
 #'
 #' If changes are performed on value levels, recoding into
@@ -56,7 +56,15 @@ recodeGADS.GADSdat <- function(GADSdat, varName, oldValues, newValues, existingM
       changeTable[changeTable$varName == varName & changeTable$value == oldValues[i], "value_new"] <- newValues[i]
     }
   }
-  applyChangeMeta(GADSdat, changeTable = changeTable, existingMeta = existingMeta)
+  out <- applyChangeMeta(GADSdat, changeTable = changeTable, existingMeta = existingMeta)
+
+  # recode values without labels (not the best solution but better usability)
+  other_recodes <- which(!oldValues %in% changeTable[, "value"] & !is.na(oldValues))
+  for(i in other_recodes) {
+    if(!oldValues[i] %in% GADSdat$dat[, varName]) stop("The following value in 'oldValues' is neither a labeled value in the meta data nor an actual value in the 'GADSdat': ", oldValues[i])
+    out$dat[which(GADSdat$dat[, varName] == oldValues[i]), varName] <- newValues[i]
+  }
+  out
 }
 
 #'@export
