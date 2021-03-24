@@ -36,8 +36,9 @@ test_that("Recode wrapper errors", {
 
   expect_error(recodeGADS(dfSAV, varName = "VAR1", oldValues = c(-99), newValues = c(1)),
                "Values in 'value_new' with existing meta data in variable VAR1: 1")
-  expect_error(out <- recodeGADS(dfSAV, varName = "VAR1", oldValues = c(3), newValues = c(10)),
-               "The following value in 'oldValues' is neither a labeled value in the meta data nor an actual value in the 'GADSdat': 3")
+  expect_warning(out <- recodeGADS(dfSAV, varName = "VAR1", oldValues = c(3), newValues = c(10)),
+               "The following value in 'oldValues' is neither a labeled value in the meta data nor an actual value in VAR1: 3")
+  expect_equal(out, dfSAV)
 })
 
 
