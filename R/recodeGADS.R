@@ -59,7 +59,7 @@ recodeGADS.GADSdat <- function(GADSdat, varName, oldValues, newValues, existingM
   out <- applyChangeMeta(GADSdat, changeTable = changeTable, existingMeta = existingMeta)
 
   # recode values without labels (not the best solution but better usability)
-  other_recodes <- which(!oldValues %in% changeTable[, "value"] & !is.na(oldValues))
+  other_recodes <- which(!oldValues %in% changeTable[changeTable$varName == varName, "value"] & !is.na(oldValues))
   for(i in other_recodes) {
     if(!oldValues[i] %in% GADSdat$dat[, varName]) stop("The following value in 'oldValues' is neither a labeled value in the meta data nor an actual value in the 'GADSdat': ", oldValues[i])
     out$dat[which(GADSdat$dat[, varName] == oldValues[i]), varName] <- newValues[i]

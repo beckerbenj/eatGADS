@@ -13,6 +13,9 @@ test_that("Recode wrapper", {
 })
 
 test_that("Recode wrapper for unlabeled values", {
+  dfSAV2 <- dfSAV
+  dfSAV2$dat[2, 2] <- 2
+
   out <- recodeGADS(dfSAV, varName = "VAR1", oldValues = c(2), newValues = c(10))
   expect_equal(out$dat$VAR1, c(1, -99, -96, 10))
   allG <- mergeLabels(dfSAV = dfSAV, df2 = df2)
