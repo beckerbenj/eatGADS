@@ -238,7 +238,7 @@ eatAnalysis::write_xlsx(meta_var, row.names = FALSE, "variable_changes.xlsx")
 
 &nbsp;
 
-![](changeTable_variable.PNG)
+![](changeTable_var.PNG)
 
 &nbsp;
 
@@ -280,7 +280,7 @@ eatAnalysis::write_xlsx(meta_val, row.names = FALSE, "value_changes.xlsx")
 
 &nbsp;
 
-![](changeTable_value.PNG)
+![](changeTable_val.PNG)
 
 &nbsp;
 
