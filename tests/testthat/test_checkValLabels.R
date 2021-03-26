@@ -14,8 +14,7 @@ test_that("Input validation", {
                "'valueRange' needs to be a numeric vector of length 2.")
   expect_error(checkEmptyValLabels(df1, valueRange = letters[3:4]),
                "'valueRange' needs to be a numeric vector of length 2.")
-  expect_error(checkEmptyValLabels(df1, output = "List"),
-               "'arg' should be one of .list., .data.frame.")
+  expect_error(checkEmptyValLabels(df1, output = "List"))
   expect_error(checkMissingValLabels(df1, vars = 3:4),
                "The following 'vars' are not variables in the GADSdat: 3, 4")
   expect_error(checkMissingValLabels(df1, valueRange = 3:5),
