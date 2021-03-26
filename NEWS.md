@@ -7,6 +7,9 @@
 * `recodeGADS()` now allows recoding of unlabeled values
 * `checkEmptyValLabels()` and `checkMissingValLabels()` provide cleaner output
 
+# Internal
+* better performance of `applyChangeMeta()` on value level
+
 # eatGADS 0.16.0
 
 * `checkEmptyValLabels()` and `checkMissingValLabels()` for comparing values in the data and value labels
