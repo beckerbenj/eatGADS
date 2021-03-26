@@ -147,8 +147,6 @@ recode_dat <- function(dat, changeTable) {
 }
 
 recode_labels <- function(labels, changeTable, existingMeta) {
-  labels <- expand_labels(labels, new_varName_vec = changeTable$varName)
-
   changeTable <- changeTable[order(match(changeTable$varName, unique(labels$varName))), ]
   simple_change_vars <- c("valLabel_new", "missings_new", "value_new")
   simpleChanges <- changeTable[, c("varName", "value", simple_change_vars), drop = FALSE]
@@ -159,9 +157,12 @@ recode_labels <- function(labels, changeTable, existingMeta) {
   if(nrow(simpleChanges) == 0) return(labels)
 
   # split labels and merge & sort later
-  varName_in_simpleChanges <- labels$varName %in% simpleChanges$varName
+  vars_with_changes <- unique(simpleChanges$varName)
+  varName_in_simpleChanges <- labels$varName %in% vars_with_changes
   untouched_labels <- labels[!varName_in_simpleChanges, ]
   modify_labels <- labels[varName_in_simpleChanges, ]
+  #browser()
+  modify_labels <- expand_labels(modify_labels, new_varName_vec = changeTable$varName[changeTable$varName %in% vars_with_changes])
 
   modify_labels_list <- split(modify_labels, factor(modify_labels$varName, levels = unique(modify_labels$varName)))
   modify_labels_list2 <- lapply(modify_labels_list, function(single_labels) {
@@ -235,6 +236,7 @@ recode_labels <- function(labels, changeTable, existingMeta) {
 # if value labels are added, this function adds the necessary rows in the labels df, that are later filled with new values & labels
 expand_labels <- function(labels, new_varName_vec) {
   if(nrow(labels) == length(new_varName_vec)) return(labels)
+
   old_order <- unique(labels$varName)
   new_row_list <- by(labels, labels$varName, function(labels_sub) {
     i <- unique(labels_sub$varName)
