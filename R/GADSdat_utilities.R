@@ -33,19 +33,18 @@ check_GADSdat <- function(GADSdat) {
     })
   }
 
-  var_info <- unique(GADSdat$labels[, c("varName", "varLabel", "format", "display_width", "labeled")])
-  if(nrow(var_info) != length(unique(names(GADSdat$dat)))) {
-    by(GADSdat$labels, GADSdat$labels$varName, function(labels) {
-      if(nrow(unique(labels[, c("varName", "varLabel", "format", "display_width", "labeled")])) > 1) {
-        stop("The following variable has inconsistent meta information on variable level: ", unique(labels$varName))
-      }
-    })
-  }
+}
 
-  # maybe later remove this test due to performance?
+check_GADSdat_varLevel_meta <- function(GADSdat) {
+  # maybe later remove these tests due to performance?
   by(GADSdat$labels, GADSdat$labels$varName, function(labels) {
     if(any(duplicated(labels$value[!is.na(labels$value)]))) {
-      stop("The following variable has duplicate values rows in its meta data: ", unique(labels$varName))
+      stop("The following variable has duplicate values rows in its meta data: ", labels$varName[1])
     }
+    unique_lengthes <- length(unique(labels$varLabel)) + length(unique(labels$format)) + length(unique(labels$labeled))
+    if(unique_lengthes != 3) {
+      stop("The following variable has inconsistent meta information on variable level: ", labels$varName[1])
+    }
+
   })
 }

@@ -1,6 +1,6 @@
 --- 
 title: "Modifying Meta Data"
-author: "Marlen Holtman, Johanna Busse, Benjamin Becker"
+author: "Marlen Holtmann, Johanna Busse, Benjamin Becker"
 date: "`r Sys.Date()`"
 output: rmarkdown::html_vignette
 vignette: >

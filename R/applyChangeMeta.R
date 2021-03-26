@@ -59,6 +59,7 @@ applyChangeMeta.varChanges <- function(changeTable, GADSdat, ...) {
 
   out_GADSdat <- new_GADSdat(dat = dat, labels = labels)
   check_GADSdat(out_GADSdat)
+  check_GADSdat_varLevel_meta(out_GADSdat)
   out_GADSdat
 }
 
@@ -81,6 +82,7 @@ applyChangeMeta.valChanges <- function(changeTable, GADSdat, existingMeta = c("s
 
   out_GADSdat <- new_GADSdat(dat = dat, labels = labels2)
   check_GADSdat(out_GADSdat)
+  #check_GADSdat_varLevel_meta(out_GADSdat)
   out_GADSdat
 }
 
@@ -156,8 +158,13 @@ recode_labels <- function(labels, changeTable, existingMeta) {
                                      is.na(simpleChanges$value_new)), ]
   if(nrow(simpleChanges) == 0) return(labels)
 
-  labels_list <- split(labels, factor(labels$varName, levels = unique(labels$varName)))
-  labels <- do.call(rbind, lapply(labels_list, function(single_labels) {
+  # split labels and merge & sort later
+  varName_in_simpleChanges <- labels$varName %in% simpleChanges$varName
+  untouched_labels <- labels[!varName_in_simpleChanges, ]
+  modify_labels <- labels[varName_in_simpleChanges, ]
+
+  modify_labels_list <- split(modify_labels, factor(modify_labels$varName, levels = unique(modify_labels$varName)))
+  modify_labels_list2 <- lapply(modify_labels_list, function(single_labels) {
     var_name <- unique(single_labels$varName)
     if(!var_name %in% simpleChanges$varName) return(single_labels)
 
@@ -211,20 +218,23 @@ recode_labels <- function(labels, changeTable, existingMeta) {
     }
 
   if(length(remove_rows) > 0) single_labels <- single_labels[-remove_rows, ]
-    sort_value_labels(single_labels)
-  }))
+    # unique rows necessary because of multiple recodes into the same value
+    unique(sort_value_labels(single_labels))
+  })
+  modify_labels <- do.call(rbind, modify_labels_list2)
+  labels_new <- data.table::as.data.table(rbind(untouched_labels, modify_labels))
+  labels_new <- as.data.frame(labels_new[order(match(labels_new$varName, unique(labels$varName))), ])
 
   # fix labeled column
   # important: this should change a variable to "labeled" to export it later properly to spss
-  labels[, "labeled"] <- ifelse(!is.na(labels[, "value"]), yes = "yes", no = labels[, "labeled"])
-  # unique rows necessary because of multiple recodes into the same value
-  labels <- unique(labels)
-  rownames(labels) <- NULL
-  labels
+  labels_new[, "labeled"] <- ifelse(!is.na(labels_new[, "value"]), yes = "yes", no = labels_new[, "labeled"])
+  rownames(labels_new) <- NULL
+  labels_new
 }
 
 # if value labels are added, this function adds the necessary rows in the labels df, that are later filled with new values & labels
 expand_labels <- function(labels, new_varName_vec) {
+  if(nrow(labels) == length(new_varName_vec)) return(labels)
   old_order <- unique(labels$varName)
   new_row_list <- by(labels, labels$varName, function(labels_sub) {
     i <- unique(labels_sub$varName)
