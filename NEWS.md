@@ -9,6 +9,7 @@
 
 # Internal
 * better performance of `applyChangeMeta()` on value level
+* bug fixes `recodeGADS()`
 
 # eatGADS 0.16.0
 

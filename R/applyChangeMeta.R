@@ -75,10 +75,7 @@ applyChangeMeta.valChanges <- function(changeTable, GADSdat, existingMeta = c("s
   # 01) values in data
   dat <- recode_dat(dat = dat, changeTable = changeTable)
   # 02) valueLabels, missings and values in labels
-  labels <- recode_labels(labels = labels, changeTable = changeTable, existingMeta = existingMeta)
-
-  # 03) if variable was unlabeled before, set to labeled
-  labels2 <- update_labeled_col(labels)
+  labels2 <- recode_labels(labels = labels, changeTable = changeTable, existingMeta = existingMeta)
 
   out_GADSdat <- new_GADSdat(dat = dat, labels = labels2)
   check_GADSdat(out_GADSdat)
@@ -256,6 +253,7 @@ expand_labels <- function(labels, new_varName_vec) {
 
 
 # updates the labeled column in the meta data according to the value column
+# currently not in use, was to strict (problems when some values were NA (originally strings) in labels, some not)
 update_labeled_col <- function(labels) {
   labels$labeled <- ifelse(is.na(labels$value), yes = "no", no = "yes")
   labels

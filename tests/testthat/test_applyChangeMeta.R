@@ -162,6 +162,18 @@ test_that("update labeled helper", {
   expect_equal(out[2, "labeled"], "no")
 })
 
+test_that("update of labeled column", {
+  dfSAV2 <- removeValLabels(dfSAV, "VAR3", value = c(-99, -98))
+  dfSAV2$labels[3, "value"] <- NA
+  expect_silent(check_GADSdat(dfSAV2))
+
+  changeTab <- getChangeMeta(dfSAV2, "value")
+  changeTab[6, "value_new"] <- -99
+  changeTab[6, "valLabel_new"] <- "a label"
+
+  out <- applyChangeMeta(changeTab, dfSAV2)
+})
+
 test_that("Adding value labels to an unlabeled variable", {
   iris2 <- as.data.frame(iris, stringsAsFactors = TRUE)
   suppressMessages(g <- import_DF(iris2))
