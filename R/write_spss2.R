@@ -10,7 +10,7 @@
 #'@param GADSdat A \code{GADSdat} object.
 #'@param filePath Path of \code{.txt} file to write.
 #'@param syntaxPath Path of \code{.sps} file to write.
-#'@param dec Decimal delimiter for your SPSS version..
+#'@param dec Decimal delimiter for your SPSS version.
 #'
 #'@return Writes \code{sav} file to disc, returns \code{NULL}.
 #'
