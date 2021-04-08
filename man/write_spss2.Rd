@@ -4,7 +4,7 @@
 \alias{write_spss2}
 \title{Write a \code{GADSdat} object to \code{txt} and \code{SPSS} syntax}
 \usage{
-write_spss2(GADSdat, filePath, syntaxPath)
+write_spss2(GADSdat, filePath, syntaxPath, dec = ".")
 }
 \arguments{
 \item{GADSdat}{A \code{GADSdat} object.}
