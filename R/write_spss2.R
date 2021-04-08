@@ -10,6 +10,7 @@
 #'@param GADSdat A \code{GADSdat} object.
 #'@param filePath Path of \code{.txt} file to write.
 #'@param syntaxPath Path of \code{.sps} file to write.
+#'@param dec Decimal delimiter for your SPSS version..
 #'
 #'@return Writes \code{sav} file to disc, returns \code{NULL}.
 #'
@@ -89,13 +90,8 @@ max(nchar(na.omit(unlist(lapply(strsplit(as.character(na.omit(abs(c(GADSdat$dat[
   if (nrow(valInfo) > 0) {
 
     cat("\nVALUE LABELS\n", file = syntaxPath, append = TRUE)
-# überlegen, ob für string variablen post hoc die labels$value auf character setzen
     for (v in unique(valInfo$varName)) {
       cat(" /", v, "\n", file = syntaxPath, append = TRUE)
-      #if (any(nchar(valueLabels) > 120L)) {
-      #  cat(paste(funVersion, "Value labels for variable", v , "longer than 120 characters. Only the first 120 characters will be used.\n"))
-       # valueLabels <- substring(valueLabels, 1, 120)
-      #}
       cat(paste("  ", valInfo$value, autoQuote(valInfo$valLabel),"\n",  sep = " "),
           file = syntaxPath, append = TRUE)
     }
