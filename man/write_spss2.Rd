@@ -12,6 +12,8 @@ write_spss2(GADSdat, filePath, syntaxPath, dec = ".")
 \item{filePath}{Path of \code{.txt} file to write.}
 
 \item{syntaxPath}{Path of \code{.sps} file to write.}
+
+\item{dec}{Decimal delimiter in your SPSS version.}
 }
 \value{
 Writes \code{sav} file to disc, returns \code{NULL}.
