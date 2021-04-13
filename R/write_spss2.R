@@ -12,7 +12,7 @@
 #'@param syntaxPath Path of \code{.sps} file to write.
 #'@param dec Decimal delimiter for your SPSS version.
 #'
-#'@return Writes \code{sav} file to disc, returns \code{NULL}.
+#'@return Writes a \code{txt} and an \code{sav} file to disc, returns nothing.
 #'
 #'
 #'@export
@@ -38,13 +38,13 @@ write_spss2.GADSdat <- function(GADSdat, filePath, syntaxPath, dec =".") {
 
   chv <- sapply(GADSdat$dat, is.character)
   lengths <- sapply(names(GADSdat$dat), function(ll) { if(is.numeric(GADSdat$dat[,ll]) & is.numeric(labels$value[labels$varName==ll])) {
-                            max(nchar(round(na.omit(abs(c(GADSdat$dat[,ll],labels$value[labels$varName==ll]))), digits=0)))
+                            max(nchar(round(stats::na.omit(abs(c(GADSdat$dat[,ll],labels$value[labels$varName==ll]))), digits=0)))
                            } else {
                             max(nchar(c(GADSdat$dat[,ll],labels$value[labels$varName==ll])))
                             }
                           })
   decimals <- sapply(names(GADSdat$dat), function(ll) { if(is.numeric(GADSdat$dat[,ll]) & is.numeric(labels$value[labels$varName==ll])) {
-                            max(nchar(as.character(na.omit(abs(c(GADSdat$dat[,ll],labels$value[labels$varName==ll]))))))
+                            max(nchar(as.character(stats::na.omit(abs(c(GADSdat$dat[,ll],labels$value[labels$varName==ll]))))))
                           } else {
                             max(nchar(c(GADSdat$dat[,ll],labels$value[labels$varName==ll])))
                             }
@@ -53,9 +53,9 @@ write_spss2.GADSdat <- function(GADSdat, filePath, syntaxPath, dec =".") {
   varsWithDecimals <-  names(which(lengths != decimals))
 
   decimals2 <- sapply(varsWithDecimals, function(ll) {if(is.numeric(GADSdat$dat[,ll]) & is.numeric(labels$value[labels$varName==ll])) {
-max(nchar(na.omit(unlist(lapply(strsplit(as.character(na.omit(abs(c(GADSdat$dat[,ll],labels$value[labels$varName==ll])))),"\\."), function(b) b[2])))))
+max(nchar(stats::na.omit(unlist(lapply(strsplit(as.character(stats::na.omit(abs(c(GADSdat$dat[,ll],labels$value[labels$varName==ll])))),"\\."), function(b) b[2])))))
                           } else {
-                            max(nchar(na.omit(unlist(lapply(strsplit(na.omit(c(GADSdat$dat[,ll],labels$value[labels$varName==ll])),"\\."), function(b) b[2])))))
+                            max(nchar(stats::na.omit(unlist(lapply(strsplit(stats::na.omit(c(GADSdat$dat[,ll],labels$value[labels$varName==ll])),"\\."), function(b) b[2])))))
                             }
                          })
 

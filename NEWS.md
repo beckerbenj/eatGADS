@@ -6,6 +6,7 @@
 * `reuseMeta()` now allows only transferring value labels for values coded as missing
 * `recodeGADS()` now allows recoding of unlabeled values
 * `checkEmptyValLabels()` and `checkMissingValLabels()` provide cleaner output
+* `write_spss2()` for writing `.sav` files via a text file and a `SPSS` syntax
 
 # Internal
 * better performance of `applyChangeMeta()` on value level

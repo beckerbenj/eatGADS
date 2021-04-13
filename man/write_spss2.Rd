@@ -13,10 +13,10 @@ write_spss2(GADSdat, filePath, syntaxPath, dec = ".")
 
 \item{syntaxPath}{Path of \code{.sps} file to write.}
 
-\item{dec}{Decimal delimiter in your SPSS version.}
+\item{dec}{Decimal delimiter for your SPSS version.}
 }
 \value{
-Writes \code{sav} file to disc, returns \code{NULL}.
+Writes a \code{txt} and an \code{sav} file to disc, returns nothing.
 }
 \description{
 Write a \code{GADSdat} object to a text file (\code{txt}) and an accompanying \code{SPSS} syntax file containing all meta information (e.g. value and variable labels).
