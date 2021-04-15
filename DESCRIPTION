@@ -4,7 +4,7 @@ Version: 0.16.0.9000
 Authors@R: person("Benjamin", "Becker", email = "b.becker@iqb.hu-berlin.de", role = c("aut", "cre"))
 Description: Import 'SPSS' data, handle and change 'SPSS' meta data, store and access large hierarchical data in 'SQLite' data bases.
 Depends: R (>= 3.5.0)
-Imports: eatDB (>= 0.4.1), haven (>= 2.1.0), plyr, eatTools (>= 0.4.0), tibble, data.table, hms, stats
+Imports: eatDB (>= 0.4.1), haven (>= 2.4.0), plyr, eatTools (>= 0.4.0), tibble, data.table, hms, stats
 License: GPL (>= 2)
 URL: https://github.com/beckerbenj/eatGADS
 Encoding: UTF-8

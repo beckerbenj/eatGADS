@@ -27,8 +27,8 @@ The provided functionality relies on \code{havens} \code{\link[haven:read_spss]{
 \code{\link[haven:read_dta]{write_dta}} functions.
 
 Currently known limitations for \code{write_spss} are:
-(a) Missing codes for all character variables are dropped, (b) value labels for long character variables (> \code{A10}) are
-dropped, (c) under specific conditions very long character variables (> \code{A254}) are incorrectly displayed as multiple
+(a) value labels for long character variables (> \code{A10}) are
+dropped, (b) under specific conditions very long character variables (> \code{A254}) are incorrectly displayed as multiple
 character variables in \code{SPSS}. Furthermore, \code{write_spss} currently does not support exporting date or time variables.
 
 Currently known limitations for \code{write_stata} are:

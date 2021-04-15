@@ -62,7 +62,7 @@ test_that("Check haven behaviour", {
                                display_width = 14,
                                format.spss = "F6.0",
                                class = c("haven_labelled_spss", "haven_labelled"))
-  #expect_error(haven::write_sav(test3, "helper_write_spss_test.sav"))
+  #expect_error(haven::write_sav(test3, tempfile())
 
   ## Note to myself: There is still a haven bug regarding wide string variable when reading (missing codes are dropped)
   # and writing (sometimes all missing codes and value labels are dropped; haven 2.2.0, 24.03.2020)
@@ -90,13 +90,13 @@ test_that("Haven and eatGADS import and export missing codes correctly", {
 
   expect_equal(attributes(rawDat_missings$VAR1), attributes(out$VAR1))
 
-  ###character variables (na_values not yet implemented, see https://github.com/tidyverse/haven/issues/409)
+  ###character variables
   #rawDat_missings2 <- haven::read_spss("tests/testthat/helper_spss_havenbug.sav", user_na = TRUE)
-  #rawDat_missings2 <- haven::read_spss("helper_spss_havenbug.sav", user_na = TRUE)
-  #f2 <- paste0(tempfile(), ".sav")
-  #haven::write_sav(rawDat_missings2, f2)
-  #out2 <- haven::read_spss(f2, user_na = TRUE)
-  #expect_equal(attributes(rawDat_missings2$v2)$na_values, attributes(out2$v2)$na_values)
+  rawDat_missings2 <- haven::read_spss("helper_spss_havenbug.sav", user_na = TRUE)
+  f2 <- paste0(tempfile(), ".sav")
+  haven::write_sav(rawDat_missings2, f2)
+  out2 <- haven::read_spss(f2, user_na = TRUE)
+  expect_equal(attributes(rawDat_missings2$v2)$na_values, attributes(out2$v2)$na_values)
 })
 
 test_that("Write variables with missing codes", {
@@ -119,8 +119,8 @@ test_that("Write variables with missing codes", {
   expect_equal(attributes(out$v2)$na_values, c(-99))
   # character
   expect_equal(attributes(out$v1)$labels, c(miss2 = "-99", miss1 = "-96"))
-  ###character variables (na_values not yet implemented, see https://github.com/tidyverse/haven/issues/409)
-  #expect_equal(attributes(out$v1)$na_values, c(-96, -99))
+  # (implemented since haven 2.4.0, see https://github.com/tidyverse/haven/issues/409)
+  expect_equal(attributes(out$v1)$na_values, c("-99", "-96"))
 })
 
 

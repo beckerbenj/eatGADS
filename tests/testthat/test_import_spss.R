@@ -42,7 +42,7 @@ test_that("Haven bug for value labels of long string variables does no longer ex
 
 test_that("Warning for haven bug causing loss of missing codes for long strings", {
   warns <- capture_warnings(import_spss("helper_spss_havenbug.sav"))
-  # warns <- capture_warnings(import_spss("c:/Benjamin_Becker/02_Repositories/packages/eatGADS/tests/testthat/helper_spss_havenbug.sav"))
+  # warns <- capture_warnings(out <- import_spss("c:/Benjamin_Becker/02_Repositories/packages/eatGADS/tests/testthat/helper_spss_havenbug.sav"))
   expect_equal(warns[[1]],
                paste("Due to a bug in haven, missing codes of character variables can be lost. Checking missing codes via checkMissings is recommended. The following variables might be affected: \n v2, v3, v4"))
 })

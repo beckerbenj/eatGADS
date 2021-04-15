@@ -83,16 +83,18 @@ addLabels_single <- function(label_df, varClass) {
   if(nrow(value_label_df) > 0) {
     out[["labels"]] <- value_label_df[, "value"]
     names(out[["labels"]]) <- value_label_df[, "valLabel"]
+  }
 
-    # value labels need to have the same class as the variable format
-    #if(all(label_df$varName == "groupVar")) browser()
-    if((length(out[["format.spss"]]) > 0 && grepl("^A", unique(out[["format.spss"]]))) || identical(varClass, "character")) {
-      #if((length(out[["format.spss"]]) > 0 && grepl("^A", unique(out[["format.spss"]])))) {
+  # value labels and missing codes need to have the same class as the variable format
+  #if(all(label_df$varName == "groupVar")) browser()
+  if((length(out[["format.spss"]]) > 0 && grepl("^A", unique(out[["format.spss"]]))) || identical(varClass, "character")) {
+    #if((length(out[["format.spss"]]) > 0 && grepl("^A", unique(out[["format.spss"]])))) {
+    out[["na_values"]] <- as.character(out[["na_values"]])
+    if(nrow(value_label_df) > 0) {
       out[["labels"]] <- as.character(out[["labels"]])
       names(out[["labels"]]) <- value_label_df[, "valLabel"]
-      #if(!is.null(out[["na_values"]]))
-      #if(identical(labeled, "yes")) out[["class"]] <- c("haven_labelled")
     }
+    #if(identical(labeled, "yes")) out[["class"]] <- c("haven_labelled")
   }
 
   #if(any(label_df$varName == "TESTUNG")) browser()
