@@ -2,7 +2,7 @@
 % Please edit documentation in R/recodeGADS.R
 \name{recodeGADS}
 \alias{recodeGADS}
-\title{Recode a labeled variable.}
+\title{Recode a variable.}
 \usage{
 recodeGADS(
   GADSdat,
@@ -27,11 +27,11 @@ recodeGADS(
 Returns a \code{GADSdat}.
 }
 \description{
-Recode a labeled variable as part of a \code{GADSdat} or \code{all_GADSdat} object.
+Recode a variable as part of a \code{GADSdat} or \code{all_GADSdat} object.
 }
 \details{
 Applied to a \code{GADSdat} or \code{all_GADSdat} object, this function is a wrapper of \code{\link{getChangeMeta}}
-and \code{\link{applyChangeMeta}}. Beyond that, unlabeled values are recoded as well.
+and \code{\link{applyChangeMeta}}. Beyond that, unlabeled variables and values are recoded as well.
 \code{oldValues} and \code{newValues} are matched by ordering in the function call.
 
 If changes are performed on value levels, recoding into

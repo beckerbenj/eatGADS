@@ -23,13 +23,18 @@ test_that("Recode wrapper for unlabeled values", {
   expect_equal(out2$datList$dfSAV$VAR1, c(1, -99, -96, 10))
 })
 
+test_that("Recode wrapper for unlabeled variables", {
+  out <- recodeGADS(df1, varName = "V1", oldValues = c(3, 5), newValues = c(30, 50))
+  expect_equal(out$dat$V1, c(30, 50))
+})
+
 test_that("Recode wrapper errors", {
   df <- data.frame(v1 = 1:2, v2 = c("a", "b"), stringsAsFactors = FALSE)
   g <- import_DF(df)
   expect_error(recodeGADS(g, varName = "v3", oldValues = c(1), newValues = c(10)),
                "'varName' is not a real variable name.")
-  expect_error(recodeGADS(g, varName = "v2", oldValues = c(1), newValues = c(10)),
-               "'varName' needs to be a labeled variable in the GADS.")
+  #expect_error(recodeGADS(g, varName = "v2", oldValues = c(1), newValues = c(10)),
+  #             "'varName' needs to be a labeled variable in the GADS.")
 
   expect_error(recodeGADS(dfSAV, varName = "VAR1", oldValues = c(1), newValues = c(NA)),
                "Missing value(s) in 'newValues'. Recode to NA using recodeString2NA() if required.", fixed = TRUE)

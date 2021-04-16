@@ -8,6 +8,7 @@
 * `checkEmptyValLabels()` and `checkMissingValLabels()` provide cleaner output
 * `write_spss2()` for writing `.sav` files via a text file and a `SPSS` syntax
 * `import_spss()` and `write_spss()` now deal correctly with missing codes for character variables
+* `recodeGADS()` allows recoding of unlabeled variables and values
 
 # Internal
 * better performance of `applyChangeMeta()` on value level

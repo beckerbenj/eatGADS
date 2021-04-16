@@ -1,11 +1,11 @@
 #### Recode variable
 #############################################################################
-#' Recode a labeled variable.
+#' Recode a variable.
 #'
-#' Recode a labeled variable as part of a \code{GADSdat} or \code{all_GADSdat} object.
+#' Recode a variable as part of a \code{GADSdat} or \code{all_GADSdat} object.
 #'
 #' Applied to a \code{GADSdat} or \code{all_GADSdat} object, this function is a wrapper of \code{\link{getChangeMeta}}
-#' and \code{\link{applyChangeMeta}}. Beyond that, unlabeled values are recoded as well.
+#' and \code{\link{applyChangeMeta}}. Beyond that, unlabeled variables and values are recoded as well.
 #' \code{oldValues} and \code{newValues} are matched by ordering in the function call.
 #'
 #' If changes are performed on value levels, recoding into
@@ -47,13 +47,14 @@ recodeGADS <- function(GADSdat, varName, oldValues, newValues, existingMeta = c(
 #'@export
 recodeGADS.GADSdat <- function(GADSdat, varName, oldValues, newValues, existingMeta = c("stop", "value", "value_new")) {
   checkRecodeVectors(oldValues = oldValues, newValues = newValues, varName = varName, dat = GADSdat$dat)
-  if(all(is.na(GADSdat$labels[GADSdat$labels$varName == varName, "value"]))) stop("'varName' needs to be a labeled variable in the GADS.")
+  #if(all(is.na(GADSdat$labels[GADSdat$labels$varName == varName, "value"]))) stop("'varName' needs to be a labeled variable in the GADS.")
   changeTable <- getChangeMeta(GADSdat, level = "value")
   for(i in seq_along(oldValues)) {
     if(is.na(oldValues[i])) {
       GADSdat$dat[is.na(GADSdat$dat[, varName]), varName] <- newValues[i]
     } else {
-      changeTable[changeTable$varName == varName & changeTable$value == oldValues[i], "value_new"] <- newValues[i]
+      changeTable[changeTable$varName == varName &
+                    !is.na(changeTable$value) & changeTable$value == oldValues[i], "value_new"] <- newValues[i]
     }
   }
   out <- applyChangeMeta(GADSdat, changeTable = changeTable, existingMeta = existingMeta)
