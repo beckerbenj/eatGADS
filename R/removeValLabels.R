@@ -60,8 +60,10 @@ removeValLabels.GADSdat <- function(GADSdat, varName, value, valLabel = NULL) {
     GADSdat$labels <- GADSdat$labels[-remove_rows, ]
   }
   if(length(all_rows) == length(remove_rows)) {
-    remove_rows2 <- remove_rows[-1]
-    GADSdat$labels <- GADSdat$labels[-remove_rows2, ]
+    if(length(remove_rows) > 1) {
+      remove_rows2 <- remove_rows[-1]
+      GADSdat$labels <- GADSdat$labels[-remove_rows2, ]
+    }
     GADSdat$labels[remove_rows[1], c("value", "valLabel", "missings")] <- NA
     GADSdat$labels[remove_rows[1], c("labeled")] <- "no"
   }

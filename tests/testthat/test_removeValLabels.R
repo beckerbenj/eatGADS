@@ -28,6 +28,20 @@ test_that("removeValLabels", {
   expect_equal(out$labels[out$labels$varName == "VAR1", "value"], c(1))
 })
 
+test_that("removeValLabels all labels of a variable one by one", {
+  out <- removeValLabels(dfSAV, varName = "VAR3", value = -99)
+  out2 <- removeValLabels(out, varName = "VAR3", value = -98)
+
+  expect_equal(extractMeta(out2, "VAR1"), extractMeta(dfSAV, "VAR1"))
+  expect_equal(extractMeta(out2, "VAR2"), extractMeta(dfSAV, "VAR2"))
+  meta_out <- extractMeta(out2, "VAR3")
+  expect_equal(nrow(meta_out), 1)
+  expect_equal(meta_out$value, NA_real_)
+  expect_equal(meta_out$valLabel, NA_character_)
+  expect_equal(meta_out$labeled, "no")
+})
+
+
 test_that("no valid values", {
   expect_warning(out <- removeValLabels(dfSAV, varName = "VAR1", value = 3),
                  "None of 'value' are labeled 'values'. Meta data are unchanged.")

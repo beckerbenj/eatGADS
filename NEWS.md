@@ -1,6 +1,7 @@
 
 # eatGADS 0.16.0.9000
 
+* `dummies2char()` for recoding a set of dummy variables to a set of left filled character variables
 * `fac2dummies()` and `fac2dummies_complex()` for recoding a labeled factor variable to multiple labeled dummy variables
 * `equalGADS()` for comparing the complete structure and content of two `GADSdat` objects
 * `reuseMeta()` now allows only transferring value labels for values coded as missing
@@ -13,6 +14,7 @@
 # Internal
 * better performance of `applyChangeMeta()` on value level
 * bug fixes `recodeGADS()`
+* bug fix `removeValLabels()` (when a single value label ss removed)
 
 # eatGADS 0.16.0
 
