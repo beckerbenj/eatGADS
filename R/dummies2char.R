@@ -26,7 +26,8 @@
 #'
 #'## transform dummy variables
 #'dummy_g2 <- dummies2char(dummy_g, dummies = c("d1", "d2", "d3"),
-#'                         dummyValues = c("english", "french", "german"))
+#'                         dummyValues = c("english", "french", "german"),
+#'                         charNames = c("char1", "char2", "char3"))
 #'
 #'
 #'@export
