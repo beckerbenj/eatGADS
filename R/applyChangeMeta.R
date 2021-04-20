@@ -193,7 +193,6 @@ recode_labels <- function(labels, changeTable, existingMeta) {
              paste(dup_recode_values, collapse = ", "), ". Use 'existingMeta' = 'drop' to drop all related meta data.")
       }
       # drop behavior
-      #browser()
       remove_value_meta <- single_simpleChanges[new_dup_value_vec, "value"]
       drop_meta_rows <- which(single_labels$value %in% remove_value_meta)
       single_labels[drop_meta_rows, c("valLabel", "missings")] <- NA
@@ -224,6 +223,14 @@ recode_labels <- function(labels, changeTable, existingMeta) {
         single_simpleChanges[existing_value_vec, "missings_new"] <- ifelse(is.na(single_simpleChanges[existing_value_vec, "missings_new"]),
                                                                            yes = single_labels[remove_rows, "missings"],
                                                                            no = single_simpleChanges[existing_value_vec, "missings_new"])
+      }
+      if(identical(existingMeta, "drop")) {
+        #browser()
+        # remove meta data of value which is being recoded
+        remove_value_meta <- single_simpleChanges[existing_value_vec, "value_new"]
+        remove_value_meta <- unique(c(remove_value_meta, single_simpleChanges[existing_value_vec, "value"]))
+        drop_meta_rows <- which(single_labels$value %in% remove_value_meta)
+        single_labels[drop_meta_rows, c("valLabel", "missings")] <- NA
       }
     }
 

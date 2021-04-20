@@ -129,6 +129,11 @@ test_that("Recoding multiple value into the same value (with meta data conflicts
   rownames(comp2) <- NULL
   expect_equal(comp2, out2)
 
+  out2b <- recode_labels(dfSAV$labels, changes_val2, existingMeta = "drop")
+  expect_equal(out2b[1, "value"], 1)
+  expect_equal(out2b[1, "valLabel"], NA_character_)
+  expect_equal(out2b[1, "missings"], NA_character_)
+
   out3 <- applyChangeMeta(changes_val2, GADSdat = dfSAV, existingMeta = "value_new")
   expect_equal(out3$dat$VAR1, c(1, 1, 1, 2))
   expect_equal(comp2, out3$labels)
