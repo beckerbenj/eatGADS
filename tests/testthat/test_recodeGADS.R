@@ -12,13 +12,6 @@ test_that("Recode wrapper", {
   expect_equal(out2$datList$dfSAV$VAR1, c(10, -99, -96, 2))
 })
 
-test_that("Recode wrapper multiple values into the same", {
-  expect_error(recodeGADS(dfSAV, varName = "VAR1", oldValues = c(1, -99, -96), newValues = c(10, 10, 10), existingMeta = "stop"),
-               "lala")
-  out1 <- recodeGADS(dfSAV, varName = "VAR1", oldValues = c(1, -99, -96), newValues = c(10, 10, 10), existingMeta = "value")
-  out2 <- recodeGADS(dfSAV, varName = "VAR1", oldValues = c(1, -99, -96), newValues = c(10, 10, 10), existingMeta = "value_new")
-})
-
 
 test_that("Recode wrapper for unlabeled values", {
   dfSAV2 <- dfSAV

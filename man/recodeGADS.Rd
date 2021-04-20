@@ -9,7 +9,7 @@ recodeGADS(
   varName,
   oldValues,
   newValues,
-  existingMeta = c("stop", "value", "value_new")
+  existingMeta = c("stop", "value", "value_new", "drop")
 )
 }
 \arguments{
@@ -38,6 +38,9 @@ If changes are performed on value levels, recoding into
 existing values can occur. In these cases, \code{existingMeta} determines how the resulting meta data conflicts are handled,
 either raising an error if any occur (\code{"stop"}), keeping the original meta data for the value (\code{"value"}) or using the meta
 data in the \code{changeTable} or, if incomplete, from the recoded value (\code{"value_new"}).
+
+Furthermore, one might recode multiple old values in the same new value. This is currently only possible with
+\code{existingMeta = "drop"}, which drops all related meta data on value level.
 
 Missing values (\code{NA}) are supported in \code{oldValues} but not in \code{newValues}. For recoding values to
 \code{NA} see \code{\link{recode2NA}} instead.
