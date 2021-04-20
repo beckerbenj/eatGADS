@@ -1,9 +1,9 @@
 # dfSAV <- import_spss(file = "tests/testthat/helper_spss_missings.sav")
 dfSAV <- import_spss(file = "helper_spss_missings.sav")
 
-dummy_df <- data.frame(d1 = c("eng", "no eng", "eng"),
-                       d2 = c("french", "french", "no french"),
-                       d3 = c("no ger", "ger", "no ger"),
+dummy_df <- data.frame(d1 = c("eng", "no eng", "eng", "no eng"),
+                       d2 = c("french", "french", "no french", "no french"),
+                       d3 = c("no ger", "ger", "no ger", "ger"),
                        stringsAsFactors = TRUE)
 dummy_g <- import_DF(dummy_df)
 
@@ -28,6 +28,7 @@ test_that("dummies 2 characters", {
   expect_equal(as.character(out$dat[1, 4:6]), c("english", "french", NA))
   expect_equal(as.character(out$dat[2, 4:6]), c("french", "german", NA))
   expect_equal(as.character(out$dat[3, 4:6]), c("english", NA, NA))
+  expect_equal(as.character(out$dat[4, 4:6]), c("german", NA, NA))
 
   expect_equal(extractMeta(out, "c1")$value, -99)
   expect_equal(extractMeta(out, "c1")$missings, "miss")

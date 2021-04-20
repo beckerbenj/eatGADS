@@ -8,9 +8,9 @@ mt2_gads <- import_DF(mt2)
 mt3_gads <- changeVarLabels(mt2_gads, varName = c("mc1", "mc2", "mc3"), varLabel = c("Lang: Eng", "Aus spoken", "other"))
 mt3_gads <- changeMissings(mt3_gads, varName = "text1", value = -99, missings = "miss")
 mt3_gads <- changeMissings(mt3_gads, varName = "text2", value = -99, missings = "miss")
-df <- data.frame(v1 = c("j", "i", NA, NA),
-                 v2 = c(NA, "i", NA, "k"),
-                 v3 = c("j", NA, NA, "j"), stringsAsFactors = FALSE)
+df <- data.frame(v1 = c("j", NA, NA, NA),
+                 v2 = c(NA, NA, NA, "k"),
+                 v3 = c("j", "i", NA, "j"), stringsAsFactors = FALSE)
 
 lookup <- data.frame(variable = c("v1", "v1", "v2", "v2"),
                      value = c("a, b", "b, f", "a", "k, h"),
@@ -39,14 +39,14 @@ test_that("Remove values from some variables", {
   out <- remove_values(df, vars = c("v1", "v2"), values = c("j", "i"))
   expect_equal(out$v1, c(NA_character_, NA, NA, NA))
   expect_equal(out$v2, c(NA, NA, NA, "k"))
-  expect_equal(out$v3, c("j", NA, NA, "j"))
+  expect_equal(out$v3, c("j", "i", NA, "j"))
 })
 
 
 test_that("Left fill for text variables", {
   out <- left_fill(df)
   expect_equal(out$v1, c("j", "i", NA, "k"))
-  expect_equal(out$v2, c("j", "i", NA, "j"))
+  expect_equal(out$v2, c("j", NA, NA, "j"))
   expect_equal(out$v3, c(NA_character_, NA, NA, NA))
 })
 

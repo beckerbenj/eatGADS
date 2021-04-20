@@ -5,7 +5,6 @@
 * `fac2dummies()` and `fac2dummies_complex()` for recoding a labeled factor variable to multiple labeled dummy variables
 * `equalGADS()` for comparing the complete structure and content of two `GADSdat` objects
 * `reuseMeta()` now allows only transferring value labels for values coded as missing
-* `recodeGADS()` now allows recoding of unlabeled values
 * `checkEmptyValLabels()` and `checkMissingValLabels()` provide cleaner output
 * `write_spss2()` for writing `.sav` files via a text file and a `SPSS` syntax
 * `import_spss()` and `write_spss()` now deal correctly with missing codes for character variables
@@ -15,6 +14,7 @@
 * better performance of `applyChangeMeta()` on value level
 * bug fixes `recodeGADS()`
 * bug fix `removeValLabels()` (when a single value label ss removed)
+* bug fix `collapseMultiMC_Text()` (`left_fill()`)
 
 # eatGADS 0.16.0
 

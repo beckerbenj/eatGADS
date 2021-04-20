@@ -172,11 +172,11 @@ remove_values <- function(dat, vars = names(dat), values) {
 
 # "refill" text variables (move up values) (own function)
 left_fill <- function(dat, vars = names(dat)) {
-  for(var in vars[-1]) {
-    var_left <- names(dat)[which(names(dat) == var) - 1]
-    var_left_ori <- dat[, var_left]
-    dat[, var_left] <- ifelse(is.na(dat[[var_left]]) & !is.na(dat[[var]]), yes = dat[[var]], no = dat[[var_left]])
-    dat[, var] <- ifelse(is.na(var_left_ori) & !is.na(dat[[var]]), yes = NA, no = dat[[var]])
+  len_vars <- length(vars)
+  for(i in seq(nrow(dat))) {
+    #browser()
+    entries <- na_omit(dat[i, vars])
+    dat[i, vars] <- c(entries, rep(NA, len_vars - length(entries)))
   }
   dat
 }

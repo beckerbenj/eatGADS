@@ -61,5 +61,9 @@ dummies2char.GADSdat <- function(GADSdat, dummies, dummyValues, charNames) {
 
   GADSdat$dat <- left_fill(GADSdat$dat, vars = charNames)
 
+  ## remarks JB:
+  # automatically delete empty variables after left_fill? maybe report this?
+  # missing consistent instead of variable by variable?
+
   GADSdat
 }
