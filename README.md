@@ -19,7 +19,7 @@
 install.packages("eatGADS")
 
 # Install development version from GitHub via
-remotes::install_github("beckerbenj/eatGADS")
+remotes::install_github("beckerbenj/eatGADS", build_vignettes = TRUE, dependencies = TRUE)
 ```
 
 ## Vignettes
