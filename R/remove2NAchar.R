@@ -46,7 +46,7 @@ remove2NAchar.GADSdat <- function(GADSdat, vars, max_num = 2, na_value, na_label
   if(!is.character(na_label) || length(na_label) != 1) stop("'na_label' needs to be a single character value.")
 
   suppressMessages(miniGADS <- extractVars(GADSdat, vars = vars))
-  mini_dat_ori <- extractData(miniGADS)
+  suppressWarnings(mini_dat_ori <- extractData(miniGADS))
   mini_dat <- max_num_strings2NA(mini_dat_ori, max_num = max_num, na_value = na_value)
   # replace old variables (to maintain original column ordering)
   dat <- GADSdat$dat

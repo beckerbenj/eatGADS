@@ -51,6 +51,18 @@ test_that("remove2NAchar and numeric variables", {
   expect_equal(out$dat$mc1, c(-99, -99, -99, -99))
 })
 
+test_that("Partially labeled variable", {
+  mt5_gads <- changeValLabels(mt4_gads, varName = "text1", value = 1, valLabel = "Austria")
+  mt5_gads <- changeMissings(mt5_gads, varName = "text1", value = 1, missings =  "valid")
+  mt5_gads$dat[4, 1] <- 1
+  mess_out <- capture_messages(out <- remove2NAchar(mt5_gads, vars = namesGADS(mt4_gads), max_num = 1, na_value = -99, na_label = "missing"))
+  expect_equal(length(mess_out), 2)
+  expect_equal(dim(out$dat), c(4, 1))
+  expect_equal(out$labels$value, c(-99, 1))
+  expect_equal(out$labels$missings, c("miss", "valid"))
+})
+
+
 test_that("remove2NAchar max_num which exceeds number of strings", {
   out <- remove2NAchar(mt4_gads, vars = namesGADS(mt4_gads), max_num = 3, na_value = -99, na_label = "missing")
   expect_equal(out$dat, mt4_gads$dat)
