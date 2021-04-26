@@ -13,8 +13,10 @@
 # Internal
 * better performance of `applyChangeMeta()` on value level
 * bug fixes `recodeGADS()`
-* bug fix `removeValLabels()` (when a single value label ss removed)
+* bug fix `removeValLabels()` (when a single value label was removed)
 * bug fix `collapseMultiMC_Text()` (`left_fill()`)
+* bug fix `remove2NAchar()` (with partially labeled variables)
+* bug fix `multiChar2fac()` (with partially labeled variables)
 
 # eatGADS 0.16.0
 

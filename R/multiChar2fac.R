@@ -45,7 +45,16 @@ multiChar2fac.GADSdat <- function(GADSdat, vars, var_suffix = "_r", label_suffix
   if(!is.character(vars) && length(vars) > 0) stop("vars needs to be a character vector of at least length 1.")
 
   suppressMessages(only_vars_gads <- removeVars(GADSdat, namesGADS(GADSdat)[!namesGADS(GADSdat) %in% vars]))
-  df_no_miss <- extractData(only_vars_gads)
+
+  # potential problem: existing (non-missing) value labels
+  for(var in namesGADS(only_vars_gads)) {
+    existing_meta <- extractMeta(only_vars_gads, var)
+    existing_labels <- existing_meta[which(existing_meta$missings != "miss"), "value"]
+    existing_labels <- na_omit(existing_labels)
+    only_vars_gads$dat[only_vars_gads$dat[, var] %in% existing_labels, var] <- NA
+  }
+
+  suppressWarnings(df_no_miss <- extractData(only_vars_gads))
   all_levels <- unique(unlist(lapply(df_no_miss, function(x) x)))
   all_levels_fac <- data.frame("all_levels" = as.factor(all_levels))
   all_levels_gads <- import_DF(all_levels_fac)

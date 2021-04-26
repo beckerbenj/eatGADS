@@ -49,3 +49,17 @@ test_that("Multiple text variables to factors with other factor in data set", {
   expect_equal(out$labels[out$labels$varName == "text1_r", "value"], out$labels[out$labels$varName == "text2_r", "value"])
   expect_equal(out$labels[out$labels$varName == "text1_r", "valLabel"], c("Aus", "Aus2", "Eng", "Franz", "Ger"))
 })
+
+test_that("Partially labeled variable", {
+  mt5_gads <- changeValLabels(mt4_gads, varName = "text1", value = -99, valLabel = "Austria")
+  mt5_gads <- changeMissings(mt5_gads, varName = "text1", value = -99, missings =  "valid")
+  mt5_gads$dat[4, 1] <- -99
+  out <- multiChar2fac(mt5_gads, vars = namesGADS(mt5_gads))
+
+  expect_equal(dim(out$dat), c(4, 4))
+  expect_equal(out$dat[[1]], c(NA, "Eng", "Aus", -99))
+  expect_equal(out$dat[[3]], c(NA, 2, 1, -99))
+  meta <- extractMeta(out, "text1_r")
+  expect_equal(meta$value, c(-99, 1:4))
+  expect_equal(meta$valLabel, c("Austria", "Aus", "Eng", "Franz", "Ger"))
+})
