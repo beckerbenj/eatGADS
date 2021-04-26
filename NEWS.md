@@ -17,6 +17,7 @@
 * bug fix `collapseMultiMC_Text()` (`left_fill()`)
 * bug fix `remove2NAchar()` (with partially labeled variables)
 * bug fix `multiChar2fac()` (with partially labeled variables)
+* bug fix `applyLookup_expandVar()` (removed unnecessary messages)
 
 # eatGADS 0.16.0
 

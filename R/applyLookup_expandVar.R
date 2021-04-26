@@ -57,12 +57,14 @@ applyLookup_expandVar.GADSdat <- function(GADSdat, lookup) {
     # 1) divide lookup table
     single_lookup <- lookup[, c(1, 2, 2 + i)]
     names(single_lookup)[3] <- "value_new"
-    # check first recode column more thoroughly than later columns (same warning as in check_lookup)
-    #if(i == 1) check_lookup(single_lookup, GADSdat = GADSdat)
-    if(i == 1) GADSdat_new <- applyLookup(GADSdat_new, lookup = single_lookup, suffix = paste0("_", i))
 
     # 2) apply recode; new variable with number as suffix?
-    suppressWarnings(GADSdat_new <- applyLookup(GADSdat_new, lookup = single_lookup, suffix = paste0("_", i)))
+    # check first recode column more thoroughly than later columns (same warning as in check_lookup)
+    #if(i == 1) check_lookup(single_lookup, GADSdat = GADSdat)
+    if(i == 1) {
+      GADSdat_new <- applyLookup(GADSdat_new, lookup = single_lookup, suffix = paste0("_", i))
+    }
+    else {suppressWarnings(GADSdat_new <- applyLookup(GADSdat_new, lookup = single_lookup, suffix = paste0("_", i)))}
   }
 
   new_varname_order <- sapply(unique(lookup$variable), function(x) paste(x, seq(recode_colnames), sep = "_"))
