@@ -49,17 +49,30 @@ test_that("Extract list of meta change tables for all_GADSdat", {
   expect_equal(names(val_changes_list), c("df1", "df2"))
 })
 
+test_that("Check changeTable different variable sets", {
+  suppressMessages(dfSAV2 <- removeVars(dfSAV, c("VAR1", "VAR2")))
+
+  expect_error(check_changeTable(dfSAV2, changes_var),
+               "The following variables are not in the 'GADSdat' but in the 'changeTable': VAR1, VAR2")
+  expect_error(check_changeTable(dfSAV2, changes_val),
+               "The following variables are not in the 'GADSdat' but in the 'changeTable': VAR1, VAR2")
+
+  changes_var2 <- changes_var[-1, ]
+  expect_error(check_changeTable(dfSAV, changes_var2),
+               "The following variables are not in the 'changeTable' but in the 'GADSdat': VAR1")
+})
+
 test_that("Check changeTable function", {
   changes_var3 <- changes_var2 <- changes_var1 <- changes_var
   dfSAV2 <- dfSAV
   changes_var1[1, "varLabel"] <- "sth"
   changes_val1 <- changes_val
-  changes_val1[1, "varName"] <- "sth"
+  changes_val1[1, "value"] <- -999
 
   expect_error(check_changeTable(dfSAV, changes_var1),
                "GADSdat and changeTable are not compatible in column 'varLabel'. Columns without '_new' should not be changed in the changeTable.")
   expect_error(check_changeTable(dfSAV, changes_val1),
-               "GADSdat and changeTable are not compatible in column 'varName'. Columns without '_new' should not be changed in the changeTable.")
+               "GADSdat and changeTable are not compatible in column 'value'. Columns without '_new' should not be changed in the changeTable.")
   expect_silent(check_changeTable(dfSAV, changes_var))
   expect_silent(check_changeTable(dfSAV, changes_val))
   expect_silent(check_changeTable(df1, getChangeMeta(df1, "value")))

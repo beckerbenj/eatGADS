@@ -115,6 +115,9 @@ applyChangeMeta.list <- function(changeTable, GADSdat, ...) {
 
 # check change Table, also in relation to GADSdat object
 check_changeTable <- function(GADSdat, changeTable) {
+  test <- compare_and_order(namesGADS(GADSdat), name1 = "the 'GADSdat' but in the 'changeTable'",
+                    set2 = unique(changeTable$varName), name2 = "the 'changeTable' but in the 'GADSdat'", FUN = stop)
+
   newVars <- grep("_new", names(changeTable), value = TRUE)
   oldVars <- setdiff(names(changeTable), newVars)
   oldDat <- unique(GADSdat$labels[, oldVars])
