@@ -74,6 +74,10 @@ applyChangeMeta.valChanges <- function(changeTable, GADSdat, existingMeta = c("s
   check_valChanges(changeTable)
   existingMeta <- match.arg(existingMeta)
   # check_changeTable(GADSdat, changeTable) ### removed; substitute with checks that work around new value labels...
+  test <- compare_and_order(namesGADS(GADSdat), name1 = "the 'GADSdat' but in the 'changeTable'",
+                            set2 = unique(changeTable$varName), name2 = "the 'changeTable' but in the 'GADSdat'", FUN = stop)
+  # tbd: check for variable-value combination!
+
   dat <- GADSdat$dat
   labels <- GADSdat$labels
   # 01) values in data
