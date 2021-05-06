@@ -60,6 +60,13 @@ test_that("Check changeTable different variable sets", {
   changes_var2 <- changes_var[-1, ]
   expect_error(check_changeTable(dfSAV, changes_var2),
                "The following variables are not in the 'changeTable' but in the 'GADSdat': VAR1")
+  changes_val2 <- changes_val[-c(1:3), ]
+  expect_error(check_changeTable(dfSAV, changes_val2),
+               "The following variables are not in the 'changeTable' but in the 'GADSdat': VAR1")
+  # tbd:
+  #changes_val2 <- changes_val[-c(1), ]
+  #expect_error(check_changeTable(dfSAV, changes_val2),
+  #             "The following variable-value pair is not in the 'changeTable' but in the 'GADSdat': VAR1")
 })
 
 test_that("Check changeTable function", {

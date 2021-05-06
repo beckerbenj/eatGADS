@@ -50,6 +50,27 @@ test_that("Left fill for text variables", {
   expect_equal(out$v3, c(NA_character_, NA, NA, NA))
 })
 
+test_that("Drop empty variables", {
+  df3 <- df2 <- df
+
+  df2[-3, 3] <- -99
+  expect_warning(out1 <- drop_empty(df2, miss_codes = -99),
+                 "In the new variable v3 all values are missing, therefore the variable is dropped. If this behaviour is not desired, contact the package author.")
+  expect_equal(ncol(out1), 2)
+  out1b <- drop_empty(df2, vars = c("v1", "v2"), miss_codes = -99)
+  expect_equal(ncol(out1b), 3)
+
+  df3[-3, 3] <- -99
+  df3[1, 1] <- -98
+  warn2 <- capture_warnings(out2 <- drop_empty(df3, miss_codes = c(-99, -98)))
+  expect_equal(warn2[[1]], "In the new variable v1 all values are missing, therefore the variable is dropped. If this behaviour is not desired, contact the package author.")
+  expect_equal(warn2[[2]], "In the new variable v3 all values are missing, therefore the variable is dropped. If this behaviour is not desired, contact the package author.")
+  expect_equal(ncol(out2), 1)
+  out1b <- drop_empty(df2, vars = c("v2"), miss_codes = c(-99, -98))
+  expect_equal(ncol(out1b), 3)
+})
+
+
 test_that("Errors in combine multi mc and text", {
   mc_vars <- matchValues_varLabels(mt3_gads, mc_vars = c("mc1", "mc2", "mc3"), values = c("Aus", "Eng", "other"))
   mt3_gads_err <- mt3_gads

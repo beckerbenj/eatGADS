@@ -182,7 +182,7 @@ left_fill <- function(dat, vars = names(dat)) {
 }
 
 drop_empty <- function(dat, vars = names(dat), miss_codes) {
-  for(nam in names(dat)) {
+  for(nam in vars) {
     if(all(is.na(dat[[nam]]) | dat[[nam]] %in% miss_codes)) {
       warning("In the new variable ", nam, " all values are missing, therefore the variable is dropped. If this behaviour is not desired, contact the package author.")
       dat[[nam]] <- NULL
