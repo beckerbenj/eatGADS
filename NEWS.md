@@ -1,6 +1,7 @@
 
 # eatGADS 0.16.0.9000
 
+* `applyChangeMeta()` now returns a more informative error if the variable sets in the `GADSdat` and the `changeTable` differ
 * `dummies2char()` for recoding a set of dummy variables to a set of left filled character variables
 * `fac2dummies()` and `fac2dummies_complex()` for recoding a labeled factor variable to multiple labeled dummy variables
 * `equalGADS()` for comparing the complete structure and content of two `GADSdat` objects
@@ -14,10 +15,11 @@
 * better performance of `applyChangeMeta()` on value level
 * bug fixes `recodeGADS()`
 * bug fix `removeValLabels()` (when a single value label was removed)
-* bug fix `collapseMultiMC_Text()` (`left_fill()`)
+* bug fixes `collapseMultiMC_Text()` (`left_fill()` and `drop_empty()`)
 * bug fix `remove2NAchar()` (with partially labeled variables)
 * bug fix `multiChar2fac()` (with partially labeled variables)
 * bug fix `applyLookup_expandVar()` (removed unnecessary messages)
+
 
 # eatGADS 0.16.0
 
