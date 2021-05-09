@@ -35,14 +35,14 @@ write_spss2.GADSdat <- function(GADSdat, filePath, syntaxPath, dec =".", changeM
   # oh je, die Metadaten sind ja irgendwie alle falsch...
   if(any(labels$missings[grep("missing", labels$valLabel)] == "valid")) {
     cat("Some values are labelled \'missing\' but are not declared as missing.\n")
-    if(changeMeta) {
+    if(isTRUE(changeMeta)) {
       cat("Declaration will be changed.\n")
       labels$missings[grep("missing", labels$valLabel)] <- "miss"
     }
   }
   if(any(labels$missings[!grepl("missing", labels$valLabel)] == "miss")) {
     cat("Some missings are labelled as if normal, but are declared as missing.\n")
-    if(changeMeta) {
+    if(isTRUE(changeMeta)) {
       cat("Declaration will be changed.\n")
       labels$missings[!grepl("missing", labels$valLabel)] <- "valid"
     }
@@ -58,6 +58,8 @@ write_spss2.GADSdat <- function(GADSdat, filePath, syntaxPath, dec =".", changeM
   dl.varnames <- varnames
 
   chv <- sapply(GADSdat$dat, is.character)
+
+
   lengths <- sapply(names(GADSdat$dat), function(ll) { if(is.numeric(GADSdat$dat[,ll]) & is.numeric(labels$value[labels$varName==ll])) {
                             max(nchar(round(stats::na.omit(abs(c(GADSdat$dat[,ll],labels$value[labels$varName==ll]))), digits=0)))
                            } else {
@@ -97,10 +99,26 @@ max(nchar(stats::na.omit(unlist(lapply(strsplit(as.character(stats::na.omit(abs(
   dl.varnames <- paste(dl.varnames, lengths2)
 
   # write header
-  freefield <- " free (';;;')\n"
-  cat("DATA LIST FILE=", autoQuote(filePath), freefield, file = syntaxPath)
-  cat(" /", dl.varnames, ".\n\n", file = syntaxPath, append = TRUE,
+  if(isTRUE(changeMeta)) {
+    freefield <- " free (';;;')\n"
+    cat("DATA LIST FILE=", autoQuote(filePath), freefield, file = syntaxPath)
+    cat(" /", dl.varnames, ".\n\n", file = syntaxPath, append = TRUE,
       fill = 60, labels = " ")
+  } else {
+    if(any(!is.na(labels$format))) {
+      ninfo <- unique(labels$varName[!is.na(labels$format)])
+      sapply(dl.varnames, function(xx) {
+        if((aj <- strsplit(xx, " \\(")[[1]][1]) %in% ninfo) {
+          aa <- paste0(aj, " (", na.omit(labels$format[labels$varName==aj])[1], ")")
+          return(aa)
+        }
+      })
+    }
+    freefield <- " free (';;;')\n"
+    cat("DATA LIST FILE=", autoQuote(filePath), freefield, file = syntaxPath)
+    cat(" /", dl.varnames, ".\n\n", file = syntaxPath, append = TRUE,
+        fill = 60, labels = " ")
+  }
 
   # write variable labels
   varInfo$varLabel[is.na(varInfo$varLabel)] <- ""
