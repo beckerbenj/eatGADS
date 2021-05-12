@@ -38,13 +38,14 @@ equalGADS.GADSdat <- function(target, current) {
   target_labs <- target$labels
   current_labs <- current$labels
   for(i in intersect(target_names, current_names)) {
+    #browser()
     target_single_labs <- target_labs[target_labs$varName == i, ]
     current_single_labs <- current_labs[current_labs$varName == i, ]
     rownames(target_single_labs) <- rownames(current_single_labs) <- NULL
     if(!identical(all.equal(target_single_labs, current_single_labs), TRUE)) {
       out[["meta_data_differences"]] <- c(out[["meta_data_differences"]], i)
     }
-    if(!identical(all.equal(target$dat[[i]], current$dat[[i]]), TRUE)) {
+    if(!identical(all.equal(target$dat[[i]], current$dat[[i]], scale = 1), TRUE)) {
       out[["data_differences"]] <- c(out[["data_differences"]], i)
     }
   }

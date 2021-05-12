@@ -26,3 +26,10 @@ test_that("Compare two identical GADSdat objects",{
   expect_equal(out$data_nrow, "all.equal")
 })
 
+test_that("Compare two different GADSdat objects, large ID numbers",{
+  df1_2 <- df1
+  df1_2$dat$ID1 <- c(5140010110, 5140010111)
+  df1$dat$ID1 <- c(5140010109, 5140010110)
+  out <- equalGADS(df1, df1_2)
+  expect_equal(out$data_differences, c("ID1"))
+})
