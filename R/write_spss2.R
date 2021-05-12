@@ -11,32 +11,55 @@
 #'@param filePath Path of \code{.txt} file to write.
 #'@param syntaxPath Path of \code{.sps} file to write.
 #'@param dec Decimal delimiter for your SPSS version.
+#'@param changeMeta Meta data information will be changed automatically according to features of the data.
+#'@param fileEncoding Data file encoding for SPSS. Default is "UTF-8".
 #'
 #'@return Writes a \code{txt} and an \code{sav} file to disc, returns nothing.
 #'
 #'
 #'@export
-write_spss2 <- function(GADSdat, filePath, syntaxPath, dec = ".") {
+write_spss2 <- function(GADSdat, filePath, syntaxPath, dec = ".", changeMeta=TRUE, fileEncoding = "UTF-8") {
   UseMethod("write_spss2")
 }
 
 #'@export
-write_spss2.GADSdat <- function(GADSdat, filePath, syntaxPath, dec =".") {
+write_spss2.GADSdat <- function(GADSdat, filePath, syntaxPath, dec =".", changeMeta=TRUE, fileEncoding = "UTF-8") {
 
   ## write txt
   utils::write.table(GADSdat$dat, file = filePath, row.names = FALSE, col.names = FALSE,
-              sep = "\t", dec = dec, quote = FALSE, na = "", eol = "\n")
+              sep = ";;;", dec = dec, quote = FALSE, na = "", eol = "\n", fileEncoding = fileEncoding)
 
   ##### write SPSS syntax
   labels <- GADSdat$labels
+
+  # oh je, die Metadaten sind ja irgendwie alle falsch...
+  if(any(labels$missings[grep("missing", labels$valLabel)] == "valid")) {
+    cat("Some values are labelled \'missing\' but are not declared as missing.\n")
+    if(isTRUE(changeMeta)) {
+      cat("Declaration will be changed.\n")
+      labels$missings[grep("missing", labels$valLabel)] <- "miss"
+    }
+  }
+  if(any(labels$missings[!grepl("missing", labels$valLabel)] == "miss")) {
+    cat("Some missings are labelled as if normal, but are declared as missing.\n")
+    if(isTRUE(changeMeta)) {
+      cat("Declaration will be changed.\n")
+      labels$missings[!grepl("missing", labels$valLabel)] <- "valid"
+    }
+  }
+
+  stopifnot(identical(unique(labels$varName),names(GADSdat$dat)))
+
   varInfo <- unique(labels[, c("varName", "varLabel", "format")])
-  valInfo <- unique(labels[!is.na(labels$value) & labels$missings == "valid", c("varName", "value", "valLabel", "missings")])
+  valInfo <- unique(labels[!is.na(labels$value), c("varName", "value", "valLabel", "missings")])
   misInfo <- unique(labels[!is.na(labels$value) & labels$missings == "miss", c("varName", "value", "valLabel", "missings")])
 
   varnames <- gsub("[^[:alnum:]_\\$@#]", "\\.", colnames(GADSdat$dat))
   dl.varnames <- varnames
 
   chv <- sapply(GADSdat$dat, is.character)
+
+
   lengths <- sapply(names(GADSdat$dat), function(ll) { if(is.numeric(GADSdat$dat[,ll]) & is.numeric(labels$value[labels$varName==ll])) {
                             max(nchar(round(stats::na.omit(abs(c(GADSdat$dat[,ll],labels$value[labels$varName==ll]))), digits=0)))
                            } else {
@@ -69,19 +92,36 @@ max(nchar(stats::na.omit(unlist(lapply(strsplit(as.character(stats::na.omit(abs(
 
   if(!is.null(varsWithDecimals)){
     lengths2[which(dl.varnames %in% varsWithDecimals)] <-sapply(seq(along=lengths2[which(dl.varnames %in% varsWithDecimals)]), function(i) {
-    x <- paste0(decimals[varsWithDecimals][i], ".", decimals2[varsWithDecimals][i],")")
-    gsub("[0-9]+)$", x, lengths2[which(dl.varnames %in% varsWithDecimals)][i])
+      x <- paste0(decimals[varsWithDecimals][i], ".", decimals2[varsWithDecimals][i],")")
+      gsub("[0-9]+)$", x, lengths2[which(dl.varnames %in% varsWithDecimals)][i])
     })
   }
   dl.varnames <- paste(dl.varnames, lengths2)
 
   # write header
-  freefield <- " free (TAB)\n"
-  cat("DATA LIST FILE=", autoQuote(filePath), freefield, file = syntaxPath)
-  cat(" /", dl.varnames, ".\n\n", file = syntaxPath, append = TRUE,
+  if(isTRUE(changeMeta)) {
+    freefield <- " free (';;;')\n"
+    cat("DATA LIST FILE=", autoQuote(filePath), freefield, file = syntaxPath)
+    cat(" /", dl.varnames, ".\n\n", file = syntaxPath, append = TRUE,
       fill = 60, labels = " ")
+  } else {
+    if(any(!is.na(labels$format))) {
+      ninfo <- unique(labels$varName[!is.na(labels$format)])
+      sapply(dl.varnames, function(xx) {
+        if((aj <- strsplit(xx, " \\(")[[1]][1]) %in% ninfo) {
+          aa <- paste0(aj, " (", na.omit(labels$format[labels$varName==aj])[1], ")")
+          return(aa)
+        }
+      })
+    }
+    freefield <- " free (';;;')\n"
+    cat("DATA LIST FILE=", autoQuote(filePath), freefield, file = syntaxPath)
+    cat(" /", dl.varnames, ".\n\n", file = syntaxPath, append = TRUE,
+        fill = 60, labels = " ")
+  }
 
   # write variable labels
+  varInfo$varLabel[is.na(varInfo$varLabel)] <- ""
   cat("VARIABLE LABELS\n", file = syntaxPath, append = TRUE)
   cat(" ", paste(varInfo$varName, autoQuote(varInfo$varLabel), "\n"), ".\n",
       file = syntaxPath, append = TRUE)
@@ -92,7 +132,7 @@ max(nchar(stats::na.omit(unlist(lapply(strsplit(as.character(stats::na.omit(abs(
     cat("\nVALUE LABELS\n", file = syntaxPath, append = TRUE)
     for (v in unique(valInfo$varName)) {
       cat(" /", v, "\n", file = syntaxPath, append = TRUE)
-      cat(paste("  ", valInfo$value, autoQuote(valInfo$valLabel),"\n",  sep = " "),
+      cat(paste("  ", valInfo[valInfo$varName==v,]$value, autoQuote(valInfo[valInfo$varName==v,]$valLabel),"\n",  sep = " "),
           file = syntaxPath, append = TRUE)
     }
     cat(" .\n", file = syntaxPath, append = TRUE)
@@ -104,19 +144,30 @@ max(nchar(stats::na.omit(unlist(lapply(strsplit(as.character(stats::na.omit(abs(
     cat("\nMISSING VALUES\n", file = syntaxPath, append = TRUE)
 
     for (v in unique(misInfo$varName)) {
-      if(isTRUE(chv[v])) {
-        cat(paste0(v, " ('",  paste(misInfo$value[misInfo$varName==v],collapse="','"), "')\n",  sep = " "),
-            file = syntaxPath, append = TRUE)
-
+      if(length(misInfo$value[misInfo$varName==v]) > 3) {
+         if(isTRUE(chv[v])) {
+          cat(paste0("Too many missing values for character variable \'", v,"\'. SPSS allows only three missing values for character variables. I will take the first 3.\n"))
+          span <- paste(misInfo$value[misInfo$varName==v][1:3],collapse="\', \'")
+          cat(paste0(v, " ('",  span, "')\n",  sep = " "),
+                    file = syntaxPath, append = TRUE)
+        } else {
+          span <- paste(min(misInfo$value[misInfo$varName==v]), "THRU", max(misInfo$value[misInfo$varName==v]))
+          cat(paste0(v, " (",  span, ")\n",  sep = " "),
+              file = syntaxPath, append = TRUE)
+        }
       } else {
-      cat(paste0(v, " (",  paste(misInfo$value[misInfo$varName==v],collapse=","), ")\n",  sep = " "),
-          file = syntaxPath, append = TRUE)
+        span <- paste(misInfo$value[misInfo$varName==v],collapse=",")
+      if(isTRUE(chv[v])) {
+        cat(paste0(v, " ('",  span, "')\n",  sep = " "),
+            file = syntaxPath, append = TRUE)
+        } else {
+        cat(paste0(v, " (",  span, ")\n",  sep = " "),
+            file = syntaxPath, append = TRUE)
+        }
       }
     }
     cat(".\n", file = syntaxPath, append = TRUE)
-
-  }
-
+}
   cat("\nEXECUTE.\n", file = syntaxPath, append = TRUE)
 
   return()
