@@ -18,12 +18,17 @@
 #'
 #'
 #'@export
-write_spss2 <- function(GADSdat, filePath, syntaxPath, dec = ".", changeMeta=TRUE, fileEncoding = "UTF-8") {
+write_spss2 <- function(GADSdat, filePath, syntaxPath, dec = ".", changeMeta=FALSE, fileEncoding = "UTF-8") {
   UseMethod("write_spss2")
 }
 
 #'@export
-write_spss2.GADSdat <- function(GADSdat, filePath, syntaxPath, dec =".", changeMeta=TRUE, fileEncoding = "UTF-8") {
+write_spss2.GADSdat <- function(GADSdat, filePath, syntaxPath, dec =".", changeMeta=FALSE, fileEncoding = "UTF-8") {
+
+  if(axxx <- any(is.na(GADSdat$dat))) {
+    GADSdat$dat <- cbind(GADSdat$dat,data.frame(xxxtgw=rep(1,nrow(GADSdat$dat))))
+    GADSdat$labels <- rbind(GADSdat$labels, c("xxxtgw", NA,NA,NA,"no",NA,NA,NA))
+  }
 
   ## write txt
   utils::write.table(GADSdat$dat, file = filePath, row.names = FALSE, col.names = FALSE,
@@ -59,9 +64,8 @@ write_spss2.GADSdat <- function(GADSdat, filePath, syntaxPath, dec =".", changeM
 
   chv <- sapply(GADSdat$dat, is.character)
 
-
-  lengths <- sapply(names(GADSdat$dat), function(ll) { if(is.numeric(GADSdat$dat[,ll]) & is.numeric(labels$value[labels$varName==ll])) {
-                            max(nchar(round(stats::na.omit(abs(c(GADSdat$dat[,ll],labels$value[labels$varName==ll]))), digits=0)))
+  lengths <- sapply(names(GADSdat$dat), function(ll) { if(is.numeric(GADSdat$dat[,ll]) & all(is.numeric(labels$value[labels$varName==ll])|is.na(labels$value[labels$varName==ll]))) {
+                            max(nchar(as.character(round(abs(as.numeric(stats::na.omit(c(GADSdat$dat[,ll],labels$value[labels$varName==ll])))), digits=0))))
                            } else {
                             max(nchar(c(GADSdat$dat[,ll],labels$value[labels$varName==ll])))
                             }
@@ -151,7 +155,7 @@ max(nchar(stats::na.omit(unlist(lapply(strsplit(as.character(stats::na.omit(abs(
           cat(paste0(v, " ('",  span, "')\n",  sep = " "),
                     file = syntaxPath, append = TRUE)
         } else {
-          span <- paste(min(misInfo$value[misInfo$varName==v]), "THRU", max(misInfo$value[misInfo$varName==v]))
+          span <- paste(min(as.numeric(misInfo$value[misInfo$varName==v])), "THRU", max(as.numeric(misInfo$value[misInfo$varName==v])))
           cat(paste0(v, " (",  span, ")\n",  sep = " "),
               file = syntaxPath, append = TRUE)
         }
@@ -167,12 +171,23 @@ max(nchar(stats::na.omit(unlist(lapply(strsplit(as.character(stats::na.omit(abs(
       }
     }
     cat(".\n", file = syntaxPath, append = TRUE)
-}
-  cat("\nEXECUTE.\n", file = syntaxPath, append = TRUE)
 
-  return()
+  }
+
+  cat("\nEXECUTE.\n", file = syntaxPath, append = TRUE)
+  if(isTRUE(axxx)) {
+    cat("DELETE VARIABLES xxxtgw.\nEXECUTE.\n", file = syntaxPath, append = TRUE)
+  }
 }
 
 autoQuote <- function (x){
   paste("\"", x, "\"", sep = "")
 }
+
+readMultisep <- function(file,sep) {
+  lines <- readLines(file)
+  datf <- data.frame(do.call(rbind,strsplit(lines, sep, fixed = TRUE)))
+  datf <- data.frame(lapply(datf,type.convert,as.is=TRUE))
+  return(datf)
+}
+
