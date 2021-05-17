@@ -5,6 +5,7 @@
 * `dummies2char()` for recoding a set of dummy variables to a set of left filled character variables
 * `fac2dummies()` and `fac2dummies_complex()` for recoding a labeled factor variable to multiple labeled dummy variables
 * `equalGADS()` for comparing the complete structure and content of two `GADSdat` objects
+* `inspectDifferences()` for comparing specific variables
 * `reuseMeta()` now allows only transferring value labels for values coded as missing
 * `checkEmptyValLabels()` and `checkMissingValLabels()` provide cleaner output
 * `write_spss2()` for writing `.sav` files via a text file and a `SPSS` syntax
