@@ -4,7 +4,14 @@
 \alias{write_spss2}
 \title{Write a \code{GADSdat} object to \code{txt} and \code{SPSS} syntax}
 \usage{
-write_spss2(GADSdat, filePath, syntaxPath, dec = ".")
+write_spss2(
+  GADSdat,
+  filePath,
+  syntaxPath,
+  dec = ".",
+  changeMeta = FALSE,
+  fileEncoding = "UTF-8"
+)
 }
 \arguments{
 \item{GADSdat}{A \code{GADSdat} object.}
@@ -14,6 +21,10 @@ write_spss2(GADSdat, filePath, syntaxPath, dec = ".")
 \item{syntaxPath}{Path of \code{.sps} file to write.}
 
 \item{dec}{Decimal delimiter for your SPSS version.}
+
+\item{changeMeta}{Meta data information will be changed automatically according to features of the data.}
+
+\item{fileEncoding}{Data file encoding for SPSS. Default is "UTF-8".}
 }
 \value{
 Writes a \code{txt} and an \code{sav} file to disc, returns nothing.

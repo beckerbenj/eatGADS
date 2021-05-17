@@ -113,7 +113,7 @@ max(nchar(stats::na.omit(unlist(lapply(strsplit(as.character(stats::na.omit(abs(
       ninfo <- unique(labels$varName[!is.na(labels$format)])
       sapply(dl.varnames, function(xx) {
         if((aj <- strsplit(xx, " \\(")[[1]][1]) %in% ninfo) {
-          aa <- paste0(aj, " (", na.omit(labels$format[labels$varName==aj])[1], ")")
+          aa <- paste0(aj, " (", stats::na.omit(labels$format[labels$varName==aj])[1], ")")
           return(aa)
         }
       })
@@ -187,7 +187,7 @@ autoQuote <- function (x){
 readMultisep <- function(file,sep) {
   lines <- readLines(file)
   datf <- data.frame(do.call(rbind,strsplit(lines, sep, fixed = TRUE)))
-  datf <- data.frame(lapply(datf,type.convert,as.is=TRUE))
+  datf <- data.frame(lapply(datf,utils::type.convert,as.is=TRUE))
   return(datf)
 }
 
