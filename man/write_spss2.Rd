@@ -35,3 +35,11 @@ Write a \code{GADSdat} object to a text file (\code{txt}) and an accompanying \c
 \details{
 This function is based on \code{eatPreps} \code{writeSpss} function and is currently under development.
 }
+\examples{
+
+# write to spss
+tmp_sav <- tempfile(fileext = ".sav")
+tmp_txt <- tempfile(fileext = ".txt")
+write_spss2(pisa, filePath = tmp_sav, syntaxPath = tmp_txt)
+
+}
