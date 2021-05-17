@@ -39,16 +39,16 @@ write_spss2.GADSdat <- function(GADSdat, filePath, syntaxPath, dec =".", changeM
 
   # oh je, die Metadaten sind ja irgendwie alle falsch...
   if(any(labels$missings[grep("missing", labels$valLabel)] == "valid")) {
-    cat("Some values are labelled \'missing\' but are not declared as missing.\n")
+    message("Some values are labelled 'missing' but are not declared as missing.")
     if(isTRUE(changeMeta)) {
-      cat("Declaration will be changed.\n")
+      message("Declaration will be changed.")
       labels$missings[grep("missing", labels$valLabel)] <- "miss"
     }
   }
   if(any(labels$missings[!grepl("missing", labels$valLabel)] == "miss")) {
-    cat("Some missings are labelled as if normal, but are declared as missing.\n")
+    message("Some missings are labelled as if normal, but are declared as missing.")
     if(isTRUE(changeMeta)) {
-      cat("Declaration will be changed.\n")
+      message("Declaration will be changed.")
       labels$missings[!grepl("missing", labels$valLabel)] <- "valid"
     }
   }
