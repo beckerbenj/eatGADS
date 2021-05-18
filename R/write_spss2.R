@@ -20,7 +20,7 @@
 #'# write to spss
 #'tmp_sps <- tempfile(fileext = ".sps")
 #'tmp_txt <- tempfile(fileext = ".txt")
-#'write_spss2(pisa, filePath = tmp_sps, syntaxPath = tmp_txt)
+#'write_spss2(pisa, filePath = tmp_txt, syntaxPath = tmp_sps)
 #'
 #'@export
 write_spss2 <- function(GADSdat, filePath, syntaxPath, dec = ".", changeMeta=FALSE, fileEncoding = "UTF-8") {
