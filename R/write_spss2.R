@@ -18,9 +18,9 @@
 #'@examples
 #'
 #'# write to spss
-#'tmp_sav <- tempfile(fileext = ".sav")
+#'tmp_sps <- tempfile(fileext = ".sps")
 #'tmp_txt <- tempfile(fileext = ".txt")
-#'write_spss2(pisa, filePath = tmp_sav, syntaxPath = tmp_txt)
+#'write_spss2(pisa, filePath = tmp_sps, syntaxPath = tmp_txt)
 #'
 #'@export
 write_spss2 <- function(GADSdat, filePath, syntaxPath, dec = ".", changeMeta=FALSE, fileEncoding = "UTF-8") {
