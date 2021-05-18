@@ -50,7 +50,7 @@ write_spss2.GADSdat <- function(GADSdat, filePath, syntaxPath, dec =".", changeM
     }
   }
 
-  if(any(labels$missings[!grepl("missing", labels$valLabel)] == "miss")) {
+  if(isTRUE(any(labels$missings[!grepl("missing", labels$valLabel)] == "miss"))) {
     message("Info: Some missings are labelled without the keyword \'missing\' in their label.")
     if(isTRUE(changeMeta)) {
       message("Declaration will be changed.")
