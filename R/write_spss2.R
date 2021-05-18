@@ -86,10 +86,16 @@ write_spss2.GADSdat <- function(GADSdat, filePath, syntaxPath, dec =".", changeM
   varsWithDecimals <-  names(which(lengths != decimals))
 
   decimals2 <- sapply(varsWithDecimals, function(ll) {if(isTRUE(is.numeric(GADSdat$dat[,ll]) & all(is.numeric(type.convert(labels$value[labels$varName==ll]))|is.na(labels$value[labels$varName==ll])))) {
-    max(nchar(stats::na.omit(unlist(lapply(strsplit(as.character(stats::na.omit(abs(c(GADSdat$dat[,ll],type.convert(labels$value[labels$varName==ll]))))),"\\."), function(b) b[2])))))
+     ast <- max(nchar(stats::na.omit(unlist(lapply(strsplit(as.character(stats::na.omit(abs(c(GADSdat$dat[,ll],type.convert(labels$value[labels$varName==ll]))))),"\\."), function(b) b[2])))))
+     if(isTRUE(ast > 16)) {
+       message(paste0("Variable ", ll, " has more decimals than SPSS allows (", ast, ") and will be rounded to 16 decimal places."))
+       ast <- 16
+       GADSdat$dat[,ll] <- round(GADSdat$dat[,ll],16)
+     }
   } else {
-    max(nchar(stats::na.omit(unlist(lapply(strsplit(stats::na.omit(c(GADSdat$dat[,ll],labels$value[labels$varName==ll])),"\\."), function(b) b[2])))))
+    ast <- max(nchar(stats::na.omit(unlist(lapply(strsplit(stats::na.omit(c(GADSdat$dat[,ll],labels$value[labels$varName==ll])),"\\."), function(b) b[2])))))
   }
+    return(ast)
   })
 
   if (any(chv)) {
