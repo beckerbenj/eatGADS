@@ -1,6 +1,7 @@
 
 # eatGADS 0.16.0.9000
 
+* `subImputations()` for substituting imputations with unimputed values
 * `applyChangeMeta()` now returns a more informative error if the variable sets in the `GADSdat` and the `changeTable` differ
 * `dummies2char()` for recoding a set of dummy variables to a set of left filled character variables
 * `fac2dummies()` and `fac2dummies_complex()` for recoding a labeled factor variable to multiple labeled dummy variables
