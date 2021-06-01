@@ -43,15 +43,13 @@ subImputations <- function(GADSdat, GADSdat_imp, varName, id, imp) {
   #imp_dat <- as.data.table(GADSdat_imp$dat)
   #setkeyv(imp_dat, cols = id)
 
-  #browser()
   count <- 0
   for(single_id in unique_imp_ids) {
     unimp_value <- unimp_dat[unimp_dat[, id] == single_id, varName]
     if(!is.na(unimp_value)) {
-      #browser()
       #imp_values <- unique(imp_dat[get(id) == single_id, ][[varName]])
       imp_values <- unique(GADSdat_imp$dat[GADSdat_imp$dat[, id] == single_id, varName])
-      if(length(imp_values) != 1) {
+      if(length(imp_values) != 1 || imp_values != unimp_value) {
         count <- count + 1
         GADSdat_imp$dat[GADSdat_imp$dat[, id] == single_id, varName] <- unimp_value
       }
