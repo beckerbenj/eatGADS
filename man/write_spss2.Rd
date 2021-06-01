@@ -38,8 +38,8 @@ This function is based on \code{eatPreps} \code{writeSpss} function and is curre
 \examples{
 
 # write to spss
-tmp_sav <- tempfile(fileext = ".sav")
+tmp_sps <- tempfile(fileext = ".sps")
 tmp_txt <- tempfile(fileext = ".txt")
-write_spss2(pisa, filePath = tmp_sav, syntaxPath = tmp_txt)
+write_spss2(pisa, filePath = tmp_txt, syntaxPath = tmp_sps)
 
 }
