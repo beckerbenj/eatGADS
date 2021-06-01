@@ -51,7 +51,7 @@ subImputations <- function(GADSdat, GADSdat_imp, varName, id, imp) {
       #browser()
       #imp_values <- unique(imp_dat[get(id) == single_id, ][[varName]])
       imp_values <- unique(GADSdat_imp$dat[GADSdat_imp$dat[, id] == single_id, varName])
-      if(length(imp_values) != 1 && imp_values != unimp_value) {
+      if(length(imp_values) != 1) {
         count <- count + 1
         GADSdat_imp$dat[GADSdat_imp$dat[, id] == single_id, varName] <- unimp_value
       }

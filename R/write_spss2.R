@@ -85,7 +85,7 @@ write_spss2.GADSdat <- function(GADSdat, filePath, syntaxPath, dec =".", changeM
 
   varsWithDecimals <-  names(which(lengths != decimals))
 
-  decimals2 <- sapply(varsWithDecimals, function(ll) {if(isTRUE(is.numeric(GADSdat$dat[,ll]) & all(is.numeric(type.convert(labels$value[labels$varName==ll]))|is.na(labels$value[labels$varName==ll])))) {
+  decimals2 <- sapply(varsWithDecimals, function(ll) {if(isTRUE(is.numeric(GADSdat$dat[,ll]) & all(is.numeric(utils::type.convert(labels$value[labels$varName==ll]))|is.na(labels$value[labels$varName==ll])))) {
      ast <- max(nchar(stats::na.omit(unlist(lapply(strsplit(as.character(stats::na.omit(abs(c(GADSdat$dat[,ll],utils::type.convert(labels$value[labels$varName==ll]))))),"\\."), function(b) b[2])))))
      if(isTRUE(ast > 16)) {
        message(paste0("Variable ", ll, " has more decimals than SPSS allows (", ast, ") and will be rounded to 16 decimal places."))
