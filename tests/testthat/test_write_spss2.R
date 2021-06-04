@@ -79,7 +79,8 @@ test_that("writeVaLab", {
   expect_true(grepl("VARIABLE LABELS", syntax))
   expect_true(grepl("VALUE LABELS", syntax))
   expect_true(grepl("var3 \"another label\"", syntax))
-  expect_true(grepl("var1 \r\n   -99 \"miss2\"", syntax))
+  expect_true(grepl("var1", syntax))
+  expect_true(grepl("-99 \"miss2\"", syntax))
   expect_true(grepl("1 \"wrong\"", syntax))
 })
 
