@@ -72,14 +72,16 @@ test_that("Check changeTable different variable sets", {
 test_that("Check changeTable function", {
   changes_var3 <- changes_var2 <- changes_var1 <- changes_var
   dfSAV2 <- dfSAV
-  changes_var1[1, "varLabel"] <- "sth"
+  changes_var1[c(1, 3), "varLabel"] <- c("sth", "sth")
   changes_val1 <- changes_val
   changes_val1[1, "value"] <- -999
 
   expect_error(check_changeTable(dfSAV, changes_var1),
-               "GADSdat and changeTable are not compatible in column 'varLabel'. Columns without '_new' should not be changed in the changeTable.")
+               "GADSdat and changeTable are not compatible in column 'varLabel' and row(s) 1, 3. Columns without '_new' should not be changed in the changeTable.",
+               fixed = TRUE)
   expect_error(check_changeTable(dfSAV, changes_val1),
-               "GADSdat and changeTable are not compatible in column 'value'. Columns without '_new' should not be changed in the changeTable.")
+               "GADSdat and changeTable are not compatible in column 'value' and row(s) 1. Columns without '_new' should not be changed in the changeTable.",
+               fixed = TRUE)
   expect_silent(check_changeTable(dfSAV, changes_var))
   expect_silent(check_changeTable(dfSAV, changes_val))
   expect_silent(check_changeTable(df1, getChangeMeta(df1, "value")))

@@ -132,7 +132,10 @@ check_changeTable <- function(GADSdat, changeTable) {
   #if(length(namesGADS(GADSdat)) > 50) browser()
 
   for(i in names(oldDat)) {
-    if(length(which(oldDat[i] != newDat[i]))) stop("GADSdat and changeTable are not compatible in column '", i, "'. Columns without '_new' should not be changed in the changeTable.", call. = FALSE)
+    unequal_rows <- which(oldDat[i] != newDat[i])
+    if(length(unequal_rows)) stop("GADSdat and changeTable are not compatible in column '", i, "' and row(s) ",
+                                  paste(unequal_rows, collapse = ", "),
+                                  ". Columns without '_new' should not be changed in the changeTable.", call. = FALSE)
   }
 
   return()
