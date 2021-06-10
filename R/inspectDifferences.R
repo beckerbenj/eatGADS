@@ -36,18 +36,23 @@ inspectDifferences <- function(varName, GADSdat1, GADSdat2, id) {
   if(!id %in% namesGADS(GADSdat1)) stop("'id' is not a variable in 'GADSdat1'.")
   if(!id %in% namesGADS(GADSdat2)) stop("'id' is not a variable in 'GADSdat2'.")
   if(nrow(GADSdat1$dat) != nrow(GADSdat2$dat)) stop("'GADSdat1' and 'GADSdat2' have different row numbers.")
+  if(any(is.na(GADSdat1$dat[, id]))) stop("Missing values in 'id' column of 'GADSdat1'.")
+  if(any(is.na(GADSdat2$dat[, id]))) stop("Missing values in 'id' column of 'GADSdat2'.")
   if(any(GADSdat1$dat[, id] != GADSdat2$dat[, id])) stop("'id' column is not equal for 'GADSdat1' and 'GADSdat2'.")
 
   #browser()
   if(isTRUE(all.equal(GADSdat2$dat[, varName], GADSdat1$dat[, varName], scale = 1))) return("all.equal")
 
-  unequal_case_dat2 <- GADSdat2$dat[which(GADSdat2$dat[, varName] != GADSdat1$dat[, varName]), ]
-  unequal_case_dat1 <- GADSdat1$dat[which(GADSdat2$dat[, varName] != GADSdat1$dat[, varName]), ]
+  unequal_rows <- c(which(GADSdat2$dat[, varName] != GADSdat1$dat[, varName]),
+                    which(is.na(GADSdat2$dat[, varName]) & !is.na(GADSdat1$dat[, varName])),
+                    which(!is.na(GADSdat2$dat[, varName]) & is.na(GADSdat1$dat[, varName])))
+  unequal_case_dat2 <- GADSdat2$dat[unequal_rows, ]
+  unequal_case_dat1 <- GADSdat1$dat[unequal_rows, ]
 
   ncol1 <- ifelse(ncol(GADSdat1$dat) > 8, yes = 8, no = ncol(GADSdat1$dat))
   ncol2 <- ifelse(ncol(GADSdat2$dat) > 8, yes = 8, no = ncol(GADSdat2$dat))
-  nrow1 <- ifelse(length(unequal_case_dat1) > 5, yes = 5, no = nrow(unequal_case_dat1))
-  nrow2 <- ifelse(length(unequal_case_dat2) > 5, yes = 5, no = nrow(unequal_case_dat2))
+  nrow1 <- ifelse(nrow(unequal_case_dat1) > 5, yes = 5, no = nrow(unequal_case_dat1))
+  nrow2 <- ifelse(nrow(unequal_case_dat2) > 5, yes = 5, no = nrow(unequal_case_dat2))
 
   list(cross_table = table(GADSdat1$dat[, varName], GADSdat2$dat[, varName], useNA = "if",
                            dnn = c("GADSdat1", "GADSdat2")),
