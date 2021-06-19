@@ -35,14 +35,9 @@ write_spss2.GADSdat <- function(GADSdat, filePath, syntaxPath, dec =".", changeM
   check_GADSdat_varLevel_meta(GADSdat)
 
   ## additional Column for SPSS, which is sometimes inadvertently shifts cases that end with NAs
-  if(axxx <- any(is.na(GADSdat$dat))) {
-    GADSdat$dat <- cbind(GADSdat$dat,data.frame(xxxtgw=rep(1,nrow(GADSdat$dat))))
-    GADSdat$labels <- rbind(GADSdat$labels, data.frame(varName="xxxtgw",varLabel=NA,format=NA,display_width=NaN,labeled="no",value=NaN,valLabel=NA,missings=NA,stringsAsFactors = FALSE))
-  }
-
-  ## write txt
-  utils::write.table(GADSdat$dat, file = filePath, row.names = FALSE, col.names = FALSE,
-                     sep = ";;;", dec = dec, quote = FALSE, na = "", eol = "\n", fileEncoding = fileEncoding)
+  # write data
+  axxx <- any(is.na(GADSdat$dat))
+  GADSdat <- writeData(GADSdat=GADSdat, filePath=filePath, dec=dec, fileEncoding=fileEncoding)
 
   ## checkMissings
   GADSdat$labels <- checkMissings2(GADSdat$labels, changeMeta)
@@ -157,6 +152,19 @@ createInputWriteFunctions <- function(GADSdat) {
   }
   r1$dl.varnames <- paste(r1$dl.varnames, r1$lengths2)
   return(r1)
+}
+
+writeData <- function(GADSdat, filePath, dec, fileEncoding) {
+  if(any(is.na(GADSdat$dat))) {
+    GADSdat$dat <- cbind(GADSdat$dat,data.frame(xxxtgw=rep(1,nrow(GADSdat$dat))))
+    GADSdat$labels <- rbind(GADSdat$labels, data.frame(varName="xxxtgw",varLabel=NA,format=NA,display_width=NaN,labeled="no",value=NaN,valLabel=NA,missings=NA,stringsAsFactors = FALSE))
+  }
+
+  ## write txt
+  utils::write.table(GADSdat$dat, file = filePath, row.names = FALSE, col.names = FALSE,
+                     sep = ";;;", dec = dec, quote = FALSE, na = "", eol = "\n", fileEncoding = fileEncoding)
+
+  return(GADSdat)
 }
 
 writeHeader <- function(r1, filePath, syntaxPath, changeMeta) {

@@ -1,4 +1,4 @@
-g <- import_raw(df = data.frame(var1 = c("ab c","bb"), var2 = c(1,0), var3 = c(1.01, 2.00), var4 = c(1.0001, 4.001),stringsAsFactors = FALSE),
+g <- import_raw(df = data.frame(var1 = c("ab c","bb"), var2 = c(1,NaN), var3 = c(1.01, 2.00), var4 = c(1.0001, 4.001),stringsAsFactors = FALSE),
                 varLabels = data.frame(varName = c("var1", "var2", "var3", "var4"), varLabel = c("a label", NA, "another label", NA), stringsAsFactors = FALSE),
                 valLabels = data.frame(varName = c("var1", "var1", "var2", "var2", "var2","var3", "var3"), value = c(-96, -99, -99, 0, 1,-96, -99),
                                        valLabel = c("miss1", "miss2", "miss2","right","wrong","miss1", "miss2"),
@@ -13,8 +13,20 @@ syntax <- readChar(f_sps, file.info(f_sps)$size)
 
 test_that("Write spss 2 overall", {
 
-  expect_equal(out, data.frame(X1 = c("ab c","bb"), X2 = c(1,0), X3 = c("1,01", "2"), X4 = c("1,0001", "4,001"),stringsAsFactors = FALSE))
+  expect_equal(out, data.frame(X1 = c("ab c","bb"), X2 = c(1,NA), X3 = c("1,01", "2"), X4 = c("1,0001", "4,001"), X5=c(1,1),stringsAsFactors = FALSE))
   expect_true(grepl("EXECUTE.", syntax))
+  expect_true(grepl("DELETE VARIABLES xxxtgw.", syntax))
+})
+
+
+
+
+test_that("writeData", {
+  g1<-writeData(g, filePath = f_txt, dec=",", fileEncoding = "UTF-8")
+
+  expect_true(identical(g1$dat, data.frame(var1= c("ab c", "bb"), var2=c(1, NaN), var3=c(1.01,2.00), var4=c(1.0001, 4.0010), xxxtgw=c(1,1))))
+  expect_true(setequal(g1$labels[9,],  data.frame(varName=c("xxxtgw","a"),varLabel=c(NA,"a"),format=c(NA,"a"),display_width=c(NaN,1),labeled=c("no","no"),value=c(NaN,1),valLabel=c(NA,"a"),missings=c(NA,"a"),stringsAsFactors = FALSE)[1,]))
+
 })
 
 
