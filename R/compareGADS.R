@@ -59,7 +59,7 @@ compareGADS.GADSdat <- function(GADSdat_old, GADSdat_new, varNames, output = c("
 
       ## add value labels and missing codes
       for(i in out[, "value"]) {
-        i <- eatTools::asNumericIfPossible(i, force.string = FALSE)
+        i <- suppressWarnings(eatTools::asNumericIfPossible(i, force.string = FALSE))
         value_meta <- GADSdat_old$labels[which(GADSdat_old$labels$varName == nam & GADSdat_old$labels$value == i), c("valLabel", "missings")]
         if(is.na(i)) {
           value_meta <- GADSdat_old$labels[GADSdat_old$labels$varName == nam & is.na(GADSdat_old$labels$value), c("valLabel", "missings")]

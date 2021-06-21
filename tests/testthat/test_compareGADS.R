@@ -34,6 +34,20 @@ test_that("standard functionality", {
                                      stringsAsFactors = FALSE))
 })
 
+test_that("with character variable", {
+  iris_char <- iris
+  iris_char$Species <- as.character(iris_char$Species)
+  suppressMessages(iris2 <- iris1 <- import_DF(iris_char))
+  iris2$dat[c(1, 51, 52), 5] <- c(9, "test", "x")
+  expect_silent(out <- compareGADS(iris1, iris2, varNames = namesGADS(iris1)))
+
+  expect_equal(out[[1]], "all equal")
+  expect_equal(out[[4]], "all equal")
+  expect_equal(out[[5]], data.frame(value = c("setosa", "versicolor"), frequency = c(1, 2),
+                                    valLabel = c(NA, NA), missings = c(NA, NA),
+                                    stringsAsFactors = FALSE))
+})
+
 test_that("recodes in NA", {
   df1_c <- df1_b <- df1
   df1_b$dat[, 2] <- c(NA, NA)
