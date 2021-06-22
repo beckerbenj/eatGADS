@@ -176,12 +176,17 @@ writeHeader <- function(r1, filePath, syntaxPath, changeMeta) {
   } else {
     if(any(!is.na(r1$labels$format))) {
       ninfo <- unique(r1$labels$varName[!is.na(r1$labels$format)])
-      sapply(r1$dl.varnames, function(xx) {
+      fmneu <- unlist(sapply(r1$dl.varnames, function(xx) {
         if((aj <- strsplit(xx, " \\(")[[1]][1]) %in% ninfo) {
           aa <- paste0(aj, " (", stats::na.omit(r1$labels$format[r1$labels$varName==aj])[1], ")")
           return(aa)
         }
-      })
+      }))
+    for(ll in r1$dl.varnames) {
+      if(names(fmneu) %in% ll) {
+        r1$dl.varnames[r1$dl.varnames==ll] <- fmneu[which(names(fmneu) %in% ll)]
+      }
+    }
     }
     freefield <- " free (';;;')\n"
     cat("DATA LIST FILE=", autoQuote(filePath), freefield, file = syntaxPath)
@@ -241,3 +246,5 @@ writeMisCode <- function(r1, syntaxPath) {
 
   }
 }
+
+
