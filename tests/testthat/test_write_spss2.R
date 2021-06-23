@@ -30,6 +30,11 @@ test_that("checkMissings2", {
   expect_message(labs2 <- checkMissings2(g$labels, changeMeta=FALSE), "Info: Some missings are labelled without the keyword 'missing' in their label.")
   expect_equal(labs$missings, rep("valid",8))
   expect_equal(labs2$missings, g$labels$missings)
+  labsx <- g$labels
+  labsx$missings[labsx$valLabel=="miss1"] <- "valid"
+  labsx$valLabel[labsx$valLabel=="miss1"] <- "missing"
+  expect_message(checkMissings2(labsx, changeMeta=TRUE), "Declaration will be changed, because changeMeta=TRUE.")
+  expect_message(checkMissings2(labsx, changeMeta=FALSE), "Info: Some values are labelled 'missing' but are not declared as missing.")
 })
 
 
@@ -83,5 +88,12 @@ test_that("writeMisCode", {
   expect_true(grepl("var1 \\('-99','-96'\\)", syntax2))
   expect_true(grepl("var2 \\(-99\\)", syntax2))
   expect_true(grepl("var3 \\(-99,-96\\)", syntax2))
+  r1<-createInputWriteFunctions(g)
+  r1$misInfo[3:5,1] <- "var1"
+  expect_message(writeMisCode(r1,syntaxPath = f_sps), "Too many missing values for character variable 'var1'. SPSS allows only three missing values for character variables. I will take the first 3.")
+  r1$misInfo[1:5,1] <- "var3"
+  writeMisCode(r1,syntaxPath = f_sps)
+  syntax3 <- readChar(f_sps, file.info(f_sps)$size)
+  expect_true(grepl("-99 THRU -96", syntax3))
 })
 
