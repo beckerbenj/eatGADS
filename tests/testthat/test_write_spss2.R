@@ -7,7 +7,7 @@ g <- changeSPSSformat(g, varName = "var1", format = "A3")
 f_txt <- tempfile(fileext = ".txt")
 f_sps <- tempfile(fileext = ".sps")
 write_spss2(g, filePath = f_txt, syntaxPath = f_sps, dec=",", changeMeta=TRUE)
-out <- readMultisep(f_txt, ";;;")
+out <- readMultisep(f_txt, "]&;")
 syntax <- readChar(f_sps, file.info(f_sps)$size)
 
 write_spss2(g, filePath = f_txt, syntaxPath = f_sps, dec=",", changeMeta=FALSE)
@@ -26,8 +26,8 @@ test_that("Write spss 2 overall", {
 
 
 test_that("checkMissings2", {
-  labs <- checkMissings2(g$labels, changeMeta=TRUE)
-  labs2 <- checkMissings2(g$labels, changeMeta=FALSE)
+  expect_message(labs <- checkMissings2(g$labels, changeMeta=TRUE), "Declaration will be changed, because changeMeta=TRUE.")
+  expect_message(labs2 <- checkMissings2(g$labels, changeMeta=FALSE), "Info: Some missings are labelled without the keyword 'missing' in their label.")
   expect_equal(labs$missings, rep("valid",8))
   expect_equal(labs2$missings, g$labels$missings)
 })
@@ -80,7 +80,7 @@ test_that("writeVaLab", {
 
 test_that("writeMisCode", {
   expect_true(grepl("MISSING VALUES", syntax2))
-  expect_true(grepl("var1 \\('-99,-96'\\)", syntax2))
+  expect_true(grepl("var1 \\('-99','-96'\\)", syntax2))
   expect_true(grepl("var2 \\(-99\\)", syntax2))
   expect_true(grepl("var3 \\(-99,-96\\)", syntax2))
 })
