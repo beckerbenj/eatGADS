@@ -183,7 +183,7 @@ writeHeader <- function(r1, filePath, syntaxPath, changeMeta) {
         }
       }))
     for(ll in r1$dl.varnames) {
-      if(names(fmneu) %in% ll) {
+      if(any(names(fmneu) %in% ll)) {
         r1$dl.varnames[r1$dl.varnames==ll] <- fmneu[which(names(fmneu) %in% ll)]
       }
     }
