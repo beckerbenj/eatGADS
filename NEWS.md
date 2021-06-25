@@ -1,7 +1,7 @@
 
 # eatGADS 0.16.0.9000
 
-* `compareGADS()` now works for character variables
+* `inspectDifferences()` now checks whether variable is of the same type in both `GADSdats`
 * `subImputations()` for substituting imputations with unimputed values
 * `applyChangeMeta()` now returns a more informative error if the variable sets in the `GADSdat` and the `changeTable` differ
 * `dummies2char()` for recoding a set of dummy variables to a set of left filled character variables

@@ -40,7 +40,9 @@ inspectDifferences <- function(varName, GADSdat1, GADSdat2, id) {
   if(any(is.na(GADSdat2$dat[, id]))) stop("Missing values in 'id' column of 'GADSdat2'.")
   if(any(GADSdat1$dat[, id] != GADSdat2$dat[, id])) stop("'id' column is not equal for 'GADSdat1' and 'GADSdat2'.")
 
-  #browser()
+  if(is.numeric(GADSdat1$dat[, varName]) && !is.numeric(GADSdat2$dat[, varName])) stop("'varName' column is numeric in 'GADSdat1' but not in 'GADSdat2'.")
+  if(!is.numeric(GADSdat1$dat[, varName]) && is.numeric(GADSdat2$dat[, varName])) stop("'varName' column is numeric in 'GADSdat2' but not in 'GADSdat1'.")
+
   if(isTRUE(all.equal(GADSdat2$dat[, varName], GADSdat1$dat[, varName], scale = 1))) return("all.equal")
 
   unequal_rows <- c(which(GADSdat2$dat[, varName] != GADSdat1$dat[, varName]),

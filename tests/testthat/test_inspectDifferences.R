@@ -3,7 +3,7 @@
 load(file = "helper_data.rda")
 
 test_that("Errors",{
-  df1_4 <- df1_2 <- df1_3 <- df1
+  df1_5 <- df1_4 <- df1_2 <- df1_3 <- df1
   expect_error(inspectDifferences(c("1", "2"), df1, df1_2, id = "ID1"),
                "'varName' must be a character of length 1.")
   expect_error(inspectDifferences("V1", df1, df1_2, id = 1),
@@ -21,6 +21,11 @@ test_that("Errors",{
                "Missing values in 'id' column of 'GADSdat2'.")
   expect_error(inspectDifferences("V1", df1_4, df1, id = "ID1"),
                "Missing values in 'id' column of 'GADSdat1'.")
+  df1_5$dat[, 2] <- as.character(df1_5$dat[, 1])
+  expect_error(inspectDifferences("V1", df1, df1_5, id = "ID1"),
+               "'varName' column is numeric in 'GADSdat1' but not in 'GADSdat2'.")
+  expect_error(inspectDifferences("V1", df1_5, df1, id = "ID1"),
+               "'varName' column is numeric in 'GADSdat2' but not in 'GADSdat1'.")
 })
 
 test_that("Compare two different GADSdat objects",{
