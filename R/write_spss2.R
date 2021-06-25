@@ -112,14 +112,22 @@ createInputWriteFunctions <- function(GADSdat) {
   r1$lengths <- sapply(names(GADSdat$dat), function(ll) { if(isTRUE(is.numeric(GADSdat$dat[,ll]) & all(is.numeric(utils::type.convert(r1$labels$value[r1$labels$varName==ll],as.is=TRUE))|is.na(r1$labels$value[r1$labels$varName==ll])))) {
     max(nchar(as.character(round(abs(as.numeric(stats::na.omit(c(GADSdat$dat[,ll],r1$labels$value[r1$labels$varName==ll])))), digits=0))))
   } else {
-    max(nchar(c(GADSdat$dat[,ll],r1$labels$value[r1$labels$varName==ll])))
+    if(max(nchar(c(GADSdat$dat[,ll],r1$labels$value[r1$labels$varName==ll]))) > 53) {
+      max(nchar(c(GADSdat$dat[,ll],r1$labels$value[r1$labels$varName==ll]))) + round(max(nchar(c(GADSdat$dat[,ll],r1$labels$value[r1$labels$varName==ll])))/8,0)
+    } else {
+      max(nchar(c(GADSdat$dat[,ll],r1$labels$value[r1$labels$varName==ll])))
+    }
   }
   })
 
   r1$decimals <- sapply(names(GADSdat$dat), function(ll) { if(isTRUE(is.numeric(GADSdat$dat[,ll]) & all(is.numeric(utils::type.convert(r1$labels$value[r1$labels$varName==ll],as.is=TRUE))|is.na(r1$labels$value[r1$labels$varName==ll])))) {
     max(nchar(as.character(stats::na.omit(abs(c(GADSdat$dat[,ll],utils::type.convert(r1$labels$value[r1$labels$varName==ll],as.is=TRUE)))))))
   } else {
-    max(nchar(c(GADSdat$dat[,ll],r1$labels$value[r1$labels$varName==ll])))
+    if(max(nchar(c(GADSdat$dat[,ll],r1$labels$value[r1$labels$varName==ll]))) > 53) {
+      max(nchar(c(GADSdat$dat[,ll],r1$labels$value[r1$labels$varName==ll]))) + round(max(nchar(c(GADSdat$dat[,ll],r1$labels$value[r1$labels$varName==ll])))/8,0)
+    } else {
+      max(nchar(c(GADSdat$dat[,ll],r1$labels$value[r1$labels$varName==ll])))
+    }
   }
   })
 
@@ -162,14 +170,14 @@ writeData <- function(GADSdat, filePath, dec, fileEncoding) {
 
   ## write txt
   utils::write.table(GADSdat$dat, file = filePath, row.names = FALSE, col.names = FALSE,
-                     sep = ";;;", dec = dec, quote = FALSE, na = "", eol = "\n", fileEncoding = fileEncoding)
+                     sep = "]&;", dec = dec, quote = FALSE, na = "", eol = "\n", fileEncoding = fileEncoding)
 
   return(GADSdat)
 }
 
 writeHeader <- function(r1, filePath, syntaxPath, changeMeta) {
   if(isTRUE(changeMeta)) {
-    freefield <- " free (';;;')\n"
+    freefield <- " free (']&;')\n"
     cat("DATA LIST FILE=", autoQuote(filePath), freefield, file = syntaxPath)
     cat(" /", r1$dl.varnames, ".\n\n", file = syntaxPath, append = TRUE,
         fill = 60, labels = " ")
@@ -183,12 +191,12 @@ writeHeader <- function(r1, filePath, syntaxPath, changeMeta) {
         }
       }))
     for(ll in r1$dl.varnames) {
-      if(names(fmneu) %in% ll) {
+      if(any(names(fmneu) %in% ll)) {
         r1$dl.varnames[r1$dl.varnames==ll] <- fmneu[which(names(fmneu) %in% ll)]
       }
     }
     }
-    freefield <- " free (';;;')\n"
+    freefield <- " free (']&;')\n"
     cat("DATA LIST FILE=", autoQuote(filePath), freefield, file = syntaxPath)
     cat(" /", r1$dl.varnames, ".\n\n", file = syntaxPath, append = TRUE,
         fill = 60, labels = " ")
@@ -215,6 +223,7 @@ writeVaLab <- function(r1, syntaxPath) {
 }
 
 writeMisCode <- function(r1, syntaxPath) {
+
   if (nrow(r1$misInfo) > 0) {
 
     cat("\nMISSING VALUES\n", file = syntaxPath, append = TRUE)
@@ -232,11 +241,12 @@ writeMisCode <- function(r1, syntaxPath) {
               file = syntaxPath, append = TRUE)
         }
       } else {
-        span <- paste(r1$misInfo$value[r1$misInfo$varName==v],collapse=",")
         if(isTRUE(r1$chv[v])) {
+          span <- paste(r1$misInfo$value[r1$misInfo$varName==v],collapse="\',\'")
           cat(paste0(v, " ('",  span, "')\n",  sep = " "),
               file = syntaxPath, append = TRUE)
         } else {
+          span <- paste(r1$misInfo$value[r1$misInfo$varName==v],collapse=",")
           cat(paste0(v, " (",  span, ")\n",  sep = " "),
               file = syntaxPath, append = TRUE)
         }
