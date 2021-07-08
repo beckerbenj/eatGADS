@@ -16,6 +16,7 @@ Returns a \code{GADSdat} containing the newly computed variables.
 }
 \description{
 Convert a factor variable with complex factor levels (factor levels contain combinations of other factor levels) to dummy variables.
+Dummy variables are coded \code{1} (\code{"yes"}) and \code{0} (\code{"no"}).
 }
 \details{
 The basic functionality of this function is analogous to \code{\link{fac2dummies}}. However, the function expects factor levels to only go

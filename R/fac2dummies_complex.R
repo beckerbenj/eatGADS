@@ -3,6 +3,7 @@
 #' Transform a complex factor variable to dummy variables.
 #'
 #' Convert a factor variable with complex factor levels (factor levels contain combinations of other factor levels) to dummy variables.
+#' Dummy variables are coded \code{1} (\code{"yes"}) and \code{0} (\code{"no"}).
 #'
 #' The basic functionality of this function is analogous to \code{\link{fac2dummies}}. However, the function expects factor levels to only go
 #' to \code{9}. Higher numbers are treated as combinations of factor levels, for example \code{"13"} as \code{"1"} and \code{"3"}.
@@ -65,6 +66,7 @@ fac2dummies_complex.GADSdat <- function(GADSdat, var) {
     GADSdat <- reuseMeta(GADSdat, varName = single_dummie, other_GADSdat = GADSdat, other_varName = var,
                          missingLabels = "only", addValueLabels = TRUE)
     GADSdat <- changeValLabels(GADSdat, varName = single_dummie, value = c(1, 0), valLabel = c("yes", "no"))
+    GADSdat <- changeMissings(GADSdat, varName = single_dummie, value = c(1, 0), missings = c("valid", "valid"))
   }
 
   for(combi_level in all_levels[!all_levels %in% all_distinct_levels]) {
