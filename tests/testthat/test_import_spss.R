@@ -1,4 +1,4 @@
-# rawDat <- load_spss(file = "c:/Benjamin_Becker/02_Repositories/packages/eatGADS/tests/testthat/helper_spss.sav")
+# rawDat <- load_spss(file = "tests/testthat/helper_spss.sav")
 rawDat <- load_spss("helper_spss.sav")
 
 label_out1 <- data.frame(varName = c("VAR1", "VAR2", "VAR3"),

@@ -14,6 +14,12 @@ prepare_labels <- function(rawDat, checkVarNames, labeledStrings) {
   # 3) depends on class! strip away labels from rawDat for spss, convert factors for R
   plainDat <- data.frame(lapply(rawDat, strip_attributes), stringsAsFactors = FALSE)
 
+  # 4) All integer columns to numeric to avoid incompatabilities when writing to sav
+  for(i in names(plainDat)) {
+    if(is.integer(plainDat[[i]])) plainDat[, i] <- as.numeric(plainDat[, i])
+  }
+  if(is.integer(label_df$value)) label_df$value <- as.numeric(label_df$value)
+
   # output
   new_GADSdat(dat = plainDat, labels = label_df)
 }

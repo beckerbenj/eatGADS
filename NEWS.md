@@ -18,6 +18,7 @@
 
 # Internal
 * better performance of `applyChangeMeta()` on value level
+* bug fix `write_save()` (all columns are forced to be `double` when imported instead of `integer`)
 * bug fix `fac2dummies_complex()` (value labels of dummy variables are tagged as `valid`)
 * bug fixes `recodeGADS()`
 * bug fix `removeValLabels()` (when a single value label was removed)

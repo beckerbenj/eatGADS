@@ -43,6 +43,14 @@ test_that("Full workflow with haven", {
   expect_silent(write_spss(test_df, filePath = tempfile()))
 })
 
+test_that("Full workflow with haven with factor and reuseMeta", {
+  f <- tempfile(fileext = ".sav")
+  iris_gads <- import_DF(iris)
+  iris_gads <- reuseMeta(iris_gads, "Sepal_Length", df, "V2")
+
+  expect_silent(write_spss(iris_gads, filePath = f))
+})
+
 
 ### Possible Problems when writing with haven
 test_that("Check haven behaviour", {
