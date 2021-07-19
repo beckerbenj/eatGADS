@@ -3,8 +3,8 @@
 #############################################################################
 #' Write a \code{GADSdat} object to a file
 #'
-#' Write a \code{GADSdat} object, which contains meta information as value and variable labels to an SPSS file (\code{sav})
-#' or Stata file (\code{dta}).
+#' Write a \code{GADSdat} object, which contains meta information as value and variable labels to an \code{SPSS} file (\code{sav})
+#' or \code{Stata} file (\code{dta}).
 #' See 'details' for some important limitations.
 #'
 #' The provided functionality relies on \code{havens} \code{\link[haven:read_spss]{write_sav}} and

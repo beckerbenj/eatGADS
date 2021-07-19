@@ -2,7 +2,7 @@
 # eatGADS 0.16.0.9000
 
 * `inspectDifferences()` now checks whether variable is of the same type in both `GADSdats`
-* `subImputations()` for substituting imputations with unimputed values
+* `subImputations()` for substituting imputations with original, not imputed values
 * `applyChangeMeta()` now returns a more informative error if the variable sets in the `GADSdat` and the `changeTable` differ
 * `dummies2char()` for recoding a set of dummy variables to a set of left filled character variables
 * `fac2dummies()` and `fac2dummies_complex()` for recoding a labeled factor variable to multiple labeled dummy variables
@@ -44,7 +44,7 @@
 * changing value labels inside of `recodeGADS()` via `newValueLabels` deprecated (use `changeValLabels()`instead)
 * `applyChangeMeta()` now works with `data.frames` (for compatibility with `excel` import and export)
 * `import_spss()` now supports variables of type `datetime` 
-* `import_stata()` and `write_stata()` for exporting and importing Stata files
+* `import_stata()` and `write_stata()` for exporting and importing `Stata` files
 
 ## Internal
 * `check_GADSdat()` now checks for duplicate value rows

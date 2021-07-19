@@ -18,8 +18,8 @@ write_stata(GADSdat, filePath)
 Writes file to disc, returns \code{NULL}.
 }
 \description{
-Write a \code{GADSdat} object, which contains meta information as value and variable labels to an SPSS file (\code{sav})
-or Stata file (\code{dta}).
+Write a \code{GADSdat} object, which contains meta information as value and variable labels to an \code{SPSS} file (\code{sav})
+or \code{Stata} file (\code{dta}).
 See 'details' for some important limitations.
 }
 \details{

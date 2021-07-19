@@ -1,11 +1,11 @@
 
 #############################################################################
-#' Import Stata data
+#' Import \code{Stata} data
 #'
 #' Function to import \code{.dta} files while extracting meta information, e.g. variable and value labels.
 #'
-#' Stata files (\code{.dta}) store variable and value labels and assign specific formatting to variables. \code{import_stata} imports
-#' data from Stata, while storing this meta-information separately in a long format data frame. Time and date variables are converted to character.
+#' \code{Stata} files (\code{.dta}) store variable and value labels and assign specific formatting to variables. \code{import_stata} imports
+#' data from \code{Stata}, while storing this meta-information separately in a long format data frame. Time and date variables are converted to character.
 #'
 #'@param filePath Source file location, ending on \code{.dta}.
 #'@param checkVarNames Should variable names be checked for violations of \code{SQLite} and \code{R} naming rules?

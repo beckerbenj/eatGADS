@@ -2,7 +2,7 @@
 % Please edit documentation in R/subImputations.R
 \name{subImputations}
 \alias{subImputations}
-\title{Substitue imputed values.}
+\title{Substitute imputed values.}
 \usage{
 subImputations(GADSdat, GADSdat_imp, varName, id, imp)
 }
@@ -21,7 +21,7 @@ subImputations(GADSdat, GADSdat_imp, varName, id, imp)
 The modified \code{GADSdat_imp}..
 }
 \description{
-Substitute imputed values in a imputed \code{GADSdat_imp} object with unimputed values from a \code{GADSdat}.
+Substitute imputed values in a imputed \code{GADSdat_imp} object with original, not imputed values from a \code{GADSdat}.
 }
 \examples{
 # tbd

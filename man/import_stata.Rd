@@ -2,7 +2,7 @@
 % Please edit documentation in R/import_stata.R
 \name{import_stata}
 \alias{import_stata}
-\title{Import Stata data}
+\title{Import \code{Stata} data}
 \usage{
 import_stata(filePath, checkVarNames = TRUE, labeledStrings = FALSE)
 }
@@ -20,6 +20,6 @@ Returns a list with the actual data \code{dat} and a data frame with all meta in
 Function to import \code{.dta} files while extracting meta information, e.g. variable and value labels.
 }
 \details{
-Stata files (\code{.dta}) store variable and value labels and assign specific formatting to variables. \code{import_stata} imports
-data from Stata, while storing this meta-information separately in a long format data frame. Time and date variables are converted to character.
+\code{Stata} files (\code{.dta}) store variable and value labels and assign specific formatting to variables. \code{import_stata} imports
+data from \code{Stata}, while storing this meta-information separately in a long format data frame. Time and date variables are converted to character.
 }

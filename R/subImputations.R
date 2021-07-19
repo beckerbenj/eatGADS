@@ -1,8 +1,8 @@
 ####
 #############################################################################
-#' Substitue imputed values.
+#' Substitute imputed values.
 #'
-#' Substitute imputed values in a imputed \code{GADSdat_imp} object with unimputed values from a \code{GADSdat}.
+#' Substitute imputed values in a imputed \code{GADSdat_imp} object with original, not imputed values from a \code{GADSdat}.
 #'
 #'
 #'@param GADSdat A \code{GADSdat} object.
