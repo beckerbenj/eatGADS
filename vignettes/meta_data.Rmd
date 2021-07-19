@@ -247,7 +247,7 @@ The excel file can be read back into `R` via `readxl::read_xlsx()`.
 
 ```{r read excel var, eval = FALSE}
 # write to excel
-meta_var_changed <- readxl::read_excel("variable_changes.xlsx")
+meta_var_changed <- readxl::read_excel("variable_changes.xlsx", col_types = rep("text", 8))
 ```
 
 ```{r var changes under the hood, eval = TRUE, echo = FALSE, results='hide'}
@@ -286,7 +286,8 @@ eatAnalysis::write_xlsx(meta_val, row.names = FALSE, "value_changes.xlsx")
 
 ```{r read excel val, eval = FALSE}
 # write to excel
-meta_val_changed <- readxl::read_excel("value_changes.xlsx")
+meta_val_changed <- readxl::read_excel("value_changes.xlsx", 
+                                       col_types = c("text", rep(c("numeric", "text", "text"), 2)))
 ```
 
 ```{r val changes under the hood, eval = TRUE, echo = FALSE, results='hide'}
