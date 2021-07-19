@@ -71,7 +71,7 @@ applyChangeMeta.varChanges <- function(changeTable, GADSdat, ...) {
 #'@export
 applyChangeMeta.valChanges <- function(changeTable, GADSdat, existingMeta = c("stop", "value", "value_new", "drop"), ...) {
   check_GADSdat(GADSdat)
-  check_valChanges(changeTable)
+  changeTable <- check_valChanges(changeTable)
   existingMeta <- match.arg(existingMeta)
   # check_changeTable(GADSdat, changeTable) ### removed; substitute with checks that work around new value labels...
   test <- compare_and_order(namesGADS(GADSdat), name1 = "the 'GADSdat' but in the 'changeTable'",

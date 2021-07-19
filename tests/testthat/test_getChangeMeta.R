@@ -35,9 +35,26 @@ test_that("Extract value level meta change table", {
 
   expect_error(check_valChanges(changes_val2), "Irregular column names in changeTable.")
   expect_error(check_valChanges(changes_val3), "Irregular values in 'missings_new' column.")
-  expect_error(check_valChanges(changes_val), "String values can not be given value labels.")
 
   expect_error(check_valChanges(changes_val4), "Value 'NA' can not receive a value label.")
+})
+
+test_that("Characters in value columns check_valChanges", {
+  changes_val4 <- changes_val2 <- changes_val3 <- changes_val1 <- changes_val0 <- changes_val
+  changes_val1$value_new[5] <- "test"
+  changes_val2$value[4] <- "test"
+  expect_error(check_valChanges(changes_val1),
+               "Column 'value_new' in 'changeTable' is character and can not be transformed to numeric.")
+  expect_error(check_valChanges(changes_val2),
+               "Column 'value' in 'changeTable' is character and can not be transformed to numeric.")
+
+  changes_val3[1, "value_new"] <- changes_val0[1, "value_new"] <- 5
+  changes_val3$value_new <- as.character(changes_val3$value_new)
+  changes_val4$value <- as.character(changes_val4$value)
+  out <- check_valChanges(changes_val3)
+  expect_equal(out, changes_val0)
+  out2 <- check_valChanges(changes_val4)
+  expect_equal(out2, changes_val)
 })
 
 test_that("Extract list of meta change tables for all_GADSdat", {

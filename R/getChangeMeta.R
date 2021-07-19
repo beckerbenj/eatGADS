@@ -87,9 +87,21 @@ check_valChanges <- function(changeTable) {
   if(!all(changeTable[, "missings_new"] %in% c("miss", "valid") | is.na(changeTable[, "missings_new"]))) {
     stop("Irregular values in 'missings_new' column.")
   }
-  if(is.character(changeTable[, "value_new"])) stop("String values can not be given value labels.")
+
+  # Numeric value columns
+  if(is.character(changeTable[, "value_new"])) {
+    changeTable[, "value_new"] <- suppressWarnings(eatTools::asNumericIfPossible(changeTable[, "value_new"],
+                                                                                 force.string = FALSE))
+    if(is.character(changeTable[, "value_new"])) stop("Column 'value_new' in 'changeTable' is character and can not be transformed to numeric.")
+  }
+  if(is.character(changeTable[, "value"])) {
+    changeTable[, "value"] <- suppressWarnings(eatTools::asNumericIfPossible(changeTable[, "value"],
+                                                                                 force.string = FALSE))
+    if(is.character(changeTable[, "value"])) stop("Column 'value' in 'changeTable' is character and can not be transformed to numeric.")
+  }
+
   wrong_new_miss <- which((changeTable$missings_new == "miss" | !is.na(changeTable$valLabel_new))
                           & is.na(changeTable$value) & is.na(changeTable$value_new))
   if(length(wrong_new_miss) > 0)  stop("Value 'NA' can not receive a value label.")
-  return()
+  changeTable
 }
