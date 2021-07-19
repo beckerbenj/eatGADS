@@ -55,7 +55,7 @@ test_that("Value label of single variable extracted for SPSS types", {
 test_that("Backward compatability to older haven classes", {
   class(rawDat$VAR1) <- "labelled_spss"
   expect_warning(extract_variable_level(rawDat),
-                 "You are using an old version of haven. Please download the current version from GitHub. \n Correct importing from SPSS-files can not be guaranteed.")
+                 "You are using an old version of haven. Please download the current version from CRAN. \n Correct importing from SPSS-files can not be guaranteed.")
   expect_equal(extract_value_level(rawDat$VAR1, "VAR1"),
                data.frame(varName = "VAR1", value = 1, valLabel = "One", missings = "valid", stringsAsFactors = FALSE))
 })

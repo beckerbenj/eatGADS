@@ -36,15 +36,12 @@ test_that("Columns are added if not used for data for label df", {
 
 ### haven bug warning
 test_that("Haven bug for value labels of long string variables does no longer exist", {
-  out <- suppressWarnings(import_spss("helper_spss_havenbug.sav"))
-  expect_equal(out$labels$valLabel, rep(c("one", "missing"), 4))
-})
-
-test_that("Warning for haven bug causing loss of missing codes for long strings", {
-  warns <- capture_warnings(import_spss("helper_spss_havenbug.sav"))
-  # warns <- capture_warnings(out <- import_spss("c:/Benjamin_Becker/02_Repositories/packages/eatGADS/tests/testthat/helper_spss_havenbug.sav"))
-  expect_equal(warns[[1]],
-               paste("Due to a bug in haven, missing codes of character variables can be lost. Checking missing codes via checkMissings is recommended. The following variables might be affected: \n v2, v3, v4"))
+  out <- import_spss("helper_spss_havenbug.sav")
+  # out <- import_spss("tests/testthat/helper_spss_havenbug.sav")
+  expect_equal(out$labels[["format"]], c("F8.2", "F8.2", "A8", "A8", "A9", "A9", "A10", "A10", "A200", "A200"))
+  expect_equal(extractMeta(out, "v5")[["missings"]], c("valid", "miss"))
+  expect_equal(extractMeta(out, "v5")[["valLabel"]], c("one", "missing"))
+  expect_equal(extractMeta(out, "v5")[["value"]], c(1, 99))
 })
 
 

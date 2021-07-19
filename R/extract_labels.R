@@ -18,7 +18,7 @@ extract_variable_level.savDat<- function(rawDat) {
   varFormat <- unlist(lapply(rawDat, extract_attribute, attr_name = "format.spss"))
   varWidth <- unlist(lapply(rawDat, extract_attribute, attr_name = "display_width", NA_type = NA_real_))
   if(any(grepl("^labelled_spss", varClass))) {
-    warning("You are using an old version of haven. Please download the current version from GitHub. \n Correct importing from SPSS-files can not be guaranteed.", call. = FALSE)
+    warning("You are using an old version of haven. Please download the current version from CRAN. \n Correct importing from SPSS-files can not be guaranteed.", call. = FALSE)
   }
   # internal convention: all special labeled haven classes are internally represented as "yes" in variable "labeled", all other as "no"
   varClass[!is.na(varClass)] <- "yes"
@@ -28,7 +28,7 @@ extract_variable_level.savDat<- function(rawDat) {
   names(varLabel_df) <- c("varName", "varLabel", "format", "display_width", "labeled")
   rownames(varLabel_df) <- NULL
 
-  issue_havenBUG_warning(varLabel_df)
+  #issue_havenBUG_warning(varLabel_df)
 
   varLabel_df
 }

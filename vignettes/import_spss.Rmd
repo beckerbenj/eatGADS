@@ -33,8 +33,6 @@ sav_path <- system.file("extdata", "pisa.zsav", package = "eatGADS")
 gads_obj <- import_spss(sav_path)
 ```
 
-As `haven` currently does not always import value labels and missing codes for long string variables correctly, specific warnings for these variables are issued. I recommend checking the correct import of these variables.
-
 ## `GADSdat` objects
 
 The resulting object is of the class `GADSdat`. It is basically a named list containing the actual data (`dat`) and the meta data (`labels`). 
