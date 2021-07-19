@@ -1,9 +1,10 @@
 
-# eatGADS 0.16.0.9000
+# eatGADS 0.17.0
 
 * `inspectDifferences()` now checks whether variable is of the same type in both `GADSdats`
 * `subImputations()` for substituting imputations with original, not imputed values
 * `applyChangeMeta()` now returns a more informative error if the variable sets in the `GADSdat` and the `changeTable` differ
+* `applyChangeMeta()` tries to convert `value` columns in `changeTable` to numeric before throwing an error
 * `dummies2char()` for recoding a set of dummy variables to a set of left filled character variables
 * `fac2dummies()` and `fac2dummies_complex()` for recoding a labeled factor variable to multiple labeled dummy variables
 * `equalGADS()` for comparing the complete structure and content of two `GADSdat` objects
@@ -26,6 +27,7 @@
 * bug fix `remove2NAchar()` (with partially labeled variables)
 * bug fix `multiChar2fac()` (with partially labeled variables)
 * bug fix `applyLookup_expandVar()` (removed unnecessary messages)
+* warnings removed for `import_spss()` (`haven` patch for labeled character variables)
 
 
 # eatGADS 0.16.0

@@ -133,7 +133,7 @@ createInputWriteFunctions <- function(GADSdat) {
 
   r1$varsWithDecimals <-  names(which(r1$lengths != r1$decimals))
 
-  r1$decimals2 <- sapply(r1$varsWithDecimals, function(ll) {if(isTRUE(is.numeric(GADSdat$dat[,ll]) & all(is.numeric(type.convert(r1$labels$value[r1$labels$varName==ll],as.is=TRUE))|is.na(r1$labels$value[r1$labels$varName==ll])))) {
+  r1$decimals2 <- sapply(r1$varsWithDecimals, function(ll) {if(isTRUE(is.numeric(GADSdat$dat[,ll]) & all(is.numeric(utils::type.convert(r1$labels$value[r1$labels$varName==ll],as.is=TRUE))|is.na(r1$labels$value[r1$labels$varName==ll])))) {
     ast <- max(nchar(stats::na.omit(unlist(lapply(strsplit(as.character(stats::na.omit(abs(c(GADSdat$dat[,ll],utils::type.convert(r1$labels$value[r1$labels$varName==ll],as.is=TRUE))))),"\\."), function(b) b[2])))))
     if(isTRUE(ast > 16)) {
       message(paste0("Variable ", ll, " has more decimals than SPSS allows (", ast, ") and will be rounded to 16 decimal places."))
