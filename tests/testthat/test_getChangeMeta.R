@@ -14,8 +14,17 @@ test_that("Extract variable level meta change table", {
   out <- c(names(df1$labels)[1:4], paste0(names(df1$labels)[1:4], "_new"))
   expect_equal(names(getChangeMeta(df1)), out)
   expect_equal(dim(getChangeMeta(df1)), c(2, 8))
-  names(changes_var)[8] <- "lala_new"
-  expect_error(check_varChanges(changes_var), "Irregular column names in changeTable.")
+})
+
+test_that("check_varChanges", {
+  changes_var2 <-changes_var1 <- changes_var
+  changes_var1$varName_new[1] <- "alter"
+  expect_message(out <- check_varChanges(changes_var1),
+                 "alter has been renamed to alterVar")
+  expect_equal(out[1, "varName_new"], "alterVar")
+
+  names(changes_var2)[8] <- "lala_new"
+  expect_error(check_varChanges(changes_var2), "Irregular column names in changeTable.")
 })
 
 test_that("Extract value level meta change table", {

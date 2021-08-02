@@ -37,7 +37,7 @@ applyChangeMeta <- function(changeTable, GADSdat, ...) {
 #'@export
 applyChangeMeta.varChanges <- function(changeTable, GADSdat, ...) {
   check_GADSdat(GADSdat)
-  check_varChanges(changeTable)
+  changeTable <- check_varChanges(changeTable)
   check_changeTable(GADSdat, changeTable)
   check_format_vector(changeTable$format_new)
 

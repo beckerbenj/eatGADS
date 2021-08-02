@@ -1,3 +1,7 @@
+# eatGADS 0.17.0.9000
+
+* `changeVarNames()` and `applyChangeMeta()` now enforce `SQLite3` naming conventions
+
 
 # eatGADS 0.17.0
 

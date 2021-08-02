@@ -21,6 +21,12 @@ test_that("changeVarNames for GADSdat", {
   expect_equal(names(out_double$dat), c("test", "VAR2", "test2"))
 })
 
+test_that("changeVarNames SQLite conventions", {
+  expect_message(out_single <- changeVarNames(dfSAV, oldNames = c("VAR2"), newNames = c("VAR.2")),
+  "VAR.2 has been renamed to VAR_2")
+  expect_equal(names(out_single$dat)[2], c("VAR_2"))
+})
+
 test_that("changeVarNames for all_GADSdat", {
   out_single <- changeVarNames(expected_bigList, oldNames = c("V1"), newNames = c("var1"))
   expect_equal(names(out_single$datList$df1), c("ID1", "var1"))
@@ -35,5 +41,4 @@ test_that("changeVarNames for all_GADSdat", {
   expect_equal(names(out_double$datList$df1), c("idstud", "V1"))
   expect_equal(names(out_double$datList$df2), c("idstud", "V2"))
   expect_equal(out_double$allLabels$varName, c("idstud", "V1", "idstud", "V2"))
-
 })
