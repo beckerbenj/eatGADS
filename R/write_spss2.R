@@ -23,16 +23,19 @@
 #'write_spss2(pisa, filePath = tmp_txt, syntaxPath = tmp_sps)
 #'
 #'@export
-write_spss2 <- function(GADSdat, filePath, syntaxPath, dec = ".", changeMeta=FALSE, fileEncoding = "UTF-8") {
+write_spss2 <- function(GADSdat, filePath, syntaxPath, dec = ".", changeMeta=FALSE, fileEncoding = "UTF-8", verbose=FALSE) {
   UseMethod("write_spss2")
 }
 
 #'@export
-write_spss2.GADSdat <- function(GADSdat, filePath, syntaxPath, dec =".", changeMeta=FALSE, fileEncoding = "UTF-8") {
+write_spss2.GADSdat <- function(GADSdat, filePath, syntaxPath, dec =".", changeMeta=FALSE, fileEncoding = "UTF-8", verbose=FALSE) {
 
   ## Checks
   check_GADSdat(GADSdat)
   check_GADSdat_varLevel_meta(GADSdat)
+  if(!isTRUE(changeMeta)) {
+    if(any(is.na(GADSdat$labels$format))) warning("Some values of \'labels$format\' are NA, which will produce an invalid SPSS syntax file. Please switch to changeMeta=TRUE.")
+  }
 
   ## additional Column for SPSS, which is sometimes inadvertently shifts cases that end with NAs
   # write data
@@ -40,7 +43,7 @@ write_spss2.GADSdat <- function(GADSdat, filePath, syntaxPath, dec =".", changeM
   GADSdat <- writeData(GADSdat=GADSdat, filePath=filePath, dec=dec, fileEncoding=fileEncoding)
 
   ## checkMissings
-  GADSdat$labels <- checkMissings2(GADSdat$labels, changeMeta)
+  GADSdat$labels <- checkMissings2(GADSdat$labels, changeMeta, verbose)
 
   ## create input for sub-functions
   r1 <- createInputWriteFunctions(GADSdat)
@@ -72,20 +75,20 @@ readMultisep <- function(file,sep) {
   return(datf)
 }
 
-checkMissings2 <- function(labels, changeMeta){
+checkMissings2 <- function(labels, changeMeta, verbose){
 
   if(isTRUE(any(labels$missings[grep("missing", labels$valLabel)] == "valid"))) {
-    message("Info: Some values are labelled \'missing\' but are not declared as missing.")
+    if(verbose) message("Info: Some values are labelled \'missing\' but are not declared as missing.")
     if(isTRUE(changeMeta)) {
-      message("Declaration will be changed, because changeMeta=TRUE.")
+      if(verbose) message("Declaration will be changed, because changeMeta=TRUE.")
       labels$missings[grep("missing", labels$valLabel)] <- "miss"
     }
   }
 
   if(isTRUE(any(labels$missings[!grepl("missing", labels$valLabel)] == "miss"))) {
-    message("Info: Some missings are labelled without the keyword \'missing\' in their label.")
+    if(verbose) message("Info: Some missings are labelled without the keyword \'missing\' in their label.")
     if(isTRUE(changeMeta)) {
-      message("Declaration will be changed, because changeMeta=TRUE.")
+      if(verbose) message("Declaration will be changed, because changeMeta=TRUE.")
       labels$missings[!grepl("missing", labels$valLabel)] <- "valid"
     }
   }
@@ -112,7 +115,7 @@ createInputWriteFunctions <- function(GADSdat) {
   r1$lengths <- sapply(names(GADSdat$dat), function(ll) { if(isTRUE(is.numeric(GADSdat$dat[,ll]) & all(is.numeric(utils::type.convert(r1$labels$value[r1$labels$varName==ll],as.is=TRUE))|is.na(r1$labels$value[r1$labels$varName==ll])))) {
     max(nchar(as.character(round(abs(as.numeric(stats::na.omit(c(GADSdat$dat[,ll],r1$labels$value[r1$labels$varName==ll])))), digits=0))))
   } else {
-    if(max(nchar(c(GADSdat$dat[,ll],r1$labels$value[r1$labels$varName==ll]))) > 53) {
+    if(isTRUE(max(nchar(c(GADSdat$dat[,ll],r1$labels$value[r1$labels$varName==ll]))) > 53)) {
       max(nchar(c(GADSdat$dat[,ll],r1$labels$value[r1$labels$varName==ll]))) + round(max(nchar(c(GADSdat$dat[,ll],r1$labels$value[r1$labels$varName==ll])))/8,0)
     } else {
       max(nchar(c(GADSdat$dat[,ll],r1$labels$value[r1$labels$varName==ll])))
@@ -123,7 +126,7 @@ createInputWriteFunctions <- function(GADSdat) {
   r1$decimals <- sapply(names(GADSdat$dat), function(ll) { if(isTRUE(is.numeric(GADSdat$dat[,ll]) & all(is.numeric(utils::type.convert(r1$labels$value[r1$labels$varName==ll],as.is=TRUE))|is.na(r1$labels$value[r1$labels$varName==ll])))) {
     max(nchar(as.character(stats::na.omit(abs(c(GADSdat$dat[,ll],utils::type.convert(r1$labels$value[r1$labels$varName==ll],as.is=TRUE)))))))
   } else {
-    if(max(nchar(c(GADSdat$dat[,ll],r1$labels$value[r1$labels$varName==ll]))) > 53) {
+    if(isTRUE(max(nchar(c(GADSdat$dat[,ll],r1$labels$value[r1$labels$varName==ll]))) > 53)) {
       max(nchar(c(GADSdat$dat[,ll],r1$labels$value[r1$labels$varName==ll]))) + round(max(nchar(c(GADSdat$dat[,ll],r1$labels$value[r1$labels$varName==ll])))/8,0)
     } else {
       max(nchar(c(GADSdat$dat[,ll],r1$labels$value[r1$labels$varName==ll])))

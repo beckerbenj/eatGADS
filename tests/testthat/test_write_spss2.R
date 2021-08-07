@@ -3,7 +3,10 @@ g <- import_raw(df = data.frame(var1 = c("ab c","bb"), var2 = c(1,NaN), var3 = c
                 valLabels = data.frame(varName = c("var1", "var1", "var2", "var2", "var2","var3", "var3"), value = c(-96, -99, -99, 0, 1,-96, -99),
                                        valLabel = c("miss1", "miss2", "miss2","right","wrong","miss1", "miss2"),
                                        missings = c("miss", "miss", "miss","valid","valid","miss", "miss"), stringsAsFactors = FALSE))
-g <- changeSPSSformat(g, varName = "var1", format = "A3")
+g <- changeSPSSformat(g, varName = "var1", format = "A4")
+g <- changeSPSSformat(g, varName = "var2", format = "F4")
+g <- changeSPSSformat(g, varName = "var3", format = "F4")
+g <- changeSPSSformat(g, varName = "var4", format = "F4")
 f_txt <- tempfile(fileext = ".txt")
 f_sps <- tempfile(fileext = ".sps")
 write_spss2(g, filePath = f_txt, syntaxPath = f_sps, dec=",", changeMeta=TRUE)
@@ -26,15 +29,15 @@ test_that("Write spss 2 overall", {
 
 
 test_that("checkMissings2", {
-  expect_message(labs <- checkMissings2(g$labels, changeMeta=TRUE), "Declaration will be changed, because changeMeta=TRUE.")
-  expect_message(labs2 <- checkMissings2(g$labels, changeMeta=FALSE), "Info: Some missings are labelled without the keyword 'missing' in their label.")
+  expect_message(labs <- checkMissings2(g$labels, changeMeta=TRUE, verbose=TRUE), "Declaration will be changed, because changeMeta=TRUE.")
+  expect_message(labs2 <- checkMissings2(g$labels, changeMeta=FALSE, verbose=TRUE), "Info: Some missings are labelled without the keyword 'missing' in their label.")
   expect_equal(labs$missings, rep("valid",8))
   expect_equal(labs2$missings, g$labels$missings)
   labsx <- g$labels
   labsx$missings[labsx$valLabel=="miss1"] <- "valid"
   labsx$valLabel[labsx$valLabel=="miss1"] <- "missing"
-  expect_message(checkMissings2(labsx, changeMeta=TRUE), "Declaration will be changed, because changeMeta=TRUE.")
-  expect_message(checkMissings2(labsx, changeMeta=FALSE), "Info: Some values are labelled 'missing' but are not declared as missing.")
+  expect_message(checkMissings2(labsx, changeMeta=TRUE, verbose=TRUE), "Declaration will be changed, because changeMeta=TRUE.")
+  expect_message(checkMissings2(labsx, changeMeta=FALSE, verbose=TRUE), "Info: Some values are labelled 'missing' but are not declared as missing.")
 })
 
 
@@ -52,7 +55,7 @@ test_that("createInputWriteFunctions", {
    r1<-createInputWriteFunctions(g)
 
   expect_true(identical(r1$labels$varName, c("var1", "var1", "var2", "var2", "var2", "var3", "var3", "var4")))
-  expect_true(identical(r1$labels$format, as.character(c("A3","A3",rep(NA,6)))))
+  expect_true(identical(r1$labels$format, as.character(c("A4","A4",rep("F4",6)))))
   expect_true(identical(r1$varInfo$varName, c("var1", "var2", "var3", "var4")))
   expect_true(identical(r1$valInfo$varName, c("var1", "var1", "var2", "var2", "var2", "var3", "var3")))
   expect_true(identical(r1$misInfo$varName, c("var1", "var1", "var2", "var3", "var3")))
@@ -68,7 +71,7 @@ test_that("writeHeader", {
   expect_true(grepl("DATA LIST FILE=.", syntax))
   expect_true(grepl("free", syntax))
   expect_true(grepl("var1 \\(A4\\) var2 \\(F2\\) var3 \\(F4.2\\) var4 \\(F16.14\\)", syntax))
-  expect_true(grepl("var1 \\(A3\\) var2 \\(F2\\) var3 \\(F4.2\\) var4 \\(F16.14\\)", syntax2))
+  expect_true(grepl("var1 \\(A4\\) var2 \\(F4\\) var3 \\(F4\\) var4 \\(F4\\)", syntax2))
 })
 
 
