@@ -12,6 +12,7 @@
 #'@param dec Decimal delimiter for your SPSS version.
 #'@param changeMeta Meta data information will be changed automatically according to features of the data.
 #'@param fileEncoding Data file encoding for SPSS. Default is "UTF-8".
+#'@param verbose Show more information in console.
 #'
 #'@return Writes a \code{txt} and an \code{sav} file to disc, returns nothing.
 #'
