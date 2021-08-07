@@ -10,7 +10,8 @@ write_spss2(
   syntaxPath,
   dec = ".",
   changeMeta = FALSE,
-  fileEncoding = "UTF-8"
+  fileEncoding = "UTF-8",
+  verbose = FALSE
 )
 }
 \arguments{
@@ -25,6 +26,8 @@ write_spss2(
 \item{changeMeta}{Meta data information will be changed automatically according to features of the data.}
 
 \item{fileEncoding}{Data file encoding for SPSS. Default is "UTF-8".}
+
+\item{verbose}{Show more information in console.}
 }
 \value{
 Writes a \code{txt} and an \code{sav} file to disc, returns nothing.
