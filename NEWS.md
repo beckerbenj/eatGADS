@@ -1,7 +1,7 @@
 # eatGADS 0.17.0.9000
 
 * `changeVarNames()` and `applyChangeMeta()` now enforce `SQLite3` naming conventions
-* bug fixes `write_sav2()`
+* bug fixes `write_spss2()`
 
 
 # eatGADS 0.17.0
@@ -24,7 +24,7 @@
 
 # Internal
 * better performance of `applyChangeMeta()` on value level
-* bug fix `write_sav()` (all columns are forced to be `double` when imported instead of `integer`)
+* bug fix `import_spss()` (all columns are forced to be `double` when imported instead of `integer`)
 * bug fix `fac2dummies_complex()` (value labels of dummy variables are tagged as `valid`)
 * bug fixes `recodeGADS()`
 * bug fix `removeValLabels()` (when a single value label was removed)
