@@ -3,6 +3,7 @@
 * `check4SPSS()` for checking `SPSS` meta data conventions and requirements
 * `changeVarNames()` and `applyChangeMeta()` now enforce `SQLite3` naming conventions
 * bug fixes `write_spss2()`
+* bug fix `applyChangeMeta()`: now recognices differences in `NAs` in old columns when checking the change table
 
 
 # eatGADS 0.17.0
