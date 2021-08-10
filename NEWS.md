@@ -1,5 +1,6 @@
 # eatGADS 0.17.0.9000
 
+* `check4SPSS()` for checking `SPSS` meta data conventions and requirements
 * `changeVarNames()` and `applyChangeMeta()` now enforce `SQLite3` naming conventions
 * bug fixes `write_spss2()`
 

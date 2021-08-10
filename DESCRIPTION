@@ -7,7 +7,7 @@ Authors@R: c(
     person("Johanna", "Busse", role = c("ctb")))
 Description: Import 'SPSS' data, handle and change 'SPSS' meta data, store and access large hierarchical data in 'SQLite' data bases.
 Depends: R (>= 3.5.0)
-Imports: eatDB (>= 0.4.1), haven (>= 2.4.0), plyr, eatTools (>= 0.4.0), tibble, data.table, hms, stats, utils
+Imports: eatDB (>= 0.4.1), haven (>= 2.4.0), plyr, eatTools (>= 0.4.0), tibble, data.table, hms, stats, utils, stringi
 License: GPL (>= 2)
 URL: https://github.com/beckerbenj/eatGADS
 Encoding: UTF-8
