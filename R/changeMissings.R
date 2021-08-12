@@ -74,7 +74,7 @@ changeMissings.all_GADSdat <- function(GADSdat, varName, value, missings) {
 checkMissingsInput <- function(varName, value, missings, labels) {
   if(!is.character(varName) || !length(varName) == 1) stop("'varName' is not a character vector of length 1.")
   if(!varName %in% labels$varName) stop("'varName' is not a variable name in the GADSdat.")
-  if(length(value) != length(missings)) stop("'value' and 'valLabel' are not of identical length.", call. = FALSE)
+  if(length(value) != length(missings)) stop("'value' and 'missings' are not of identical length.", call. = FALSE)
   if(!all(missings %in% c("miss", "valid"))) stop("All values in 'missings' need to be 'miss' or 'valid'.")
   return()
 }

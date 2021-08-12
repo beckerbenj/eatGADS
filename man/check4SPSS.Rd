@@ -10,16 +10,20 @@ check4SPSS(GADSdat)
 \item{GADSdat}{\code{GADSdat} object imported via \code{eatGADS}.}
 }
 \value{
-Returns a list with the entries \code{"varLabels"}, \code{"valLabels"} and \code{"missings"}.
+Returns a list with the entries \code{"varNames_special"}, \code{"varNames_length"},
+\code{"varLabels"}, \code{"valLabels"} and \code{"missings"}.
 }
 \description{
-Function to check if variable labels, value labels and missing codes comply with \code{SPSS} requirements for meta data.
+Function to check if variable names and labels, value labels and missing codes comply with \code{SPSS} requirements for meta data.
 }
 \details{
-The function measures the length of variable labels (\code{"varLabels"}, maximum of 256 characters),
-value labels (\code{"valLabels"}, maximum of 120 characters) and
-missing codes (\code{"missings"}, maximum of three missing codes for character variables)
-of a \code{GADSdat} object and reports back violations on variable level.
+The function measures the length of variable names (\code{"varNames_length"}, maximum of 64 characters)
+variable labels (\code{"varLabels"}, maximum of 256 characters),
+value labels (\code{"valLabels"}, maximum of 120 characters). Furthermore,
+missing codes are counted (\code{"missings"}, maximum of three missing codes for character variables)
+and special characters are flagged in variable names (\code{"varNames_special"}).
+Check results are reported back on variable level, with the exception of \code{"valLabels"}, which is a list
+with entries per violating variable.
 }
 \examples{
 # Change example data set (create a violating label)
