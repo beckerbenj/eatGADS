@@ -33,14 +33,15 @@ write_spss2.GADSdat <- function(GADSdat, filePath, syntaxPath, dec =".", fileEnc
   ## Checks
   check_GADSdat(GADSdat)
   check_GADSdat_varLevel_meta(GADSdat)
-  GADSdat <- checkMissings(GADSdat)
-  GADSdat <- checkFormat(GADSdat, ...)
   checkz <- check4SPSS(GADSdat)
 
   if(length(checkz$varNams) > 0) stop(paste("Please remove special characters in variable names: ", checkz$varNams, "\n", collapse=" "))
   if(length(checkz$varLabels) > 0) stop(paste("Please shorten variable labels to < 256byte: ", checkz$varLabels, "\n", collapse=" "))
   if(length(checkz$valLabels) > 0) stop(paste("Please shorten value labels to < 120byte: ", checkz$valLabels, "\n", collapse=" "))
   if(length(checkz$missings) > 0) message(paste("Too many missing values for character variables \'", checkz$missings,"\'. SPSS allows only three missing values for character variables. I will take the first 3.\n", collapse=" "))
+
+  GADSdat <- checkMissings(GADSdat)
+  GADSdat <- checkFormat(GADSdat, ...)
 
   ## additional Column for SPSS, which is sometimes inadvertently shifts cases that end with NAs
   axxx <- any(is.na(GADSdat$dat))
