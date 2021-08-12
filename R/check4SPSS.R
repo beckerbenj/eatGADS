@@ -31,11 +31,20 @@ check4SPSS.GADSdat <- function(GADSdat) {
   labels <- GADSdat$labels
 
   #browser()
+  spclChar_varNams <- colnames(GADSdat$dat)[grep("[^[:alnum:]_\\$@#]", colnames(GADSdat$dat))]
+
   long_varLabels <- unique(labels$varName[!is.na(labels$varLabel) & nchar_4_spss(labels$varLabel) > 256])
   long_valLabels <- unique(labels$varName[!is.na(labels$valLabel) & nchar_4_spss(labels$valLabel) > 120])
-  many_missCodes <- "Functionality not yet implemented."
+  chv <- sapply(GADSdat$dat, is.character)
+  misInfo <- unique(labels[!is.na(labels$value) & labels$missings == "miss", c("varName", "value", "valLabel", "missings")])
+  many_missCodes <- unlist(sapply(names(GADSdat$dat), function(v) {
+    if(length(misInfo$value[misInfo$varName==v]) > 3 & isTRUE(chv[v])) {
+      return(v)
+    }
+  }))
 
-  list(varLabels = long_varLabels,
+  list(varNams = spclChar_varNams,
+       varLabels = long_varLabels,
        valLabels = long_valLabels,
        missings = many_missCodes)
 }

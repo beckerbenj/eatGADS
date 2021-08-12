@@ -12,7 +12,7 @@ test_that("Check length of variable labels", {
   out <- check4SPSS(df3)
   expect_equal(out$varLabels, c("V1"))
   expect_equal(out$valLabels, character())
-  expect_equal(out$missings, "Functionality not yet implemented.")
+ # expect_equal(out$missings, "Functionality not yet implemented.")
 })
 
 
@@ -23,7 +23,7 @@ test_that("Check length of value labels", {
   out <- check4SPSS(df4)
   expect_equal(out$valLabels, c("ID1", "V1"))
   expect_equal(out$varLabels, character())
-  expect_equal(out$missings, "Functionality not yet implemented.")
+ # expect_equal(out$missings, "Functionality not yet implemented.")
 })
 
 

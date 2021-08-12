@@ -22,10 +22,10 @@ missing codes (\code{"missings"}, maximum of three missing codes for character v
 of a \code{GADSdat} object and reports back violations on variable level.
 }
 \examples{
-# Change example data set (create a value label with incorrect missing code)
-pisa2 <- changeValLabels(pisa, varName = "computer_age",
-                        value = 5, valLabel = "missing: No computer use")
+# Change example data set (create a violating label)
+pisa2 <- changeVarLabels(pisa, varName = "computer_age",
+                        varLabel = paste(rep("3", 125), collapse = ""))
 
-pisa3 <- checkMissings(pisa2)
+check4SPSS(pisa2)
 
 }
