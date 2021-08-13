@@ -91,10 +91,10 @@ checkFormat.GADSdat <- function(GADSdat, type = "SPSS", changeFormat = TRUE) {
   for(uu in seq(along=lablengths)) {
     if(lablengths_r[uu] != lengths2[uu]) {
       if(isTRUE(changeFormat)) {
-        message(paste0("Format of Variable ", names(lablengths)[uu], " will be changed from ", lablengths[uu], " to ", lengths2[uu], ".\n"))
+        message(paste0("Format of Variable ", names(lablengths)[uu], " will be changed from ", lablengths[uu], " to ", lengths2[uu]))
         labels$format[labels$varName == names(lablengths)[uu]] <- lengths2[uu]
       } else {
-        message(paste0("Format mismatch for Variable ", names(lablengths)[uu], ": ", lablengths[uu], " vs. ", lengths2[uu], ".\n"))
+        message(paste0("Format mismatch for Variable ", names(lablengths)[uu], ": ", lablengths[uu], " vs. ", lengths2[uu]))
       }
     }
   }
