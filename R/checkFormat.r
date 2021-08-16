@@ -87,7 +87,7 @@ checkFormat.GADSdat <- function(GADSdat, type = "SPSS", changeFormat = TRUE) {
 
   lablengths <- sapply(names(GADSdat$dat), function(gg) unique(na.omit(labels$format[labels$varName==gg])))
 
-  lablengths_r <- gsub(".0$", "", lablengths)
+  lablengths_r <- gsub("\\.0$", "", lablengths)
   for(uu in seq(along=lablengths)) {
     if(lablengths_r[uu] != lengths2[uu]) {
       if(isTRUE(changeFormat)) {
