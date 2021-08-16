@@ -26,19 +26,20 @@ test_that("All formats were correctly set", {
   expect_equal(g2$labels$format, c("A4", "A4", "F2", "F2", "F2", "F4.2", "F4.2", "F16.14", "A143"))
 })
 
+p <- extractVars(pisa, c("idstud","ma_pv1"))
+
 test_that("Rounding condition", {
-  p <- extractVars(pisa, c("idstud","ma_pv1"))
   p1 <- checkFormat(p)
   p2 <- checkFormat(p, type="other")
 
   expect_equal(p1$dat$ma_pv1,round(p1$dat$ma_pv1,16))
   expect_message(p2 <- checkFormat(p1), "Variable ma_pv1 has more decimals than SPSS allows (18) and will be rounded to 16 decimal places.", fixed=TRUE)
   expect_equal(p2$dat$ma_pv1,round(p2$dat$ma_pv1,18))
-})
 
-test_that("No Character Variables", {
+  # No Character Variables
   expect_true(all(grepl("^F",p1$labels$format)))
 })
+
 
 p <- extractVars(pisa, c("idstud"))
 test_that("No Change", {
