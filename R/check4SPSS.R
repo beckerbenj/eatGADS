@@ -50,7 +50,7 @@ check4SPSS.GADSdat <- function(GADSdat) {
   chv <- sapply(GADSdat$dat, is.character)
   misInfo <- unique(labels[!is.na(labels$value) & labels$missings == "miss", c("varName", "value", "valLabel", "missings")])
   many_missCodes <- unlist(lapply(namesGADS(GADSdat), function(v) {
-    if(isTRUE(chv[v]) & length(misInfo$value[misInfo$varName==v]) > 3) {
+    if(isTRUE(chv[v]) & length(misInfo$value[which(misInfo$varName==v)]) > 3) {
       return(v)
     }
     character()
