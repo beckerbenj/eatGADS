@@ -131,9 +131,9 @@ check_changeTable <- function(GADSdat, changeTable) {
   row.names(oldDat) <- row.names(newDat) <- NULL
 
   for(i in names(oldDat)) {
-    unequal_rows <- which(oldDat[i] != newDat[i] |
-                            (is.na(oldDat[i]) & !is.na(newDat[i])) |
-                            (!is.na(oldDat[i]) & is.na(newDat[i])))
+    unequal_rows <- which(oldDat[[i]] != newDat[[i]] |
+                            (is.na(oldDat[[i]]) & !is.na(newDat[[i]])) |
+                            (!is.na(oldDat[[i]]) & is.na(newDat[[i]])))
     if(length(unequal_rows) > 0) stop("GADSdat and changeTable are not compatible in column '", i, "' and row(s) ",
                                   paste(unequal_rows, collapse = ", "),
                                   ". Columns without '_new' should not be changed in the changeTable.", call. = FALSE)
