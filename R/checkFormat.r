@@ -35,8 +35,7 @@ checkFormat.GADSdat <- function(GADSdat, type = "SPSS", changeFormat = TRUE) {
     if(isTRUE(is.numeric(GADSdat$dat[,ll]) & all(is.numeric(utils::type.convert(labels$value[labels$varName==ll],as.is=TRUE))|is.na(labels$value[labels$varName==ll])))) {
       max(nchar(as.character(round(abs(as.numeric(stats::na.omit(c(GADSdat$dat[,ll],labels$value[labels$varName==ll])))), digits=0))))
     } else {
-      if(isTRUE(max(nchar(c(GADSdat$dat[,ll],as.character(labels$value[labels$varName==ll]))), na.rm=TRUE) > 53 & type == "SPSS")) {
-       # max(nchar(c(GADSdat$dat[,ll],as.character(labels$value[labels$varName==ll]))), na.rm=TRUE) + round(max(nchar(c(GADSdat$dat[,ll],as.character(labels$value[labels$varName==ll]))), na.rm=TRUE)/8,0)
+      if(type == "SPSS") {
         max(nchar_4_spss(c(GADSdat$dat[,ll],as.character(labels$value[labels$varName==ll]))), na.rm=TRUE)
       } else {
         max(nchar(c(GADSdat$dat[,ll],as.character(labels$value[labels$varName==ll]))), na.rm=TRUE)
@@ -47,8 +46,7 @@ checkFormat.GADSdat <- function(GADSdat, type = "SPSS", changeFormat = TRUE) {
   decimals <- sapply(names(GADSdat$dat), function(ll) { if(isTRUE(is.numeric(GADSdat$dat[,ll]) & all(is.numeric(utils::type.convert(labels$value[labels$varName==ll],as.is=TRUE))|is.na(labels$value[labels$varName==ll])))) {
     max(nchar(as.character(stats::na.omit(abs(c(GADSdat$dat[,ll],utils::type.convert(labels$value[labels$varName==ll],as.is=TRUE)))))))
   } else {
-    if(isTRUE(max(nchar(c(GADSdat$dat[,ll],as.character(labels$value[labels$varName==ll]))), na.rm=TRUE) > 53 & type == "SPSS")) {
-     # max(nchar(c(GADSdat$dat[,ll],as.character(labels$value[labels$varName==ll]))), na.rm=TRUE) + round(max(nchar(c(GADSdat$dat[,ll],as.character(labels$value[labels$varName==ll]))), na.rm=TRUE)/8,0)
+    if(type == "SPSS") {
       max(nchar_4_spss(c(GADSdat$dat[,ll],as.character(labels$value[labels$varName==ll]))), na.rm=TRUE)
     } else {
       max(nchar(c(GADSdat$dat[,ll],as.character(labels$value[labels$varName==ll]))), na.rm=TRUE)
