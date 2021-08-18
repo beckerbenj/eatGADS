@@ -33,3 +33,19 @@ test_that("Compare two different GADSdat objects, large ID numbers",{
   out <- equalGADS(df1, df1_2)
   expect_equal(out$data_differences, c("ID1"))
 })
+
+
+test_that("Compare two GADSdat objects with metaExceptions",{
+  df1_3 <- df1_2 <- df1
+  df1_2$labels[1, "format"] <- "F8"
+  df1_2$labels[2, "varLabel"] <- "F8"
+  out <- equalGADS(df1, df1_2, metaExceptions = c("format", "varLabel"))
+  expect_equal(out$names_not_in_1, character())
+  expect_equal(out$names_not_in_2, character())
+  expect_equal(out$data_differences, character())
+  expect_equal(out$meta_data_differences, character())
+  expect_equal(out$data_nrow, "all.equal")
+
+  out2 <- equalGADS(df1, df1_2, metaExceptions = c("display_width"))
+  expect_equal(out2$meta_data_differences, c("ID1", "V1"))
+})
