@@ -4,12 +4,14 @@
 \alias{equalGADS}
 \title{Test if Two \code{GADSdat} Objects are (Nearly) Equal}
 \usage{
-equalGADS(target, current)
+equalGADS(target, current, metaExceptions = NULL)
 }
 \arguments{
 \item{target}{A \code{GADSdat} object.}
 
 \item{current}{A \code{GADSdat} object.}
+
+\item{metaExceptions}{Should certain meta data columns be excluded from the comparison?}
 }
 \value{
 Returns a list.

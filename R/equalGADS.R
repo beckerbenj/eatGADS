@@ -7,18 +7,21 @@
 #'
 #'@param target A \code{GADSdat} object.
 #'@param current A \code{GADSdat} object.
+#'@param metaExceptions Should certain meta data columns be excluded from the comparison?
 #'
 #'@return Returns a list.
 #'
 #'
 #'@export
-equalGADS <- function(target, current) {
+equalGADS <- function(target, current, metaExceptions = NULL) {
   UseMethod("equalGADS")
 }
 #'@export
-equalGADS.GADSdat <- function(target, current) {
+equalGADS.GADSdat <- function(target, current, metaExceptions = NULL) {
   check_GADSdat(target)
   check_GADSdat(current)
+  if(!(is.null(metaExceptions) || is.character(metaExceptions))) stop("'metaExceptions' must be NULL or a character vector.")
+  if(any(!metaExceptions %in% c("varLabel", 'format', 'display_width', 'valLabel', 'missings'))) stop("Entries in 'metaExceptions' can only be 'varLabel', 'format', 'display_width', 'valLabel', and 'missings'.")
 
   out <- list()
 
@@ -37,10 +40,13 @@ equalGADS.GADSdat <- function(target, current) {
   out[["meta_data_differences"]] <- out[["data_differences"]] <- character()
   target_labs <- target$labels
   current_labs <- current$labels
+  metaNames <- names(target_labs)
+  if(!is.null(metaExceptions)) metaNames <- setdiff(metaNames, metaExceptions)
+
   for(i in intersect(target_names, current_names)) {
     #browser()
-    target_single_labs <- target_labs[target_labs$varName == i, ]
-    current_single_labs <- current_labs[current_labs$varName == i, ]
+    target_single_labs <- target_labs[target_labs$varName == i, metaNames]
+    current_single_labs <- current_labs[current_labs$varName == i, metaNames]
     rownames(target_single_labs) <- rownames(current_single_labs) <- NULL
     if(!identical(all.equal(target_single_labs, current_single_labs), TRUE)) {
       out[["meta_data_differences"]] <- c(out[["meta_data_differences"]], i)

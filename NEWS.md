@@ -1,5 +1,6 @@
 # eatGADS 0.17.0.9000
 
+* `equalGADS()` can now exclude certain meta data columns from the comparison
 * `checkFormat()` for checking and modifying`SPSS` format type compatability with actual data
 * `check4SPSS()` for checking `SPSS` meta data conventions and requirements
 * `changeVarNames()` and `applyChangeMeta()` now enforce `SQLite3` naming conventions
