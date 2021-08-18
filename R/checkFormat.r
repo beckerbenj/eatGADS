@@ -76,7 +76,7 @@ checkFormat.GADSdat <- function(GADSdat, type = "SPSS", changeFormat = TRUE) {
   }
 
 
-  if(length(varsWithDecimals)>0){
+  if(length(varsWithDecimals) > 0){
     lengths2[which(names(GADSdat$dat) %in% varsWithDecimals)] <-sapply(seq(along=lengths2[which(names(GADSdat$dat) %in% varsWithDecimals)]), function(i) {
       x <- paste0(decimals[varsWithDecimals][i], ".", decimals2[varsWithDecimals][i])
       gsub("[0-9]+$", x, lengths2[which(names(GADSdat$dat) %in% varsWithDecimals)][i])
