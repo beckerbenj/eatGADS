@@ -72,6 +72,11 @@ write_spss2.GADSdat <- function(GADSdat, filePath, syntaxPath, dec =".", fileEnc
   if(isTRUE(axxx)) {
     cat("DELETE VARIABLES xxxtgw.\nEXECUTE.\n", file = syntaxPath, append = TRUE)
   }
+
+  # Save
+  finPath <- gsub(".sps$", ".sav", syntaxPath)
+  cat("\nSAVE OUTFILE = ", autoQuote(finPath), ".", file = syntaxPath, append = TRUE)
+
 }
 
 autoQuote <- function (x){
