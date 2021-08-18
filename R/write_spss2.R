@@ -41,7 +41,7 @@ write_spss2.GADSdat <- function(GADSdat, filePath, syntaxPath, dec =".", fileEnc
   if(length(checkz$valLabels) > 0) stop("Please shorten value labels to < 120 byte: ", paste(names(checkz$valLabels), collapse=" "))
   if(length(checkz$missings) > 0) message("Too many missing values for character variables: ", paste(checkz$missings, collapse= " "),". SPSS allows only three missing values for character variables. I will take the first 3.")
 
-  GADSdat <- checkMissings(GADSdat)
+  # GADSdat <- checkMissings(GADSdat)
   GADSdat <- checkFormat(GADSdat, ...)
 
   ## additional Column for SPSS, which is sometimes inadvertently shifts cases that end with NAs
@@ -55,8 +55,8 @@ write_spss2.GADSdat <- function(GADSdat, filePath, syntaxPath, dec =".", fileEnc
   r1$labels <- GADSdat$labels
   stopifnot(identical(unique(r1$labels$varName),names(GADSdat$dat)))
   r1$varInfo <- unique(r1$labels[, c("varName", "varLabel", "format")])
-  r1$valInfo <- unique(r1$labels[!is.na(r1$labels$value), c("varName", "value", "valLabel", "missings")])
-  r1$misInfo <- unique(r1$labels[!is.na(r1$labels$value) & r1$labels$missings == "miss", c("varName", "value", "valLabel", "missings")])
+  r1$valInfo <- unique(r1$labels[which(!is.na(r1$labels$value)), c("varName", "value", "valLabel", "missings")])
+  r1$misInfo <- unique(r1$labels[which(!is.na(r1$labels$value) & r1$labels$missings == "miss"), c("varName", "value", "valLabel", "missings")])
 
   ## write header
   writeHeader(r1=r1, filePath=filePath, syntaxPath=syntaxPath)
