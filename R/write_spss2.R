@@ -9,7 +9,7 @@
 #'@param GADSdat A \code{GADSdat} object.
 #'@param filePath Path of \code{.txt} file to write.
 #'@param syntaxPath Path of \code{.sps} file to write.
-#'@param dec Decimal delimiter for your SPSS version.
+#'@param dec Decimal delimiter for your SPSS version. Other values for dec than "," oder "." are not implemented yet.
 #'@param fileEncoding Data file encoding for SPSS. Default is "UTF-8".
 #'@param ... Arguments to pass to \code{checkFormat}
 #'
@@ -60,7 +60,7 @@ write_spss2.GADSdat <- function(GADSdat, filePath, syntaxPath, dec =".", fileEnc
   r1$chv <- sapply(GADSdat$dat, is.character)
 
   ## write header
-  writeHeader(r1=r1, filePath=filePath, syntaxPath=syntaxPath)
+  writeHeader(r1=r1, filePath=filePath, syntaxPath=syntaxPath, fileEncoding=fileEncoding, dec=dec)
 
   ## write variable labels
   writeVaLab(r1=r1, syntaxPath=syntaxPath)
@@ -93,13 +93,36 @@ writeData <- function(GADSdat, filePath, dec, fileEncoding) {
 
   ## write txt
   utils::write.table(GADSdat$dat, file = filePath, row.names = FALSE, col.names = FALSE,
-                     sep = "]&;", dec = dec, quote = FALSE, na = "", eol = "\n", fileEncoding = fileEncoding)
+                     sep = ";", dec = dec, quote = TRUE, na = "", eol = "\n", fileEncoding = fileEncoding)
 
   return(GADSdat)
 }
 
-writeHeader <- function(r1, filePath, syntaxPath) {
-    freefield <- " free (']&;')\n"
+
+
+writeHeader <- function(r1, filePath, syntaxPath, fileEncoding, dec) {
+  if(dec==",") {
+    decstr <- "COMMA"
+  } else {
+    if(dec==".") {
+      decstr <- "DOT"
+    } else {
+     stop("Other values for dec than COMMA oder DOT are not implemented yet.")
+    }
+  }
+  filePath <- gsub("^[a-z]",toupper(substr(filePath,1,1)),filePath)
+  partI <- paste0("* Encoding: ", fileEncoding, ".\n\nPRESERVE.\n SET DECIMAL ", decstr, ".\n\nGET DATA  /TYPE=TXT\n  /FILE=", autoQuote(filePath), "\n  /DELCASE=LINE\n  /DELIMITERS=\";\"\n  /QUALIFIER=\'\"\'\n  /ARRANGEMENT=DELIMITED\n  /FIRSTCASE=1\n  /DATATYPEMIN PERCENTAGE=95.0\n  /VARIABLES=")
+  cat(partI, file = syntaxPath)
+  labs1 <- r1$labels[!duplicated(r1$labels$varName),]
+  labs1$format <- gsub("\\.0$", "", labs1$format)
+  dl.varnames <- paste0(labs1$varName, " ", labs1$format, "\n")
+  cat("\n ",dl.varnames, "  /MAP.\nRESTORE.\n\nCACHE.\nEXECUTE.\nDATASET NAME DataSet1 WINDOW=FRONT.\n\n", file = syntaxPath, append = TRUE, sep="")
+}
+
+
+writeHeaderOld <- function(r1, filePath, syntaxPath) {
+    # This function is deprecated, because SPSS sometimes in large data sets in SPSS some cases were slipping out of place
+    freefield <- " free (';')\n"
     cat("DATA LIST FILE=", autoQuote(filePath), freefield, file = syntaxPath)
     labs1 <- r1$labels[!duplicated(r1$labels$varName),]
     dl.varnames <- paste0(labs1$varName, " (", labs1$format, ")")
