@@ -108,7 +108,7 @@ test_that("Recoding multiple value into the same value (without meta data confli
   out2 <- recode_labels(dfSAV$labels, changes_val2, existingMeta = "drop")
   expect_equal(out2[1, "value"], 10)
   expect_equal(out2[1, "valLabel"], NA_character_)
-  expect_equal(out2[1, "missings"], NA_character_)
+  expect_equal(out2[1, "missings"], "valid")
   expect_equal(out2[2, "varName"], "VAR2")
 })
 
@@ -132,7 +132,7 @@ test_that("Recoding multiple value into the same value (with meta data conflicts
   out2b <- recode_labels(dfSAV$labels, changes_val2, existingMeta = "drop")
   expect_equal(out2b[1, "value"], 1)
   expect_equal(out2b[1, "valLabel"], NA_character_)
-  expect_equal(out2b[1, "missings"], NA_character_)
+  expect_equal(out2b[1, "missings"], "valid")
 
   out3 <- applyChangeMeta(changes_val2, GADSdat = dfSAV, existingMeta = "value_new")
   expect_equal(out3$dat$VAR1, c(1, 1, 1, 2))
@@ -157,8 +157,8 @@ test_that("Recoding multiple value into the same value (with and without meta da
   expect_equal(out2[2, "value"], 10)
   expect_equal(out2[1, "valLabel"], NA_character_)
   expect_equal(out2[2, "valLabel"], NA_character_)
-  expect_equal(out2[1, "missings"], NA_character_)
-  expect_equal(out2[2, "missings"], NA_character_)
+  expect_equal(out2[1, "missings"], "valid")
+  expect_equal(out2[2, "missings"], "valid")
   expect_equal(out2[3, "varName"], "VAR2")
 })
 
@@ -191,6 +191,7 @@ test_that("Adding value labels for values without labels", {
   expect_equal(out2$value, c(NA, 99))
   expect_equal(dim(out2), c(2, 8))
   expect_equal(out2$labeled, c("no", "yes"))
+  expect_equal(out2$missings, c(NA, "valid"))
 
   # multiple new value labels
   out3 <- applyChangeMeta(changes_val3, dfSAV)
