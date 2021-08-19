@@ -21,7 +21,7 @@ equalGADS.GADSdat <- function(target, current, metaExceptions = NULL) {
   check_GADSdat(target)
   check_GADSdat(current)
   if(!(is.null(metaExceptions) || is.character(metaExceptions))) stop("'metaExceptions' must be NULL or a character vector.")
-  if(any(!metaExceptions %in% c("varLabel", 'format', 'display_width', 'valLabel', 'missings'))) stop("Entries in 'metaExceptions' can only be 'varLabel', 'format', 'display_width', 'valLabel', and 'missings'.")
+  if(any(!metaExceptions %in% c("varLabel", 'format', 'display_width', 'valLabel', 'missings', 'labeled'))) stop("Entries in 'metaExceptions' can only be 'varLabel', 'format', 'display_width', 'labeled', 'valLabel', and 'missings'.")
 
   out <- list()
 
