@@ -6,8 +6,9 @@
 \usage{
 write_spss2(
   GADSdat,
-  filePath,
-  syntaxPath,
+  txtPath,
+  spsPath = NULL,
+  savPath = NULL,
   dec = ".",
   fileEncoding = "UTF-8",
   ...
@@ -16,11 +17,13 @@ write_spss2(
 \arguments{
 \item{GADSdat}{A \code{GADSdat} object.}
 
-\item{filePath}{Path of \code{.txt} file to write.}
+\item{txtPath}{Path of \code{.txt} file to write including file name .txt.}
 
-\item{syntaxPath}{Path of \code{.sps} file to write.}
+\item{spsPath}{Path of \code{.sps} file to write including file name .sps.}
 
-\item{dec}{Decimal delimiter for your SPSS version.}
+\item{savPath}{Path of \code{.sav} file to write including file name .sav.}
+
+\item{dec}{Decimal delimiter for your SPSS version. Other values for dec than "," oder "." are not implemented yet.}
 
 \item{fileEncoding}{Data file encoding for SPSS. Default is "UTF-8".}
 
@@ -38,8 +41,7 @@ This function is based on \code{eatPreps} \code{writeSpss} function and is curre
 \examples{
 
 # write to spss
-tmp_sps <- tempfile(fileext = ".sps")
 tmp_txt <- tempfile(fileext = ".txt")
-write_spss2(pisa, filePath = tmp_txt, syntaxPath = tmp_sps)
+write_spss2(pisa, txtPath = tmp_txt)
 
 }
