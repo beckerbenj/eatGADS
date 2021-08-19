@@ -57,6 +57,7 @@ write_spss2.GADSdat <- function(GADSdat, filePath, syntaxPath, dec =".", fileEnc
   r1$varInfo <- unique(r1$labels[, c("varName", "varLabel", "format")])
   r1$valInfo <- unique(r1$labels[which(!is.na(r1$labels$value)), c("varName", "value", "valLabel", "missings")])
   r1$misInfo <- unique(r1$labels[which(!is.na(r1$labels$value) & r1$labels$missings == "miss"), c("varName", "value", "valLabel", "missings")])
+  r1$chv <- sapply(GADSdat$dat, is.character)
 
   ## write header
   writeHeader(r1=r1, filePath=filePath, syntaxPath=syntaxPath)
