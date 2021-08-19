@@ -44,9 +44,6 @@ write_spss2.GADSdat <- function(GADSdat, filePath, syntaxPath, dec =".", fileEnc
   # GADSdat <- checkMissings(GADSdat)
   GADSdat <- checkFormat(GADSdat, ...)
 
-  ## additional Column for SPSS, which is sometimes inadvertently shifts cases that end with NAs
-  axxx <- any(is.na(GADSdat$dat))
-
   ## write data
   GADSdat <- writeData(GADSdat=GADSdat, filePath=filePath, dec=dec, fileEncoding=fileEncoding)
 
@@ -68,11 +65,8 @@ write_spss2.GADSdat <- function(GADSdat, filePath, syntaxPath, dec =".", fileEnc
   ## write missing codes
   writeMisCode(r1=r1, syntaxPath=syntaxPath)
 
-  ## delete additional variable
+  ## execute
   cat("\nEXECUTE.\n", file = syntaxPath, append = TRUE)
-  if(isTRUE(axxx)) {
-    cat("DELETE VARIABLES xxxtgw.\nEXECUTE.\n", file = syntaxPath, append = TRUE)
-  }
 
   # Save
   finPath <- gsub(".sps$", ".sav", syntaxPath)
@@ -86,11 +80,6 @@ autoQuote <- function (x){
 
 
 writeData <- function(GADSdat, filePath, dec, fileEncoding) {
-  if(any(is.na(GADSdat$dat))) {
-    GADSdat$dat <- cbind(GADSdat$dat,data.frame(xxxtgw=rep(1,nrow(GADSdat$dat))))
-    GADSdat$labels <- rbind(GADSdat$labels, data.frame(varName="xxxtgw",varLabel=NA,format="F1",display_width=NaN,labeled="no",value=NaN,valLabel=NA,missings=NA,stringsAsFactors = FALSE))
-  }
-
   ## write txt
   utils::write.table(GADSdat$dat, file = filePath, row.names = FALSE, col.names = FALSE,
                      sep = ";", dec = dec, quote = TRUE, na = "", eol = "\n", fileEncoding = fileEncoding)
