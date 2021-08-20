@@ -7,9 +7,9 @@
 #' This function is based on \code{eatPreps} \code{writeSpss} function and is currently under development.
 #'
 #'@param GADSdat A \code{GADSdat} object.
-#'@param txtPath Path of \code{.txt} file to write including file name .txt.
-#'@param spsPath Path of \code{.sps} file to write including file name .sps.
-#'@param savPath Path of \code{.sav} file to write including file name .sav.
+#'@param txtPath Path of \code{.txt} file to write including file name .txt. No default.
+#'@param spsPath Path of \code{.sps} file to write including file name .sps. Default Path is txtPath.
+#'@param savPath Path of \code{.sav} file to write including file name .sav. Default Path is spsPath.
 #'@param dec Decimal delimiter for your SPSS version. Other values for dec than "," oder "." are not implemented yet.
 #'@param fileEncoding Data file encoding for SPSS. Default is "UTF-8".
 #'@param ... Arguments to pass to \code{checkFormat}
@@ -82,6 +82,12 @@ autoQuote <- function (x){
 
 
 writeData <- function(GADSdat, txtPath, dec, fileEncoding) {
+
+  # remove text qualifier in string
+  chv1 <- which(sapply(GADSdat$dat, is.character))
+  if(length(chv1) > 0) {
+    GADSdat$dat[,chv1] <- apply(GADSdat$dat[,chv1],2,function(pq) gsub("\"", "'", pq))
+  }
   ## write txt
   utils::write.table(GADSdat$dat, file = txtPath, row.names = FALSE, col.names = FALSE,
                      sep = ";", dec = dec, quote = TRUE, na = "", eol = "\n", fileEncoding = fileEncoding)

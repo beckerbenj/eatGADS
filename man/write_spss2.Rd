@@ -17,11 +17,11 @@ write_spss2(
 \arguments{
 \item{GADSdat}{A \code{GADSdat} object.}
 
-\item{txtPath}{Path of \code{.txt} file to write including file name .txt.}
+\item{txtPath}{Path of \code{.txt} file to write including file name .txt. No default.}
 
-\item{spsPath}{Path of \code{.sps} file to write including file name .sps.}
+\item{spsPath}{Path of \code{.sps} file to write including file name .sps. Default Path is txtPath.}
 
-\item{savPath}{Path of \code{.sav} file to write including file name .sav.}
+\item{savPath}{Path of \code{.sav} file to write including file name .sav. Default Path is spsPath.}
 
 \item{dec}{Decimal delimiter for your SPSS version. Other values for dec than "," oder "." are not implemented yet.}
 
