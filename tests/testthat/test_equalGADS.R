@@ -2,6 +2,8 @@
 # load test data (df1, df2, pkList, fkList)
 # load(file = "tests/testthat/helper_data.rda")
 load(file = "helper_data.rda")
+# dfSAV <- import_spss(file = "tests/testthat/helper_spss_missings.sav")
+dfSAV <- import_spss(file = "helper_spss_missings.sav")
 
 test_that("Compare two different GADSdat objects",{
   out <- equalGADS(df1, df2)
@@ -24,6 +26,13 @@ test_that("Compare two identical GADSdat objects",{
   expect_equal(out$data_differences, character())
   expect_equal(out$meta_data_differences, character())
   expect_equal(out$data_nrow, "all.equal")
+})
+
+test_that("Compare while ignoring order differences",{
+  dfSAV2 <- dfSAV
+  dfSAV2$labels <- dfSAV2$labels[c(2:1, 3:7), ]
+  out <- equalGADS(dfSAV, dfSAV2)
+  expect_equal(out$meta_data_differences, character())
 })
 
 test_that("Compare two different GADSdat objects, large ID numbers",{

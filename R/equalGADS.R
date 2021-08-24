@@ -49,7 +49,14 @@ equalGADS.GADSdat <- function(target, current, metaExceptions = NULL) {
     current_single_labs <- current_labs[current_labs$varName == i, metaNames]
     rownames(target_single_labs) <- rownames(current_single_labs) <- NULL
     if(!identical(all.equal(target_single_labs, current_single_labs), TRUE)) {
-      out[["meta_data_differences"]] <- c(out[["meta_data_differences"]], i)
+      # temporary fix: ignore pure order differences (long term: there should never be such differences)
+      target_single_labs2 <- target_single_labs[order(target_single_labs$value), ]
+      current_single_labs2 <- current_single_labs[order(current_single_labs$value), ]
+      rownames(target_single_labs2) <- rownames(current_single_labs2) <- NULL
+      #if(nrow(target_single_labs) > 1) browser()
+      if(!identical(all.equal(target_single_labs2, current_single_labs2), TRUE)) {
+        out[["meta_data_differences"]] <- c(out[["meta_data_differences"]], i)
+      }
     }
     if(!identical(all.equal(target$dat[[i]], current$dat[[i]], scale = 1), TRUE)) {
       out[["data_differences"]] <- c(out[["data_differences"]], i)
