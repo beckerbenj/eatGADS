@@ -86,8 +86,9 @@ writeData <- function(GADSdat, txtPath, dec, fileEncoding) {
   # remove text qualifier in string
   chv1 <- which(sapply(GADSdat$dat, is.character))
   if(length(chv1) > 0) {
+    chv2 <- sapply(GADSdat$dat[chv1], function(ij) any(grepl("\"",ij)))
     GADSdat$dat[,chv1] <- apply(GADSdat$dat[,chv1],2,function(pq) gsub("\"", "'", pq))
-    message("In variables ", paste(chv1, collapse=", "), " quotation marks (\") had to be replaced with inverted commas (').")
+    message("In character variable(s) ", paste(names(chv2)[chv2], collapse=", "), " quotation marks (\") had to be replaced with inverted commas (').")
   }
   ## write txt
   utils::write.table(GADSdat$dat, file = txtPath, row.names = FALSE, col.names = FALSE,
