@@ -13,9 +13,17 @@ syntax <- readChar(f_sps, file.info(f_sps)$size)
 
 test_that("Format and writeHeader", {
 
-  expect_true(grepl("PRESERVE.\r\n SET DECIMAL", syntax))
-  expect_true(grepl("GET DATA  /TYPE=TXT\r\n", syntax))
-  expect_true(grepl("/DELCASE=LINE\r\n  /DELIMITERS=\";\"\r\n  /QUALIFIER='\"'\r\n  /ARRANGEMENT=DELIMITED\r\n  /FIRSTCASE=1\r\n  /DATATYPEMIN PERCENTAGE=95.0\r\n  /VARIABLES=\r\n", syntax))
+  expect_true(grepl("PRESERVE.", syntax))
+  expect_true(grepl("SET DECIMAL", syntax))
+  expect_true(grepl("GET DATA", syntax))
+  expect_true(grepl("TYPE=TXT", syntax))
+  expect_true(grepl("DELCASE=LINE", syntax))
+  expect_true(grepl("DELIMITERS=\";\"", syntax))
+  expect_true(grepl("QUALIFIER='\"'", syntax))
+  expect_true(grepl("ARRANGEMENT=DELIMITED", syntax))
+  expect_true(grepl("FIRSTCASE=1", syntax))
+  expect_true(grepl("DATATYPEMIN PERCENTAGE=95.0", syntax))
+  expect_true(grepl("VARIABLES=", syntax))
   expect_true(grepl("EXECUTE.", syntax))
 
   r1 <- list()
@@ -26,7 +34,12 @@ test_that("Format and writeHeader", {
   r1$misInfo <- unique(r1$labels[which(!is.na(r1$labels$value) & r1$labels$missings == "miss"), c("varName", "value", "valLabel", "missings")])
   r1$chv <- sapply(g$dat, is.character)
 
-  expect_true(grepl("var1 A4\r\nvar2 F2\r\nvar3 F4.2\r\nvar4 F16.14\r\nvar5 A4\r\nvar6 A4\r\n", syntax))
+  expect_true(grepl("var1 A4", syntax))
+  expect_true(grepl("var2 F2", syntax))
+  expect_true(grepl("var3 F4.2", syntax))
+  expect_true(grepl("var4 F16.14", syntax))
+  expect_true(grepl("var5 A4", syntax))
+  expect_true(grepl("var6 A4", syntax))
   expect_warning(x1 <- writeHeader(r1, f_txt, f_sps, dec=",", fileEncoding="UTF-8"), "Format statement still contains 'NA' values, SPSS syntax will probably not work. Consider changeFormat=TRUE.", fixed=TRUE)
 })
 
