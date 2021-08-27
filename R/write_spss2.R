@@ -114,6 +114,7 @@ writeHeader <- function(r1, txtPath, spsPath, fileEncoding, dec) {
   cat(partI, file = spsPath)
   labs1 <- r1$labels[!duplicated(r1$labels$varName),]
   labs1$format <- gsub("\\.0$", "", labs1$format)
+  if(any(is.na(labs1$format))) warning("Format statement still contains 'NA' values, SPSS syntax will probably not work. Consider changeFormat=TRUE.")
   dl.varnames <- paste0(labs1$varName, " ", labs1$format, "\n")
   cat("\n ",dl.varnames, "  /MAP.\nRESTORE.\n\nCACHE.\nEXECUTE.\nDATASET NAME DataSet1 WINDOW=FRONT.\n\n", file = spsPath, append = TRUE, sep="")
 }

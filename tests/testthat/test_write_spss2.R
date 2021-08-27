@@ -1,30 +1,47 @@
-# g <- import_raw(df = data.frame(var1 = c("ab c","bb"), var2 = c(1,NaN), var3 = c(1.01, 2.00), var4 = c(1.0001, 4.00187243564195786431587643596),stringsAsFactors = FALSE),
-#                 varLabels = data.frame(varName = c("var1", "var2", "var3", "var4"), varLabel = c("a label", NA, "another label", NA), stringsAsFactors = FALSE),
-#                 valLabels = data.frame(varName = c("var1", "var1", "var2", "var2", "var2","var3", "var3"), value = c(-96, -99, -99, 0, 1,-96, -99),
-#                                        valLabel = c("miss1", "miss2", "miss2","right","wrong","miss1", "miss2"),
-#                                        missings = c("miss", "miss", "miss","valid","valid","miss", "miss"), stringsAsFactors = FALSE))
-# g <- changeSPSSformat(g, varName = "var1", format = "A4")
-# g <- changeSPSSformat(g, varName = "var2", format = "F4")
-# g <- changeSPSSformat(g, varName = "var3", format = "F4")
-# g <- changeSPSSformat(g, varName = "var4", format = "F4")
-# f_txt <- tempfile(fileext = ".txt")
-# f_sps <- tempfile(fileext = ".sps")
-# write_spss2(g, filePath = f_txt, syntaxPath = f_sps, dec=",")
-# out <- readMultisep(f_txt, "]&;")
-# syntax <- readChar(f_sps, file.info(f_sps)$size)
-#
-# write_spss2(g, filePath = f_txt, syntaxPath = f_sps, dec=",")
-# syntax2 <- readChar(f_sps, file.info(f_sps)$size)
-#
-#
-#
-# test_that("Write spss 2 overall", {
-#
-#   expect_equal(out, data.frame(X1 = c("ab c","bb"), X2 = c(1,NA), X3 = c("1,01", "2"), X4 = c("1,0001", "4,00187243564196"), X5=c(1,1),stringsAsFactors = FALSE))
-#   expect_true(grepl("EXECUTE.", syntax))
-#   expect_true(grepl("DELETE VARIABLES xxxtgw.", syntax))
-# })
-#
+g <- import_raw(df = data.frame(var1 = c("ab c","bb"), var2 = c(1,NaN), var3 = c(1.01, 2.00), var4 = c(1.0001, 4.00187243564195786431587643596),var5 = c("ab c","b\"b"),var6 = c("ab c","b\"b"),stringsAsFactors = FALSE),
+                varLabels = data.frame(varName = c("var1", "var2", "var3", "var4","var5","var6"), varLabel = c("a label", NA, "another label", NA, NA, NA), stringsAsFactors = FALSE),
+                valLabels = data.frame(varName = c("var1", "var1", "var2", "var2", "var2","var3", "var3","var5","var6"), value = c(-96, -99, -99, 0, 1,-96, -99, -9,-9),
+                                       valLabel = c("miss1", "miss2", "miss2","right","wrong","miss1", "miss2", NA, NA),
+                                       missings = c("miss", "miss", "miss","valid","valid","miss", "miss", "miss", "miss"), stringsAsFactors = FALSE))
+
+
+f_txt <- tempfile(fileext = ".txt")
+f_sps <- gsub("txt$", "sps", f_txt)
+write_spss2(g, txtPath = f_txt, dec=",")
+
+out <- read.csv2(f_txt, header=FALSE)
+syntax <- readChar(f_sps, file.info(f_sps)$size)
+
+write_spss2(g, txtPath = f_txt, dec=",", changeFormat=FALSE)
+
+out2 <- read.csv2(f_txt, header=FALSE)
+syntax2 <- readChar(f_sps, file.info(f_sps)$size)
+
+test_that("Write spss 2 overall", {
+
+  expect_equal(out, data.frame(V1 = c("ab c","bb"), V2 = c(1,NaN), V3 = c(1.01, 2.00), V4 = c(1.0001, 4.00187243564195786431587643596),V5 = c("ab c","b'b"),V6 = c("ab c","b'b"),stringsAsFactors = FALSE))
+  expect_true(grepl("PRESERVE.\r\n SET DECIMAL", syntax))
+  expect_true(grepl("GET DATA  /TYPE=TXT\r\n", syntax))
+  expect_true(grepl("/DELCASE=LINE\r\n  /DELIMITERS=\";\"\r\n  /QUALIFIER='\"'\r\n  /ARRANGEMENT=DELIMITED\r\n  /FIRSTCASE=1\r\n  /DATATYPEMIN PERCENTAGE=95.0\r\n  /VARIABLES=\r\n", syntax))
+  expect_true(grepl("EXECUTE.", syntax))
+})
+
+r1 <- list()
+r1$labels <- g$labels
+stopifnot(identical(unique(r1$labels$varName),names(g$dat)))
+r1$varInfo <- unique(r1$labels[, c("varName", "varLabel", "format")])
+r1$valInfo <- unique(r1$labels[which(!is.na(r1$labels$value)), c("varName", "value", "valLabel", "missings")])
+r1$misInfo <- unique(r1$labels[which(!is.na(r1$labels$value) & r1$labels$missings == "miss"), c("varName", "value", "valLabel", "missings")])
+r1$chv <- sapply(g$dat, is.character)
+
+test_that("Format and writeHeader", {
+  expect_true(grepl("var1 A4\r\nvar2 F2\r\nvar3 F4.2\r\nvar4 F16.14\r\nvar5 A4\r\nvar6 A4\r\n", syntax))
+  expect_true(grepl("var1 NA\r\nvar2 NA\r\nvar3 NA\r\nvar4 NA\r\nvar5 NA\r\nvar6 NA\r\n", syntax2))
+  # expect_warning(x1 <- writeHeader(r1, f_txt, f_sps, dec=",", fileEncoding="UTF-8"), "Format statement still contains 'NA' values, SPSS syntax will probably not work. Consider changeFormat=TRUE.")
+})
+
+
+
 #
 #
 #
@@ -66,15 +83,7 @@
 #
 #
 #
-#
-# test_that("writeHeader", {
-#   expect_true(grepl("DATA LIST FILE=.", syntax))
-#   expect_true(grepl("free", syntax))
-#   expect_true(grepl("var1 \\(A4\\) var2 \\(F2\\) var3 \\(F4.2\\) var4 \\(F16.14\\)", syntax))
-#   expect_true(grepl("var1 \\(A4\\) var2 \\(F4\\) var3 \\(F4\\) var4 \\(F4\\)", syntax2))
-# })
-#
-#
+
 #
 # test_that("writeVaLab", {
 #   expect_true(grepl("VARIABLE LABELS", syntax))
