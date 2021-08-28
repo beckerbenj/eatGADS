@@ -12,7 +12,8 @@
 #'@param savPath Path of \code{.sav} file to write including file name+ending .sav. Default Path is spsPath.
 #'@param dec Decimal delimiter for your SPSS version. Other values for dec than "," or "." are not implemented yet.
 #'@param fileEncoding Data file encoding for SPSS. Default is "UTF-8".
-#'@param ... Arguments to pass to \code{checkFormat}
+#'@param chkFormat Whether format checks via \code{checkFormat} should be performed.
+#'@param ... Arguments to pass to \code{checkFormat} in particular \code{changeFormat=FALSE} if needed.
 #'
 #'@return Writes a \code{txt} and an \code{sav} file to disc, returns nothing.
 #'
@@ -23,12 +24,12 @@
 #'write_spss2(pisa, txtPath = tmp_txt)
 #'
 #'@export
-write_spss2 <- function(GADSdat, txtPath, spsPath = NULL, savPath = NULL, dec = ".", fileEncoding = "UTF-8", ...) {
+write_spss2 <- function(GADSdat, txtPath, spsPath = NULL, savPath = NULL, dec = ".", fileEncoding = "UTF-8", chkFormat=TRUE, ...) {
   UseMethod("write_spss2")
 }
 
 #'@export
-write_spss2.GADSdat <- function(GADSdat, txtPath, spsPath = NULL, savPath = NULL, dec =".", fileEncoding = "UTF-8", ...) {
+write_spss2.GADSdat <- function(GADSdat, txtPath, spsPath = NULL, savPath = NULL, dec =".", fileEncoding = "UTF-8", chkFormat=TRUE, ...) {
 
   if(is.null(spsPath)) spsPath <- gsub(".txt$", ".sps", txtPath)
   if(is.null(savPath)) savPath <- gsub(".sps$", ".sav", spsPath)
@@ -45,7 +46,7 @@ write_spss2.GADSdat <- function(GADSdat, txtPath, spsPath = NULL, savPath = NULL
   if(length(checkz$missings) > 0) message("Too many missing values for character variables: ", paste(checkz$missings, collapse= " "),". SPSS allows only three missing values for character variables. I will take the first 3.")
 
   # GADSdat <- checkMissings(GADSdat)
-  GADSdat <- checkFormat(GADSdat, ...)
+  if(isTRUE(chkFormat)) GADSdat <- checkFormat(GADSdat, ...)
 
   ## write data
   GADSdat <- writeData(GADSdat=GADSdat, txtPath=txtPath, dec=dec, fileEncoding=fileEncoding)

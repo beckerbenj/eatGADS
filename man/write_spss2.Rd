@@ -11,6 +11,7 @@ write_spss2(
   savPath = NULL,
   dec = ".",
   fileEncoding = "UTF-8",
+  chkFormat = TRUE,
   ...
 )
 }
@@ -27,7 +28,9 @@ write_spss2(
 
 \item{fileEncoding}{Data file encoding for SPSS. Default is "UTF-8".}
 
-\item{...}{Arguments to pass to \code{checkFormat}}
+\item{chkFormat}{Whether format checks via \code{checkFormat} should be performed.}
+
+\item{...}{Arguments to pass to \code{checkFormat} in particular \code{changeFormat=FALSE} if needed.}
 }
 \value{
 Writes a \code{txt} and an \code{sav} file to disc, returns nothing.
