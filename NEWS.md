@@ -1,9 +1,9 @@
-# eatGADS 0.17.0.9000
+# eatGADS 0.18.0
 
 * `applyChangeMeta()` and `changeValLabels()` now automatically assign `"valid"` to the `missings` columns for labeled values
 * bug fix `equalGADS()` (meta data differences solely due to different meta data sorting are now ignored) 
 * `equalGADS()` can now exclude certain meta data columns from the comparison
-* `checkFormat()` for checking and modifying`SPSS` format type compatability with actual data
+* `checkFormat()` for checking and modifying`SPSS` format type compatibility with actual data
 * `check4SPSS()` for checking `SPSS` meta data conventions and requirements
 * `changeVarNames()` and `applyChangeMeta()` now enforce `SQLite3` naming conventions
 * bug fixes `write_spss2()`
