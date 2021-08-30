@@ -7,11 +7,11 @@
 #' This function is based on \code{eatPreps} \code{writeSpss} function and is currently under development.
 #'
 #'@param GADSdat A \code{GADSdat} object.
-#'@param txtPath Path of \code{.txt} file to write including file name+ending .txt. No default.
-#'@param spsPath Path of \code{.sps} file to write including file name+ending .sps. Default Path is txtPath.
-#'@param savPath Path of \code{.sav} file to write including file name+ending .sav. Default Path is spsPath.
-#'@param dec Decimal delimiter for your SPSS version. Other values for dec than "," or "." are not implemented yet.
-#'@param fileEncoding Data file encoding for SPSS. Default is "UTF-8".
+#'@param txtPath Path of \code{.txt} file to write, including file name and ending \code{.txt}. No default.
+#'@param spsPath Path of \code{.sps} file to write, including file name and ending \code{.sps}. Default Path is \code{txtPath}.
+#'@param savPath Path of \code{.sav} file to write, including file name and ending \code{.sav}. Default Path is \code{spsPath}.
+#'@param dec Decimal delimiter for your SPSS version. Other values for \code{dec} than \code{","} or \code{"."} are not implemented yet.
+#'@param fileEncoding Data file encoding for SPSS. Default is \code{"UTF-8"}.
 #'@param chkFormat Whether format checks via \code{checkFormat} should be performed.
 #'@param ... Arguments to pass to \code{checkFormat} in particular \code{changeFormat=FALSE} if needed.
 #'

@@ -18,15 +18,15 @@ write_spss2(
 \arguments{
 \item{GADSdat}{A \code{GADSdat} object.}
 
-\item{txtPath}{Path of \code{.txt} file to write including file name+ending .txt. No default.}
+\item{txtPath}{Path of \code{.txt} file to write, including file name and ending \code{.txt}. No default.}
 
-\item{spsPath}{Path of \code{.sps} file to write including file name+ending .sps. Default Path is txtPath.}
+\item{spsPath}{Path of \code{.sps} file to write, including file name and ending \code{.sps}. Default Path is \code{txtPath}.}
 
-\item{savPath}{Path of \code{.sav} file to write including file name+ending .sav. Default Path is spsPath.}
+\item{savPath}{Path of \code{.sav} file to write, including file name and ending \code{.sav}. Default Path is \code{spsPath}.}
 
-\item{dec}{Decimal delimiter for your SPSS version. Other values for dec than "," or "." are not implemented yet.}
+\item{dec}{Decimal delimiter for your SPSS version. Other values for \code{dec} than \code{","} or \code{"."} are not implemented yet.}
 
-\item{fileEncoding}{Data file encoding for SPSS. Default is "UTF-8".}
+\item{fileEncoding}{Data file encoding for SPSS. Default is \code{"UTF-8"}.}
 
 \item{chkFormat}{Whether format checks via \code{checkFormat} should be performed.}
 
