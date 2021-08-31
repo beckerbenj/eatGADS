@@ -40,6 +40,11 @@ equalGADS.GADSdat <- function(target, current, metaExceptions = NULL) {
   out[["meta_data_differences"]] <- out[["data_differences"]] <- character()
   target_labs <- target$labels
   current_labs <- current$labels
+
+  # ignore irrelevant meta differences
+  target_labs$format <- gsub("\\.0$", "", target_labs$format)
+  current_labs$format <- gsub("\\.0$", "", current_labs$format)
+
   metaNames <- names(target_labs)
   if(!is.null(metaExceptions)) metaNames <- setdiff(metaNames, metaExceptions)
 

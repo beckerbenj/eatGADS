@@ -35,6 +35,13 @@ test_that("Compare while ignoring order differences",{
   expect_equal(out$meta_data_differences, character())
 })
 
+test_that("Compare while ignoring irrelevant format differences",{
+  dfSAV2 <- changeSPSSformat(dfSAV, "VAR1", format = "F8")
+  out <- equalGADS(dfSAV, dfSAV2)
+  expect_equal(out$meta_data_differences, character())
+})
+
+
 test_that("Compare two different GADSdat objects, large ID numbers",{
   df1_2 <- df1
   df1_2$dat$ID1 <- c(5140010110, 5140010111)
