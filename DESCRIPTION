@@ -1,13 +1,13 @@
 Package: eatGADS
 Title: Data Management of Large Hierarchical Data
-Version: 0.18.0
+Version: 0.18.1
 Authors@R: c(
     person("Benjamin", "Becker", email = "b.becker@iqb.hu-berlin.de", role = c("aut", "cre")),
     person("Karoline", "Sachse", role = c("ctb")),
     person("Johanna", "Busse", role = c("ctb")))
 Description: Import 'SPSS' data, handle and change 'SPSS' meta data, store and access large hierarchical data in 'SQLite' data bases.
 Depends: R (>= 3.5.0)
-Imports: eatDB (>= 0.4.1), haven (>= 2.4.0), plyr, eatTools (>= 0.4.0), tibble, data.table, hms, stats, utils, stringi
+Imports: eatDB (>= 0.5.0), haven (>= 2.4.0), plyr, eatTools (>= 0.4.0), tibble, data.table, hms, stats, utils, stringi
 License: GPL (>= 2)
 URL: https://github.com/beckerbenj/eatGADS
 Encoding: UTF-8

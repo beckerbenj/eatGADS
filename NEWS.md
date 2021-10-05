@@ -1,4 +1,4 @@
-# eatGADS 0.18.0.9000
+# eatGADS 0.18.1
 * `equalGADS()` now ignores irrelevant format differences (`F8.0` vs `F8`)
 
 # eatGADS 0.18.0
