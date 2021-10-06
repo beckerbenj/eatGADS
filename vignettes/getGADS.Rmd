@@ -93,7 +93,7 @@ In general, we recommend leaving labeled variables as numeric and converting val
 
 ## Selecting different hierarchy levels
 
-An important feature of `eatGADS` relational data bases are that data sets are automatically returned on the correct hierarchy level. For an overview of different data structures, see ["Tidy Data"](https://www.jstatsoft.org/article/view/v059i10) or [this article explaining long and wide format using repeated measures](https://www.theanalysisfactor.com/wide-and-long-data/). In educational large-scale assessments, data usually contain multiple imputations or plausible values. Packages that enable us analyzing these types of data (like [`eatRep`](https://github.com/weirichs/eatRep)) often require these data in the long format.
+An important feature of `eatGADS` relational data bases are that data sets are automatically returned on the correct hierarchy level. For an overview of different data structures, see ["Tidy Data"](https://doi.org/10.18637/jss.v059.i10) or [this article explaining long and wide format using repeated measures](https://www.theanalysisfactor.com/wide-and-long-data/). In educational large-scale assessments, data usually contain multiple imputations or plausible values. Packages that enable us analyzing these types of data (like [`eatRep`](https://github.com/weirichs/eatRep)) often require these data in the long format.
 
 The function `getGADS()` extracts data automatically in the appropriate structure, depending on our variable selection. If we select only variables from the student level, the data returned is on the student level. Each student is represented in a single row.
 

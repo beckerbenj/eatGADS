@@ -1,5 +1,6 @@
 # eatGADS 0.18.1
 * `equalGADS()` now ignores irrelevant format differences (`F8.0` vs `F8`)
+* fix `JSS` link in vignette
 
 # eatGADS 0.18.0
 
