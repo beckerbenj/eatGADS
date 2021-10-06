@@ -2,6 +2,7 @@
 * `equalGADS()` now ignores irrelevant format differences (`F8.0` vs `F8`)
 * fix `JSS` link in vignette
 
+
 # eatGADS 0.18.0
 
 * `applyChangeMeta()` and `changeValLabels()` now automatically assign `"valid"` to the `missings` columns for labeled values
