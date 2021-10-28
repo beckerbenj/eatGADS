@@ -12,7 +12,7 @@ control_caching <- FALSE
 ### check
 test_that("check_keyStrcuture_TrendGADS", {
   expect_silent(check_keyStrcuture_TrendGADS(filePath1 = "helper_dataBase.db", filePath2 = "helper_dataBase2.db"))
-  # checkTrendGADS(filePath1 = "C:/Benjamin_Becker/02_Repositories/packages/eatGADS/tests/testthat/helper_dataBase3.db", filePath2 = "C:/Benjamin_Becker/02_Repositories/packages/eatGADS/tests/testthat/helper_dataBase2.db")
+  # checkTrendGADS(filePath1 = "tests/testthat/helper_dataBase3.db", filePath2 = "tests/testthat/helper_dataBase2.db")
   expect_error(check_keyStrcuture_TrendGADS(filePath1 = "helper_dataBase3.db", filePath2 = "helper_dataBase2.db"), "Trend data bases must have the same primary key structure.")
 })
 
@@ -47,7 +47,7 @@ test_that("Correct vSelect errors for getTrendGADS", {
 })
 
 test_that("Extract trend GADS with unique variables in one GADS", {
-  # out <- getTrendGADS(filePath1 = "C:/Benjamin_Becker/02_Repositories/packages/eatGADS/tests/testthat/helper_dataBase.db", filePath2 = "C:/Benjamin_Becker/02_Repositories/packages/eatGADS/tests/testthat/helper_dataBase_uniqueVar.db", years = c(2012, 2018), fast = FALSE)
+  # out <- getTrendGADS(filePath1 = "tests/testthat/helper_dataBase.db", filePath2 = "tests/testthat/helper_dataBase_uniqueVar.db", years = c(2012, 2018), fast = FALSE)
   expect_warning(getTrendGADS(filePath1 = "helper_dataBase.db", filePath2 = "helper_dataBase_uniqueVar.db", years = c(2012, 2018), fast = control_caching),
                  "The following variables are not in GADS 2012: V3. NAs will be inserted if data is extracted.")
   out <- suppressWarnings(getTrendGADS(filePath1 = "helper_dataBase.db", filePath2 = "helper_dataBase_uniqueVar.db", years = c(2012, 2018), fast = control_caching))
@@ -82,7 +82,7 @@ test_that("make_leSelect", {
 
 ### trend gads with LEs
 test_that("Extract trend GADS with linking errors", {
-  # out <- getTrendGADS(filePath1 = "C:/Benjamin_Becker/02_Repositories/packages/eatGADS/tests/testthat/helper_comp.db", filePath2 = "C:/Benjamin_Becker/02_Repositories/packages/eatGADS/tests/testthat/helper_comp2.db", years = c(2012, 2018), lePath = "c:/Benjamin_Becker/02_Repositories/packages/eatGADS/tests/testthat/helper_le.db", vSelect = c("ID", "PV"))
+  # out <- getTrendGADS(filePath1 = "tests/testthat/helper_comp.db", filePath2 = "tests/testthat/helper_comp2.db", years = c(2012, 2018), lePath = "tests/testthat/helper_le.db", vSelect = c("ID", "PV"))
 
   ## no linking errors
   expect_message(getTrendGADS(filePath1 = "helper_comp.db", filePath2 = "helper_comp2.db", years = c(2012, 2018), lePath = "helper_le.db", fast = control_caching, vSelect = "ID"),
