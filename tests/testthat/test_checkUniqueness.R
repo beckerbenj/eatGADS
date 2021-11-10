@@ -6,8 +6,9 @@ load(file = "helper_data.rda")
 ### check missings
 df1b <- df1
 df1b$dat <- rbind(df1$dat, df1$dat)
-df5 <- df4 <- df3 <- df1b
 
+df5 <- df4 <- df3 <- df1b
+df3$dat[, "V1"] <- c(4, 1, 3, 1)
 
 test_that("Errors", {
   expect_error(checkUniqueness(df1, varName = "V1", idVar = "ID1"),
