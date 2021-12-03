@@ -140,7 +140,7 @@ gads_labeled <- checkMissings(gads_labeled, missingLabel = "missing")
 ```
 
 #### Reusing meta data
-Sometimes one variable already contains the meta data which should be added to another variable. `reuseMeta()` allows us to copy meta data from one variable (`other_varName`) to another variable (`varName`), even across different data sets. The function allows us to transfer the complete meta data, only value labels or a specific selection of value labels (only valid values or missing codes). In the example below we transfer only the missing codes from variable `hisei_new` to variable `age`.
+Sometimes one variable already contains the meta data which should be added to another variable. `reuseMeta()` can copy meta data from one variable (`other_varName`) to another variable (`varName`), even across different data sets. The function allows us to transfer the complete meta data, only value labels or a specific selection of value labels (only valid values or missing codes). In the example below we transfer only the missing codes from variable `hisei_new` to variable `age`.
 
 ```{r reuse}
 extractMeta(gads_labeled, "age")
