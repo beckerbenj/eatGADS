@@ -2,6 +2,7 @@
 * bug fix `updateMeta()` (all added variables are now checked for illegal naming)
 * `checkUniqueness()` for checking uniqueness of a variable within an `id` variable
 
+* clarifications and additional explanations in vignettes (`meta_data`)
 
 # eatGADS 0.18.1
 * `equalGADS()` now ignores irrelevant format differences (`F8.0` vs `F8`)
