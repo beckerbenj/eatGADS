@@ -1,4 +1,5 @@
 # eatGADS 0.18.1.9000
+* `getTrendsGADS()` for extracting trend data sets with 3 or more measurement points
 * bug fix `updateMeta()` (all added variables are now checked for illegal naming)
 * `checkUniqueness()` for checking uniqueness of a variable within an `id` variable
 

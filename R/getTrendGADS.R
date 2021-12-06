@@ -83,6 +83,7 @@ getTrendGADS <- function(filePath1, filePath2, lePath = NULL, vSelect = NULL, ye
   gList <- list(g1, g2, LEs)
   names(gList) <- c(paste0("gads", years), "LEs")
 
+  #browser()
   gads_trend <- do.call(mergeLabels, gList)
   class(gads_trend) <- c("trend_GADSdat", "all_GADSdat", "list")
 

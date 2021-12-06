@@ -1,0 +1,59 @@
+
+# load test data
+# load(file = "c:/Benjamin_Becker/02_Repositories/packages/eatGADS/tests/testthat/helper_data.rda")
+load(file = "helper_data.rda")
+allList <- mergeLabels(df1 = df1, df2 = df2)
+
+# dfSAV <- import_spss(file = "c:/Benjamin_Becker/02_Repositories/packages/eatGADS/tests/testthat/helper_spss_missings.sav")
+dfSAV <- import_spss(file = "helper_spss_missings.sav")
+
+control_caching <- FALSE
+
+fp1 <- system.file("extdata", "trend_gads_2020.db", package = "eatGADS")
+fp2 <- system.file("extdata", "trend_gads_2015.db", package = "eatGADS")
+fp3 <- system.file("extdata", "trend_gads_2010.db", package = "eatGADS")
+fp2b <- system.file("extdata", "trend_gads_2015_pkList.db", package = "eatGADS")
+
+
+### check
+test_that("check_keyStrcuture_TrendGADS", {
+  expect_silent(check_keyStrcuture_TrendsGADS(filePaths = c(fp1, fp2, fp3)))
+  # checkTrendGADS(filePath1 = "tests/testthat/helper_dataBase3.db", filePath2 = "tests/testthat/helper_dataBase2.db")
+  expect_error(check_keyStrcuture_TrendsGADS(filePaths = c(fp1, fp2b, fp3)), "Trend data bases must have the same primary key structure.")
+})
+
+### trend gads without LEs
+test_that("Extract trend GADS errors", {
+  # out <- getTrendGADS(filePath1 = "C:/Benjamin_Becker/02_Repositories/packages/eatGADS/tests/testthat/helper_dataBase.db", filePath2 = "C:/Benjamin_Becker/02_Repositories/packages/eatGADS/tests/testthat/helper_dataBase2.db", years = c(2012, 2018))
+  expect_error(out <- getTrendsGADS(filePaths = c(fp1, fp1), years = c(2012, 2018), fast = control_caching),
+               "All file arguments have to point to different files.")
+  expect_error(out <- getTrendsGADS(filePaths = c(fp1, fp2, fp3), years = c(2012, 2018), fast = control_caching),
+               "'years' has to be a numeric vector of the same length as 'filePaths'.")
+  expect_error(out <- getTrendsGADS(filePaths = c(fp1, fp2, fp3), years = c(2012, 2018, "b"), fast = control_caching),
+               "'years' has to be a numeric vector of the same length as 'filePaths'.")
+})
+
+
+test_that("Extract trend GADS errors", {
+  s <- capture_output(out <- getTrendsGADS(filePaths = c(fp1, fp2, fp3), years = c(2020, 2015, 2010), fast = control_caching))
+  expect_equal(unique(out$datList$gads2020$year), 2020)
+  expect_equal(unique(out$datList$gads2015$year), 2015)
+  expect_equal(unique(out$datList$gads2010$year), 2010)
+  expect_equal(dim(out$datList$gads2020), c(30, 9))
+  expect_equal(dim(out$datList$gads2010), c(30, 9))
+  expect_equal(dim(out$allLabels), c(27, 9))
+  expect_equal(out$allLabels$data_table, c(rep("gads2020", 9), rep("gads2015", 9), rep("gads2010", 9)))
+  expect_equal(class(out), c("trend_GADSdat", "all_GADSdat", "list"))
+})
+
+test_that("Correct vSelect errors for getTrendGADS", {
+  expect_error(getTrendsGADS(filePaths = c(fp1, fp2, fp3), years = c(2020, 2015, 2010), vSelect = c("idstud", "gender", "test"),
+                             fast = control_caching),
+               "The following selected variables are not in any of the data bases: test")
+  expect_error(getTrendsGADS(filePaths = c(fp1, fp2, fp3), years = c(2020, 2015, 2010), vSelect = c("idstud", "gender", "test", "test2"),
+                             fast = control_caching),
+               "The following selected variables are not in any of the data bases: test, test2")
+  expect_error(getTrendsGADS(filePaths = c("helper_dataBase.db", "helper_dataBase_uniqueVar.db"), years = c(2012, 2018), vSelect = c("V3"),
+                            fast = control_caching),
+               "No variables from data base 2012 selected.")
+})

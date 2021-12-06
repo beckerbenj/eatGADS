@@ -78,7 +78,8 @@ check_all_GADSdat <- function(all_GADSdat, GADSdatChecks = TRUE) {
   if(!GADSdatChecks) return()
   # make this work for trendGADSdat with empty LEs, but maybe should rethink this class design?
   if("LEs" %in% names(all_GADSdat[["datList"]]) && is.null(all_GADSdat$datList$LEs)) {
-    all_GADSdat$datList <- all_GADSdat$datList[1:2]
+    other_names <- names(all_GADSdat$datList)[names(all_GADSdat$datList) != "LEs"]
+    all_GADSdat$datList <- all_GADSdat$datList[other_names]
   }
   for(i in names(all_GADSdat[["datList"]])) {
     # browser()
