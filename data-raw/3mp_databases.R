@@ -55,4 +55,18 @@ test2
 # -------------------------------------------------------
 test <- getTrendsGADS(filePaths = c("inst/extdata/trend_gads_2020.db", "inst/extdata/trend_gads_2015.db",
                       "inst/extdata/trend_gads_2010.db"), fast = FALSE, years = c(2020, 2015, 2010))
-test2
+test
+
+dat <- extractData(test)
+
+table(dat$year)
+
+# 3 Trend
+# -------------------------------------------------------
+fp1 <- system.file("extdata", "trend_gads_2020.db", package = "eatGADS")
+fp2 <- system.file("extdata", "trend_gads_2015.db", package = "eatGADS")
+fp3 <- system.file("extdata", "trend_gads_2010.db", package = "eatGADS")
+
+gads_3mp <- getTrendsGADS(filePaths = c(fp1, fp2, fp3), years = c(2020, 2015, 2010), fast = FALSE)
+dat_3mp <- extractData(gads_3mp)
+

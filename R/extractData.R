@@ -9,7 +9,8 @@
 #' so the data can be used for analyses in \code{R}.
 #'
 #' If \code{factor} are extracted via \code{convertLabels == "factor"}, the underlying integers will
-#' be tried to preserved. If this is not possible, a warning is issued. As \code{SPSS} has almost no limitations regarding the underlying values of labeled
+#' be tried to preserved. If this is not possible, a warning is issued.
+#' As \code{SPSS} has almost no limitations regarding the underlying values of labeled
 #' integers and \code{R}'s \code{factor} format is very strict (no \code{0}, only integers increasing by \code{+ 1}), this procedure can lead to
 #' frequent problems.
 #'
@@ -32,12 +33,12 @@
 #'dat <- extractData(pisa, convertLabels = "factor", convertVariables = c("schtype", "ganztag"))
 #'
 #'@export
-extractData <- function(GADSdat, convertMiss = TRUE, convertLabels = "character", dropPartialLabels = TRUE, convertVariables) {
+extractData <- function(GADSdat, convertMiss = TRUE, convertLabels = "character", dropPartialLabels = TRUE, convertVariables = NULL) {
   UseMethod("extractData")
 }
 
 #'@export
-extractData.GADSdat <- function(GADSdat, convertMiss = TRUE, convertLabels = "character", dropPartialLabels = TRUE, convertVariables) {
+extractData.GADSdat <- function(GADSdat, convertMiss = TRUE, convertLabels = "character", dropPartialLabels = TRUE, convertVariables = NULL) {
   check_GADSdat(GADSdat)
   if(length(convertLabels) != 1 || !convertLabels %in% c("character", "factor", "numeric")) stop("Argument convertLabels incorrectly specified.")
   dat <- GADSdat$dat
@@ -51,7 +52,7 @@ extractData.GADSdat <- function(GADSdat, convertMiss = TRUE, convertLabels = "ch
 }
 
 #'@export
-extractData.trend_GADSdat <- function(GADSdat, convertMiss = TRUE, convertLabels = "character", dropPartialLabels = TRUE, convertVariables) {
+extractData.trend_GADSdat <- function(GADSdat, convertMiss = TRUE, convertLabels = "character", dropPartialLabels = TRUE, convertVariables = NULL) {
   check_trend_GADSdat(GADSdat)
 
   all_dat <- extract_data_only(GADSdat = GADSdat, convertMiss = convertMiss, convertLabels = convertLabels,
@@ -77,22 +78,35 @@ extractData.trend_GADSdat <- function(GADSdat, convertMiss = TRUE, convertLabels
 
 # function for extracting the data and rbinding it (extra function for prevention of memory allocation problems)
 extract_data_only <- function(GADSdat, convertMiss, convertLabels, dropPartialLabels, convertVariables) {
-  gads1 <- extractGADSdat(all_GADSdat = GADSdat, name = names(GADSdat$datList)[1])
-  dat1 <- extractData(gads1, convertMiss = convertMiss, convertLabels = convertLabels,
-                      dropPartialLabels = dropPartialLabels, convertVariables)
-  gads2 <- extractGADSdat(all_GADSdat = GADSdat, name = names(GADSdat$datList)[2])
-  dat2 <- extractData(gads2, convertMiss = convertMiss, convertLabels = convertLabels,
-                      dropPartialLabels = dropPartialLabels, convertVariables)
+  #browser()
+  old_class <- class(GADSdat)
+  GADSdat$datList <- GADSdat$datList[names(GADSdat$datList) != "LEs"]
+  class(GADSdat) <- old_class
+
+  dat_list <- lapply(names(GADSdat$datList), function(nam) {
+    gads <- extractGADSdat(all_GADSdat = GADSdat, name = nam)
+    dat <- extractData(gads, convertMiss = convertMiss, convertLabels = convertLabels,
+                        dropPartialLabels = dropPartialLabels, convertVariables = convertVariables)
+    dat
+  })
+
+  do.call(plyr::rbind.fill, dat_list)
+  # gads1 <- extractGADSdat(all_GADSdat = GADSdat, name = names(GADSdat$datList)[1])
+  # dat1 <- extractData(gads1, convertMiss = convertMiss, convertLabels = convertLabels,
+  #                     dropPartialLabels = dropPartialLabels, convertVariables)
+  # gads2 <- extractGADSdat(all_GADSdat = GADSdat, name = names(GADSdat$datList)[2])
+  # dat2 <- extractData(gads2, convertMiss = convertMiss, convertLabels = convertLabels,
+  #                     dropPartialLabels = dropPartialLabels, convertVariables)
   # test_names <- compare_and_order(set1 = names(dat1), set2 = names(dat2), name1 = "GADS 1", name2 = "GADS 2")
   # oder year mit reinnehmen?
-  plyr::rbind.fill(dat1, dat2)
+  #plyr::rbind.fill(dat1, dat2)
 }
 
 # converts labels to values
 labels2values <- function(dat, labels, convertLabels, convertMiss, dropPartialLabels, convertVariables) {
   if(identical(convertLabels, "numeric")) return(dat)
   # Which variables should their value labels be applied to?
-  if(missing(convertVariables)) convertVariables <- names(dat)
+  if(is.null(convertVariables)) convertVariables <- names(dat)
   stopifnot(is.character(convertVariables) && length(convertVariables) > 0)
   change_labels <- labels[labels[, "varName"] %in% convertVariables, ]    # careful, from here use only change_labels!
   # check value labels, remove incomplete labels from insertion to protect variables

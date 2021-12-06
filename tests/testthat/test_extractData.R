@@ -149,7 +149,7 @@ test_that("ExtractData with some variables labels applied to (convertVariables a
   # Missing labels (but no variables in the data that show the 'no-conversion'!)
   out <- suppressWarnings(extractData(testM, convertVariables = c("VAR2", "VAR3")))
   expect_equal(out$VAR1, c(1, NA, NA, 2))
-  expect_error(extractData(testM, convertVariables = c()))
+  expect_warning(extractData(testM, convertVariables = c()))
 
   # Two variables with value labels without missings
   label_df <- data.frame(a = c("one", "two"),
@@ -174,6 +174,19 @@ test_that("Extract data trend GADS", {
   ## convertVariables if some variables are not in both GADS
   out2 <- extractData(trend_gads, convertVariables = "V3")
   expect_equal(out, out2)
+})
+
+
+test_that("Extract data trend GADS 3 MPs", {
+  fp1 <- system.file("extdata", "trend_gads_2020.db", package = "eatGADS")
+  fp2 <- system.file("extdata", "trend_gads_2015.db", package = "eatGADS")
+  fp3 <- system.file("extdata", "trend_gads_2010.db", package = "eatGADS")
+  s <- capture_output(gads_3mp <- getTrendsGADS(filePaths = c(fp1, fp2, fp3), years = c(2020, 2015, 2010), fast = FALSE))
+
+  out <- extractData(gads_3mp)
+  expect_equal(dim(out), c(90, 9))
+  expect_equal(names(out), c("idstud", "gender", "imp", "score", "comp", "failMin", "passReg", "passOpt", "year"))
+  expect_equal(out$year, c(rep(2020, 30), rep(2015, 30), rep(2010, 30)))
 })
 
 
