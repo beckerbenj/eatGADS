@@ -70,3 +70,17 @@ fp3 <- system.file("extdata", "trend_gads_2010.db", package = "eatGADS")
 gads_3mp <- getTrendsGADS(filePaths = c(fp1, fp2, fp3), years = c(2020, 2015, 2010), fast = FALSE)
 dat_3mp <- extractData(gads_3mp)
 
+
+# LEs
+# --------------------------------------------------------------
+load("t:/Sebastian/linking_error_template.rda")
+le
+
+le_long <- le[, c("trendLevel1", "trendLevel2", "dimension", "depVar", "parameter", "linkingError")]
+
+le_wide <- as.data.frame(tidyr::pivot_wider(le_long, names_from = depVar, values_from = "linkingError"))
+le_stufe <- le_wide[!le_wide$parameter %in% c("mean", "0"), c("trendLevel1", "trendLevel2", "dimension", "parameter", "traitLevel")]
+le_mean <- unique(le_wide[le_wide$parameter %in% c("mean", "0"), -5])
+le_mean[le_mean$parameter == "0", c("logit", "transfBista")] <- le_mean[le_mean$parameter == "mean", c("logit", "transfBista")]
+le_mean2 <- le_mean[le_mean$parameter == "0", -4]
+
