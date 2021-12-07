@@ -73,7 +73,7 @@ getTrendsGADS <- function(filePaths, lePath = NULL, vSelect = NULL, years, fast 
     if(identical(fast, TRUE)) {
       g <- getGADS_fast(vSelect = vSelect_in_gads, filePath = filePath, tempPath = tempPath)
     } else{
-      g <- getGADS_fast(vSelect = vSelect_in_gads, filePath = filePath)
+      g <- getGADS(vSelect = vSelect_in_gads, filePath = filePath)
     }
 
     g2 <- add_year(g, year)

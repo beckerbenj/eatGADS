@@ -36,6 +36,7 @@ test_that("Extract trend GADS errors", {
 
 test_that("Extract trend GADS errors", {
   s <- capture_output(out <- getTrendsGADS(filePaths = c(fp1, fp2, fp3), years = c(2020, 2015, 2010), fast = control_caching))
+  expect_equal(s[1], " -----  Loading GADS 2020 ----- \n -----  Loading GADS 2015 ----- \n -----  Loading GADS 2010 ----- ")
   expect_equal(unique(out$datList$gads2020$year), 2020)
   expect_equal(unique(out$datList$gads2015$year), 2015)
   expect_equal(unique(out$datList$gads2010$year), 2010)
