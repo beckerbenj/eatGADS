@@ -13,7 +13,7 @@ fp1 <- system.file("extdata", "trend_gads_2020.db", package = "eatGADS")
 fp2 <- system.file("extdata", "trend_gads_2015.db", package = "eatGADS")
 fp3 <- system.file("extdata", "trend_gads_2010.db", package = "eatGADS")
 fp2b <- system.file("extdata", "trend_gads_2015_pkList.db", package = "eatGADS")
-
+lep <- system.file("extdata", "gads_LEs.db", package = "eatGADS")
 
 ### check
 test_that("check_keyStrcuture_TrendGADS", {
@@ -34,7 +34,7 @@ test_that("Extract trend GADS errors", {
 })
 
 
-test_that("Extract trend GADS errors", {
+test_that("Extract trend GADS", {
   s <- capture_output(out <- getTrendsGADS(filePaths = c(fp1, fp2, fp3), years = c(2020, 2015, 2010), fast = control_caching))
   expect_equal(s[1], " -----  Loading GADS 2020 ----- \n -----  Loading GADS 2015 ----- \n -----  Loading GADS 2010 ----- ")
   expect_equal(unique(out$datList$gads2020$year), 2020)
@@ -57,4 +57,18 @@ test_that("Correct vSelect errors for getTrendGADS", {
   expect_error(getTrendsGADS(filePaths = c("helper_dataBase.db", "helper_dataBase_uniqueVar.db"), years = c(2012, 2018), vSelect = c("V3"),
                             fast = control_caching),
                "No variables from data base 2012 selected.")
+})
+
+
+test_that("Extract trend GADS with linking errors", {
+  s <- capture_output(out <- getTrendsGADS(filePaths = c(fp1, fp2, fp3), years = c(2020, 2015, 2010), fast = control_caching, lePath = lep))
+  expect_equal(s[1], " -----  Loading GADS 2020 ----- \n -----  Loading GADS 2015 ----- \n -----  Loading GADS 2010 ----- ")
+  expect_equal(names(out$datList), c("gads2020", "gads2015", "gads2010", "LEs"))
+  expect_equal(out$allLabels$data_table, c(rep("gads2020", 9), rep("gads2015", 9), rep("gads2010", 9), rep("LEs", 9)))
+  expect_equal(class(out), c("trend_GADSdat", "all_GADSdat", "list"))
+  expect_equal(dim(out$datList$LEs), c(9, 7))
+
+  s <- capture_output(out <- getTrendsGADS(filePaths = c(fp1, fp2), years = c(2020, 2015), fast = control_caching, lePath = lep))
+  expect_equal(out$datList$LEs$year2, rep(2020, 3))
+  expect_equal(out$datList$LEs$year1, rep(2015, 3))
 })

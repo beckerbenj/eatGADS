@@ -85,7 +85,12 @@ getTrendsGADS <- function(filePaths, lePath = NULL, vSelect = NULL, years, fast 
     leSelect <- make_leSelect(lePath = lePath, vSelect = vSelect)
     if(is.null(leSelect) || length(leSelect) > 0) LEs <- getGADS(filePath = lePath, vSelect = leSelect)
     else message("No linking errors for chosen variables available.")
-    gList[length(gList)] <- LEs
+
+    # select correct years
+    LEs2 <- LEs
+    LEs2$dat <- LEs$dat[LEs$dat$year1 %in% years & LEs$dat$year2 %in% years, ]
+
+    gList[[length(gList)]] <- LEs2
   }
 
   names(gList) <- c(paste0("gads", years), "LEs")
