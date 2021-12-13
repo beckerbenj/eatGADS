@@ -184,9 +184,9 @@ test_that("Extract data trend GADS 3 MPs", {
   s <- capture_output(gads_3mp <- getTrendsGADS(filePaths = c(fp1, fp2, fp3), years = c(2020, 2015, 2010), fast = FALSE))
 
   out <- extractData(gads_3mp)
-  expect_equal(dim(out), c(90, 9))
-  expect_equal(names(out), c("idstud", "gender", "imp", "score", "comp", "failMin", "passReg", "passOpt", "year"))
-  expect_equal(out$year, c(rep(2020, 30), rep(2015, 30), rep(2010, 30)))
+  expect_equal(dim(out), c(180, 10))
+  expect_equal(names(out), c("idstud", "gender", "dimension", "imp", "score", "traitLevel", "failMin", "passReg", "passOpt", "year"))
+  expect_equal(out$year, c(rep(2020, 60), rep(2015, 60), rep(2010, 60)))
 })
 
 
