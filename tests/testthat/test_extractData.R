@@ -191,49 +191,13 @@ test_that("Extract data trend GADS 3 MPs", {
 
 
 ### with linking errors
-test_that("Extract.trend_GADSdat with linking errors", {
-  # out <- getTrendGADS(filePath1 = "C:/Benjamin_Becker/02_Repositories/packages/eatGADS/tests/testthat/helper_comp.db", filePath2 = "C:/Benjamin_Becker/02_Repositories/packages/eatGADS/tests/testthat/helper_comp2.db", years = c(2012, 2018), lePath = "C:/Benjamin_Becker/02_Repositories/packages/eatGADS/tests/testthat/helper_le.db", fast = FALSE, vSelect = c("ID", "level", "PV"))
+test_that("with linking errors present", {
+  # out <- getTrendGADS(filePath1 = "tests/testthat/helper_comp.db", filePath2 = "tests/testthat/helper_comp2.db", years = c(2012, 2018), lePath = "tests/testthat/helper_le.db", fast = FALSE, vSelect = c("ID", "PV"))
   out <- getTrendGADS(filePath1 = "helper_comp.db", filePath2 = "helper_comp2.db", years = c(2012, 2018), lePath = "helper_le.db", fast = control_caching, vSelect = c("ID", "PV"))
   dat <- extractData(out)
-  expect_equal(dim(dat), c(8, 5))
-  expect_equal(dat$LE_PV, c(rep(0.3, 4), rep(0.2, 4)))
-
-  ## more variables
-  out2 <- getTrendGADS(filePath1 = "helper_comp.db", filePath2 = "helper_comp2.db", years = c(2012, 2018), lePath = "helper_le.db", fast = control_caching, vSelect = c("ID", "level", "PV"))
-  dat2 <- extractData(out2)
-  expect_equal(dim(dat2), c(8, 7))
-  expect_equal(dat2[dat2$level == 4 & dat2$dim == "A", "LE_level"], c(0.2, 0.2))
-  expect_equal(dat2[dat2$level == 5 & dat2$dim == "B", "LE_level"], c(0.9, 0.9))
-  expect_equal(dat2[dat2$level == "1a" & dat2$dim == "A", "LE_level"], c(0.01, 0.01))
-  expect_equal(dat2[dat2$level == "1b" & dat2$dim == "B", "LE_level"], c(0.4, 0.4))
-
-
-  ## vSelect is null
-  out3 <- getTrendGADS(filePath1 = "helper_comp.db", filePath2 = "helper_comp2.db", years = c(2012, 2018), lePath = "helper_le.db", fast = control_caching)
-  dat <- extractData(out3)
-  expect_equal(dim(dat2), c(8, 7))
-  expect_equal(names(dat2), c("ID", "dim", "PV", "level", "LE_PV", "LE_level", "year"))
-
-
+  expect_equal(names(dat), c("ID", "dim", "PV", "year"))
 })
 
-
-## Archiv
-les <- import_DF(data.frame(ID1 = 1:2, le = c(1.1, 0.9), comp = 1:2))
-les2 <- import_DF(data.frame(ID1 = c(1, 2, 1), le = c(1.1, 0.9, 1.3), comp = 1:3))
-les3 <- import_DF(data.frame(ID1 = c(1, 2, 1), le = c(1.1, 0.9, 1.3), V2 = c(4, NA, 8)))
-
-#expect_error(merge_LEs(gads_trend = gads_trend, les = les2, le_keys = c("ID1", "comp")))
-
-#out_single <- merge_LEs(gads_trend = gads_trend, les = les, le_keys = "ID1")
-#expect_equal(out_single$dat$le, c(rep(1.1, 4), rep(0.9, 2)))
-#expect_equal(out_single$labels$data_table[9:10],  rep("LEs", 2))
-
-# expect_error(merge_LEs(gads_trend = gads_trend, les = les3, le_keys = c("ID1"))) ### desired, but difficult to realize
-
-#out_double <- merge_LEs(gads_trend = gads_trend, les = les3, le_keys = c("ID1", "V2"))
-#expect_equal(out_single$dat$le, c(rep(1.1, 4), rep(0.9, 2)))
-#expect_equal(out_single$labels$data_table[9:10],  rep("LEs", 2))
 
 
 

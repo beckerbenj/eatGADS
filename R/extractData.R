@@ -2,7 +2,8 @@
 #############################################################################
 #' Extract Data
 #'
-#' Extract \code{data.frame} from a \code{GADSdat} object for analyses in \code{R}. For extracting meta data see \code{\link{extractMeta}}.
+#' Extract \code{data.frame} from a \code{GADSdat} object for analyses in \code{R}. For extracting meta data see \code{\link{extractMeta}},
+#' for extracting linking errors see \code{\link{extractLEs}}.
 #'
 #' A \code{GADSdat} object includes actual data (\code{GADSdat$dat}) and the corresponding meta data information
 #' (\code{GADSdat$labels}). \code{extractData} extracts the data and applies relevant meta data (missing conversion, value labels),
@@ -57,20 +58,6 @@ extractData.trend_GADSdat <- function(GADSdat, convertMiss = TRUE, convertLabels
 
   all_dat <- extract_data_only(GADSdat = GADSdat, convertMiss = convertMiss, convertLabels = convertLabels,
                                dropPartialLabels = dropPartialLabels, convertVariables = convertVariables)
-
-  ## if available, merge also linking errors; merge picks by automatically, keep variable order as in original data frames
-  if(!is.null(GADSdat$datList[["LEs"]])) {
-    gads_le <- extractGADSdat(all_GADSdat = GADSdat, name = "LEs")
-    le <- extractData(gads_le, convertMiss = convertMiss, convertLabels = "character")
-
-    # performance relevant: merge (data.table seems to be fastest)
-    all_dat <- data.table::setDT(all_dat)
-    le <- data.table::setDT(le)
-    all_dat_withLEs <- merge(all_dat, le)
-    all_dat_withLEs <- as.data.frame(all_dat_withLEs)
-
-    all_dat <- all_dat_withLEs[, c(names(all_dat), setdiff(names(le), names(all_dat)))]
-  }
 
   all_dat <- all_dat[, c(names(all_dat)[names(all_dat) != "year"], "year")]
   all_dat
