@@ -21,7 +21,7 @@ test_that("Warnings and errors",  {
 
 
 test_that("Extract data trend GADS", {
-  # trend_gads <- getTrendGADS(filePath1 = "C:/Benjamin_Becker/02_Repositories/packages/eatGADS/tests/testthat/helper_dataBase.db", filePath2 = "C:/Benjamin_Becker/02_Repositories/packages/eatGADS/tests/testthat/helper_dataBase_uniqueVar.db", years = c(2012, 2018), fast = FALSE)
+  # trend_gads <- getTrendGADS(filePath1 = "tests/testthat/helper_dataBase.db", filePath2 = "tests/testthat/helper_dataBase_uniqueVar.db", years = c(2012, 2018), fast = FALSE)
   trend_gads <- suppressWarnings(getTrendGADS(filePath1 = "helper_dataBase.db", filePath2 = "helper_dataBase_uniqueVar.db", years = c(2012, 2018), fast = FALSE))
   out <- extractDataOld(trend_gads)
   expect_equal(dim(out), c(6, 5))
@@ -35,7 +35,7 @@ test_that("Extract data trend GADS", {
 
 ### with linking errors
 test_that("With linking errors", {
-  # out <- getTrendGADS(filePath1 = "C:/Benjamin_Becker/02_Repositories/packages/eatGADS/tests/testthat/helper_comp.db", filePath2 = "C:/Benjamin_Becker/02_Repositories/packages/eatGADS/tests/testthat/helper_comp2.db", years = c(2012, 2018), lePath = "C:/Benjamin_Becker/02_Repositories/packages/eatGADS/tests/testthat/helper_le.db", fast = FALSE, vSelect = c("ID", "level", "PV"))
+  # out <- getTrendGADS(filePath1 = "tests/testthat/helper_comp.db", filePath2 = "tests/testthat/helper_comp2.db", years = c(2012, 2018), lePath = "tests/testthat/helper_le.db", fast = FALSE, vSelect = c("ID", "level", "PV"))
   out <- getTrendGADS(filePath1 = "helper_comp.db", filePath2 = "helper_comp2.db", years = c(2012, 2018), lePath = "helper_le.db", fast = control_caching, vSelect = c("ID", "PV"))
   dat <- extractDataOld(out)
   expect_equal(dim(dat), c(8, 5))

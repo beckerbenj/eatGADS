@@ -106,5 +106,6 @@ lep <- system.file("extdata", "gads_LEs.db", package = "eatGADS")
 
 gads_3mp_le <- getTrendsGADS(filePaths = c(fp1, fp2, fp3), years = c(2020, 2015, 2010), fast = FALSE, lePath = lep)
 dat_3mp <- extractData(gads_3mp_le)
+les_3mp <- extractLEs(gads_3mp_le)
 
 
