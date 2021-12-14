@@ -108,4 +108,4 @@ gads_3mp_le <- getTrendsGADS(filePaths = c(fp1, fp2, fp3), years = c(2020, 2015,
 dat_3mp <- extractData(gads_3mp_le)
 les_3mp <- extractLEs(gads_3mp_le)
 
-
+checkLEStructure(filePaths = c(fp1, fp2, fp3), lePath = lep)
