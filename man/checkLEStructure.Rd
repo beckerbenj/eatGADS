@@ -4,12 +4,10 @@
 \alias{checkLEStructure}
 \title{Checks compatibility of GADS data bases with a linking error data base.}
 \usage{
-checkLEStructure(filePath1, filePath2, lePath)
+checkLEStructure(filePaths, lePath)
 }
 \arguments{
-\item{filePath1}{Path of the first \code{eatGADS} \code{.db} file.}
-
-\item{filePath2}{Path of the second \code{eatGADS} \code{.db} file.}
+\item{filePaths}{Character vectors with paths to the \code{eatGADS} db files.}
 
 \item{lePath}{Path of the linking error \code{eatGADS} \code{.db} file.}
 }
