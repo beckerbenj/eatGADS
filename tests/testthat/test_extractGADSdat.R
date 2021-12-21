@@ -18,8 +18,8 @@ test_that("Extract GADSdat performed correctly", {
 
 
 test_that("Extract GADSdat for trendGADSdat", {
-  out <- getTrendGADS(filePath1 = "helper_dataBase.db", filePath2 = "helper_dataBase2.db", years = c(2012, 2018),
-                      fast = FALSE)
+  out <- getTrendGADS(filePaths = c("helper_dataBase.db", "helper_dataBase2.db"), years = c(2012, 2018),
+                      fast = FALSE, verbose = FALSE)
   g1 <- extractGADSdat(out, name = "gads2012")
   g2 <- extractGADSdat(out, name = "gads2018")
   g1 <- removeVars(g1, "year")

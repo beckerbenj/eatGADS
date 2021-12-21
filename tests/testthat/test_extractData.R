@@ -164,8 +164,9 @@ test_that("ExtractData with some variables labels applied to (convertVariables a
 })
 
 test_that("Extract data trend GADS", {
-  # trend_gads <- getTrendGADS(filePath1 = "C:/Benjamin_Becker/02_Repositories/packages/eatGADS/tests/testthat/helper_dataBase.db", filePath2 = "C:/Benjamin_Becker/02_Repositories/packages/eatGADS/tests/testthat/helper_dataBase_uniqueVar.db", years = c(2012, 2018), fast = FALSE)
-  trend_gads <- suppressWarnings(getTrendGADS(filePath1 = "helper_dataBase.db", filePath2 = "helper_dataBase_uniqueVar.db", years = c(2012, 2018), fast = FALSE))
+  # trend_gads <- getTrendGADS(filePaths = c("tests/testthat/helper_dataBase.db", "tests/testthat/helper_dataBase_uniqueVar.db"), years = c(2012, 2018), fast = FALSE)
+  trend_gads <- suppressWarnings(getTrendGADS(filePaths = c("helper_dataBase.db", "helper_dataBase_uniqueVar.db"),
+                                              years = c(2012, 2018), fast = FALSE, verbose = FALSE))
   out <- extractData(trend_gads)
   expect_equal(dim(out), c(6, 5))
   expect_equal(names(out), c("ID1", "V1", "V2", "V3", "year"))
@@ -181,7 +182,7 @@ test_that("Extract data trend GADS 3 MPs", {
   fp1 <- system.file("extdata", "trend_gads_2020.db", package = "eatGADS")
   fp2 <- system.file("extdata", "trend_gads_2015.db", package = "eatGADS")
   fp3 <- system.file("extdata", "trend_gads_2010.db", package = "eatGADS")
-  s <- capture_output(gads_3mp <- getTrendsGADS(filePaths = c(fp1, fp2, fp3), years = c(2020, 2015, 2010), fast = FALSE))
+  s <- capture_output(gads_3mp <- getTrendGADS(filePaths = c(fp1, fp2, fp3), years = c(2020, 2015, 2010), fast = FALSE, verbose = FALSE))
 
   out <- extractData(gads_3mp)
   expect_equal(dim(out), c(180, 10))
@@ -192,10 +193,11 @@ test_that("Extract data trend GADS 3 MPs", {
 
 ### with linking errors
 test_that("with linking errors present", {
-  # out <- getTrendGADS(filePath1 = "tests/testthat/helper_comp.db", filePath2 = "tests/testthat/helper_comp2.db", years = c(2012, 2018), lePath = "tests/testthat/helper_le.db", fast = FALSE, vSelect = c("ID", "PV"))
-  out <- getTrendGADS(filePath1 = "helper_comp.db", filePath2 = "helper_comp2.db", years = c(2012, 2018), lePath = "helper_le.db", fast = control_caching, vSelect = c("ID", "PV"))
-  dat <- extractData(out)
-  expect_equal(names(dat), c("ID", "dim", "PV", "year"))
+  # out <- getTrendGADSOld(filePath1 = "tests/testthat/helper_comp.db", filePath2 = "tests/testthat/helper_comp2.db", years = c(2012, 2018), lePath = "tests/testthat/helper_le.db", fast = FALSE, vSelect = c("ID", "PV"))
+  out <- getTrendGADSOld(filePath1 = "helper_comp.db", filePath2 = "helper_comp2.db", years = c(2012, 2018),
+                         lePath = "helper_le.db", fast = control_caching, vSelect = c("ID", "PV"))
+  expect_error(dat <- extractData(out),
+               "Linking errors are no longer supported by extractData. Use extractDataOld() instead.", fixed = TRUE)
 })
 
 

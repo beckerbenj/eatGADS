@@ -2,8 +2,7 @@
 #############################################################################
 #' Extract Data
 #'
-#' Extract \code{data.frame} from a \code{GADSdat} object for analyses in \code{R}. For extracting meta data see \code{\link{extractMeta}},
-#' for extracting linking errors see \code{\link{extractLEs}}.
+#' Extract \code{data.frame} from a \code{GADSdat} object for analyses in \code{R}. For extracting meta data see \code{\link{extractMeta}}..
 #'
 #' A \code{GADSdat} object includes actual data (\code{GADSdat$dat}) and the corresponding meta data information
 #' (\code{GADSdat$labels}). \code{extractData} extracts the data and applies relevant meta data (missing conversion, value labels),
@@ -55,6 +54,7 @@ extractData.GADSdat <- function(GADSdat, convertMiss = TRUE, convertLabels = "ch
 #'@export
 extractData.trend_GADSdat <- function(GADSdat, convertMiss = TRUE, convertLabels = "character", dropPartialLabels = TRUE, convertVariables = NULL) {
   check_trend_GADSdat(GADSdat)
+  if("LEs" %in% names(GADSdat$datList)) stop("Linking errors are no longer supported by extractData. Use extractDataOld() instead.")
 
   all_dat <- extract_data_only(GADSdat = GADSdat, convertMiss = convertMiss, convertLabels = convertLabels,
                                dropPartialLabels = dropPartialLabels, convertVariables = convertVariables)

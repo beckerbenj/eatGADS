@@ -27,8 +27,7 @@ extractData(
 Returns a data frame.
 }
 \description{
-Extract \code{data.frame} from a \code{GADSdat} object for analyses in \code{R}. For extracting meta data see \code{\link{extractMeta}},
-for extracting linking errors see \code{\link{extractLEs}}.
+Extract \code{data.frame} from a \code{GADSdat} object for analyses in \code{R}. For extracting meta data see \code{\link{extractMeta}}..
 }
 \details{
 A \code{GADSdat} object includes actual data (\code{GADSdat$dat}) and the corresponding meta data information

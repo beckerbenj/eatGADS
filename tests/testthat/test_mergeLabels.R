@@ -32,7 +32,7 @@ test_that("Check manually created all_GADSdat objects", {
 
 test_that("Check all_GADSdat works for trendGADSdat", {
   #out <- getTrendGADS(filePath1 = "tests/testthat/helper_dataBase.db", filePath2 = "tests/testthat/helper_dataBase2.db", years = c(2012, 2018), fast = FALSE)
-  out <- getTrendGADS(filePath1 = "helper_dataBase.db", filePath2 = "helper_dataBase2.db", years = c(2012, 2018),
-                      fast = FALSE)
+  out <- getTrendGADS(filePaths = c("helper_dataBase.db", "helper_dataBase2.db"), years = c(2012, 2018),
+                      fast = FALSE, verbose = FALSE)
   expect_silent(check_all_GADSdat(out))
 })

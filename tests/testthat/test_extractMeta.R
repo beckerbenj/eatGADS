@@ -44,8 +44,8 @@ test_that("Extract Meta from DB path", {
 })
 
 test_that("Extract meta from trendGADS", {
-  trend_g <- getTrendGADS(filePath1 = "helper_dataBase.db", filePath2 = "helper_dataBase2.db", years = c(2012, 2018),
-                      fast = FALSE)
+  trend_g <- getTrendGADS(filePaths = c("helper_dataBase.db", "helper_dataBase2.db"), years = c(2012, 2018),
+                      fast = FALSE, verbose = FALSE)
   out <- extractMeta(trend_g)
   expect_equal(dim(out), c(8, 9))
   expect_equal(out$data_table, c(rep("gads2012", 4), rep("gads2018", 4)))

@@ -9,104 +9,62 @@ dfSAV <- import_spss(file = "helper_spss_missings.sav")
 
 control_caching <- FALSE
 
+fp1 <- system.file("extdata", "trend_gads_2020.db", package = "eatGADS")
+fp2 <- system.file("extdata", "trend_gads_2015.db", package = "eatGADS")
+fp3 <- system.file("extdata", "trend_gads_2010.db", package = "eatGADS")
+fp2b <- system.file("extdata", "trend_gads_2015_pkList.db", package = "eatGADS")
+lep <- system.file("extdata", "gads_LEs.db", package = "eatGADS")
+
 ### check
 test_that("check_keyStrcuture_TrendGADS", {
-  expect_silent(check_keyStrcuture_TrendGADS(filePath1 = "helper_dataBase.db", filePath2 = "helper_dataBase2.db"))
+  expect_silent(check_keyStrcuture_TrendsGADS(filePaths = c(fp1, fp2, fp3)))
   # checkTrendGADS(filePath1 = "tests/testthat/helper_dataBase3.db", filePath2 = "tests/testthat/helper_dataBase2.db")
-  expect_error(check_keyStrcuture_TrendGADS(filePath1 = "helper_dataBase3.db", filePath2 = "helper_dataBase2.db"), "Trend data bases must have the same primary key structure.")
+  expect_error(check_keyStrcuture_TrendsGADS(filePaths = c(fp1, fp2b, fp3)), "Trend data bases must have the same primary key structure.")
 })
-
-test_that("check_vSelect", {
-  # check_vSelect("C:/Benjamin_Becker/02_Repositories/packages/eatGADS/tests/testthat/helper_dataBase.db", vSelect = c("ID1", "test2"))
-  out <- check_vSelect("helper_dataBase.db", vSelect = c("ID1", "test2"))
-  expect_equal(out, list(in_gads = "ID1", not_in_gads = "test2"))
-})
-
 
 ### trend gads without LEs
-test_that("Extract trend GADS", {
+test_that("Extract trend GADS errors", {
   # out <- getTrendGADS(filePath1 = "C:/Benjamin_Becker/02_Repositories/packages/eatGADS/tests/testthat/helper_dataBase.db", filePath2 = "C:/Benjamin_Becker/02_Repositories/packages/eatGADS/tests/testthat/helper_dataBase2.db", years = c(2012, 2018))
-  expect_error(out <- getTrendGADS(filePath1 = "helper_dataBase.db", filePath2 = "helper_dataBase.db", years = c(2012, 2018), fast = control_caching), "All file arguments have to point to different files.")
-  expect_error(out <- getTrendGADS(filePath1 = "helper_dataBase.db", filePath2 = "helper_dataBase2.db", years = 2012, fast = control_caching), "years has to be a numeric vector of length 2.")
-  expect_error(out <- getTrendGADS(filePath1 = "helper_dataBase.db", filePath2 = "helper_dataBase2.db", years = c(2012, "b"), fast = control_caching), "years has to be a numeric vector of length 2.")
-  out <- getTrendGADS(filePath1 = "helper_dataBase.db", filePath2 = "helper_dataBase2.db", years = c(2012, 2018), fast = control_caching)
-  expect_equal(out$datList$gads2012$year, c(rep(2012, 3)))
-  expect_equal(out$datList$gads2018$year, c(rep(2018, 3)))
-  expect_equal(dim(out$datList$gads2012), c(3, 4))
-  expect_equal(dim(out$datList$gads2018), c(3, 4))
-  expect_equal(dim(out$allLabels), c(8, 9))
-  expect_equal(out$allLabels$data_table, c(rep("gads2012", 4), rep("gads2018", 4)))
+  expect_error(out <- getTrendGADS(filePaths = c(fp1, fp1), years = c(2012, 2018), fast = control_caching),
+               "All file arguments have to point to different files.")
+  expect_error(out <- getTrendGADS(filePaths = c(fp1, fp2, fp3), years = c(2012, 2018), fast = control_caching),
+               "'years' has to be a numeric vector of the same length as 'filePaths'.")
+  expect_error(out <- getTrendGADS(filePaths = c(fp1, fp2, fp3), years = c(2012, 2018, "b"), fast = control_caching),
+               "'years' has to be a numeric vector of the same length as 'filePaths'.")
+  expect_error(getTrendGADS(filePaths = c(fp1, fp2, fp3), years = c(2020, 2015, 2010), fast = 1),
+               "'fast' has to be a logical vector of length 1.")
+  expect_error(getTrendGADS(filePaths = c(fp1, fp2, fp3), years = c(2020, 2015, 2010), verbose = c(TRUE, TRUE)),
+               "'verbose' has to be a logical vector of length 1.")
+
+})
+
+
+test_that("Extract trend GADS", {
+  s <- capture_output(out <- getTrendGADS(filePaths = c(fp1, fp2, fp3), years = c(2020, 2015, 2010), fast = control_caching))
+  expect_equal(s[1], " -----  Loading GADS 2020 ----- \n -----  Loading GADS 2015 ----- \n -----  Loading GADS 2010 ----- ")
+  expect_equal(unique(out$datList$gads2020$year), 2020)
+  expect_equal(unique(out$datList$gads2015$year), 2015)
+  expect_equal(unique(out$datList$gads2010$year), 2010)
+  expect_equal(dim(out$datList$gads2020), c(60, 10))
+  expect_equal(dim(out$datList$gads2010), c(60, 10))
+  expect_equal(dim(out$allLabels), c(33, 9))
+  expect_equal(out$allLabels$data_table, c(rep("gads2020", 11), rep("gads2015", 11), rep("gads2010", 11)))
   expect_equal(class(out), c("trend_GADSdat", "all_GADSdat", "list"))
+
+  s <- capture_output(out <- getTrendGADS(filePaths = c(fp1, fp2, fp3), years = c(2020, 2015, 2010), fast = control_caching, verbose = FALSE))
+  expect_equal(s[1], "")
 })
 
 test_that("Correct vSelect errors for getTrendGADS", {
-  expect_error(getTrendGADS(filePath1 = "helper_dataBase.db", filePath2 = "helper_dataBase2.db", years = c(2012, 2018), vSelect = c("ID1", "V2", "test"), fast = control_caching),
-               "Variables test are in neither of both data bases.")
-  expect_error(getTrendGADS(filePath1 = "helper_dataBase.db", filePath2 = "helper_dataBase_uniqueVar.db", years = c(2012, 2018), vSelect = c("V3"), fast = control_caching),
-               "No variables from first data base selected.")
+  expect_error(getTrendGADS(filePaths = c(fp1, fp2, fp3), years = c(2020, 2015, 2010), vSelect = c("idstud", "gender", "test"),
+                             fast = control_caching),
+               "The following selected variables are not in any of the data bases: test")
+  expect_error(getTrendGADS(filePaths = c(fp1, fp2, fp3), years = c(2020, 2015, 2010), vSelect = c("idstud", "gender", "test", "test2"),
+                             fast = control_caching),
+               "The following selected variables are not in any of the data bases: test, test2")
+  expect_error(getTrendGADS(filePaths = c("helper_dataBase.db", "helper_dataBase_uniqueVar.db"), years = c(2012, 2018), vSelect = c("V3"),
+                            fast = control_caching),
+               "No variables from data base 2012 selected.")
 })
-
-test_that("Extract trend GADS with unique variables in one GADS", {
-  # out <- getTrendGADS(filePath1 = "tests/testthat/helper_dataBase.db", filePath2 = "tests/testthat/helper_dataBase_uniqueVar.db", years = c(2012, 2018), fast = FALSE)
-  expect_warning(getTrendGADS(filePath1 = "helper_dataBase.db", filePath2 = "helper_dataBase_uniqueVar.db", years = c(2012, 2018),
-                              fast = control_caching),
-                 "The following variables are not in GADS 2012: V3. NAs will be inserted if data is extracted.")
-  out <- suppressWarnings(getTrendGADS(filePath1 = "helper_dataBase.db", filePath2 = "helper_dataBase_uniqueVar.db", years = c(2012, 2018),
-                                       fast = control_caching))
-  expect_equal(ncol(out$datList$gads2018), 5)
-  expect_equal(nrow(out$allLabels), 9)
-  expect_equal(out$datList$gads2018$V3, c(8, 8, 9))
-
-  expect_warning(getTrendGADS(filePath1 = "helper_dataBase_uniqueVar.db", filePath2 = "helper_dataBase.db", years = c(2012, 2018),
-                              fast = control_caching),
-                 "The following variables are not in GADS 2018: V3. NAs will be inserted if data is extracted.")
-  out2 <- suppressWarnings(getTrendGADS(filePath1 = "helper_dataBase_uniqueVar.db", filePath2 = "helper_dataBase.db", years = c(2012, 2018),
-                                        fast = control_caching))
-  expect_equal(ncol(out2$datList$gads2012), 5)
-  expect_equal(nrow(out2$allLabels), 9)
-  expect_equal(out2$datList$gads2012$V3, c(8, 8, 9))
-
-  expect_warning(getTrendGADS(filePath1 = "helper_dataBase.db", filePath2 = "helper_dataBase_uniqueVar.db", years = c(2012, 2018),
-                              fast = control_caching, vSelect = c("ID1", "V1", "V2", "V3")),
-  "The following variables are not in GADS 2012: V3. NAs will be inserted if data is extracted.")
-  out3 <- suppressWarnings(getTrendGADS(filePath1 = "helper_dataBase.db", filePath2 = "helper_dataBase_uniqueVar.db", years = c(2012, 2018),
-                                        fast = control_caching, vSelect = c("ID1", "V1", "V2", "V3")))
-  expect_equal(out, out3)
-})
-
-
-# with linking errors
-# ---------------------------------------------------------------------------
-# getGADS(filePath = "c:/Benjamin_Becker/02_Repositories/packages/eatGADS/tests/testthat/helper_le.db")
-
-test_that("make_leSelect", {
-  expect_equal(make_leSelect(lePath = "helper_le.db", vSelect = NULL), NULL)
-  expect_equal(make_leSelect(lePath = "helper_le.db", vSelect = c("PV")), "LE_PV")
-  expect_equal(make_leSelect(lePath = "helper_le.db", vSelect = c("PV", "level")), c("LE_PV", "LE_level"))
-  expect_equal(make_leSelect(lePath = "helper_le.db", vSelect = c("lala")), character(0))
-})
-
-### trend gads with LEs
-test_that("Extract trend GADS with linking errors", {
-  # out <- getTrendGADS(filePath1 = "tests/testthat/helper_comp.db", filePath2 = "tests/testthat/helper_comp2.db", years = c(2012, 2018), lePath = "tests/testthat/helper_le.db", vSelect = c("ID", "PV"))
-
-  ## no linking errors
-  expect_message(getTrendGADS(filePath1 = "helper_comp.db", filePath2 = "helper_comp2.db", years = c(2012, 2018), lePath = "helper_le.db", fast = control_caching, vSelect = "ID"),
-                 "No linking errors for chosen variables available.")
-  out <- suppressMessages(getTrendGADS(filePath1 = "helper_comp.db", filePath2 = "helper_comp2.db", years = c(2012, 2018), lePath = "helper_le.db", fast = control_caching, vSelect = "ID"))
-  expect_equal(names(out$datList), c("gads2012", "gads2018", "LEs"))
-  expect_equal(out$datList$LEs, NULL)
-  expect_equal("LEs" %in% out$allLabels$data_table, FALSE)
-
-  ## linking errors
-  out2 <- getTrendGADS(filePath1 = "helper_comp.db", filePath2 = "helper_comp2.db", years = c(2012, 2018), lePath = "helper_le.db", fast = control_caching, vSelect = c("ID", "PV"))
-  expect_equal(dim(out2$datList$LEs), c(2, 2))
-  expect_equal(names(out2$datList$LEs), c("dim", "LE_PV"))
-  expect_equal("LEs" %in% out2$allLabels$data_table, TRUE)
-})
-
-
-
-
 
 
