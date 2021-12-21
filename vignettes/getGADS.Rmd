@@ -117,17 +117,22 @@ These two examples highlight another feature of `getGADS()`: Only variables of s
 
 ## Trend data bases
 
-In educational large-scale assessments, a common challenge is reporting longitudinal developments (*trends*). `getTrendGADS` allows extracting data from two data bases with identical variables in it. Linking errors can be automatically merged via the `lePath` argument. 
+In educational large-scale assessments, a common challenge is reporting longitudinal developments (*trends*). `getTrendGADS` allows extracting data from multiple data bases with identical variables in it. 
 
-Currently, no trend data set is available within `eatGADS`. However, an exemplary example function call looks like this:
+```{r trendPaths}
+trend_path1 <- system.file("extdata", "trend_gads_2020.db", package = "eatGADS")
+trend_path2 <- system.file("extdata", "trend_gads_2015.db", package = "eatGADS")
+trend_path3 <- system.file("extdata", "trend_gads_2010.db", package = "eatGADS")
+```
 
-```{r getTrendGADS, eval=FALSE}
-gads_trend <- getTrendGADS(filePath1 = db_path, 
-                           filePath2 = db_path2, 
-                           lePath = le_path,
-                           vSelect = c("idstud", "schtype"), 
-                           years = c(2012, 2013), fast = FALSE)
+`eatGADS` comes with three small trend data bases which can be used for illustrative purposes.
+
+```{r getTrendGADS}
+gads_trend <- getTrendGADS(filePaths = c(trend_path1, trend_path2, trend_path3), 
+                           vSelect = c("idstud", "dimension", "score"), 
+                           years = c(2020, 2015, 2010), fast = FALSE)
 dat_trend <- extractData(gads_trend)
+head(dat_trend)
 ```
 
 
