@@ -5,7 +5,9 @@
 * `getTrendGADSOld()` and `extractDataOld()` provide backward compatability
 * `checkLEStructure()` deprecated
 
-# minoar changes
+# minor changes
+* `assimilateValLabels()` for assimilating value labels of multiple variables
+* `cbind.GADSdat()` method for binding multiple `GADSdat` objects by column
 * `calculateScale()` for calculating scales from item sets
 * bug fix `updateMeta()` (all added variables are now checked for illegal naming)
 * `checkUniqueness()` for checking uniqueness of a variable within an `id` variable

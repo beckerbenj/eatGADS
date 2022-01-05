@@ -4,7 +4,7 @@
 load(file = "helper_data.rda")
 
 
-test_that("Merge to GADSdat objects",{
+test_that("Merge two GADSdat objects",{
   df3 <- df1
   mod_dat <- df3$dat
   mod_dat[, "v3"] <- c(8, 7)
