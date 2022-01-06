@@ -23,15 +23,12 @@ Assimilate value labels of multiple variables as part of a \code{GADSdat} or \co
 Assimilation can be performed using all existing value labels or a look up table containing at least all existing value labels.
 }
 \examples{
-# Change existing value labels
-pisa2 <- changeValLabels(pisa, varName = "repeated",
-                        value = c(1, 2),
-                        valLabel = c("no grade repetition", "grade repitition"))
+# Example data set
+facs_df <- data.frame(id = 1:3, fac1 = c("Eng", "Aus", "Ger"),
+                      fac2 = c("Ger", "Franz", "Ita"),
+fac3 = c("Kor", "Chi", "Alg"), stringsAsFactors = TRUE)
+facs_gads <- import_DF(facs_df)
 
-# Add value label to unlabeled value
-mtcars_g <- import_DF(mtcars)
-mtcars_g2 <- changeValLabels(mtcars_g, varName = "cyl",
-                             value = c(4, 6, 8),
-                             valLabel = c("four", "six", "eight"))
+assimilateValLabels(facs_gads, varNames = paste0("fac", 1:3))
 
 }
