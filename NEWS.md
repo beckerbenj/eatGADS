@@ -1,21 +1,25 @@
 # eatGADS 0.18.1.9000
-# major changes
+
+# breaking changes
 * `getTrendGADS()` now supports multiple measurement points but support for linking errors has been dropped
 * `extractData()` now supports multiple measurement points but support for linking errors has been dropped
+* trend example data bases implemented
 * `getTrendGADSOld()` and `extractDataOld()` provide backward compatability
 * `checkLEStructure()` deprecated
 
-# minor changes
+# major changes
 * `assimilateValLabels()` for assimilating value labels of multiple variables
 * `cbind.GADSdat()` method for binding multiple `GADSdat` objects by column
 * `calculateScale()` for calculating scales from item sets
-* bug fix `updateMeta()` (all added variables are now checked for illegal naming)
 * `checkUniqueness()` for checking uniqueness of a variable within an `id` variable
 
+# minor changes
 * clarifications and additional explanations in vignettes (`meta_data`)
+* bug fix `updateMeta()` (all added variables are now checked for illegal naming)
 
 
 # eatGADS 0.18.1
+
 * `equalGADS()` now ignores irrelevant format differences (`F8.0` vs `F8`)
 * fix `JSS` link in vignette
 
