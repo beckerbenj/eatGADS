@@ -1,4 +1,4 @@
-# eatGADS 0.18.1.9000
+# eatGADS 0.19.0
 
 # breaking changes
 * `getTrendGADS()` now supports multiple measurement points but support for linking errors has been dropped

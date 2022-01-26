@@ -1,6 +1,6 @@
 Package: eatGADS
 Title: Data Management of Large Hierarchical Data
-Version: 0.18.1.9000
+Version: 0.19.0
 Authors@R: c(
     person("Benjamin", "Becker", email = "b.becker@iqb.hu-berlin.de", role = c("aut", "cre")),
     person("Karoline", "Sachse", role = c("ctb")),
