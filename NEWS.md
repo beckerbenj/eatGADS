@@ -6,6 +6,7 @@
 * trend example data bases implemented
 * `getTrendGADSOld()` and `extractDataOld()` provide backward compatability
 * `checkLEStructure()` deprecated
+* `import_spss()` now can automatically transform labeled or missing tagged character values via the changed `labeledStrings` argument
 
 # major changes
 * `assimilateValLabels()` for assimilating value labels of multiple variables

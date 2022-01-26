@@ -17,10 +17,11 @@ assimilateValLabels(GADSdat, varNames, lookup = NULL)
 Returns the \code{GADSdat} object with changed meta data and recoded values.
 }
 \description{
-Assimilate value labels of multiple variables as part of a \code{GADSdat} or \code{all_GADSdat} object.
+Assimilate all value labels of multiple variables as part of a \code{GADSdat} or \code{all_GADSdat} object.
 }
 \details{
 Assimilation can be performed using all existing value labels or a look up table containing at least all existing value labels.
+Missing codes are reused based on the meta data of the first variable in \code{varNames}.
 }
 \examples{
 # Example data set

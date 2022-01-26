@@ -57,26 +57,26 @@ extract_attribute <- function(var, attr_name, NA_type = NA_character_) {
 
 # 02.2.b) attributes on value level ---------------------------------------------------
 # all variables, for SPSS and R
-call_extract_values <- function(rawDat, labeledStrings) {
+call_extract_values <- function(rawDat) {
   # extract labels into one long format data frame
-  valueList <- Map(extract_value_level, var = rawDat, varName = names(rawDat), labeledStrings = labeledStrings)
+  valueList <- Map(extract_value_level, var = rawDat, varName = names(rawDat))
   valLabel_df <- do.call(rbind, valueList)
   rownames(valLabel_df) <- NULL
   valLabel_df
 }
 
-extract_value_level <- function(var, varName, labeledStrings) {
+extract_value_level <- function(var, varName) {
   UseMethod("extract_value_level")
 }
 
 #'@export
-extract_value_level.default <- function(var, varName, labeledStrings) {
+extract_value_level.default <- function(var, varName) {
   NULL
 }
 
 # single variable for R (factors!)
 #'@export
-extract_value_level.factor <- function(var, varName, labeledStrings) {
+extract_value_level.factor <- function(var, varName) {
   if(length(levels(var)) == 0) return(NULL)
   df <- data.frame(varName = rep(varName, length(levels(var))),
                    value = seq_along(levels(var)),
@@ -90,16 +90,14 @@ extract_value_level.factor <- function(var, varName, labeledStrings) {
 
 # single variable for SPSS
 #'@export
-extract_value_level.haven_labelled <- function(var, varName, labeledStrings = FALSE) {
+extract_value_level.haven_labelled <- function(var, varName) {
   # check if there are value labels
   if(is.null(attributes(var)$labels)) return(NULL)
-  # default behavior: transform value labels to numeric if possible, change values to NA for string values
   values <- attr(var, "labels")
-  if(identical(labeledStrings, FALSE)) {
-    values <- eatTools::catch_asNumericIfPossible(x = values, warn = paste("Some or all values for ", varName,
-                                        " cannot be coerced to numeric and are therefore changed to NA. \n", sep = ""),
-                                        maintain.factor.scores = TRUE, force.string = TRUE, transform.factors = TRUE)
-  }
+
+  # default behavior: transform value labels to numeric if possible, leave characters as is
+  values <- suppressWarnings(eatTools::asNumericIfPossible(x = values, maintain.factor.scores = TRUE, force.string = FALSE, transform.factors = TRUE))
+
   # extract value labels and return as long format df
   df <- data.frame(varName = rep(varName, length(values)),
                    value = values,
@@ -107,7 +105,7 @@ extract_value_level.haven_labelled <- function(var, varName, labeledStrings = FA
                    stringsAsFactors = FALSE)
 
   ## extract missings and add as extra label
-  df <- extract_Miss_SPSS(var = var, varName = varName, label_df = df, labeledStrings = labeledStrings)
+  df <- extract_Miss_SPSS(var = var, varName = varName, label_df = df)
 
   rownames(df) <- NULL
   df
@@ -115,13 +113,13 @@ extract_value_level.haven_labelled <- function(var, varName, labeledStrings = FA
 
 # emergency function for downwards compatability with older haven versions
 #'@export
-extract_value_level.labelled_spss <- function(var, varName, labeledStrings = FALSE) {
+extract_value_level.labelled_spss <- function(var, varName) {
   class(var) <- "haven_labelled"
-  extract_value_level(var = var, varName = varName, labeledStrings = labeledStrings)
+  extract_value_level(var = var, varName = varName)
 }
 
 # extract if label is label for missing values
-extract_Miss_SPSS <- function(var, varName, label_df, labeledStrings) {
+extract_Miss_SPSS <- function(var, varName, label_df) {
   # if(varName =="Pfluus03a") browser()
   na_range <- attr(var, "na_range")
   na_value <- attr(var, "na_value")
@@ -132,11 +130,9 @@ extract_Miss_SPSS <- function(var, varName, label_df, labeledStrings) {
 
   values <- c(na_value, na_range_used)
   values <- checkValues_havenBug(values, varName = varName)
-  if(identical(labeledStrings, FALSE)) {
-    values <- eatTools::catch_asNumericIfPossible(x = values, warn = paste("Some or all missing codes for ", varName,
-                                                                           " cannot be coerced to numeric and are therefore changed to NA. \n", sep = ""),
-                                                  maintain.factor.scores = TRUE, force.string = TRUE, transform.factors = TRUE)
-  }
+  values <- eatTools::catch_asNumericIfPossible(x = values, warn = paste("Some or all values for ", varName,
+                                                                         " cannot be coerced to numeric.", sep = ""),
+                                                maintain.factor.scores = TRUE, force.string = TRUE, transform.factors = TRUE)
 
   # add missing code for existing values
   label_df[, "missings"] <- ifelse(label_df$value %in% values, "miss", "valid")

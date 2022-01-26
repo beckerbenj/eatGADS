@@ -23,7 +23,7 @@ test_that("User SPSS importing function works ", {
 })
 
 
-exceptions <- suppressWarnings(import_spss("helper_spss_exceptions.sav", labeledStrings = TRUE))
+exceptions <- suppressWarnings(import_spss("helper_spss_exceptions.sav", labeledStrings = "keep"))
 ### SPSS importing exceptions
 test_that("Order of variables in label df is retained", {
   expect_identical(exceptions$labels$varName[1:2], c("V2", "V1"))

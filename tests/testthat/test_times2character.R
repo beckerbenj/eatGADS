@@ -1,8 +1,7 @@
 # dates and times
 # ------------------------------------------------------------------------
-# testT <- haven::read_sav("c:/Benjamin_Becker/02_Repositories/packages/eatGADS/tests/testthat/helper_spss_times_error.sav", user_na = TRUE)
-# testT <- haven::read_sav("c:/Benjamin_Becker/02_Repositories/packages/eatGADS/tests/testthat/helper_spss_times.sav", user_na = TRUE)
-#testT <- haven::read_sav("tests/testthat/helper_spss_times.sav", user_na = TRUE)
+# testT <- haven::read_sav("tests/testthat/helper_spss_times_error.sav", user_na = TRUE)
+# testT <- haven::read_sav("tests/testthat/helper_spss_times.sav", user_na = TRUE)
 testT <- haven::read_sav("helper_spss_times.sav", user_na = TRUE)
 
 #testT2 <- haven::read_sav("tests/testthat/helper_spss_datetime.sav", user_na = TRUE)

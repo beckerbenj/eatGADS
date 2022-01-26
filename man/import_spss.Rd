@@ -7,7 +7,7 @@
 import_spss(
   filePath,
   checkVarNames = TRUE,
-  labeledStrings = FALSE,
+  labeledStrings = c("drop", "keep", "transform"),
   encoding = NULL
 )
 }
@@ -16,7 +16,7 @@ import_spss(
 
 \item{checkVarNames}{Should variable names be checked for violations of \code{SQLite} and \code{R} naming rules?}
 
-\item{labeledStrings}{Should strings as labeled values be allowed? This possibly corrupts all labeled values.}
+\item{labeledStrings}{Should strings as labeled values be allowed? If \code{"drop"} (default), all labelled strings are dropped and \code{NAs} occur in the meta data. If \code{"transform"}, all underlying values are transformed to numeric. If \code{"keep"}, value labels stay untouched. However, the latter possibly corrupts all labeled values.}
 
 \item{encoding}{The character encoding used for the file. The default, \code{NULL}, use the encoding specified in the file, but sometimes this value is incorrect and it is useful to be able to override it.}
 }

@@ -21,6 +21,7 @@ attributes(class_test)$format <- c("F8.0")
 test_that("Extract attribute from data frame", {
   expect_equal(extract_attribute(rawDat$VAR1, "label"), "Variable 1")
   expect_equal(extract_attribute(class_test, "format"), "F8.0")
+  expect_equal(extract_attribute(rawDat$VAR1, "labels"), c("One" = 1))
 })
 
 test_that("Attributes on variable level extracted correctly ", {
@@ -43,14 +44,7 @@ string_test <- suppressWarnings(load_spss("helper_spss_exceptions.sav"))
 test_that("Value label of single variable extracted for SPSS types", {
   expect_equal(extract_value_level(rawDat$VAR1, "VAR1"),
                data.frame(varName = "VAR1", value = 1, valLabel = "One", missings = "valid", stringsAsFactors = FALSE))
-  expect_warning(extract_value_level(string_test$string_var, "test"),
-                 "Some or all values for test cannot be coerced to numeric and are therefore changed to NA.")
-  labeled_string_with_warning <- suppressWarnings(extract_value_level(string_test$string_var, "test"))
-  expect_equal(labeled_string_with_warning[ ,"value"], c(NA, 99))
-  expect_equal(extract_value_level(string_test$string_var, "string_var", labeledStrings = TRUE),
-               data.frame(varName = "string_var", value = c("a", "99"), valLabel = c("alpha", "99"), missings = "valid", stringsAsFactors = FALSE))
 })
-
 
 test_that("Backward compatability to older haven classes", {
   class(rawDat$VAR1) <- "labelled_spss"
@@ -70,11 +64,11 @@ test_that("Value label of single variable extracted correctly for R type variabl
 
 
 test_that("Value label of multiple variables extracted correctly ", {
-  expect_equal(call_extract_values(rawDat, labeledStrings = FALSE), label_out2)
+  expect_equal(call_extract_values(rawDat), label_out2)
 })
 
 test_that("All labels extracted correctly ", {
-  expect_equal(extract_labels(rawDat, labeledStrings = FALSE),
+  expect_equal(extract_labels(rawDat),
                label_out_all)
 })
 
@@ -99,15 +93,6 @@ test_that("Missings of single variable extracted correctly ", {
   expect_equal(extract_value_level(rawDat_missings[, 3, drop = T], "VAR3"), label_miss3)
 })
 
-string_miss <- haven::labelled_spss(c("a", "b"), labels = c(b = "2"), na_values = c(0, "a"))
-string_miss_labs <- data.frame(varName = "x", value = 2, valLabel = "b")
-
-test_that("Missing codes for string values ", {
-  expect_warning(extract_Miss_SPSS(string_miss, "x", label_df = string_miss_labs, labeledStrings = FALSE),
-                 "Some or all missing codes for x cannot be coerced to numeric and are therefore changed to NA.")
-  expect_equal(suppressWarnings(extract_Miss_SPSS(string_miss, "x", label_df = string_miss_labs, labeledStrings = FALSE))[, "value"], c(2, 0, NA))
-  expect_equal(extract_Miss_SPSS(string_miss, "x", label_df = string_miss_labs, labeledStrings = TRUE)[, "value"], c(2, 0, "a"))
-})
 
 
 test_that("Haven missing lavel bug precautions", {

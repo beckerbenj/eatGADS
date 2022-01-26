@@ -5,11 +5,14 @@ prepare_labels <- function(rawDat, checkVarNames, labeledStrings) {
   if(anyDuplicated(tolower(names(rawDat)))) names(rawDat) <- unduplicate(names(rawDat))
   if(identical(checkVarNames, TRUE)) names(rawDat) <- unlist(lapply(names(rawDat), transf_names))
 
-  # 2) dates and times to character
+  # 2a) dates and times to character
   rawDat <- times2character(rawDat = rawDat)
 
+  # 2b) labeled or missing tagged character values to numeric
+  rawDat <- char_valLabels2numeric(rawDat = rawDat, labeledStrings = labeledStrings)
+
   # 3) extract labels
-  label_df <- extract_labels(rawDat = rawDat, labeledStrings = labeledStrings)
+  label_df <- extract_labels(rawDat = rawDat)
 
   # 3) depends on class! strip away labels from rawDat for spss, convert factors for R
   plainDat <- data.frame(lapply(rawDat, strip_attributes), stringsAsFactors = FALSE)
@@ -54,11 +57,11 @@ transf_names <- function(vec_name) {
 }
 
 # 02.3) extract labels ---------------------------------------------------------
-extract_labels <- function(rawDat, labeledStrings) {
+extract_labels <- function(rawDat) {
   attr_vec <- c("varName", "varLabel", "format", "display_width", "labeled", "value", "valLabel", "missings")
 
   label_df <- extract_variable_level(rawDat = rawDat)
-  val_labels <- call_extract_values(rawDat = rawDat, labeledStrings = labeledStrings)
+  val_labels <- call_extract_values(rawDat = rawDat)
 
   # merge results and out with all names
   if(!is.null(val_labels)) label_df <- plyr::join(label_df, val_labels, by = "varName", type = "left", match = "all")
