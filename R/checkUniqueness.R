@@ -8,10 +8,10 @@
 #' within an identifier can be tricky. This function automates this task.
 #'
 #'@param GADSdat \code{GADSdat} object imported via \code{eatGADS}.
-#'@param varName Single string indicating how missing labels are commonly named in the value labels.
-#'@param idVar If \code{TRUE}, missing codes are added according to occurrence of \code{"missingLabel"} in \code{"valLabel"}.
+#'@param varName Single string containing the variable name for which the check should be performed.
+#'@param idVar Single string containing the identifier variable name.
 #'
-#'@return Returns either \code{TRUE} if the variable is unique within each value for \code{idVar} or \code{GADSdat} object including
+#'@return Returns either \code{TRUE} if the variable is unique within each value for \code{idVar} or a \code{GADSdat} object including
 #' the not unique cases.
 #'
 #'@examples

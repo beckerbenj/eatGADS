@@ -2,7 +2,7 @@
 % Please edit documentation in R/cbind.R
 \name{cbind.GADSdat}
 \alias{cbind.GADSdat}
-\title{Cbind two \code{GADSdat} objects into a single \code{GADSdat} object.}
+\title{Bind two \code{GADSdat} objects into a single \code{GADSdat} object by columns.}
 \usage{
 \method{cbind}{GADSdat}(..., deparse.level = 1)
 }
@@ -15,7 +15,7 @@
 Returns a \code{GADSdat} object.
 }
 \description{
-Is a secure way to cbind the data and the meta data of two \code{GADSdat} objects. Currently, only limited merging options are supported.
+Is a secure way to \code{cbind} the data and the meta data of two \code{GADSdat} objects. Currently, only limited merging options are supported.
 }
 \details{
 If there are duplicate variables (except the variables specified in the \code{by} argument), these variables are removed from y.

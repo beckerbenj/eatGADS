@@ -3,7 +3,9 @@
 #' Extract Data while merging linking errors.
 #'
 #' Support for linking error data bases has been removed from \code{eatGADS}.
-#' \code{\link{extractDataOld}} provides (for the time being) backwards compatability, so linking errors can still be merged automatically.
+#' \code{extractDataOld} provides (for the time being) backwards compatibility, so linking errors can still be merged automatically.
+#'
+#' See \code{\link{extractData}} for the current functionality.
 #'
 #'@param GADSdat A \code{GADSdat} object.
 #'@param convertMiss Should values coded as missing values be recoded to \code{NA}?

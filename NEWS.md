@@ -4,7 +4,7 @@
 * `getTrendGADS()` now supports multiple measurement points but support for linking errors has been dropped
 * `extractData()` now supports multiple measurement points but support for linking errors has been dropped
 * trend example data bases implemented
-* `getTrendGADSOld()` and `extractDataOld()` provide backward compatability
+* `getTrendGADSOld()` and `extractDataOld()` provide backward compatibility
 * `checkLEStructure()` deprecated
 * `import_spss()` now can automatically transform labeled or missing tagged character values via the changed `labeledStrings` argument
 

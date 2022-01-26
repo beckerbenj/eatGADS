@@ -28,5 +28,8 @@ Returns a data frame.
 }
 \description{
 Support for linking error data bases has been removed from \code{eatGADS}.
-\code{\link{extractDataOld}} provides (for the time being) backwards compatability, so linking errors can still be merged automatically.
+\code{extractDataOld} provides (for the time being) backwards compatibility, so linking errors can still be merged automatically.
+}
+\details{
+See \code{\link{extractData}} for the current functionality.
 }

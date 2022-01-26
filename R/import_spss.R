@@ -10,7 +10,7 @@
 #'
 #'@param filePath Source file location, ending on \code{.sav}.
 #'@param checkVarNames Should variable names be checked for violations of \code{SQLite} and \code{R} naming rules?
-#'@param labeledStrings Should strings as labeled values be allowed? If \code{"drop"} (default), all labelled strings are dropped and \code{NAs} occur in the meta data. If \code{"transform"}, all underlying values are transformed to numeric. If \code{"keep"}, value labels stay untouched. However, the latter possibly corrupts all labeled values.
+#'@param labeledStrings Should strings as labeled values be allowed? If \code{"drop"} (default), all labeled strings are dropped and \code{NAs} occur in the meta data. If \code{"transform"}, all underlying values are transformed to numeric. If \code{"keep"}, value labels stay untouched. However, the latter possibly corrupts all labeled values.
 #'@param encoding The character encoding used for the file. The default, \code{NULL}, use the encoding specified in the file, but sometimes this value is incorrect and it is useful to be able to override it.
 #'
 #'@return Returns a list with the actual data \code{dat} and a data frame with all meta information in long format \code{labels}.

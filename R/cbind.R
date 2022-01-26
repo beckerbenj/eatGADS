@@ -1,8 +1,8 @@
 #### Merge GADSdat objects
 #############################################################################
-#' Cbind two \code{GADSdat} objects into a single \code{GADSdat} object.
+#' Bind two \code{GADSdat} objects into a single \code{GADSdat} object by columns.
 #'
-#' Is a secure way to cbind the data and the meta data of two \code{GADSdat} objects. Currently, only limited merging options are supported.
+#' Is a secure way to \code{cbind} the data and the meta data of two \code{GADSdat} objects. Currently, only limited merging options are supported.
 #'
 #' If there are duplicate variables (except the variables specified in the \code{by} argument), these variables are removed from y.
 #' The meta data is joined for the remaining variables via \code{rbind}.

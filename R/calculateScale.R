@@ -17,7 +17,7 @@
 #'
 #'@examples
 #'##
-#'items = paste0("norms_", letters[1:6])
+#'items <- paste0("norms_", letters[1:6])
 #'pisa_new <- calculateScale(pisa, items = items, scale = "norms")
 #'
 #'@export

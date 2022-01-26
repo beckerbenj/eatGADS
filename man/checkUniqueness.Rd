@@ -9,12 +9,12 @@ checkUniqueness(GADSdat, varName, idVar)
 \arguments{
 \item{GADSdat}{\code{GADSdat} object imported via \code{eatGADS}.}
 
-\item{varName}{Single string indicating how missing labels are commonly named in the value labels.}
+\item{varName}{Single string containing the variable name for which the check should be performed.}
 
-\item{idVar}{If \code{TRUE}, missing codes are added according to occurrence of \code{"missingLabel"} in \code{"valLabel"}.}
+\item{idVar}{Single string containing the identifier variable name.}
 }
 \value{
-Returns either \code{TRUE} if the variable is unique within each value for \code{idVar} or \code{GADSdat} object including
+Returns either \code{TRUE} if the variable is unique within each value for \code{idVar} or a \code{GADSdat} object including
 the not unique cases.
 }
 \description{

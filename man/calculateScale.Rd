@@ -35,7 +35,7 @@ The new scale variable is automatically inserted right after the last item in th
 }
 \examples{
 ##
-items = paste0("norms_", letters[1:6])
+items <- paste0("norms_", letters[1:6])
 pisa_new <- calculateScale(pisa, items = items, scale = "norms")
 
 }
