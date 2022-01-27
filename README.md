@@ -3,7 +3,7 @@
 <!-- badges: start -->
 [![CRAN status](https://www.r-pkg.org/badges/version/eatGADS)](https://CRAN.R-project.org/package=eatGADS)
 [![R-CMD-check](https://github.com/beckerbenj/eatGADS/workflows/R-CMD-check/badge.svg)](https://github.com/beckerbenj/eatGADS/actions)
-[![Codecov test coverage](https://app.codecov.io/gh/beckerbenj/eatGADS/branch/master/graph/badge.svg)](https://app.codecov.io/gh/beckerbenj/eatGADS?branch=master)
+[![Codecov test coverage](https://codecov.io/gh/beckerbenj/eatGADS/branch/master/graph/badge.svg)](https://app.codecov.io/gh/beckerbenj/eatGADS?branch=master)
 [![](http://cranlogs.r-pkg.org/badges/grand-total/eatGADS?color=blue)](https://cran.r-project.org/package=eatGADS)
 
 <!-- badges: end -->
