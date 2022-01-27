@@ -1,3 +1,8 @@
+# eatGADS 0.19.1
+
+* fix permanent URL redirect in `README`
+
+
 # eatGADS 0.19.0
 
 # breaking changes
