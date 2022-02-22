@@ -3,7 +3,18 @@
 # load(file = "tests/testthat/helper_data.rda")
 load(file = "helper_data.rda")
 
+# dfSAV <- import_spss(file = "tests/testthat/helper_spss_missings.sav")
+dfSAV <- import_spss(file = "helper_spss_missings.sav")
+
+
 test_that("Errors", {
   expect_error(composeVar(df1, sourceVars = "ID1", newVar = "newVar", primarySourceVar = "ID1"),
                "'sourceVars' must be a character vector of length 2.")
+})
+
+
+test_that("works normally", {
+  dfSAV2 <- reuseMeta(dfSAV, varName = "VAR2", other_GADSdat = dfSAV, other_varName = "VAR1")
+  out <- composeVar(dfSAV2, sourceVars = c("VAR1", "VAR2"), newVar = "newVar", primarySourceVar = "VAR1")
+
 })

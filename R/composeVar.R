@@ -34,12 +34,22 @@ composeVar <- function(GADSdat, sourceVars, primarySourceVar, newVar) {
 
   # compose
   otherSourceVar <- sourceVars[sourceVars != primarySourceVar]
-  comp_var <- ifelse(is.na(GADSdat$dat[[primarySourceVar]]),
-                                       yes = GADSdat$dat[[otherSourceVar]],
+  dat_vec <- extractData(GADSdat)[[primarySourceVar]]
+  comp_var <- ifelse(is.na(dat_vec), yes = GADSdat$dat[[otherSourceVar]],
                                        no = GADSdat$dat[[primarySourceVar]])
 
-  ## put into GADS, sort, add meta
+  ## put into GADS, add meta
+  dat_out <- data.frame(GADSdat$dat, comp_var, stringsAsFactors = FALSE)
+  names(dat_out)[ncol(dat_out)] <- newVar
+  GADSdat_out <- updateMeta(GADSdat, newDat = dat_out)
+  GADSdat_out2 <- reuseMeta(GADSdat_out, varName = newVar, other_GADSdat = GADSdat_out, other_varName = primarySourceVar)
 
+  #browser()
+  # sort
+  index_primarySource <- which(namesGADS(GADSdat) == primarySourceVar)
+  new_order <- order(c(seq(ncol(GADSdat$dat)), index_primarySource - 0.5))
+  new_order_names <- namesGADS(GADSdat_out2)[new_order]
+  GADSdat_out3 <- orderLike(GADSdat_out2, new_order_names)
 
   GADSdat_out
 }
