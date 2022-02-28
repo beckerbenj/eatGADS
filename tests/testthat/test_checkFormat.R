@@ -45,3 +45,14 @@ p <- extractVars(pisa, c("idstud"))
 test_that("No Change", {
   expect_message(p3 <- checkFormat(p, changeFormat = FALSE), "Format mismatch for Variable idstud: F8.0 vs. F3", fixed=TRUE)
 })
+
+
+test_that("Empty variables", {
+  # preparation
+  g1 <- checkFormat(g)
+  g1$dat$var1 <- NA_integer_
+
+  expect_silent(g2 <- checkFormat(g1))
+  expect_equal(g2$labels$format, c("A4", "A4", "F2", "F2", "F2", "F4.2", "F4.2", "F16.14", "A146"))
+  expect_true(is.character(g2$dat$var1))
+})
