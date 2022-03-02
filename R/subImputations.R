@@ -4,6 +4,9 @@
 #'
 #' Substitute imputed values in a imputed \code{GADSdat_imp} object with original, not imputed values from a \code{GADSdat}.
 #'
+#' There are two cases in which values are substituted: (a) there are missings in \code{varName_imp}, (b) values have been imputed
+#' even though there is valid information in \code{varName}.
+#'
 #'
 #'@param GADSdat A \code{GADSdat} object.
 #'@param GADSdat_imp A \code{GADSdat} object.
@@ -50,13 +53,20 @@ subImputations <- function(GADSdat, GADSdat_imp, varName, varName_imp = varName,
     if(!is.na(unimp_value)) {
       #imp_values <- unique(imp_dat[get(id) == single_id, ][[varName]])
       imp_values <- unique(GADSdat_imp$dat[GADSdat_imp$dat[, id] == single_id, varName_imp])
+      # substitute if there are no imputations
+      if(all(is.na(imp_values))) {
+        count <- count + 1
+        GADSdat_imp$dat[GADSdat_imp$dat[, id] == single_id, varName_imp] <- unimp_value
+        next()
+      }
+      # substitute if imputations exist even though there is a valid value
       if(length(imp_values) != 1 || imp_values != unimp_value) {
         count <- count + 1
         GADSdat_imp$dat[GADSdat_imp$dat[, id] == single_id, varName_imp] <- unimp_value
       }
     }
   }
-  message("Values for ", count, " 'id's have been substituted.")
+  message("Values for ", count, " 'id's have been substituted in ", varName_imp)
 
   GADSdat_imp
 }

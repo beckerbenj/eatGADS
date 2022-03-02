@@ -2,6 +2,7 @@
 
 * `composeVar()` for combining the information of two variables in a third variable
 * `subImputations()` now works with differing `varName` and `varName_imp`
+* `fillImputations()` for efficiently filling missing values in imputed variables via not imputed variables
 
 
 # eatGADS 0.19.1

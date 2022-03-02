@@ -23,6 +23,10 @@ The modified \code{GADSdat_imp}..
 \description{
 Substitute imputed values in a imputed \code{GADSdat_imp} object with original, not imputed values from a \code{GADSdat}.
 }
+\details{
+There are two cases in which values are substituted: (a) there are missings in \code{varName_imp}, (b) values have been imputed
+even though there is valid information in \code{varName}.
+}
 \examples{
 # tbd
 
