@@ -4,14 +4,14 @@
 \alias{subImputations}
 \title{Substitute imputed values.}
 \usage{
-subImputations(GADSdat, GADSdat_imp, varName, id, imp)
+subImputations(GADSdat, GADSdat_imp, varName, varName_imp = varName, id, imp)
 }
 \arguments{
 \item{GADSdat}{A \code{GADSdat} object.}
 
 \item{GADSdat_imp}{A \code{GADSdat} object.}
 
-\item{varName}{A character vector of length 1 containing the variable name.}
+\item{varName}{A character vector of length 1 containing the variable name in \code{GADSdat_imp}.}
 
 \item{id}{A character vector of length 1 containing the unique identifier column of both \code{GADSdat}.}
 

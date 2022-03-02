@@ -1,6 +1,7 @@
 # eatGADS 0.19.1.9000
 
 * `composeVar()` for combining the information of two variables in a third variable
+* `subImputations()` now works with differing `varName` and `varName_imp`
 
 
 # eatGADS 0.19.1

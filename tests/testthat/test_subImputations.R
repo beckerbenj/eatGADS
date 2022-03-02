@@ -22,7 +22,7 @@ test_that("Errors",{
   expect_error(subImputations(dfSAV_unimp, dfSAV_imp_dat, varName = "a", id = "idstud", imp = "imp"),
                "'varName' is not a variable in 'GADSdat'.")
   expect_error(subImputations(dfSAV_unimp, dfSAV_imp_dat, varName = "VAR3", id = "idstud", imp = "imp"),
-               "'varName' is not a variable in 'GADSdat_imp'.")
+               "'varName_imp' is not a variable in 'GADSdat_imp'.")
   expect_error(subImputations(dfSAV_unimp, dfSAV_imp_dat, varName = "VAR1", id = "id2", imp = "imp"),
                "'id' is not a variable in 'GADSdat'.")
   expect_error(subImputations(dfSAV_unimp, dfSAV_imp_dat, varName = "VAR1", id = "VAR3", imp = "imp"),
@@ -46,3 +46,13 @@ test_that("Substitute imputations",{
   expect_equal(out$dat[4:6, "VAR1"], rep(3, 3))
 })
 
+test_that("Substitute imputations with different names",{
+  dfSAV_imp_dat2 <- changeVarNames(dfSAV_imp_dat, "VAR1", "VAR1_imp")
+  expect_message(out <- subImputations(dfSAV_unimp, dfSAV_imp_dat2, varName = "VAR1", varName_imp = "VAR1_imp", id = "idstud", imp = "imp"),
+                 "Values for 2 'id's have been substituted.")
+  expect_equal(out$labels, dfSAV_imp_dat2$labels)
+  expect_equal(out$dat[c(1:3,7:9), ], dfSAV_imp_dat2$dat[c(1:3,7:9), ])
+  expect_equal(out$dat[10:12, 1:2], dfSAV_imp_dat$dat[10:12, 1:2])
+  expect_equal(out$dat[10:12, "VAR1_imp"], rep(2, 3))
+  expect_equal(out$dat[4:6, "VAR1_imp"], rep(3, 3))
+})

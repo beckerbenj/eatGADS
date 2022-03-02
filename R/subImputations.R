@@ -7,7 +7,8 @@
 #'
 #'@param GADSdat A \code{GADSdat} object.
 #'@param GADSdat_imp A \code{GADSdat} object.
-#'@param varName A character vector of length 1 containing the variable name.
+#'@param varName A character vector of length 1 containing the variable name in \code{GADSdat}.
+#'@param varName A character vector of length 1 containing the variable name in \code{GADSdat_imp}.
 #'@param id A character vector of length 1 containing the unique identifier column of both \code{GADSdat}.
 #'@param imp A character vector of length 1 containing the imputation number in \code{GADSdat_imp}.
 #'
@@ -17,14 +18,14 @@
 #' # tbd
 #'
 #'@export
-subImputations <- function(GADSdat, GADSdat_imp, varName, id, imp) {
+subImputations <- function(GADSdat, GADSdat_imp, varName, varName_imp = varName, id, imp) {
   check_GADSdat(GADSdat)
   check_GADSdat(GADSdat_imp)
   if(!is.character(varName) || length(varName) != 1) stop("'varName' must be a character of length 1.")
   if(!is.character(id) || length(id) != 1) stop("'id' must be a character of length 1.")
   if(!is.character(imp) || length(imp) != 1) stop("'imp' must be a character of length 1.")
   if(!varName %in% namesGADS(GADSdat)) stop("'varName' is not a variable in 'GADSdat'.")
-  if(!varName %in% namesGADS(GADSdat_imp)) stop("'varName' is not a variable in 'GADSdat_imp'.")
+  if(!varName_imp %in% namesGADS(GADSdat_imp)) stop("'varName_imp' is not a variable in 'GADSdat_imp'.")
   if(!id %in% namesGADS(GADSdat)) stop("'id' is not a variable in 'GADSdat'.")
   if(!id %in% namesGADS(GADSdat_imp)) stop("'id' is not a variable in 'GADSdat_imp'.")
   if(!imp %in% namesGADS(GADSdat_imp)) stop("'imp' is not a variable in 'GADSdat_imp'.")
@@ -48,10 +49,10 @@ subImputations <- function(GADSdat, GADSdat_imp, varName, id, imp) {
     unimp_value <- unimp_dat[unimp_dat[, id] == single_id, varName]
     if(!is.na(unimp_value)) {
       #imp_values <- unique(imp_dat[get(id) == single_id, ][[varName]])
-      imp_values <- unique(GADSdat_imp$dat[GADSdat_imp$dat[, id] == single_id, varName])
+      imp_values <- unique(GADSdat_imp$dat[GADSdat_imp$dat[, id] == single_id, varName_imp])
       if(length(imp_values) != 1 || imp_values != unimp_value) {
         count <- count + 1
-        GADSdat_imp$dat[GADSdat_imp$dat[, id] == single_id, varName] <- unimp_value
+        GADSdat_imp$dat[GADSdat_imp$dat[, id] == single_id, varName_imp] <- unimp_value
       }
     }
   }
