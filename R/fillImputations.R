@@ -49,6 +49,10 @@ fillImputations <- function(GADSdat, GADSdat_imp, varName, varName_imp = varName
 
   #browser()
   # could be written more efficiently
+
+  # still open: how to deal with missing codes in GADSdat
+  # -> not commong for codebook to have missing codes in imputed variables! (like grades)
+  # -> but isn't it actual information?
   for(imp_num in unique(GADSdat_imp$dat[, imp])) {
     single_imp_dat <- GADSdat_imp$dat[GADSdat_imp$dat[, imp] == imp_num, ]
     GADSdat_imp$dat[GADSdat_imp$dat[, imp] == imp_num, varName_imp] <- ifelse(is.na(single_imp_dat[, varName_imp]),
