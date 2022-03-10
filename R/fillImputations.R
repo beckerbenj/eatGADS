@@ -11,7 +11,7 @@
 #'@param GADSdat A \code{GADSdat} object.
 #'@param GADSdat_imp A \code{GADSdat} object.
 #'@param varName A character vector of length 1 containing the variable name in \code{GADSdat}.
-#'@param varName A character vector of length 1 containing the variable name in \code{GADSdat_imp}.
+#'@param varName_imp A character vector of length 1 containing the variable name in \code{GADSdat_imp}.
 #'@param id A character vector of length 1 containing the unique identifier column of both \code{GADSdat}.
 #'@param imp A character vector of length 1 containing the imputation number in \code{GADSdat_imp}.
 #'
@@ -43,20 +43,20 @@ fillImputations <- function(GADSdat, GADSdat_imp, varName, varName_imp = varName
   suppressMessages(unimp_GADS <- extractVars(GADSdat, vars = c(id, varName)))
   suppressMessages(unimp_dat <- extractData(GADSdat = unimp_GADS, convertMiss = TRUE, convertLabels = "numeric"))
 
-  # maybe improve performance? but slows down!
-  #imp_dat <- as.data.table(GADSdat_imp$dat)
-  #setkeyv(imp_dat, cols = id)
-
   #browser()
   # could be written more efficiently
 
   # still open: how to deal with missing codes in GADSdat
-  # -> not commong for codebook to have missing codes in imputed variables! (like grades)
+  # -> not common for codebook to have missing codes in imputed variables! (like grades)
   # -> but isn't it actual information?
+
+  suppressMessages(mini_noimp <- extractVars(GADSdat, vars = varName))
+  no_imp_var <- extractData(mini_noimp, convertLabels = "numeric")[[1]]
+
   for(imp_num in unique(GADSdat_imp$dat[, imp])) {
     single_imp_dat <- GADSdat_imp$dat[GADSdat_imp$dat[, imp] == imp_num, ]
     GADSdat_imp$dat[GADSdat_imp$dat[, imp] == imp_num, varName_imp] <- ifelse(is.na(single_imp_dat[, varName_imp]),
-                                                                              yes = GADSdat$dat[, varName],
+                                                                              yes = no_imp_var,
                                                                               no = single_imp_dat[, varName_imp])
   }
 

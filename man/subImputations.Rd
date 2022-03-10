@@ -11,7 +11,9 @@ subImputations(GADSdat, GADSdat_imp, varName, varName_imp = varName, id, imp)
 
 \item{GADSdat_imp}{A \code{GADSdat} object.}
 
-\item{varName}{A character vector of length 1 containing the variable name in \code{GADSdat_imp}.}
+\item{varName}{A character vector of length 1 containing the variable name in \code{GADSdat}.}
+
+\item{varName_imp}{A character vector of length 1 containing the variable name in \code{GADSdat_imp}.}
 
 \item{id}{A character vector of length 1 containing the unique identifier column of both \code{GADSdat}.}
 

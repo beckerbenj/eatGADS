@@ -11,7 +11,7 @@
 #'@param GADSdat A \code{GADSdat} object.
 #'@param GADSdat_imp A \code{GADSdat} object.
 #'@param varName A character vector of length 1 containing the variable name in \code{GADSdat}.
-#'@param varName A character vector of length 1 containing the variable name in \code{GADSdat_imp}.
+#'@param varName_imp A character vector of length 1 containing the variable name in \code{GADSdat_imp}.
 #'@param id A character vector of length 1 containing the unique identifier column of both \code{GADSdat}.
 #'@param imp A character vector of length 1 containing the imputation number in \code{GADSdat_imp}.
 #'
