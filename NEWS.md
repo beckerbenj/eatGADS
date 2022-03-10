@@ -1,5 +1,6 @@
 # eatGADS 0.19.1.9000
 
+* `fixEncoding()` for fixing encoding issues caused during the import via `import_spss()` using `ASCII` encoding
 * `composeVar()` for combining the information of two variables in a third variable
 * `subImputations()` now works with differing `varName` and `varName_imp`
 * `fillImputations()` for efficiently filling missing values in imputed variables via not imputed variables
