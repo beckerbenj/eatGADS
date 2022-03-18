@@ -52,7 +52,7 @@ test_that("Empty variables", {
   g1 <- checkFormat(g)
   g1$dat$var1 <- NA_integer_
 
-  expect_silent(g2 <- checkFormat(g1))
-  expect_equal(g2$labels$format, c("A4", "A4", "F2", "F2", "F2", "F4.2", "F4.2", "F16.14", "A146"))
+  expect_message(g2 <- checkFormat(g1), "Format of Variable var1 will be changed from A4 to A3", fixed=TRUE)
+  expect_equal(g2$labels$format, c("A3", "A3", "F2", "F2", "F2", "F4.2", "F4.2", "F16.14", "A146"))
   expect_true(is.character(g2$dat$var1))
 })
