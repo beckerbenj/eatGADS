@@ -40,7 +40,18 @@ import_raw2 <- function(dat, labels) {
   if(!is.data.frame(labels)) stop("'labels' needs to be a data frame.")
   if(any(sapply(dat, is.factor))) stop("At least one of the variables in 'dat' is a factor. All meta information on value level has to be stored in valLabels.")
 
-  GADSdat <- new_GADSdat(dat = dat, labels = labels)
+  # avoid integer columns, these can cause problems with write_save
+  labels2 <- labels
+  labels2[, "value"] <- as.numeric(labels2[, "value"])
+
+  dat2 <- dat
+  is_integer <- sapply(dat2, is.integer)
+  is_integer_names <- names(is_integer)[is_integer]
+  for(i in is_integer_names) {
+    dat2[, i] <- as.numeric(dat2[, i])
+  }
+
+  GADSdat <- new_GADSdat(dat = dat2, labels = labels2)
   check_GADSdat(GADSdat)
 
   GADSdat
