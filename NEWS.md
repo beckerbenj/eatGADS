@@ -4,7 +4,9 @@
 * `composeVar()` for combining the information of two variables in a third variable
 * `subImputations()` now works with differing `varName` and `varName_imp`
 * `fillImputations()` for efficiently filling missing values in imputed variables via not imputed variables
-
+* `checkFormat()` now works correctly for variables without value labels
+* `checkFormat()` now works correctly for variables with purely `NAs`
+* `import_raw()` now works correctly if variables are provided as integers
 
 # eatGADS 0.19.1
 
