@@ -49,10 +49,21 @@ test_that("No Change", {
 
 test_that("Empty variables", {
   # preparation
-  g1 <- checkFormat(g)
-  g1$dat$var1 <- NA_integer_
+  suppressMessages(g3 <- g2 <- g1 <- checkFormat(g))
 
-  expect_message(g2 <- checkFormat(g1), "Format of Variable var1 will be changed from A4 to A3", fixed=TRUE)
-  expect_equal(g2$labels$format, c("A3", "A3", "F2", "F2", "F2", "F4.2", "F4.2", "F16.14", "A146"))
-  expect_true(is.character(g2$dat$var1))
+  g1$dat$var1 <- NA_integer_
+  expect_message(out1 <- checkFormat(g1), "Format of Variable var1 will be changed from A4 to A3", fixed=TRUE)
+  expect_equal(out1$labels$format, c("A3", "A3", "F2", "F2", "F2", "F4.2", "F4.2", "F16.14", "A146"))
+  expect_true(is.character(out1$dat$var1))
+
+  g2$dat$var1 <- NA
+  expect_message(out2 <- checkFormat(g2), "Format of Variable var1 will be changed from A4 to A3", fixed=TRUE)
+  expect_equal(out2$labels$format, c("A3", "A3", "F2", "F2", "F2", "F4.2", "F4.2", "F16.14", "A146"))
+  expect_true(is.character(out2$dat$var1))
+
+  g3$dat$var1 <- NA
+  g3 <- removeValLabels(g3, varName = "var1", value = c(-99, -96))
+  expect_message(out3 <- checkFormat(g3), "Format of Variable var1 will be changed from A4 to A3", fixed=TRUE)
+  expect_equal(out3$labels$format, c("A3", "A3", "F2", "F2", "F2", "F4.2", "F4.2", "F16.14", "A146"))
+  expect_true(is.character(out3$dat$var1))
 })

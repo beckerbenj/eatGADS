@@ -31,10 +31,10 @@ checkFormat.GADSdat <- function(GADSdat, type = "SPSS", changeFormat = TRUE) {
 
   naNam <- names(GADSdat$dat)[which(unlist(lapply(GADSdat$dat, function(x) all(is.na(x)))))]
   for(hh in naNam) {
-    if(grepl("^A", labels$format[labels$varName==hh][1]) & is.numeric(GADSdat$dat[,hh])) {
+    if(grepl("^A", labels$format[labels$varName==hh][1]) & (is.numeric(GADSdat$dat[,hh]) | is.logical(GADSdat$dat[,hh]))) {
       GADSdat$dat[,hh] <- as.character(GADSdat$dat[,hh])
     } else {
-      if(grepl("^F", labels$format[labels$varName==hh][1]) & is.character(GADSdat$dat[,hh]))
+      if(grepl("^F", labels$format[labels$varName==hh][1]) & (is.character(GADSdat$dat[,hh]) | is.logical(GADSdat$dat[,hh])))
       GADSdat$dat[,hh] <- as.numeric(GADSdat$dat[,hh])
     }
     }
