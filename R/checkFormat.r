@@ -44,12 +44,12 @@ checkFormat.GADSdat <- function(GADSdat, type = "SPSS", changeFormat = TRUE) {
   lengths <- sapply(names(GADSdat$dat), function(ll) {
     if(isTRUE(is.numeric(GADSdat$dat[,ll]) & all(is.numeric(utils::type.convert(labels$value[labels$varName==ll],as.is=TRUE))|
                                                  is.na(labels$value[labels$varName==ll])))) {
-      max(nchar(as.character(round(abs(as.numeric(stats::na.omit(c(GADSdat$dat[,ll],labels$value[labels$varName==ll])))), digits=0))))
+      suppressWarnings(max(nchar(as.character(round(abs(as.numeric(stats::na.omit(c(GADSdat$dat[,ll],labels$value[labels$varName==ll])))), digits=0)))))
     } else {
       if(type == "SPSS") {
-        max(nchar_4_spss(c(GADSdat$dat[,ll],as.character(labels$value[labels$varName==ll]))), na.rm=TRUE)
+        suppressWarnings(max(nchar_4_spss(c(GADSdat$dat[,ll],as.character(labels$value[labels$varName==ll]))), na.rm=TRUE))
       } else {
-        max(nchar(c(GADSdat$dat[,ll],as.character(labels$value[labels$varName==ll]))), na.rm=TRUE)
+        suppressWarnings(max(nchar(c(GADSdat$dat[,ll],as.character(labels$value[labels$varName==ll]))), na.rm=TRUE))
       }
     }
   })
@@ -57,12 +57,12 @@ checkFormat.GADSdat <- function(GADSdat, type = "SPSS", changeFormat = TRUE) {
   decimals <- sapply(names(GADSdat$dat), function(ll) { if(isTRUE(is.numeric(GADSdat$dat[,ll]) &
                                                                   all(is.numeric(utils::type.convert(labels$value[labels$varName==ll],as.is=TRUE))|
                                                                                                      is.na(labels$value[labels$varName==ll])))) {
-    max(nchar(as.character(stats::na.omit(abs(c(GADSdat$dat[,ll],utils::type.convert(labels$value[labels$varName==ll],as.is=TRUE)))))))
+    suppressWarnings(max(nchar(as.character(stats::na.omit(abs(c(GADSdat$dat[,ll],utils::type.convert(labels$value[labels$varName==ll],as.is=TRUE))))))))
   } else {
     if(type == "SPSS") {
-      max(nchar_4_spss(c(GADSdat$dat[,ll],as.character(labels$value[labels$varName==ll]))), na.rm=TRUE)
+      suppressWarnings(max(nchar_4_spss(c(GADSdat$dat[,ll],as.character(labels$value[labels$varName==ll]))), na.rm=TRUE))
     } else {
-      max(nchar(c(GADSdat$dat[,ll],as.character(labels$value[labels$varName==ll]))), na.rm=TRUE)
+      suppressWarnings(max(nchar(c(GADSdat$dat[,ll],as.character(labels$value[labels$varName==ll]))), na.rm=TRUE))
     }
   }
   })
@@ -105,11 +105,13 @@ checkFormat.GADSdat <- function(GADSdat, type = "SPSS", changeFormat = TRUE) {
   lablengths_r <- gsub("\\.0$", "", lablengths)
   for(uu in seq(along=lablengths)) {
     if(lablengths_r[uu] != lengths2[uu]) {
-      if(isTRUE(changeFormat)) {
-        message(paste0("Format of Variable ", names(lablengths)[uu], " will be changed from ", lablengths[uu], " to ", lengths2[uu]))
-        labels$format[labels$varName == names(lablengths)[uu]] <- lengths2[uu]
-      } else {
-        message(paste0("Format mismatch for Variable ", names(lablengths)[uu], ": ", lablengths[uu], " vs. ", lengths2[uu]))
+      if(!grepl("-Inf", lengths2[uu])) {
+        if(isTRUE(changeFormat)) {
+          message(paste0("Format of Variable ", names(lablengths)[uu], " will be changed from ", lablengths[uu], " to ", lengths2[uu]))
+          labels$format[labels$varName == names(lablengths)[uu]] <- lengths2[uu]
+        } else {
+          message(paste0("Format mismatch for Variable ", names(lablengths)[uu], ": ", lablengths[uu], " vs. ", lengths2[uu]))
+        }
       }
     }
   }

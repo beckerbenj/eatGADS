@@ -63,7 +63,7 @@ test_that("Empty variables", {
 
   g3$dat$var1 <- NA
   g3 <- removeValLabels(g3, varName = "var1", value = c(-99, -96))
-  expect_message(out3 <- checkFormat(g3), "Format of Variable var1 will be changed from A4 to A3", fixed=TRUE)
-  expect_equal(out3$labels$format, c("A3", "A3", "F2", "F2", "F2", "F4.2", "F4.2", "F16.14", "A146"))
+  expect_silent(out3 <- checkFormat(g3))
+  expect_equal(out3$labels$format, c("A4", "F2", "F2", "F2", "F4.2", "F4.2", "F16.14", "A146"))
   expect_true(is.character(out3$dat$var1))
 })
