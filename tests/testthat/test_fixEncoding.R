@@ -14,11 +14,11 @@ test_that("with GADS", {
   out <- fixEncoding(g)
   expect_equal(out$dat$v1, c("kl", "mw", "hi"))
   expect_equal(out$dat$v2, 1:3)
-  expect_equal(out$dat$v3, c("", "Oe", "ss"))
+  expect_equal(out$dat$v3, c("", "Oe", "oe"))
 })
 
 test_that("with changes in namesGADS", {
-  g2 <- changeVarNames(g, oldNames = "v3", newNames = "vC\034")
+  g2 <- changeVarNames(g, oldNames = "v3", newNames = "vC6")
   out <- fixEncoding(g2)
-  expect_equal(namesGADS(out), c("v1", "v2", "vUe"))
+  expect_equal(namesGADS(out), c("v1", "v2", "voe"))
 })

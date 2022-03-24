@@ -7,7 +7,7 @@
 #'
 #'@param x A character vector or \code{GADSdat} object.
 #'
-#'@return The modified \code{GADSdat_imp}..
+#'@return The modified character vector or \code{GADSdat} object.
 #'
 #'@examples
 #' # tbd
@@ -45,7 +45,8 @@ fixEncoding.GADSdat <- function(x) {
 
   GADSdat
 }
-
+# inspecting encoding via spss:
+# SYSFILE INFO FILE = 'q:/BT2021/BT/40_Daten/01_Rohdaten/10_FinaleDaten_211223/Daten/D_BT2021_Primar_LFB_ALLG_0-0-1.sav'
 
 #'@export
 fixEncoding.character <- function(x) {

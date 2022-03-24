@@ -30,6 +30,11 @@ Function to import \code{.sav} files while extracting meta information, e.g. var
 SPSS files (\code{.sav}) store variable and value labels and assign specific formatting to variables. \code{import_spss} imports
 data from SPSS, while storing this meta-information separately in a long format data frame. Value labels and missing labels are used
 to identify missing values (see \code{\link{checkMissings}}). Time and date variables are converted to character.
+
+In some special cases, \code{.sav} files seem to consist of a mix of different encoding types. In such cases, \code{haven} might
+throw an error if the encoding argument is not specified or \code{UTF-8} is selected as encoding. To circumvent this problem we
+recommend using \code{encoding = "ASCII"} and fixing the resulting issues manually. For example, \code{\link{fixEncoding}}
+provides some fixes for encoding issues specific to the German language.
 }
 \examples{
 # Use spss data from within package

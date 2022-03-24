@@ -10,7 +10,7 @@ fixEncoding(x)
 \item{x}{A character vector or \code{GADSdat} object.}
 }
 \value{
-The modified \code{GADSdat_imp}..
+The modified character vector or \code{GADSdat} object.
 }
 \description{
 Fix some encoding problems of a character vector or a \code{GADSdat} object, which was encoded presumably using \code{UTF-8}
