@@ -33,7 +33,7 @@ test_that("Rounding condition", {
   p2 <- checkFormat(p, type="other")
 
   expect_equal(p1$dat$ma_pv1,round(p1$dat$ma_pv1,16))
-  expect_message(p2 <- checkFormat(p1), "Variable ma_pv1 has more decimals than SPSS allows (18) and will be rounded to 16 decimal places.", fixed=TRUE)
+  expect_message(p3 <- checkFormat(p), "Variable ma_pv1 has more decimals than SPSS allows (18) and will be rounded to 16 decimal places.", fixed=TRUE)
   expect_equal(p2$dat$ma_pv1,round(p2$dat$ma_pv1,18))
 
   # No Character Variables
