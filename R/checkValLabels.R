@@ -2,8 +2,8 @@
 #############################################################################
 #' Check Value Labels
 #'
-#' Check value labels for (a) value labels with no occurrence in the data \code{checkEmptyValLabels} and
-#' (b) values with no value labels \code{checkMissingValLabels}.
+#' Check value labels for (a) value labels with no occurrence in the data (\code{checkEmptyValLabels}) and
+#' (b) values with no value labels (\code{checkMissingValLabels}).
 #'
 #' \code{NAs} are excluded from this check. Designated missing codes are reported normally.
 #'
@@ -11,7 +11,7 @@
 #'@param vars Character vector with the variable names to which \code{checkValLabels()} should be applied.
 #'@param valueRange [optional] Numeric vector of length 2: In which range should numeric values be checked?
 #'If specified, only numeric values are returned and strings are omitted.
-#'@param output Should the output structured as a \code{"list"} or a \code{"data.frame"}?
+#'@param output Should the output be structured as a \code{"list"} or a \code{"data.frame"}?
 #'
 #'@return Returns a list of length \code{vars} or a \code{data.frame}.
 #'
