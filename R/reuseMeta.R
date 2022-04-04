@@ -31,8 +31,12 @@ reuseMeta.GADSdat <- function(GADSdat, varName, other_GADSdat, other_varName = N
   # extract meta data
   if(is.null(other_varName)) other_varName <- varName
   new_meta <- extractMeta(other_GADSdat, other_varName)
-  # compatability with meta data from all_GADSdat or data base
-  new_meta <- new_meta[, names(new_meta) != "data_table"]
+  # compatability with meta data from all_GADSdat or data base (variable can be foreign key and occur multiply)
+  if("data_table" %in% names(new_meta)) {
+    first_data_table <- new_meta[1, "data_table"]
+    new_meta <- new_meta[new_meta$data_table == first_data_table, ]
+    new_meta <- new_meta[, names(new_meta) != "data_table"]
+  }
   new_meta[, "varName"] <- varName
   # If value labels are added (via addValueLabels = TRUE or missingLabels = "leave"), make meta information on variable level compatible
   if(addValueLabels || identical(missingLabels, "leave")) {

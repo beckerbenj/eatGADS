@@ -7,6 +7,7 @@
 * `checkFormat()` now works correctly for variables without value labels
 * `checkFormat()` now works correctly for variables with purely `NAs`
 * `import_raw()` now works correctly if variables are provided as integers
+* `reuseMeta()` now works correctly if variables occur in multiple sheets in a data base or `all_GADSdat`
 
 # eatGADS 0.19.1
 

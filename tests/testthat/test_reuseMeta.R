@@ -28,6 +28,15 @@ test_that("Transfer meta information from one GADSdat to another", {
   expect_silent(check_GADSdat(dat5))
 })
 
+test_that("Transfer meta information from all_GADSdat to GADSdat", {
+  all_g <- mergeLabels(df1 = dfSAV, df2 = dfSAV)
+  dat2 <- import_DF(dfSAV$dat)
+  dat3 <- reuseMeta(dat2, varName = "VAR1", all_g)
+  dat3 <- reuseMeta(dat3, varName = "VAR2", all_g)
+  dat3 <- reuseMeta(dat3, varName = "VAR3", all_g)
+  expect_equal(dfSAV, dat3)
+})
+
 test_that("Use reuseMeta for combining value labels, including adapting meta data on variable level", {
   df <- dfSAV$dat[, 2, drop = FALSE]
   new_dfSAV <- updateMeta(dfSAV, df)
