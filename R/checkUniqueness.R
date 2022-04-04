@@ -33,7 +33,12 @@ checkUniqueness.GADSdat <- function(GADSdat, varName, idVar) {
   check_GADSdat(GADSdat)
   check_vars_in_GADSdat(GADSdat, vars = c(varName, idVar))
 
-  dat <- GADSdat$dat
+  checkUniqueness(GADSdat$dat, varName = varName, idVar = idVar)
+}
+
+#'@export
+checkUniqueness.data.frame <- function(GADSdat, varName, idVar) {
+  dat <- GADSdat
   if(nrow(dat) == length(unique(dat[[idVar]]))) stop("'idVar' is unique per row in 'GADSdat' and checking for uniqueness is obsolete.")
 
   out_list <- by(dat, dat[, idVar], function(subdat) {

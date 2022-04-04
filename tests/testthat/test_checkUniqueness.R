@@ -26,3 +26,22 @@ test_that("Correct flagging and output", {
   row.names(comp) <- NULL
   expect_equal(out, comp)
 })
+
+test_that("Correct flagging and output for data.frames", {
+  out <- checkUniqueness(df3$dat, varName = "V1", idVar = "ID1")
+  comp <- df3$dat[c(1, 3), ]
+  row.names(comp) <- NULL
+  expect_equal(out, comp)
+})
+
+
+
+test_that("fast Version: No flagging", {
+  out <- checkUniqueness2(df1b$dat, varName = "V1", idVar = "ID1")
+  expect_true(out)
+})
+
+test_that("fast Version: Correct flagging and output", {
+  out <- checkUniqueness2(df3$dat, varName = "V1", idVar = "ID1")
+  expect_false(out)
+})
