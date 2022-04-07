@@ -87,7 +87,7 @@ bl <- NA
     return(list(ast=ast, bl=bl))
   })
 names(decimals2) <- varsWithDecimals
-  toround <- as.vector(na.omit(unlist(lapply(decimals2, function(gg) gg$bl))))
+  toround <- as.vector(stats::na.omit(unlist(lapply(decimals2, function(gg) gg$bl))))
   decimals2 <- unlist(lapply(decimals2, function(gg) gg$ast))
 for(ll in toround) {
   GADSdat$dat[,ll] <- round(GADSdat$dat[,ll],16)

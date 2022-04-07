@@ -37,7 +37,7 @@ checkUniqueness2.data.frame <- function(GADSdat, varName, idVar, impVar) {
   if(nrow(dat) == length(unique(dat[[idVar]]))) stop("'idVar' is unique per row in 'GADSdat' and checking for uniqueness is obsolete.")
 
   #browser()
-  form <- as.formula(paste0(idVar, " ~ ", impVar))
+  form <- stats::as.formula(paste0(idVar, " ~ ", impVar))
   subdat <- dat[, c(idVar, varName, impVar), with = FALSE]
   wide <- data.table::dcast(subdat, formula = form, value.var = varName)
   all(wide[, 2] == wide[, 3])
