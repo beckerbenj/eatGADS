@@ -36,12 +36,27 @@ test_that("Correct flagging and output for data.frames", {
 
 
 
-test_that("fast Version: No flagging", {
-  out <- checkUniqueness2(df1b$dat, varName = "V1", idVar = "ID1")
+l <- 100000
+long_df <- data.table::data.table(id = sort(rep(1:l, 15)),
+                         v1 = sort(rep(1:l, 15)),
+                         imp = rep(1:15, l))
+checkUniqueness2(as.data.frame(long_df), varName = "v1", idVar = "id", impVar = "imp")
+#checkUniqueness3(as.data.frame(long_df), varName = "v1", idVar = "id", impVar = "imp")
+
+test_that("fast Version: fast enough", {
+  out <- checkUniqueness2(long_df, varName = "v1", idVar = "id", impVar = "imp")
   expect_true(out)
 })
 
 test_that("fast Version: Correct flagging and output", {
-  out <- checkUniqueness2(df3$dat, varName = "V1", idVar = "ID1")
+  long_df2 <- long_df
+  long_df2[1, "v1"] <- 100
+  out <- checkUniqueness2(long_df2, varName = "v1", idVar = "id", impVar = "imp")
   expect_false(out)
+})
+
+test_that("fast Version: GADSdat", {
+  long_gads <- import_DF(long_df)
+  out <- checkUniqueness2(long_gads, varName = "v1", idVar = "id", impVar = "imp")
+  expect_true(out)
 })

@@ -24,32 +24,27 @@
 #'checkUniqueness(gads, varName = "Sepal.Length", idVar = "Species")
 #'
 #'@export
-checkUniqueness2 <- function(GADSdat, varName, idVar) {
+checkUniqueness2 <- function(GADSdat, varName, idVar, impVar) {
   UseMethod("checkUniqueness2")
 }
 
 #'@export
-checkUniqueness2.GADSdat <- function(GADSdat, varName, idVar) {
+checkUniqueness2.GADSdat <- function(GADSdat, varName, idVar, impVar) {
   check_GADSdat(GADSdat)
-  check_vars_in_GADSdat(GADSdat, vars = c(varName, idVar))
+  check_vars_in_GADSdat(GADSdat, vars = c(varName, idVar, impVar))
 
-  checkUniqueness2(GADSdat$dat, varName = varName, idVar = idVar)
+  checkUniqueness2(GADSdat$dat, varName = varName, idVar = idVar, impVar = impVar)
 }
 
 #'@export
-checkUniqueness2.data.frame <- function(GADSdat, varName, idVar) {
-  dat <- GADSdat
+checkUniqueness2.data.frame <- function(GADSdat, varName, idVar, impVar) {
+  dat <- data.table::as.data.table(GADSdat)
   if(nrow(dat) == length(unique(dat[[idVar]]))) stop("'idVar' is unique per row in 'GADSdat' and checking for uniqueness is obsolete.")
 
-  #browser()
-  out <- try(by(dat, dat[, idVar], function(subdat) {
-    if(length(unique(subdat[[varName]])) <= 1) return(TRUE)
-    stop()
-  }), silent = TRUE)
-  #browser()
-
-  if(inherits(out, "try-error")) return(FALSE)
-  TRUE
+  form <- as.formula(paste0(idVar, " ~ ", impVar))
+  subdat <- dat[, c(idVar, varName, impVar), with = FALSE]
+  wide <- data.table::dcast(subdat, formula = form, value.var = varName)
+  all(wide[, 1] == wide[, 2])
 }
 
 
