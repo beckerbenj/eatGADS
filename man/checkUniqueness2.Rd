@@ -4,14 +4,16 @@
 \alias{checkUniqueness2}
 \title{Check uniqueness of a variable.}
 \usage{
-checkUniqueness2(GADSdat, varName, idVar)
+checkUniqueness2(GADSdat, varName, idVar, impVar)
 }
 \arguments{
 \item{GADSdat}{\code{GADSdat} object imported via \code{eatGADS}.}
 
 \item{varName}{Single string containing the variable name for which the check should be performed.}
 
-\item{idVar}{Single string containing the identifier variable name.}
+\item{idVar}{Single string containing the name of the identifier variable.}
+
+\item{impVar}{Single string containing the name of the imputation number.}
 }
 \value{
 Returns a logical of length one.
@@ -25,12 +27,6 @@ For example if missing values are multiple imputed and data is stored in a long 
 within an identifier can be tricky. This function automates this task.
 }
 \examples{
-## create an example GADSdat
-iris2 <- iris
-iris2$Species <- as.character(iris2$Species)
-gads <- import_DF(iris2, checkVarNames = FALSE)
-
-## check uniqueness
-checkUniqueness(gads, varName = "Sepal.Length", idVar = "Species")
+## tbd
 
 }

@@ -10,18 +10,13 @@
 #'
 #'@param GADSdat \code{GADSdat} object imported via \code{eatGADS}.
 #'@param varName Single string containing the variable name for which the check should be performed.
-#'@param idVar Single string containing the identifier variable name.
+#'@param idVar Single string containing the name of the identifier variable.
+#'@param impVar Single string containing the name of the imputation number.
 #'
 #'@return Returns a logical of length one.
 #'
 #'@examples
-#'## create an example GADSdat
-#'iris2 <- iris
-#'iris2$Species <- as.character(iris2$Species)
-#'gads <- import_DF(iris2, checkVarNames = FALSE)
-#'
-#'## check uniqueness
-#'checkUniqueness(gads, varName = "Sepal.Length", idVar = "Species")
+#'## tbd
 #'
 #'@export
 checkUniqueness2 <- function(GADSdat, varName, idVar, impVar) {
