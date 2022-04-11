@@ -50,6 +50,11 @@ fixEncoding.GADSdat <- function(x) {
 
 #'@export
 fixEncoding.character <- function(x) {
+  # https://resources.german.lsa.umich.edu/schreiben/unicode/
+  lookup_utf <- data.frame(unicode = c("00DF", "00E4", "00F6", "00FC", "00C4", "00D6", "00DC"),
+                       substitute = c("ss", "ae", "oe", "ue", "AE", "OE", "UE"),
+                       stringsAsFactors = FALSE)
+
   lookup <- data.frame(unicode = c("C\026", "C..\023", "C\034", "C..\\$", "C\\$", "C..6", "C6", "C..<", "C<", "C..8", "C\037", "\001", "\025", "\005"),
              substitute = c("Oe", "Ue", "Ue", "ae", "ae", "oe", "oe", "ue", "ue", "ss", "ss", "", "", "..."),
              stringsAsFactors = FALSE)
