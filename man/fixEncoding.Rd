@@ -4,10 +4,12 @@
 \alias{fixEncoding}
 \title{Fix encoding problems.}
 \usage{
-fixEncoding(x)
+fixEncoding(x, input = c("other", "ASCII"))
 }
 \arguments{
 \item{x}{A character vector or \code{GADSdat} object.}
+
+\item{input}{Which encoding was used in \code{\link{import_spss}}.}
 }
 \value{
 The modified character vector or \code{GADSdat} object.

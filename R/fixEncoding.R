@@ -6,6 +6,7 @@
 #' and imported using \code{ASCII} encoding.
 #'
 #'@param x A character vector or \code{GADSdat} object.
+#'@param input Which encoding was used in \code{\link{import_spss}}.
 #'
 #'@return The modified character vector or \code{GADSdat} object.
 #'
