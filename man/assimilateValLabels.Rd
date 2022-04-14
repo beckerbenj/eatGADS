@@ -27,7 +27,8 @@ Missing codes are reused based on the meta data of the first variable in \code{v
 # Example data set
 facs_df <- data.frame(id = 1:3, fac1 = c("Eng", "Aus", "Ger"),
                       fac2 = c("Ger", "Franz", "Ita"),
-fac3 = c("Kor", "Chi", "Alg"), stringsAsFactors = TRUE)
+                      fac3 = c("Kor", "Chi", "Alg"),
+                      stringsAsFactors = TRUE)
 facs_gads <- import_DF(facs_df)
 
 assimilateValLabels(facs_gads, varNames = paste0("fac", 1:3))
