@@ -33,6 +33,6 @@ pisa2 <- recodeGADS(pisa2, varName = "sameteach", oldValues = c(1, 2), newValues
 equalGADS(pisa, pisa2)
 
 # inspect via inspectMetaDifferences()
-inspectMetaDifferences("sameteach", GADSdat1 = pisa, GADSdat2 = pisa2, id = "idstud")
+inspectMetaDifferences("sameteach", GADSdat1 = pisa, GADSdat2 = pisa2)
 
 }
