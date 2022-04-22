@@ -49,6 +49,11 @@ fixEncoding.GADSdat <- function(x, input = c("other", "ASCII")) {
 # inspecting encoding via spss:
 # SYSFILE INFO FILE = 'q:/BT2021/BT/40_Daten/01_Rohdaten/10_FinaleDaten_211223/Daten/D_BT2021_Primar_LFB_ALLG_0-0-1.sav'
 
+#https://www.ibm.com/docs/de/spss-statistics/28.0.0?topic=utilities-data-file-comments
+#https://www.loc.gov/preservation/digital/formats/fdd/fdd000469.shtml
+#https://github.com/tidyverse/haven/issues/615
+
+
 #'@export
 fixEncoding.character <- function(x, input = c("other", "ASCII")) {
   input <- match.arg(input)
