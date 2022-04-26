@@ -2,7 +2,7 @@
 % Please edit documentation in R/fixEncoding.R
 \name{fixEncoding}
 \alias{fixEncoding}
-\title{Fix encoding problems.}
+\title{Remove special characters.}
 \usage{
 fixEncoding(x, input = c("other", "ASCII"))
 }
@@ -15,10 +15,15 @@ fixEncoding(x, input = c("other", "ASCII"))
 The modified character vector or \code{GADSdat} object.
 }
 \description{
-Fix some encoding problems of a character vector or a \code{GADSdat} object, which was encoded presumably using \code{UTF-8}
-and imported using \code{ASCII} encoding.
+Remove special characters from a character vector or a \code{GADSdat} object.
+Also suitable to fix encoding problems of a character vector or a \code{GADSdat} object,
+which was encoded presumably using \code{UTF-8} and imported using \code{ASCII} encoding.
+}
+\details{
+If entries are all upper case, special characters are also transformed to all upper case (e.g., \code{"AE"} instead
+of \code{"Ae"}).
 }
 \examples{
-# tbd
+fixEncoding(c("\U00C4pfel", "\U00C4PFEL", paste0("\U00DC", "ben"), paste0("\U00DC", "BEN")))
 
 }

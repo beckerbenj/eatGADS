@@ -13,6 +13,11 @@ test_that("other with character vectors", {
   expect_equal(out, c("Krae_ftigung", "Spass"))
 })
 
+test_that("Capslock detection", {
+  out <- fixEncoding(c("\U00C4pfel", "\U00C4PFEL", paste0("\U00DC", "ben"), paste0("\U00DC", "BEN")))
+  expect_equal(out, c("Aepfel", "AEPFEL", "Ueben", "UEBEN"))
+})
+
 # insert for manuel checks
 # test_that("other with character vectors 2", {
 #   out <- fixEncoding(c("Krftigung", "Spa"))
@@ -21,14 +26,14 @@ test_that("other with character vectors", {
 
 test_that("ASCII with character vectors", {
   out <- fixEncoding(c("C..6", "ABC", "C\037"), input = "ASCII")
-  expect_equal(out, c("oe", "ABC", "ss"))
+  expect_equal(out, c("oe", "ABC", "SS"))
 })
 
 test_that("ASCII with GADS", {
   out <- fixEncoding(g, input = "ASCII")
   expect_equal(out$dat$v1, c("kl", "mw", "hi"))
   expect_equal(out$dat$v2, 1:3)
-  expect_equal(out$dat$v3, c("", "Oe", "oe"))
+  expect_equal(out$dat$v3, c("", "OE", "oe"))
 })
 
 test_that("ASCII with changes in namesGADS", {

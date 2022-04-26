@@ -1,9 +1,13 @@
 ####
 #############################################################################
-#' Fix encoding problems.
+#' Remove special characters.
 #'
-#' Fix some encoding problems of a character vector or a \code{GADSdat} object, which was encoded presumably using \code{UTF-8}
-#' and imported using \code{ASCII} encoding.
+#' Remove special characters from a character vector or a \code{GADSdat} object.
+#' Also suitable to fix encoding problems of a character vector or a \code{GADSdat} object,
+#' which was encoded presumably using \code{UTF-8} and imported using \code{ASCII} encoding.
+#'
+#' If entries are all upper case, special characters are also transformed to all upper case (e.g., \code{"AE"} instead
+#' of \code{"Ae"}).
 #'
 #'@param x A character vector or \code{GADSdat} object.
 #'@param input Which encoding was used in \code{\link{import_spss}}.
@@ -11,7 +15,7 @@
 #'@return The modified character vector or \code{GADSdat} object.
 #'
 #'@examples
-#' # tbd
+#' fixEncoding(c("\U00C4pfel", "\U00C4PFEL", paste0("\U00DC", "ben"), paste0("\U00DC", "BEN")))
 #'
 #'@export
 fixEncoding <- function(x, input = c("other", "ASCII")) {
@@ -61,16 +65,23 @@ fixEncoding.character <- function(x, input = c("other", "ASCII")) {
   lookup <- switch(input, other = data.frame(unicode = c("\U00DF", "\U00E4", "\U00F6", "\U00FC",
                                                          "\U00C4", "\U00D6", "\U00DC", "\U2026"),
                                          substitute = c("ss", "ae", "oe", "ue",
-                                                        "AE", "OE", "UE", "..."),
+                                                        "Ae", "Oe", "Ue", "..."), ## better? Ae, Oe, Ue
                                          stringsAsFactors = FALSE),
                ASCII = data.frame(unicode = c("C\026", "C..\023", "C\034", "C..\\$", "C\\$",
                                               "C..6", "C6", "C..<", "C<", "C..8", "C\037", "\001", "\025", "\005"),
                                   substitute = c("Oe", "Ue", "Ue", "ae", "ae", "oe", "oe", "ue", "ue", "ss", "ss", "", "", "..."),
                                   stringsAsFactors = FALSE))
+  lookup_caps <- lookup
+  upper_in_lookup <- grepl("A|O|U|ss", lookup_caps$substitute)
+  lookup_caps$substitute[upper_in_lookup] <- toupper(lookup$substitute[upper_in_lookup])
+
+  caps_cases <- grepl("^[^a-z]*$", x)
 
   for(i in seq(nrow(lookup))) {
-    x <- gsub(lookup[i, "unicode"], lookup[i, "substitute"], x)
+    x[!caps_cases] <- gsub(lookup[i, "unicode"], lookup[i, "substitute"], x[!caps_cases])
+    x[caps_cases] <- gsub(lookup_caps[i, "unicode"], lookup_caps[i, "substitute"], x[caps_cases])
   }
   x
 }
+
 
