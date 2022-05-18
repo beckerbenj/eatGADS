@@ -44,6 +44,12 @@ long_df <- data.table::data.table(id = sort(rep(1:l, 15)),
 #checkUniqueness3(as.data.frame(long_df), varName = "v1", idVar = "id", impVar = "imp")
 
 l <- 100000
+long_df_false <- data.table::data.table(id = sort(rep(1:l, 15)),
+                                  v1 = sort(rep(1:l, 15)),
+                                  imp = rep(1:15, l))
+long_df_false[nrow(long_df_false), "v1"] <- 999
+
+l <- 100000
 long_df_err <- data.table::data.table(id = sort(rep(1:l, 1)),
                                   v1 = sort(rep(1:l, 1)),
                                   imp = rep(1, l))
@@ -63,6 +69,9 @@ test_that("fast Version: Correct flagging and output", {
   long_df2 <- long_df
   long_df2[1, "v1"] <- 100
   out <- checkUniqueness2(long_df2, varName = "v1", idVar = "id", impVar = "imp")
+  expect_false(out)
+
+  out <- checkUniqueness2(long_df_false, varName = "v1", idVar = "id", impVar = "imp")
   expect_false(out)
 })
 
