@@ -40,8 +40,19 @@ l <- 100000
 long_df <- data.table::data.table(id = sort(rep(1:l, 15)),
                          v1 = sort(rep(1:l, 15)),
                          imp = rep(1:15, l))
-checkUniqueness2(as.data.frame(long_df), varName = "v1", idVar = "id", impVar = "imp")
+#checkUniqueness2(as.data.frame(long_df), varName = "v1", idVar = "id", impVar = "imp")
 #checkUniqueness3(as.data.frame(long_df), varName = "v1", idVar = "id", impVar = "imp")
+
+l <- 100000
+long_df_err <- data.table::data.table(id = sort(rep(1:l, 1)),
+                                  v1 = sort(rep(1:l, 1)),
+                                  imp = rep(1, l))
+
+test_that("fast Version: errors", {
+  expect_message(out <- checkUniqueness2(long_df_err, varName = "v1", idVar = "id", impVar = "imp"),
+               "'idVar' is unique per row in 'GADSdat' and checking for uniqueness is obsolete.")
+  expect_true(out)
+})
 
 test_that("fast Version: fast enough", {
   out <- checkUniqueness2(long_df, varName = "v1", idVar = "id", impVar = "imp")

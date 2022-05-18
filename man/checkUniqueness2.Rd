@@ -24,9 +24,18 @@ Function to check if a variable is unique for all cases of an identifier variabl
 }
 \details{
 For example if missing values are multiple imputed and data is stored in a long format, checking the uniqueness of a variable
-within an identifier can be tricky. This function automates this task.
+within an identifier can be tricky. This function automates this task via reshaping the data into wide format and testing equality
+among the reshaped variables. . Similar functionality (via matrices) is covered by \code{lme4::isNested},
+which is more general and performs similarly.
 }
 \examples{
-## tbd
+## create an example GADSdat
+l <- 1000
+long_df <- data.table::data.table(id = sort(rep(1:l, 15)),
+                               v1 = sort(rep(1:l, 15)),
+                                 imp = rep(1:15, l))
+gads <- import_DF(long_df)
+## check uniqueness
+checkUniqueness2(gads, varName = "v1", idVar = "id", impVar = "imp")
 
 }
