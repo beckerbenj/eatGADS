@@ -1,5 +1,6 @@
 # eatGADS 0.19.1.9000
 
+* fixed warnings for `getTrendGADS()`
 * `inspectMetaDifferences()` for inspecting meta differences between two `GADSdats` and a single variable
 * `checkUniqueness2()` for faster checking if a variable is unique within an identifier variable
 * `fixEncoding()` for fixing encoding issues caused during the import via `import_spss()` using `ASCII` or other encoding

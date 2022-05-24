@@ -43,7 +43,10 @@ getTrendGADS <- function(filePaths, vSelect = NULL, years, fast = TRUE, tempPath
     vSelect_list <- lapply(filePaths, function(filePath) unlist(namesGADS(filePath)))
     vSelect <- unique(unlist(vSelect_list))
   }
-  vSelect_checked <- lapply(filePaths, function(filePath) check_vSelect(filePath, vSelect = vSelect))
+
+  nam_list <- lapply(filePaths, namesGADS)
+  #browser()
+  vSelect_checked <- lapply(nam_list, function(nam) check_vSelect(nam, vSelect = vSelect))
 
   # checks for vSelect
   not_in_gads_list <- lapply(vSelect_checked, function(x) x$not_in_gads)
@@ -55,7 +58,7 @@ getTrendGADS <- function(filePaths, vSelect = NULL, years, fast = TRUE, tempPath
     vSelect_checked_single <- vSelect_checked[[i]]
     if(length(vSelect_checked_single$in_gads) == 0) stop("No variables from data base ", years[i], " selected.")
     if(length(vSelect_checked_single$not_in_gads) > 0) warning(paste0("The following variables are not in GADS ", years[i],": ",
-                                                                      vSelect_checked_single$not_in_gads,
+                                                                      paste(vSelect_checked_single$not_in_gads, collapse = ", "),
                                                                       ". NAs will be inserted if data is extracted."))
   })
 
@@ -116,11 +119,26 @@ check_keyStrcuture_TrendsGADS <- function(filePaths) {
 
 
 # select variables relevant for each gads
-check_vSelect <- function(filePath, vSelect) {
-  nam <- namesGADS(filePath)
+check_vSelect <- function(nam, vSelect) {
   in_gads <- intersect(vSelect, unlist(nam))
   not_in_gads <- setdiff(vSelect, unlist(nam))
   list(in_gads = in_gads, not_in_gads = not_in_gads)
+}
+
+errors_vSelect <- function(vSelect_checked, years) {
+  not_in_gads_list <- lapply(vSelect_checked, function(x) x$not_in_gads)
+  not_in_any_gads <- Reduce(intersect, not_in_gads_list)
+  if(length(not_in_any_gads) > 0) stop("The following selected variables are not in any of the data bases: ",
+                                       paste(not_in_any_gads, collapse = ", "))
+
+  lapply(seq_along(vSelect_checked), function(i) {
+    vSelect_checked_single <- vSelect_checked[[i]]
+    if(length(vSelect_checked_single$in_gads) == 0) stop("No variables from data base ", years[i], " selected.")
+    if(length(vSelect_checked_single$not_in_gads) > 0) warning(paste0("The following variables are not in GADS ", years[i],": ",
+                                                                      paste(vSelect_checked_single$not_in_gads, collapse = ", "),
+                                                                      ". NAs will be inserted if data is extracted."))
+  })
+  NULL
 }
 
 add_year <- function(GADSdat, year) {
@@ -131,4 +149,7 @@ add_year <- function(GADSdat, year) {
   GADSdat
 
 }
+
+## namesGADS in UI function
+# separate (testable) function for processing & checking
 

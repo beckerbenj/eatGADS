@@ -22,6 +22,37 @@ test_that("check_keyStrcuture_TrendGADS", {
   expect_error(check_keyStrcuture_TrendsGADS(filePaths = c(fp1, fp2b, fp3)), "Trend data bases must have the same primary key structure.")
 })
 
+### check
+test_that("check_keyStrcuture_TrendGADS", {
+  expect_silent(check_keyStrcuture_TrendGADS(filePath1 = "helper_dataBase.db", filePath2 = "helper_dataBase2.db"))
+  # checkTrendGADS(filePath1 = "tests/testthat/helper_dataBase3.db", filePath2 = "tests/testthat/helper_dataBase2.db")
+  expect_error(check_keyStrcuture_TrendGADS(filePath1 = "helper_dataBase3.db", filePath2 = "helper_dataBase2.db"), "Trend data bases must have the same primary key structure.")
+})
+
+test_that("check_vSelect", {
+  # check_vSelect(namesGADS("tests/testthat/helper_dataBase.db"), vSelect = c("ID1", "test2"))
+  out <- check_vSelect(namesGADS("helper_dataBase.db"), vSelect = c("ID1", "test2"))
+  expect_equal(out, list(in_gads = "ID1", not_in_gads = "test2"))
+})
+
+test_that("errors_vSelect", {
+  in1 <- list(list(in_gads = c("ID", "v1"), not_in_gads = c("v2", "v3")),
+              list(in_gads = c("ID", "v1"), not_in_gads = c("v2", "v3")))
+  expect_error(errors_vSelect(in1, years = c(2011, 2016)),
+               "The following selected variables are not in any of the data bases: v2, v3")
+
+  in2 <- list(list(in_gads = c("ID", "v1"), not_in_gads = c("v2", "v3")),
+              list(in_gads = c("ID", "v1"), not_in_gads = c()))
+  expect_warning(errors_vSelect(in2, years = c(2011, 2016)),
+               "The following variables are not in GADS 2011: v2, v3. NAs will be inserted if data is extracted.")
+
+  in3 <- list(list(in_gads = c(), not_in_gads = c("ID", "v1")),
+              list(in_gads = c("ID", "v1"), not_in_gads = c()))
+  expect_error(errors_vSelect(in3, years = c(2011, 2016)),
+               "No variables from data base 2011 selected.")
+})
+
+
 ### trend gads without LEs
 test_that("Extract trend GADS errors", {
   # out <- getTrendGADS(filePath1 = "C:/Benjamin_Becker/02_Repositories/packages/eatGADS/tests/testthat/helper_dataBase.db", filePath2 = "C:/Benjamin_Becker/02_Repositories/packages/eatGADS/tests/testthat/helper_dataBase2.db", years = c(2012, 2018))

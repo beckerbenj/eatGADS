@@ -41,8 +41,8 @@ getTrendGADSOld <- function(filePath1, filePath2, lePath = NULL, vSelect = NULL,
   vSelect1 <- list(in_gads = vSelect)
   vSelect2 <- list(in_gads = vSelect)
 
-  vSelect1 <- check_vSelect(filePath1, vSelect = vSelect)
-  vSelect2 <- check_vSelect(filePath2, vSelect = vSelect)
+  vSelect1 <- check_vSelect(namesGADS(filePath1), vSelect = vSelect)
+  vSelect2 <- check_vSelect(namesGADS(filePath2), vSelect = vSelect)
   not_in_both_gads <- intersect(vSelect1$not_in_gads, vSelect2$not_in_gads)
   if(length(not_in_both_gads) > 0) stop("Variables ", not_in_both_gads, " are in neither of both data bases.")
   if(!length(vSelect1$in_gads) > 0) stop("No variables from first data base selected.")

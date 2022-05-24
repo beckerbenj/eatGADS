@@ -9,19 +9,6 @@ dfSAV <- import_spss(file = "helper_spss_missings.sav")
 
 control_caching <- FALSE
 
-### check
-test_that("check_keyStrcuture_TrendGADS", {
-  expect_silent(check_keyStrcuture_TrendGADS(filePath1 = "helper_dataBase.db", filePath2 = "helper_dataBase2.db"))
-  # checkTrendGADS(filePath1 = "tests/testthat/helper_dataBase3.db", filePath2 = "tests/testthat/helper_dataBase2.db")
-  expect_error(check_keyStrcuture_TrendGADS(filePath1 = "helper_dataBase3.db", filePath2 = "helper_dataBase2.db"), "Trend data bases must have the same primary key structure.")
-})
-
-test_that("check_vSelect", {
-  # check_vSelect("C:/Benjamin_Becker/02_Repositories/packages/eatGADS/tests/testthat/helper_dataBase.db", vSelect = c("ID1", "test2"))
-  out <- check_vSelect("helper_dataBase.db", vSelect = c("ID1", "test2"))
-  expect_equal(out, list(in_gads = "ID1", not_in_gads = "test2"))
-})
-
 
 ### trend gads without LEs
 test_that("Extract trend GADS", {
