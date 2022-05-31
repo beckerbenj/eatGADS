@@ -8,16 +8,18 @@
 #'@param target A \code{GADSdat} object.
 #'@param current A \code{GADSdat} object.
 #'@param metaExceptions Should certain meta data columns be excluded from the comparison?
+#'@param tolerance A numeric value greater than or equal to \code{0}. Differences smaller than \code{tolerance} are not reported.
+#'The default value is close to \code{1.5e-8}.
 #'
 #'@return Returns a list.
 #'
 #'
 #'@export
-equalGADS <- function(target, current, metaExceptions = NULL) {
+equalGADS <- function(target, current, metaExceptions = c("display_width", "labeled"), tolerance = sqrt(.Machine$double.eps)) {
   UseMethod("equalGADS")
 }
 #'@export
-equalGADS.GADSdat <- function(target, current, metaExceptions = NULL) {
+equalGADS.GADSdat <- function(target, current, metaExceptions = c("display_width", "labeled"), tolerance = sqrt(.Machine$double.eps)) {
   check_GADSdat(target)
   check_GADSdat(current)
   if(!(is.null(metaExceptions) || is.character(metaExceptions))) stop("'metaExceptions' must be NULL or a character vector.")
@@ -63,7 +65,7 @@ equalGADS.GADSdat <- function(target, current, metaExceptions = NULL) {
         out[["meta_data_differences"]] <- c(out[["meta_data_differences"]], i)
       }
     }
-    if(!identical(all.equal(target$dat[[i]], current$dat[[i]], scale = 1), TRUE)) {
+    if(!identical(all.equal(target$dat[[i]], current$dat[[i]], scale = 1, tolerance = tolerance), TRUE)) {
       out[["data_differences"]] <- c(out[["data_differences"]], i)
     }
   }

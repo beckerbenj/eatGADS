@@ -50,6 +50,18 @@ test_that("Compare two different GADSdat objects, large ID numbers",{
   expect_equal(out$data_differences, c("ID1"))
 })
 
+test_that("Compare two different GADSdat objects with varying tolerance",{
+  df1_2 <- df1
+  df1_2$dat$V1 <- c(3 + 1e-07, 5 + 1e-09)
+  out <- equalGADS(df1, df1_2)
+  expect_equal(out$data_differences, c("V1"))
+
+  df1_2 <- df1
+  df1_2$dat$V1 <- c(3 + 1e-07, 5 + 1e-09)
+  out <- equalGADS(df1, df1_2, tolerance = 0.00001)
+  expect_equal(out$data_differences, character())
+})
+
 
 test_that("Compare two GADSdat objects with metaExceptions",{
   df1_3 <- df1_2 <- df1

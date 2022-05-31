@@ -4,7 +4,12 @@
 \alias{equalGADS}
 \title{Test if Two \code{GADSdat} Objects are (Nearly) Equal}
 \usage{
-equalGADS(target, current, metaExceptions = NULL)
+equalGADS(
+  target,
+  current,
+  metaExceptions = c("display_width", "labeled"),
+  tolerance = sqrt(.Machine$double.eps)
+)
 }
 \arguments{
 \item{target}{A \code{GADSdat} object.}
@@ -12,6 +17,9 @@ equalGADS(target, current, metaExceptions = NULL)
 \item{current}{A \code{GADSdat} object.}
 
 \item{metaExceptions}{Should certain meta data columns be excluded from the comparison?}
+
+\item{tolerance}{A numeric value greater than or equal to \code{0}. Differences smaller than \code{tolerance} are not reported.
+The default value is close to \code{1.5e-8}.}
 }
 \value{
 Returns a list.

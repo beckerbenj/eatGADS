@@ -1,5 +1,6 @@
 # eatGADS 0.19.1.9000
 
+* a numeric tolerance can now be specified within `equalGADS()`
 * fixed warnings for `getTrendGADS()`
 * `inspectMetaDifferences()` for inspecting meta differences between two `GADSdats` and a single variable
 * `checkUniqueness2()` for faster checking if a variable is unique within an identifier variable
