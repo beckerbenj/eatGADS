@@ -179,3 +179,11 @@ char2fac <- function(dat, labels, vars, convertMiss) {
                                          paste(unordered_facs, collapse = ", "))
   dat
 }
+
+varLabels_as_labels <- function(dat, labels) {
+  for(i in names(dat)) {
+    varLabel <- labels[match(i, labels$varName), "varLabel"]
+    attr(dat[[i]], "label") <- varLabel
+  }
+  dat
+}

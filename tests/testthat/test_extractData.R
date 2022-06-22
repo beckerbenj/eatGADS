@@ -56,6 +56,14 @@ test_that("char2fac", {
   expect_equal(as.numeric(out$v1), c(1:3))
 })
 
+test_that("varlabels_as_labels", {
+  df <- varLabels_as_labels(testM$dat, labels = testM$labels)
+
+  expect_equal(attr(df$VAR1, "label"), "Variable 1")
+  expect_equal(attr(df$VAR3, "label"), "Variable 3")
+})
+
+
  # tests could be rewritten for char2fac
 test_that("Correct ordering of factors", {
   df <- data.frame(v1 = factor(c("z", "a", "b"), levels = c("z", "a", "b")),
