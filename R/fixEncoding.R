@@ -18,11 +18,11 @@
 #' fixEncoding(c("\U00C4pfel", "\U00C4PFEL", paste0("\U00DC", "ben"), paste0("\U00DC", "BEN")))
 #'
 #'@export
-fixEncoding <- function(x, input = c("other", "ASCII")) {
+fixEncoding <- function(x, input = c("other", "ASCII", "BRISE")) {
   UseMethod("fixEncoding")
 }
 #'@export
-fixEncoding.GADSdat <- function(x, input = c("other", "ASCII")) {
+fixEncoding.GADSdat <- function(x, input = c("other", "ASCII", "BRISE")) {
   check_GADSdat(x)
   GADSdat <- x
 
@@ -57,9 +57,10 @@ fixEncoding.GADSdat <- function(x, input = c("other", "ASCII")) {
 #https://www.loc.gov/preservation/digital/formats/fdd/fdd000469.shtml
 #https://github.com/tidyverse/haven/issues/615
 
+# BRISE has been added manually via https://www.cogsci.ed.ac.uk/~richard/utf-8.cgi?input=%C5%93&mode=char
 
 #'@export
-fixEncoding.character <- function(x, input = c("other", "ASCII")) {
+fixEncoding.character <- function(x, input = c("other", "ASCII", "BRISE")) {
   input <- match.arg(input)
   # https://resources.german.lsa.umich.edu/schreiben/unicode/
   lookup <- switch(input, other = data.frame(unicode = c("\U00DF", "\U00E4", "\U00F6", "\U00FC",
@@ -70,6 +71,13 @@ fixEncoding.character <- function(x, input = c("other", "ASCII")) {
                ASCII = data.frame(unicode = c("C\026", "C..\023", "C\034", "C..\\$", "C\\$",
                                               "C..6", "C6", "C..<", "C<", "C..8", "C\037", "\001", "\025", "\005"),
                                   substitute = c("Oe", "Ue", "Ue", "ae", "ae", "oe", "oe", "ue", "ue", "ss", "ss", "", "", "..."),
+                                  stringsAsFactors = FALSE),
+               BRISE = data.frame(unicode = c("\u00C3\u00BC", "\u00C3\u00A4", "\u00C3\u00B6",
+                                              "\u00C3\u201E", "\u00C3\u2013", "\u00C3\u0153",
+                                              "\u00C3\u0178"),
+                                  substitute = c("ue", "ae", "oe",
+                                                 "Ae", "Oe", "Ue",
+                                                 "ss"),
                                   stringsAsFactors = FALSE))
   lookup_caps <- lookup
   upper_in_lookup <- grepl("A|O|U|ss", lookup_caps$substitute)

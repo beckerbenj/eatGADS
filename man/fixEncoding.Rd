@@ -4,7 +4,7 @@
 \alias{fixEncoding}
 \title{Remove special characters.}
 \usage{
-fixEncoding(x, input = c("other", "ASCII"))
+fixEncoding(x, input = c("other", "ASCII", "BRISE"))
 }
 \arguments{
 \item{x}{A character vector or \code{GADSdat} object.}
