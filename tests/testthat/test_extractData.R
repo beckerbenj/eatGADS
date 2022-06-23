@@ -26,9 +26,14 @@ test_that("Warnings and errors for Extract Data",  {
 
 test_that("Extract data", {
   out <- suppressWarnings(extractData(testM))
-  expect_equal(out[, 1], c(1, NA, NA, 2))
+  comp <- c(1, NA, NA, 2)
+  attr(comp, "label") <- "Variable 1"
+  expect_equal(out[, 1], comp)
+
   out2 <- suppressWarnings(extractData(testM, convertMiss = FALSE))
-  expect_equal(out2[, 1], c(1, -99, -96, 2))
+  comp2 <- c(1, -99, -96, 2)
+  attr(comp2, "label") <- "Variable 1"
+  expect_equal(out2[, 1], comp2)
   expect_equal(typeof(out$VAR3), "double") ## tests if only missing codes are given, variable is nonetheless transformed to character
 })
 
@@ -149,14 +154,14 @@ test_that("Numerics are kept numeric with extract data", {
 
 test_that("ExtractData with DropPartialLabels = TRUE", {
   out <- extractData(testM, dropPartialLabels = FALSE)
-  expect_equal(out$VAR1, c("One", NA, NA, 2))
-  expect_equal(out$VAR2, c(1, 1, 1, 1))
+  expect_equal(as.character(out$VAR1), c("One", NA, NA, 2))
+  expect_equal(as.numeric(out$VAR2), c(1, 1, 1, 1))
 })
 
 test_that("ExtractData with some variables labels applied to (convertVariables argument)", {
   # Missing labels (but no variables in the data that show the 'no-conversion'!)
   out <- suppressWarnings(extractData(testM, convertVariables = c("VAR2", "VAR3")))
-  expect_equal(out$VAR1, c(1, NA, NA, 2))
+  expect_equal(as.numeric(out$VAR1), c(1, NA, NA, 2))
   expect_warning(extractData(testM, convertVariables = c()))
 
   # Two variables with value labels without missings
@@ -178,7 +183,9 @@ test_that("Extract data trend GADS", {
   out <- extractData(trend_gads)
   expect_equal(dim(out), c(6, 5))
   expect_equal(names(out), c("ID1", "V1", "V2", "V3", "year"))
-  expect_equal(out$year, c(rep(2012, 3), c(rep(2018, 3))))
+  comp <- c(rep(2012, 3), c(rep(2018, 3)))
+  attr(comp, "label") <- "Trendvariable, indicating the year of the assessment"
+  expect_equal(out$year, comp)
 
   ## convertVariables if some variables are not in both GADS
   out2 <- extractData(trend_gads, convertVariables = "V3")
@@ -195,7 +202,7 @@ test_that("Extract data trend GADS 3 MPs", {
   out <- extractData(gads_3mp)
   expect_equal(dim(out), c(180, 10))
   expect_equal(names(out), c("idstud", "gender", "dimension", "imp", "score", "traitLevel", "failMin", "passReg", "passOpt", "year"))
-  expect_equal(out$year, c(rep(2020, 60), rep(2015, 60), rep(2010, 60)))
+  expect_equal(as.numeric(out$year), c(rep(2020, 60), rep(2015, 60), rep(2010, 60)))
 })
 
 

@@ -50,5 +50,8 @@ extractDataOld.trend_GADSdat <- function(GADSdat, convertMiss = TRUE, convertLab
   }
 
   all_dat <- all_dat[, c(names(all_dat)[names(all_dat) != "year"], "year")]
+  # remove attributes (varLabels) (extractData has been changed)
+  all_dat <- all_dat[seq(nrow(all_dat)), ]
+
   all_dat
 }

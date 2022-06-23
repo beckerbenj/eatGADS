@@ -36,7 +36,7 @@ test_that("Combine mc and text",{
   expect_equal(test$labels[6, "varLabel"], "(recoded)")
   expect_equal(test$dat$mc_r, c(2, 4, 1, 1))
   test_dat <- extractData(test)
-  expect_equal(test_dat$mc_r, c("Ger", "Eng", "Aus", "Aus"))
+  expect_equal(as.character(test_dat[["mc_r"]]), c("Ger", "Eng", "Aus", "Aus"))
 })
 
 
@@ -45,7 +45,7 @@ test_that("Combine mc and text into old variables",{
   expect_false("mc_r" %in% names(test$dat))
   expect_equal(test$dat$mc, c(2, 4, 1, 1))
   test_dat <- extractData(test)
-  expect_equal(test_dat$mc, c("Ger", "Eng", "Aus", "Aus"))
+  expect_equal(as.character(test_dat$mc), c("Ger", "Eng", "Aus", "Aus"))
 })
 
 test_that("Combine mc and text into old variables via empty string",{
@@ -53,7 +53,7 @@ test_that("Combine mc and text into old variables via empty string",{
   expect_false("mc_r" %in% names(test$dat))
   expect_equal(test$dat$mc, c(2, 4, 1, 1))
   test_dat <- extractData(test)
-  expect_equal(test_dat$mc, c("Ger", "Eng", "Aus", "Aus"))
+  expect_equal(as.character(test_dat$mc), c("Ger", "Eng", "Aus", "Aus"))
 })
 
 
@@ -65,7 +65,7 @@ test_that("Combine mc and text with Missings on mcs",{
   test <- collapseMC_Text(mt_gads2, mc_var = "mc", text_var = "text", mc_code4text = "Aus")
   expect_equal(test$dat$mc_r, c(-8, 3, 1, 2))
   test_dat <- extractData(test)
-  expect_equal(test_dat$mc_r, c(NA, "Eng", "Aus", "Aus2"))
+  expect_equal(as.character(test_dat$mc_r), c(NA, "Eng", "Aus", "Aus2"))
 })
 
 
@@ -77,7 +77,7 @@ test_that("Combinations of mc_code4text and missing in text variable",{
   test <- collapseMC_Text(mt_gads2, mc_var = "mc", text_var = "text", mc_code4text = "other")
   expect_equal(test$dat$mc_r, c(3, 1, 1, 4))
   test_dat <- extractData(test)
-  expect_equal(test_dat$mc_r, c("other", "Aus", "Aus", "Aus2"))
+  expect_equal(as.character(test_dat$mc_r), c("other", "Aus", "Aus", "Aus2"))
 })
 
 
@@ -88,5 +88,5 @@ test_that("Combination of mc_code4text and labeled missing in text variable",{
   test <- collapseMC_Text(testMC, mc_var = "mc", text_var = "text", mc_code4text = "other")
   expect_equal(test$dat$mc_r, c(-9, 1, 2, -9, 4, 3, -9))
   test_dat <- extractData(test)
-  expect_equal(test_dat$mc_r, c(NA, "Ger", "Eng", NA, "Aus", "other", NA))
+  expect_equal(as.character(test_dat$mc_r), c(NA, "Ger", "Eng", NA, "Aus", "other", NA))
 })

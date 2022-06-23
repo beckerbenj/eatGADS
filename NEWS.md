@@ -1,5 +1,6 @@
 # eatGADS 0.19.1.9000
 
+* `extractData()` adds now all variable labels as a `label` attribute to the resulting `data.frame`
 * a numeric tolerance can now be specified within `equalGADS()`
 * fixed warnings for `getTrendGADS()`
 * `inspectMetaDifferences()` for inspecting meta differences between two `GADSdats` and a single variable

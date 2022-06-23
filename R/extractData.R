@@ -5,14 +5,14 @@
 #' Extract \code{data.frame} from a \code{GADSdat} object for analyses in \code{R}. For extracting meta data see \code{\link{extractMeta}}..
 #'
 #' A \code{GADSdat} object includes actual data (\code{GADSdat$dat}) and the corresponding meta data information
-#' (\code{GADSdat$labels}). \code{extractData} extracts the data and applies relevant meta data (missing conversion, value labels),
-#' so the data can be used for analyses in \code{R}.
+#' (\code{GADSdat$labels}). \code{extractData} extracts the data and applies relevant meta data on value level (missing conversion, value labels),
+#' so the data can be used for analyses in \code{R}. Variable labels are retained as \code{label} attributes on column level.
 #'
 #' If \code{factor} are extracted via \code{convertLabels == "factor"}, an attempt is made to preserve the underlying integers.
 #' If this is not possible, a warning is issued.
 #' As \code{SPSS} has almost no limitations regarding the underlying values of labeled
-#' integers and \code{R}'s \code{factor} format is very strict (no \code{0}, only integers increasing by \code{+ 1}), this procedure can lead to
-#' frequent problems.
+#' integers and \code{R}'s \code{factor} format is very strict (no \code{0}, only integers increasing by \code{+ 1}),
+#' this procedure can lead to frequent problems.
 #'
 #'@param GADSdat A \code{GADSdat} object.
 #'@param convertMiss Should values coded as missing values be recoded to \code{NA}?
@@ -48,6 +48,8 @@ extractData.GADSdat <- function(GADSdat, convertMiss = TRUE, convertLabels = "ch
   ## labels
   dat <- labels2values(dat = dat, labels = labels, convertLabels = convertLabels, convertMiss = convertMiss,
                        dropPartialLabels = dropPartialLabels, convertVariables = convertVariables)
+  ## varLabels
+  dat <- varLabels_as_labels(dat = dat, labels = labels)
   dat
 }
 
@@ -183,7 +185,7 @@ char2fac <- function(dat, labels, vars, convertMiss) {
 varLabels_as_labels <- function(dat, labels) {
   for(i in names(dat)) {
     varLabel <- labels[match(i, labels$varName), "varLabel"]
-    attr(dat[[i]], "label") <- varLabel
+    if(!is.na(varLabel)) attr(dat[[i]], "label") <- varLabel
   }
   dat
 }

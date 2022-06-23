@@ -26,6 +26,7 @@ test_that("Extract data trend GADS", {
   out <- extractDataOld(trend_gads)
   expect_equal(dim(out), c(6, 5))
   expect_equal(names(out), c("ID1", "V1", "V2", "V3", "year"))
+
   expect_equal(out$year, c(rep(2012, 3), c(rep(2018, 3))))
 
   ## convertVariables if some variables are not in both GADS
