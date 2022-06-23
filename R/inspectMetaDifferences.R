@@ -53,7 +53,7 @@ inspectMetaDifferences <- function(varName, GADSdat1, GADSdat2) {
 
   valDiff <- NULL
   if(!identical(metaVal1, metaVal2)) {
-    all_values <- unique(na.omit(c(metaVal1$value, metaVal2$value)))
+    all_values <- unique(stats::na.omit(c(metaVal1$value, metaVal2$value)))
     for(val in all_values) {
       #browser()
       meta_row1 <- metaVal1[metaVal1$value == val, ]

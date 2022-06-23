@@ -8,26 +8,34 @@ extractData(
   GADSdat,
   convertMiss = TRUE,
   convertLabels = "character",
-  dropPartialLabels = TRUE,
-  convertVariables = NULL
+  convertVariables = NULL,
+  dropPartialLabels = TRUE
 )
 }
 \arguments{
 \item{GADSdat}{A \code{GADSdat} object.}
 
-\item{convertMiss}{Should values coded as missing values be recoded to \code{NA}?}
+\item{convertMiss}{Should values tagged as missing values be recoded to \code{NA}?}
 
-\item{convertLabels}{If \code{"numeric"}, values remain as numerics. If \code{"factor"} or \code{"character"}, values are recoded to their labels. Corresponding variable type is applied.}
+\item{convertLabels}{If \code{"numeric"}, values remain as numerics. If \code{"factor"} or
+\code{"character"}, values are recoded to their labels. Corresponding variable type is applied.}
 
-\item{dropPartialLabels}{Should value labels for partially labeled variables be dropped? If \code{TRUE}, the partial labels will be dropped. If \code{FALSE}, the variable will be converted to the class specified in \code{convertLabels}.}
+\item{convertVariables}{Character vector of variables names, which labels should be applied to.
+All other variables remain as numeric variables in the data.
+If not specified [default], value labels are applied to all variables for which labels are available.
+Variable names not in the actual \code{GADS} are silently dropped.}
 
-\item{convertVariables}{Character vector of variables names, which labels should be applied to. If not specified (default), value labels are applied to all variables for which labels are available. Variable names not in the actual GADS are silently dropped.}
+\item{dropPartialLabels}{Should value labels for partially labeled variables be dropped?
+If \code{TRUE}, the partial labels will be dropped. If \code{FALSE}, the variable will be converted
+to the class specified in \code{convertLabels}.}
 }
 \value{
 Returns a data frame.
 }
 \description{
-Extract \code{data.frame} from a \code{GADSdat} object for analyses in \code{R}. For extracting meta data see \code{\link{extractMeta}}..
+Extract \code{data.frame} from a \code{GADSdat} object for analyses in \code{R}. Value labels can be
+ selectively applied via defining \code{convertLabels} and \code{covertVariables}.
+ For extracting meta data see \code{\link{extractMeta}}.
 }
 \details{
 A \code{GADSdat} object includes actual data (\code{GADSdat$dat}) and the corresponding meta data information
@@ -47,7 +55,14 @@ dat <- extractData(pisa)
 # convert labeled variables to factors
 dat <- extractData(pisa, convertLabels = "factor")
 
-# convert only some variables to factor
+# convert only some variables to factor, all others remain numeric
 dat <- extractData(pisa, convertLabels = "factor", convertVariables = c("schtype", "ganztag"))
+
+# convert only some variables to character, all others remain numeric
+dat <- extractData(pisa, convertLabels = "factor", convertVariables = c("schtype", "ganztag"))
+# schtype is now character
+table(dat$schtype)
+# schtype remains numeric
+table(dat$gender)
 
 }
