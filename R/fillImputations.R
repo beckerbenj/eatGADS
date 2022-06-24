@@ -4,7 +4,7 @@
 #'
 #' Fill imputed values in a imputed \code{GADSdat_imp} object with original, not imputed values from a \code{GADSdat}.
 #'
-#' This function only fills in missing values in the imputed variable from the unimputed variable. It provides parts
+#' This function only fills in missing values in the imputed variable from the not imputed variable. It provides parts
 #' of the functionality of \code{subImputations} but does not check whether values have been mistakenly imputed. However,
 #' performance is increased substantially.
 #'

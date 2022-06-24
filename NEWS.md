@@ -1,4 +1,4 @@
-# eatGADS 0.19.1.9000
+# eatGADS 0.20.0
 
 * `extractData()` adds now all variable labels as a `label` attribute to the resulting `data.frame`
 * a numeric tolerance can now be specified within `equalGADS()`
