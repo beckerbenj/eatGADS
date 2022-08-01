@@ -3,8 +3,13 @@
 #' Remove special characters.
 #'
 #' Remove special characters from a character vector or a \code{GADSdat} object.
-#' Also suitable to fix encoding problems of a character vector or a \code{GADSdat} object,
-#' which was encoded presumably using \code{UTF-8} and imported using \code{ASCII} encoding.
+#' Also suitable to fix encoding problems of a character vector or a \code{GADSdat} object. See details for available options.
+#'
+#' The option \code{"other"} replaces correctly encoded special signs.
+#' The option \code{"ASCII"} works for strings which were encoded presumably using \code{UTF-8} and imported using \code{ASCII} encoding.
+#' The option \code{"windows1250"} works for strings which were encoded presumably using \code{UTF-8}
+#' and imported using \code{windows-1250} encoding.
+#' The option \code{"BRISE"} covers a unique case used at the \code{FDZ at IQB}.
 #'
 #' If entries are all upper case, special characters are also transformed to all upper case (e.g., \code{"AE"} instead
 #' of \code{"Ae"}).
@@ -18,11 +23,11 @@
 #' fixEncoding(c("\U00C4pfel", "\U00C4PFEL", paste0("\U00DC", "ben"), paste0("\U00DC", "BEN")))
 #'
 #'@export
-fixEncoding <- function(x, input = c("other", "ASCII", "BRISE")) {
+fixEncoding <- function(x, input = c("other", "ASCII", "windows1250", "BRISE")) {
   UseMethod("fixEncoding")
 }
 #'@export
-fixEncoding.GADSdat <- function(x, input = c("other", "ASCII", "BRISE")) {
+fixEncoding.GADSdat <- function(x, input = c("other", "ASCII", "windows1250", "BRISE")) {
   check_GADSdat(x)
   GADSdat <- x
 
@@ -60,7 +65,7 @@ fixEncoding.GADSdat <- function(x, input = c("other", "ASCII", "BRISE")) {
 # BRISE has been added manually via https://www.cogsci.ed.ac.uk/~richard/utf-8.cgi?input=%C5%93&mode=char
 
 #'@export
-fixEncoding.character <- function(x, input = c("other", "ASCII", "BRISE")) {
+fixEncoding.character <- function(x, input = c("other", "ASCII", "windows1250", "BRISE")) {
   input <- match.arg(input)
   # https://resources.german.lsa.umich.edu/schreiben/unicode/
   lookup <- switch(input, other = data.frame(unicode = c("\U00DF", "\U00E4", "\U00F6", "\U00FC",
@@ -71,6 +76,13 @@ fixEncoding.character <- function(x, input = c("other", "ASCII", "BRISE")) {
                ASCII = data.frame(unicode = c("C\026", "C..\023", "C\034", "C..\\$", "C\\$",
                                               "C..6", "C6", "C..<", "C<", "C..8", "C\037", "\001", "\025", "\005"),
                                   substitute = c("Oe", "Ue", "Ue", "ae", "ae", "oe", "oe", "ue", "ue", "ss", "ss", "", "", "..."),
+                                  stringsAsFactors = FALSE),
+               windows1250 = data.frame(unicode = c("\u0102\u00A4", "\u0102\u00B6", "\u0102\u013D",
+                                              "\u0102\u201E", "\u0102\u2013", "\u0102\u015B",
+                                              "\u0102\u017A"),
+                                  substitute = c("ae", "oe", "ue",
+                                                 "Ae", "Oe", "Ue",
+                                                 "ss"),
                                   stringsAsFactors = FALSE),
                BRISE = data.frame(unicode = c("\u00C3\u00BC", "\u00C3\u00A4", "\u00C3\u00B6",
                                               "\u00C3\u201E", "\u00C3\u2013", "\u00C3\u0153",
