@@ -1,3 +1,8 @@
+# eatGADS 0.20.0.9000
+* `fixEncoding()` now supports imports of `windows-1250` imported files via `import_spss()` with `UTF-8` encoding
+* `import_spss()` now transforms `DATEATIME` variables to character, assigning an appropriate format
+
+
 # eatGADS 0.20.0
 
 * `extractData()` adds now all variable labels as a `label` attribute to the resulting `data.frame`

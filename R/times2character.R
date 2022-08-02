@@ -10,6 +10,7 @@ times2character <- function(rawDat) {
 #'@export
 times2character.savDat<- function(rawDat) {
   varClass <- unlist(lapply(rawDat, extract_attribute, attr_name = "format.spss"))
+  #if("vDatetime" %in% names(rawDat)) browser()
 
   hms_vars <- names(varClass)[grepl("^TIME", varClass)]
   for(hms_var in hms_vars) {
@@ -43,7 +44,7 @@ times2character.savDat<- function(rawDat) {
     attributes(rawDat[[hms_var]]) <- new_attributes
   }
 
-  date_vars <- names(varClass)[grepl("^DATE", varClass)]
+  date_vars <- names(varClass)[grepl("^DATE[^TIME]", varClass)]
   for(date_var in date_vars) {
     old_attributes <- attributes(rawDat[[date_var]])
     new_attributes <- old_attributes
@@ -64,6 +65,29 @@ times2character.savDat<- function(rawDat) {
 
     rawDat[[date_var]] <- new_var
     attributes(rawDat[[date_var]]) <- new_attributes
+  }
+
+  datetime_vars <- names(varClass)[grepl("^DATETIME", varClass)]
+  for(datetime_var in datetime_vars) {
+    old_attributes <- attributes(rawDat[[datetime_var]])
+    new_attributes <- old_attributes
+
+    #if("haven_labelled" %in% old_attributes[["class"]]) stop("Labelled dates are currently not supported by eatGADS.")
+    if("haven_labelled" %in% old_attributes[["class"]]) {
+      warning("Value labels and missing codes for 'DATE' variables are not supported by eatGADS and current implementation is experimental. Missing values are converted to NA and labels and missing codes are dropped from meta data for variable ", datetime_var)
+      na_values <- as.Date(as.numeric(new_attributes$na_values)/86400, origin = "1582-10-14") ## label conversion
+      new_var <- as.Date(haven::zap_labels(rawDat[[datetime_var]]), origin = "1970-01-01") ## data conversion
+      new_var[new_var %in% na_values] <- NA
+      new_var <- as.character(new_var)
+      new_attributes[["labels"]] <- new_attributes[["na_values"]] <- NULL
+    } else {
+      new_var <- as.character(rawDat[[datetime_var]])
+    }
+    new_attributes[["format.spss"]] <- gsub("^DATETIME", replacement = "A", new_attributes[["format.spss"]])
+    new_attributes[["class"]] <- NULL
+
+    rawDat[[datetime_var]] <- new_var
+    attributes(rawDat[[datetime_var]]) <- new_attributes
   }
 
   rawDat
