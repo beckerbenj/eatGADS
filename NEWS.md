@@ -4,6 +4,7 @@
 * `import_spss()` now transforms `DATEATIME` variables to character, assigning an appropriate format
 * `cloneVariable()` for duplicating an existing variable under a new name
 * `createVariable()` for creating a new, empty variable
+* `changeMissings()` now does no longer add arbitrary value labels for newly tagged values
 
 
 # eatGADS 0.20.0

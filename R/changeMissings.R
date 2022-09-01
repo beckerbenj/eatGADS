@@ -35,7 +35,8 @@ changeMissings <- function(GADSdat, varName, value, missings) {
 #'@export
 changeMissings.GADSdat <- function(GADSdat, varName, value, missings) {
   checkMissingsInput(varName = varName, value = value, missings = missings, labels = GADSdat$labels)
-  changeTable <- getChangeMeta(GADSdat, level = "value")
+  changeTable_ori <- getChangeMeta(GADSdat, level = "value")
+  changeTable <- changeTable_ori
 
   existing_values <- value[value %in% changeTable[changeTable$varName == varName, "value"]]
   existing_missings <- missings[value %in% changeTable[changeTable$varName == varName, "value"]]
@@ -50,7 +51,7 @@ changeMissings.GADSdat <- function(GADSdat, varName, value, missings) {
     changeTable[changeTable$varName == varName & changeTable$value == value[i], "missings_new"] <- missings[i]
   }
   for(i in seq_along(new_values)) {
-    change_row <- changeTable[changeTable$varName == varName, ][1, ]
+    change_row <- changeTable_ori[changeTable_ori$varName == varName, ][1, ]
 
     # if no other value labels exist in the first place, omit original row
     if(i == 1 && nrow(changeTable[changeTable$varName == varName, ]) == 1) {

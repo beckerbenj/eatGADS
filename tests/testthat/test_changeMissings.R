@@ -23,6 +23,7 @@ test_that("changemissings wrapper", {
 
 test_that("changemissings for adding value labels", {
   out <- changeMissings(dfSAV, varName = "VAR1", value = 2, missings = "miss")
+  #out <- changeMissings(dfSAV, varName = "VAR1", value = c(2, 1), missings = c("miss", "miss"))
   expect_equal(nrow(out$labels[out$labels$varName == "VAR1", ]), 4)
   expect_equal(out$labels[4, "missings"], "miss")
   expect_equal(out$labels[4, "value"], 2)
@@ -53,3 +54,17 @@ test_that("changemissings for adding value labels to unlabeled variable", {
   expect_equal(out$labels[3, "value"], 2)
   expect_equal(out$dat, dfUn$dat)
 })
+
+test_that("Adding value label bug", {
+  dat_ori <- data.frame(ID = 1:5,
+                        var1 = c(1, 3, 4, 1, -99),
+                        var2 = c(3, 2, 4, 1, -99),
+                        char1 = c("hello", "hi", "hallo", "hoi", "hi"),
+                        fac1 = factor(c("engl", "ger", "ger", "ita", "fr")))
+  dat <- import_DF(dat_ori)
+
+  dat <- changeValLabels(dat, varName = "var1", value = c(1, 2), valLabel = c("Value label 1", "Value label 2"))
+  dat2 <- changeMissings(dat, varName = "var1", value = c(1, -99), missings = c("valid", "miss"))
+  expect_equal(dat2$labels[2, "valLabel"], NA_character_)
+})
+
