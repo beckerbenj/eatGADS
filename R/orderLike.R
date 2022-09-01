@@ -1,4 +1,4 @@
-#### Order like a character vector
+####
 #############################################################################
 #' Order the variables in a \code{GADSdat}.
 #'
