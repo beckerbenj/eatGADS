@@ -3,6 +3,7 @@
 * `fixEncoding()` now supports imports of `windows-1250` imported files via `import_spss()` with `UTF-8` encoding
 * `import_spss()` now transforms `DATEATIME` variables to character, assigning an appropriate format
 * `cloneVariable()` for duplicating an existing variable under a new name
+* `createVariable()` for creating a new, empty variable
 
 
 # eatGADS 0.20.0
