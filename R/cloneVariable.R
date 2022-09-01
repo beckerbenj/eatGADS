@@ -13,8 +13,8 @@
 #'@return Returns a \code{GADSdat}.
 #'
 #'@examples
-#' # duplicate the variable
-#' pisa_new <- cloneVariable(pisa, "test")
+#' # duplicate the variable schtype
+#' pisa_new <- cloneVariable(pisa, varName = "schtype", new_varName = "schtype_new")
 #'
 #'@export
 cloneVariable <- function(GADSdat, varName, new_varName) {

@@ -23,7 +23,7 @@ Clone a variable as part of a \code{GADSdat} object.
 The variable is simply duplicated and assigned a new name.
 }
 \examples{
-# duplicate the variable
-pisa_new <- cloneVariable(pisa, "test")
+# duplicate the variable schtype
+pisa_new <- cloneVariable(pisa, varName = "schtype", new_varName = "schtype_new")
 
 }
