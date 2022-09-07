@@ -27,7 +27,7 @@ times2character.savDat<- function(rawDat) {
     #if(!is.null(old_attributes[["na_values"]])) new_attributes[["na_values"]] <- as.character(hms::as_hms(unname(old_attributes[["na_values"]])))
 
     if(!is.null(new_attributes[["labels"]]) || !is.null(new_attributes[["na_values"]])) {
-      warning("Value labels and missing codes for 'TIMES' variables are not supported by eatGADS. Missing values are converted to NA and labels and missing codes are dropped from meta data for variable ", hms_var)
+      warning("Value labels and missing codes for 'TIMES' variables are not supported by eatGADS. Missing values are converted to NA and labels and missing codes are dropped from meta data for variable '", hms_var, "'.")
     }
     new_attributes[["labels"]] <- new_attributes[["na_values"]] <- NULL
 
@@ -51,7 +51,7 @@ times2character.savDat<- function(rawDat) {
 
     #if("haven_labelled" %in% old_attributes[["class"]]) stop("Labelled dates are currently not supported by eatGADS.")
     if("haven_labelled" %in% old_attributes[["class"]]) {
-      warning("Value labels and missing codes for 'DATE' variables are not supported by eatGADS and current implementation is experimental. Missing values are converted to NA and labels and missing codes are dropped from meta data for variable ", date_var)
+      warning("Value labels and missing codes for 'DATE' variables are not supported by eatGADS and current implementation is experimental. Missing values are converted to NA and labels and missing codes are dropped from meta data for variable '", date_var, "'.")
       na_values <- as.Date(as.numeric(new_attributes$na_values)/86400, origin = "1582-10-14") ## label conversion
       new_var <- as.Date(haven::zap_labels(rawDat[[date_var]]), origin = "1970-01-01") ## data conversion
       new_var[new_var %in% na_values] <- NA
@@ -68,15 +68,20 @@ times2character.savDat<- function(rawDat) {
   }
 
   datetime_vars <- names(varClass)[grepl("^DATETIME", varClass)]
+  #datetime_var <- datetime_vars[3]
+  #browser()
+
   for(datetime_var in datetime_vars) {
     old_attributes <- attributes(rawDat[[datetime_var]])
     new_attributes <- old_attributes
 
     #if("haven_labelled" %in% old_attributes[["class"]]) stop("Labelled dates are currently not supported by eatGADS.")
     if("haven_labelled" %in% old_attributes[["class"]]) {
-      warning("Value labels and missing codes for 'DATE' variables are not supported by eatGADS and current implementation is experimental. Missing values are converted to NA and labels and missing codes are dropped from meta data for variable ", datetime_var)
-      na_values <- as.Date(as.numeric(new_attributes$na_values)/86400, origin = "1582-10-14") ## label conversion
-      new_var <- as.Date(haven::zap_labels(rawDat[[datetime_var]]), origin = "1970-01-01") ## data conversion
+      warning("Value labels and missing codes for 'DATE' variables are not supported by eatGADS and current implementation is experimental. Missing values are converted to NA and labels and missing codes are dropped from meta data for variable '", datetime_var, "'.")
+      na_values <- as.POSIXct(as.numeric(new_attributes$na_values), origin = "1582-10-14 00:00:00", tz = "GMT") ## label conversion
+      new_var <- as.POSIXct(as.numeric(haven::zap_labels(rawDat[[datetime_var]])),
+                            origin = "1970-01-01 00:00:00", tz = "GMT") ## data conversion
+      #new_var <- as.POSIXct(as.numeric(haven::zap_labels(rawDat[[datetime_var]])), origin = "1970-01-01 00:00:00") ## data conversion
       new_var[new_var %in% na_values] <- NA
       new_var <- as.character(new_var)
       new_attributes[["labels"]] <- new_attributes[["na_values"]] <- NULL
