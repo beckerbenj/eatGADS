@@ -67,7 +67,8 @@ changeValLabels.all_GADSdat <- function(GADSdat, varName, value, valLabel) {
 }
 
 checkValLabelInput <- function(varName, value, valLabel, labels) {
-  if(!is.character(varName) || !length(varName) == 1) stop("varName is not a character vector of length 1.")
+  check_single_varName(varName)
+  if(!is.character(varName) || !length(varName) == 1) stop("'varName' is not a character vector of length 1.")
   if(!varName %in% labels$varName) stop("varName is not a variable name in the GADSdat.")
   if(length(value) != length(valLabel)) stop("value and valLabel are not of identical length.", call. = FALSE)
   return()
