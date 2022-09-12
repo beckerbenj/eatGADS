@@ -2,7 +2,7 @@
 % Please edit documentation in R/insertVariable.R
 \name{insertVariable}
 \alias{insertVariable}
-\title{Order the variables in a \code{GADSdat}.}
+\title{Reorder a single variable in a \code{GADSdat}.}
 \usage{
 insertVariable(GADSdat, var, varBefore)
 }
@@ -17,8 +17,13 @@ insertVariable(GADSdat, var, varBefore)
 Returns a \code{GADSdat} object.
 }
 \description{
-Order the variables in a \code{GADSdat} according to a character vector. If there are discrepancies between the two sets, a warning is issued.
+Reorder a single variables in a \code{GADSdat}. The variable (\code{var}) can be inserted right after another variable (\code{varBefore}).
 }
 \details{
-The variables in the \code{dat} and in the \code{labels} section are ordered. Variables not contained in the character vector are moved to the end of the data.
+The variables in the \code{dat} and in the \code{labels} section are ordered. For reordering the whole \code{GADSdat}, see
+\code{\link{orderLike}}.
+}
+\examples{
+pisa2 <- insertVariable(pisa, var = "migration", varBefore = "idclass")
+
 }

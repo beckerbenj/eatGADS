@@ -5,7 +5,8 @@
 * `cloneVariable()` for duplicating an existing variable under a new name
 * `createVariable()` for creating a new, empty variable
 * `changeMissings()` now does no longer add arbitrary value labels for newly tagged values
-
+* `insertVariable()` for changing the position of a variable in the data set
+* `autoRecode()` for automatically recoding (numerical) variables
 
 # eatGADS 0.20.0
 

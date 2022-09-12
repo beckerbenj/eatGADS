@@ -79,7 +79,7 @@ applyLookup.GADSdat <- function(GADSdat, lookup, suffix = NULL) {
     old_nam <- nam
     if(!is.null(suffix)) {
       nam <- paste0(nam, suffix)
-      rec_df[[nam]] <- rec_df[[old_nam]] # initialise variable to allow incomplete recodes
+      rec_df[[nam]] <- rec_df[[old_nam]] # initialize variable to allow incomplete recodes
       names(sub_lu)[1] <- nam
     }
     rec_dt <- data.table::as.data.table(rec_df)
