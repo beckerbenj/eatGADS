@@ -7,6 +7,7 @@
 * `changeMissings()` now does no longer add arbitrary value labels for newly tagged values
 * `insertVariable()` for changing the position of a variable in the data set
 * `autoRecode()` for automatically recoding (numerical) variables
+* bug fix in `checkUniqueness2()` for cases with differing numbers of cases per imputed data set
 
 # eatGADS 0.20.0
 

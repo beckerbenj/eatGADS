@@ -20,12 +20,12 @@ Returns a logical of length one.
 }
 \description{
 Function to check if a variable is unique for all cases of an identifier variable. This is a fast and more efficient version of
-\code{\link{checkUniqueness}} which always returns a logical of length one.
+\code{\link{checkUniqueness}} which always returns a logical, non missing value of length one.
 }
 \details{
 For example if missing values are multiple imputed and data is stored in a long format, checking the uniqueness of a variable
 within an identifier can be tricky. This function automates this task via reshaping the data into wide format and testing equality
-among the reshaped variables. . Similar functionality (via matrices) is covered by \code{lme4::isNested},
+among the reshaped variables. Similar functionality (via matrices) is covered by \code{lme4::isNested},
 which is more general and performs similarly.
 }
 \examples{

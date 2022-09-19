@@ -54,6 +54,8 @@ long_df_err <- data.table::data.table(id = sort(rep(1:l, 1)),
                                   v1 = sort(rep(1:l, 1)),
                                   imp = rep(1, l))
 
+long_df_uneven <- long_df[1:200, ]
+
 test_that("fast Version: errors", {
   expect_message(out <- checkUniqueness2(long_df_err, varName = "v1", idVar = "id", impVar = "imp"),
                "'idVar' is unique per row in 'GADSdat' and checking for uniqueness is obsolete.")
@@ -75,8 +77,15 @@ test_that("fast Version: Correct flagging and output", {
   expect_false(out)
 })
 
+test_that("fast Version: different input length", {
+  out <- checkUniqueness2(long_df_uneven, varName = "v1", idVar = "id", impVar = "imp")
+  expect_true(out)
+  ## what should the output be? -> call SW; why is there length output = 2 in Julias example
+})
+
+
 test_that("fast Version: GADSdat", {
-  long_gads <- import_DF(long_df)
+  long_gads <- import_DF(long_df[1:150, ])
   out <- checkUniqueness2(long_gads, varName = "v1", idVar = "id", impVar = "imp")
   expect_true(out)
 })

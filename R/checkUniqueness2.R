@@ -3,11 +3,11 @@
 #' Check uniqueness of a variable.
 #'
 #' Function to check if a variable is unique for all cases of an identifier variable. This is a fast and more efficient version of
-#' \code{\link{checkUniqueness}} which always returns a logical of length one.
+#' \code{\link{checkUniqueness}} which always returns a logical, non missing value of length one.
 #'
 #' For example if missing values are multiple imputed and data is stored in a long format, checking the uniqueness of a variable
 #' within an identifier can be tricky. This function automates this task via reshaping the data into wide format and testing equality
-#' among the reshaped variables. . Similar functionality (via matrices) is covered by \code{lme4::isNested},
+#' among the reshaped variables. Similar functionality (via matrices) is covered by \code{lme4::isNested},
 #' which is more general and performs similarly.
 #'
 #'@param GADSdat \code{GADSdat} object imported via \code{eatGADS}.
@@ -48,7 +48,6 @@ checkUniqueness2.data.frame <- function(GADSdat, varName, idVar, impVar) {
     return(TRUE)
   }
 
-  #browser()
   form <- stats::as.formula(paste0(idVar, " ~ ", impVar))
   subdat <- dat[, c(idVar, varName, impVar), with = FALSE]
   wide <- data.table::dcast(subdat, formula = form, value.var = varName)
@@ -57,7 +56,10 @@ checkUniqueness2.data.frame <- function(GADSdat, varName, idVar, impVar) {
   imp_num <- length(unique(dat[[impVar]]))
   if(imp_num < 2)  stop("'impVar' must be an imputation variable with at least two different values.")
   log_list <- sapply(3:(imp_num+1), function(x) {
-    all(wide[[2]] == wide[[x]])
+    #browser()
+    wide_sub <- wide[, c(2, x), with = FALSE]
+    wide_sub <- na.omit(wide_sub)
+    all(wide_sub[[1]] == wide_sub[[2]])
   })
   all(log_list)
 }
