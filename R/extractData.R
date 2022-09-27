@@ -169,7 +169,7 @@ na_omit <- function(vec) {
 }
 
 # convert characters to factor if specified (keep ordering if possible)
-char2fac <- function(dat, labels, vars, convertMiss) {
+char2fac <- function(dat, labels, vars, convertMiss, ordered = FALSE) {
   partially_labeled <- unordered_facs <- vars
   for(i in vars) {
     fac_meta <- labels[labels$varName == i & (is.na(labels$missings) | labels$missings != "miss")  , c("value", "valLabel")]
@@ -186,7 +186,7 @@ char2fac <- function(dat, labels, vars, convertMiss) {
       partially_labeled <- partially_labeled[partially_labeled != i]
       if(all(fac_meta$value == seq(nrow(fac_meta)))) unordered_facs <- unordered_facs[unordered_facs != i]
 
-      dat[, i] <- factor(dat[, i], levels = fac_meta$valLabel)
+      dat[, i] <- factor(dat[, i], levels = fac_meta$valLabel, ordered = ordered)
     }
   }
 

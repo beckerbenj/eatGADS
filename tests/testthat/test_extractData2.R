@@ -1,6 +1,4 @@
 
-# load data with missings
-# testM <- import_spss(file = "tests/testthat/helper_spss_missings.sav")
 # load(file = "tests/testthat/helper_data.rda")
 # testM <- import_spss("tests/testthat/helper_spss_missings.sav")
 testM <- import_spss("helper_spss_missings.sav")
@@ -20,7 +18,9 @@ testM2$labels$value <- as.numeric(testM2$labels$value)
 test_that("Warnings and errors for Extract Data",  {
   expect_error(extractData2(testM, labels2character = c("VAR1", "VAR3"), labels2factor = c("VAR1", "VAR3")),
                "The following variables are both in 'labels2character' and 'labels2factor': VAR1, VAR3")
-  w <- capture_warnings(extractData2(testM))
+  expect_error(extractData2(testM, labels2ordered = c("VAR1", "VAR3"), labels2factor = c("VAR1", "VAR3")),
+               "The following variables are both in 'labels2ordered' and 'labels2factor': VAR1, VAR3")
+  w <- capture_warnings(extractData2(testM, labels2character = namesGADS(testM)))
   expect_equal(w[[1]], "Variable VAR1 is partially labeled. Value labels will be dropped for this variable.\nLabeled values are: 1")
   expect_equal(w[[2]], "Variable VAR2 is partially labeled. Value labels will be dropped for this variable.\nLabeled values are: -96")
 })
@@ -51,6 +51,18 @@ test_that("Extract data for strings into factors", {
   expect_equal(out$Var_char2, as.factor(c("b_value", "b_value", "b_value", "b_value")))
 })
 
+test_that("Extract data for strings into factors and ordered", {
+  testM3 <- cloneVariable(testM2, varName = "Var_char2", new_varName = "Var_char3")
+
+  out <- suppressWarnings(extractData2(testM3, labels2character = NULL, labels2factor = "Var_char3", labels2ordered = "Var_char2"))
+  expect_true(is.character(out$Var_char))
+  expect_true(is.ordered(out$Var_char2))
+  expect_true(is.factor(out$Var_char3))
+  expect_false(is.ordered(out$Var_char3))
+  expect_equal(out$Var_char2, as.ordered(c("b_value", "b_value", "b_value", "b_value")))
+})
+
+
 test_that("char2fac", {
   df <- data.frame(v1 = factor(c("z", "a", "b"), levels = c("z", "a", "b")),
                    stringsAsFactors = TRUE)
@@ -60,6 +72,11 @@ test_that("char2fac", {
   out <- char2fac(dat, labels = gads$labels, vars = "v1", convertMiss = TRUE)
   expect_true(is.factor(out$v1))
   expect_equal(as.numeric(out$v1), c(1:3))
+
+  out2 <- char2fac(dat, labels = gads$labels, vars = "v1", convertMiss = TRUE, ordered = TRUE)
+  expect_true(is.factor(out2$v1))
+  expect_true(is.ordered(out2$v1))
+  expect_equal(as.numeric(out2$v1), c(1:3))
 })
 
 test_that("varlabels_as_labels", {
@@ -150,13 +167,15 @@ mixed_values <- new_GADSdat(dat = data.frame(x = 0, y = 1, stringsAsFactors = FA
 
 ## probably outdated, as strings are no longer supported in value column
 test_that("Numerics are kept numeric with extract data", {
-  expect_equal(extractData2(mixed_values), data.frame(x = "lab", y = "lab", stringsAsFactors = FALSE))
+  expect_equal(extractData2(mixed_values, labels2character = namesGADS(mixed_values)),
+               data.frame(x = "lab", y = "lab", stringsAsFactors = FALSE))
   mixed_values$labels$valLabel <- c(99, 99)
-  expect_equal(extractData2(mixed_values), data.frame(x = 99, y = 99, stringsAsFactors = FALSE))
+  expect_equal(extractData2(mixed_values, labels2character = namesGADS(mixed_values)),
+               data.frame(x = 99, y = 99, stringsAsFactors = FALSE))
 })
 
 test_that("extractData2 with DropPartialLabels = TRUE", {
-  out <- extractData2(testM, dropPartialLabels = FALSE)
+  out <- extractData2(testM, dropPartialLabels = FALSE, labels2character = namesGADS(testM))
   expect_equal(as.character(out$VAR1), c("One", NA, NA, 2))
   expect_equal(as.numeric(out$VAR2), c(1, 1, 1, 1))
 })
