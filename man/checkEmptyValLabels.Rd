@@ -36,11 +36,11 @@ Check value labels for (a) value labels with no occurrence in the data (\code{ch
 }
 \section{Functions}{
 \itemize{
-\item \code{checkEmptyValLabels}: check for superfluous value labels
+\item \code{checkEmptyValLabels()}: check for superfluous value labels
 
-\item \code{checkMissingValLabels}: check for missing value labels
+\item \code{checkMissingValLabels()}: check for missing value labels
+
 }}
-
 \examples{
 # Check a categorical and a metric variable
 checkMissingValLabels(pisa, vars = c("g8g9", "age"))
