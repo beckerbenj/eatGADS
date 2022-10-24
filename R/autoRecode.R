@@ -24,7 +24,7 @@
 #' gads2 <- autoRecode(gads, var = "v1", suffix = "_num")
 #'
 #' # auto recode with saving look up table
-#' f <- tempfile(f)
+#' f <- tempfile(fileext = ".csv")
 #' gads2 <- autoRecode(gads, var = "v1", suffix = "_num", csv_path = f)
 #'
 #'@export
@@ -50,7 +50,7 @@ autoRecode.GADSdat <- function(GADSdat, var, suffix = "", csv_path = NULL, templ
     GADSdat_out <- multiChar2fac(GADSdat_out, vars = new_var, var_suffix = "")
 
     # look up table
-    lookup <- extractMeta(GADSdat_out, var = new_var)[, c("valLabel", "value")]
+    lookup <- extractMeta(GADSdat_out, vars = new_var)[, c("valLabel", "value")]
     names(lookup) <- c("oldValue", "newValue")
     GADSdat_out <- removeValLabels(GADSdat_out, varName = new_var, value = c(lookup$newValue))
   } else {
@@ -64,7 +64,7 @@ autoRecode.GADSdat <- function(GADSdat, var, suffix = "", csv_path = NULL, templ
     suppressMessages(GADSdat_out <- applyLookup(GADSdat_out, lookup = lookup_table))
   }
 
-  if(!is.null(csv_path)) write.csv(lookup, file = csv_path, row.names = FALSE)
+  if(!is.null(csv_path)) utils::write.csv(lookup, file = csv_path, row.names = FALSE)
 
   #browser()
   GADSdat_out

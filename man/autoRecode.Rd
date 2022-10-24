@@ -36,7 +36,7 @@ gads <- import_DF(data.frame(v1 = letters))
 gads2 <- autoRecode(gads, var = "v1", suffix = "_num")
 
 # auto recode with saving look up table
-f <- tempfile(f)
+f <- tempfile(fileext = ".csv")
 gads2 <- autoRecode(gads, var = "v1", suffix = "_num", csv_path = f)
 
 }

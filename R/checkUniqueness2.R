@@ -58,7 +58,7 @@ checkUniqueness2.data.frame <- function(GADSdat, varName, idVar, impVar) {
   log_list <- sapply(3:(imp_num+1), function(x) {
     #browser()
     wide_sub <- wide[, c(2, x), with = FALSE]
-    wide_sub <- na.omit(wide_sub)
+    wide_sub <- stats::na.omit(wide_sub)
     all(wide_sub[[1]] == wide_sub[[2]])
   })
   all(log_list)
