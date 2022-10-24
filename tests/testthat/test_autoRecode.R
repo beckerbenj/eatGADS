@@ -42,3 +42,20 @@ test_that("existing lookup", {
   expect_equal(lookup$oldValue, c(110, 111, 112, 113, 115))
   expect_equal(lookup$newValue, 1:5)
 })
+
+test_that("existing lookup, no new cases", {
+  existing_lookup <- data.frame(oldValue = c(110:115), newValue = 1:6)
+
+  f <- tempfile(fileext = ".csv")
+  expect_warning(out <- autoRecode(g, var = "id", suffix = "_new", template = existing_lookup, csv_path = f),
+                 "For variable id_new the following values are in the lookup table but not in the data: 111, 113, 114")
+
+  expect_equal(namesGADS(out), c("id", "var1", "id_new"))
+  expect_equal(out$dat$id_new, c(1, 6, 3, 1))
+
+  lookup <- read.csv(f)
+  expect_equal(names(lookup), c("oldValue", "newValue"))
+  expect_equal(lookup$oldValue, 110:115)
+  expect_equal(lookup$newValue, 1:6)
+})
+

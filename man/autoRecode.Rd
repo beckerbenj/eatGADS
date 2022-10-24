@@ -2,7 +2,7 @@
 % Please edit documentation in R/autoRecode.R
 \name{autoRecode}
 \alias{autoRecode}
-\title{Auto-recode a variable in a \code{GADSdat}.}
+\title{Auto recode a variable in a \code{GADSdat}.}
 \usage{
 autoRecode(GADSdat, var, suffix = "", csv_path = NULL, template = NULL)
 }
@@ -21,9 +21,22 @@ autoRecode(GADSdat, var, suffix = "", csv_path = NULL, template = NULL)
 Returns a \code{GADSdat} object.
 }
 \description{
-Auto-recode a variable in a \code{GADSdat}. A lookup table is created containing the respective recodes.
+Auto recode a variable in a \code{GADSdat}. A look up table is created containing the respective recode pairs.
+An existing look up table can be utilized via \code{template}. This function somewhat mirrors the functionality provided
+by the \code{SPSS} function \code{autorecode}.
+}
+\details{
+If an existing \code{template} is used and a look up table is saved as a \code{.csv} file, the resulting look up
+table will contain the existing recodes plus additional recode pairs required for the data.
 }
 \examples{
-# tbd
+gads <- import_DF(data.frame(v1 = letters))
+
+# auto recode without saving look up table
+gads2 <- autoRecode(gads, var = "v1", suffix = "_num")
+
+# auto recode with saving look up table
+f <- tempfile(f)
+gads2 <- autoRecode(gads, var = "v1", suffix = "_num", csv_path = f)
 
 }

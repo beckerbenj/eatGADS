@@ -1,9 +1,13 @@
 ####
 #############################################################################
-#' Auto-recode a variable in a \code{GADSdat}.
+#' Auto recode a variable in a \code{GADSdat}.
 #'
-#' Auto-recode a variable in a \code{GADSdat}. A lookup table is created containing the respective recodes.
+#' Auto recode a variable in a \code{GADSdat}. A look up table is created containing the respective recode pairs.
+#' An existing look up table can be utilized via \code{template}. This function somewhat mirrors the functionality provided
+#' by the \code{SPSS} function \code{autorecode}.
 #'
+#' If an existing \code{template} is used and a look up table is saved as a \code{.csv} file, the resulting look up
+#' table will contain the existing recodes plus additional recode pairs required for the data.
 #'
 #'@param GADSdat A \code{GADSdat} object.
 #'@param var Character string of the variable name which should be sorted.
@@ -14,7 +18,14 @@
 #'@return Returns a \code{GADSdat} object.
 #'
 #'@examples
-#' # tbd
+#' gads <- import_DF(data.frame(v1 = letters))
+#'
+#' # auto recode without saving look up table
+#' gads2 <- autoRecode(gads, var = "v1", suffix = "_num")
+#'
+#' # auto recode with saving look up table
+#' f <- tempfile(f)
+#' gads2 <- autoRecode(gads, var = "v1", suffix = "_num", csv_path = f)
 #'
 #'@export
 autoRecode <- function(GADSdat, var, suffix = "", csv_path = NULL, template = NULL) {
@@ -43,7 +54,7 @@ autoRecode.GADSdat <- function(GADSdat, var, suffix = "", csv_path = NULL, templ
     names(lookup) <- c("oldValue", "newValue")
     GADSdat_out <- removeValLabels(GADSdat_out, varName = new_var, value = c(lookup$newValue))
   } else {
-    if(!is.data.frame(template) && identical(names(template), c("oldValue", "newValue"))) stop()
+    if(!is.data.frame(template) || !identical(names(template), c("oldValue", "newValue"))) stop()
 
     new_oldValues <- GADSdat$dat[[var]][!GADSdat$dat[[var]] %in% template$oldValue]
     new_newValues <- seq(from = max(template$newValue) + 1, length.out = length(new_oldValues))
@@ -51,7 +62,6 @@ autoRecode.GADSdat <- function(GADSdat, var, suffix = "", csv_path = NULL, templ
     lookup_table <- data.frame(variable = new_var, lookup)
     names(lookup_table) <- c("variable", "value", "value_new")
     suppressMessages(GADSdat_out <- applyLookup(GADSdat_out, lookup = lookup_table))
-    # apply lookup
   }
 
   if(!is.null(csv_path)) write.csv(lookup, file = csv_path, row.names = FALSE)
