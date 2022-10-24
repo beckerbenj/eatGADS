@@ -1,14 +1,18 @@
 # eatGADS 0.20.0.9000
 
+## new features
 * `extractData2()` for better usability and support of ordered factors
 * `fixEncoding()` now supports imports of `windows-1250` imported files via `import_spss()` with `UTF-8` encoding
 * `import_spss()` now transforms `DATEATIME` variables to character, assigning an appropriate format
 * `cloneVariable()` for duplicating an existing variable under a new name
 * `createVariable()` for creating a new, empty variable
-* `changeMissings()` now does no longer add arbitrary value labels for newly tagged values
 * `insertVariable()` for changing the position of a variable in the data set
 * `autoRecode()` for automatically recoding (numerical) variables
+
+## bug fixes
+* `changeMissings()` now does no longer add arbitrary value labels for newly tagged values
 * bug fix in `checkUniqueness2()` for cases with differing numbers of cases per imputed data set
+
 
 # eatGADS 0.20.0
 
@@ -26,6 +30,7 @@
 * `import_raw()` now works correctly if variables are provided as integers
 * `reuseMeta()` now works correctly if variables occur in multiple sheets in a data base or `all_GADSdat`
 
+
 # eatGADS 0.19.1
 
 * fix permanent URL redirect in `README`
@@ -33,7 +38,7 @@
 
 # eatGADS 0.19.0
 
-# breaking changes
+## breaking changes
 * `getTrendGADS()` now supports multiple measurement points but support for linking errors has been dropped
 * `extractData()` now supports multiple measurement points but support for linking errors has been dropped
 * trend example data bases implemented
@@ -41,13 +46,13 @@
 * `checkLEStructure()` deprecated
 * `import_spss()` now can automatically transform labeled or missing tagged character values via the changed `labeledStrings` argument
 
-# major changes
+## major changes
 * `assimilateValLabels()` for assimilating value labels of multiple variables
 * `cbind.GADSdat()` method for binding multiple `GADSdat` objects by column
 * `calculateScale()` for calculating scales from item sets
 * `checkUniqueness()` for checking uniqueness of a variable within an `id` variable
 
-# minor changes
+## minor changes
 * clarifications and additional explanations in vignettes (`meta_data`)
 * bug fix `updateMeta()` (all added variables are now checked for illegal naming)
 
@@ -88,7 +93,7 @@
 * `import_spss()` now takes an `encoding` argument to work around faulty defaults
 
 
-# Internal
+## Internal
 * better performance of `applyChangeMeta()` on value level
 * bug fix `import_spss()` (all columns are forced to be `double` when imported instead of `integer`)
 * bug fix `fac2dummies_complex()` (value labels of dummy variables are tagged as `valid`)
