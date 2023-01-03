@@ -46,20 +46,33 @@ char_valLabels2numeric.savDat<- function(rawDat, labeledStrings) {
       }
     }
     if(identical(labeledStrings, "transform")) {
-      warning("Some values with value labels or missing tags of variable ", char_var,
-              " cannot be coerced to numeric. Therefore all underlying values are recoded to numeric.")
+      # create lookup table for all values
+      #if(char_var == "TR_KURS_DEU") browser()
+      all_oldValues <- unique(c(old_attributes$labels, old_attributes$na_values))
+      all_oldValues <- all_oldValues[all_oldValues != ""] ## hotfix to circumvent issues with missing tags for empty strings; in other circumstances these are silently dropped anyway
 
-      # create lookup table for alle values
-      oldValues <- unique(c(old_attributes$labels, old_attributes$na_values))
-      lookup <- data.frame(oldValues = oldValues,
-                           newValues = seq(length(oldValues)))
+      na_char_oldValues <- suppressWarnings(eatTools::asNumericIfPossible(x = all_oldValues, force.string = TRUE))
+      num_oldValues <- na_char_oldValues[!is.na(na_char_oldValues)]
+      char_oldValues <- all_oldValues[is.na(na_char_oldValues)]
+
+      # if no transformation is necessary move to next variable (e.g., only missing values are tagged & labelled)
+      if(length(char_oldValues) == 0) next
+
+      # assign former character values new numbers but skip already used numbers (prevent conflicts)
+      lookup <- data.frame(oldValues = char_oldValues,
+                           newValues = seq_but_skip(to = length(char_oldValues), skip = num_oldValues))
+
+      warning("Some values with value labels or missing tags of variable ", char_var,
+              " cannot be coerced to numeric. These string values are recoded to numeric.")
 
       if(!is.null(new_attributes$labels)) {
         new_attributes$labels <- eatTools::recodeLookup(new_attributes$labels, lookup)
+        new_attributes$labels <- as.numeric(new_attributes$labels)
         names(new_attributes$labels) <- names(old_attributes$labels)
       }
       if(!is.null(new_attributes$na_values)) {
         new_attributes$na_values <- eatTools::recodeLookup(new_attributes$na_values, lookup)
+        new_attributes$na_values <- as.numeric(new_attributes$na_values)
       }
 
       rawDat[[char_var]] <- eatTools::recodeLookup(rawDat[[char_var]], lookup)
@@ -89,4 +102,10 @@ can_be_numeric <- function(x) {
   numNAs <- sum(is.na(x))
   numNAs_new <- suppressWarnings(sum(is.na(as.numeric(x))))
   return(numNAs_new == numNAs)
+}
+
+seq_but_skip <- function(to, skip) {
+  x <- seq(from = 1, to = to + length(skip))
+  x2 <- setdiff(x, skip)
+  x2[seq(from = 1, to = to)]
 }
