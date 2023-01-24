@@ -1,4 +1,6 @@
 
+# sources
+# https://stats.oarc.ucla.edu/spss/library/spss-libraryinputting-and-manipulating-dates-in-spss/
 
 # 02.2.a) attributes on variable level ---------------------------------------------------
 times2character <- function(rawDat) {
@@ -44,7 +46,8 @@ times2character.savDat<- function(rawDat) {
     attributes(rawDat[[hms_var]]) <- new_attributes
   }
 
-  date_vars <- names(varClass)[grepl("^DATE[^TIME]", varClass)]
+  #browser()
+  date_vars <- names(varClass)[grepl("^DATE[^TIME]|^.DATE[^TIME]", varClass)]
   for(date_var in date_vars) {
     old_attributes <- attributes(rawDat[[date_var]])
     new_attributes <- old_attributes

@@ -34,7 +34,9 @@ test_that("Import of variables of class date with labels", {
   # out <- import_spss("tests/testthat/helper_spss_date_labeled.sav")
   warns <- capture_warnings(out <- import_spss("helper_spss_date_labeled.sav"))
   expect_equal(warns[[1]], "Value labels and missing codes for 'DATE' variables are not supported by eatGADS and current implementation is experimental. Missing values are converted to NA and labels and missing codes are dropped from meta data for variable 'VAR3_1'.")
+  expect_equal(warns[[2]], "Value labels and missing codes for 'DATE' variables are not supported by eatGADS and current implementation is experimental. Missing values are converted to NA and labels and missing codes are dropped from meta data for variable 'VAR4'.")
   expect_equal(out$dat$VAR3_1, c(NA, "2009-01-27"))
+  expect_equal(out$dat$VAR4, c(NA, "2009-01-27"))
 
 })
 
