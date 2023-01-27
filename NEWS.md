@@ -12,6 +12,7 @@
 ## bug fixes
 * `changeMissings()` now does no longer add arbitrary value labels for newly tagged values
 * bug fix in `checkUniqueness2()` for cases with differing numbers of cases per imputed data set
+* bug fix in `changeValLabels()` for a mixture of already existing and new values
 
 
 # eatGADS 0.20.0

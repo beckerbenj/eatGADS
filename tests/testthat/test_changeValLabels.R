@@ -59,3 +59,11 @@ test_that("add value label to a variable with one existing label", {
   out <- changeValLabels(gadsT, varName = "text1", value = -99, valLabel = "miss")
   expect_equal(out$labels$value, c(-99, -96))
 })
+
+test_that("add value label to a variable with multiple existing and multiple new labels", {
+  out <- changeValLabels(dfSAV, varName = "VAR1", value = c(-99, -98, -97, -96, -95), valLabel =
+                           c("miss1", "miss2", "miss3", "miss4", "miss5"))
+  expect_equal(out$labels$value[1:5], -99:-95)
+  expect_equal(out$labels$valLabel[1:5], paste0("miss", 1:5))
+})
+
