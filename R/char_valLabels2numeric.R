@@ -54,13 +54,18 @@ char_valLabels2numeric.savDat<- function(rawDat, labeledStrings) {
       na_char_oldValues <- suppressWarnings(eatTools::asNumericIfPossible(x = all_oldValues, force.string = TRUE))
       num_oldValues <- na_char_oldValues[!is.na(na_char_oldValues)]
       char_oldValues <- all_oldValues[is.na(na_char_oldValues)]
+      ## incorporate numeric values in actual values!
+      raw_values <- rawDat[[char_var]]
+      attributes(raw_values) <- NULL
+      num_from_data <- suppressWarnings(eatTools::asNumericIfPossible(raw_values))
+      #browser()
 
       # if no transformation is necessary move to next variable (e.g., only missing values are tagged & labelled)
       if(length(char_oldValues) == 0) next
 
       # assign former character values new numbers but skip already used numbers (prevent conflicts)
       lookup <- data.frame(oldValues = char_oldValues,
-                           newValues = seq_but_skip(to = length(char_oldValues), skip = num_oldValues))
+                           newValues = seq_but_skip(to = length(char_oldValues), skip = c(num_oldValues, num_from_data)))
 
       warning("Some values with value labels or missing tags of variable ", char_var,
               " cannot be coerced to numeric. These string values are recoded to numeric.")

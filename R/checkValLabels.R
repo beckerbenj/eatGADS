@@ -104,3 +104,13 @@ checkMissingValLabels.GADSdat <- function(GADSdat, vars = namesGADS(GADSdat), va
   }
   not_labeled
 }
+
+
+
+# to dos
+# ---------------------------
+###
+# checkMissingValLables data.frame Output wie bei checkMissingValLables
+# anstatt komplette Liste an fehlenden Labels, Cap bei 10, alle in einer Spalte + Spalte mit Anzahl an fehlenden Labeln
+# Syntaxvorlage anpassen, sodass fuer alle Datensaetze beides ausgefuehrt und nach .xslx geschrieben mit Datensatz = Tabellenblat
+
