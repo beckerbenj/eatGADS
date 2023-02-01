@@ -63,7 +63,8 @@ times2character.savDat<- function(rawDat) {
     } else {
       new_var <- as.character(rawDat[[date_var]])
     }
-    new_attributes[["format.spss"]] <- gsub("^DATE", replacement = "A", new_attributes[["format.spss"]])
+    #new_attributes[["format.spss"]] <- gsub("^DATE|", replacement = "A", new_attributes[["format.spss"]])
+    new_attributes[["format.spss"]] <- gsub("^DATE|^.DATE", replacement = "A", new_attributes[["format.spss"]])
     new_attributes[["class"]] <- NULL
 
     rawDat[[date_var]] <- new_var
