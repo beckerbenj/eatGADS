@@ -57,6 +57,27 @@ test_that("checkMissingValLabels", {
   dfSAV2 <- removeValLabels(dfSAV, "VAR1", value = c(-99, -96, 1))
   out2 <- checkMissingValLabels(dfSAV2)
   expect_equal(out2[[1]]$missing_labels, c(-99, -96, 1, 2))
+
+  dfSAV3 <- changeValLabels(dfSAV, "VAR1", value = c(2), valLabel = "test")
+  out3 <- checkMissingValLabels(dfSAV3)
+  expect_equal(out3[[1]], NULL)
+})
+
+test_that("checkMissingValLabels data.frame", {
+  out <- checkMissingValLabels(dfSAV, output = "data.frame")
+  expect_equal(names(out), c("variable", "varLabel", "number_missing_labels", "missing_labels"))
+  expect_equal(out$variable, paste0("VAR", 1:3))
+  expect_equal(out$number_missing_labels, rep(1, 3))
+  expect_equal(out$missing_labels, c("2", "1", "1"))
+
+  dfSAV2 <- removeValLabels(dfSAV, "VAR1", value = c(-99, -96, 1))
+  out2 <- checkMissingValLabels(dfSAV2, output = "data.frame")
+  expect_equal(out2$number_missing_labels, c(4, 1, 1))
+  expect_equal(out2$missing_labels, c("-99, -96, 1, 2", "1", "1"))
+
+  dfSAV3 <- changeValLabels(dfSAV, "VAR1", value = c(2), valLabel = "test")
+  out3 <- checkMissingValLabels(dfSAV3, output = "data.frame")
+  expect_equal(out3$variable, c("VAR2", "VAR3"))
 })
 
 

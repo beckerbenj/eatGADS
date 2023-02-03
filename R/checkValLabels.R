@@ -66,14 +66,15 @@ checkEmptyValLabels.GADSdat <- function(GADSdat, vars = namesGADS(GADSdat), valu
 
 #' @describeIn checkEmptyValLabels check for missing value labels
 #'@export
-checkMissingValLabels <- function(GADSdat, vars = namesGADS(GADSdat), valueRange = NULL) {
+checkMissingValLabels <- function(GADSdat, vars = namesGADS(GADSdat), valueRange = NULL, output = c("list", "data.frame")) {
   UseMethod("checkMissingValLabels")
 }
 
 #'@export
-checkMissingValLabels.GADSdat <- function(GADSdat, vars = namesGADS(GADSdat), valueRange = NULL) {
+checkMissingValLabels.GADSdat <- function(GADSdat, vars = namesGADS(GADSdat), valueRange = NULL, output = c("list", "data.frame")) {
   check_GADSdat(GADSdat)
   check_vars_in_GADSdat(GADSdat, vars = vars)
+  output <- match.arg(output)
 
   not_labeled <- vector("list", length = length(vars))
   names(not_labeled) <- vars
@@ -92,8 +93,6 @@ checkMissingValLabels.GADSdat <- function(GADSdat, vars = namesGADS(GADSdat), va
 
   if(!is.null(valueRange)) {
     if(!is.numeric(valueRange) || length(valueRange) != 2) stop("'valueRange' needs to be a numeric vector of length 2.")
-
-    #browser()
     not_labeled <- lapply(not_labeled, function(not_labeled_single) {
       not_labeled_single$missing_labels <- not_labeled_single$missing_labels[between(not_labeled_single$missing_labels,
                                                                                      range(valueRange)[1], range(valueRange)[2])]
@@ -102,15 +101,26 @@ checkMissingValLabels.GADSdat <- function(GADSdat, vars = namesGADS(GADSdat), va
     })
 
   }
-  not_labeled
+
+  # reshape/restructure data.frame output as in checkEmptyValLabels()
+  if(identical(output, "data.frame")) {
+    not_labeled2 <- lapply(not_labeled, function(single_not_labeled) {
+      if(is.null(single_not_labeled)) return(data.frame(varLabel = character(),
+                                                        number_missing_labels = numeric(), missing_labels = character()))
+      length_not_labeled <- length(single_not_labeled[["missing_labels"]])
+
+      # print only first ten missing value labels
+      if(length_not_labeled <= 10) {
+        not_labeled_value_list <- paste(single_not_labeled[["missing_labels"]], collapse = ", ")
+      } else not_labeled_value_list <- paste(single_not_labeled[["missing_labels"]][1:10], collapse = ", ")
+      data.frame(varLabel = single_not_labeled[["varLabel"]],
+                 number_missing_labels = length_not_labeled,
+                 missing_labels = not_labeled_value_list)
+    })
+    out <- eatTools::do_call_rbind_withName(not_labeled2, colName = "variable")
+  } else out <- not_labeled
+  out
 }
 
 
-
-# to dos
-# ---------------------------
-###
-# checkMissingValLables data.frame Output wie bei checkMissingValLables
-# anstatt komplette Liste an fehlenden Labels, Cap bei 10, alle in einer Spalte + Spalte mit Anzahl an fehlenden Labeln
-# Syntaxvorlage anpassen, sodass fuer alle Datensaetze beides ausgefuehrt und nach .xslx geschrieben mit Datensatz = Tabellenblat
 

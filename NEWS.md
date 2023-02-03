@@ -1,6 +1,7 @@
 # eatGADS 0.20.0.9000
 
 ## new features
+* `checkMissingValLabels()` now offers `data.frame` output format
 * `extractData2()` for better usability and support of ordered factors
 * `fixEncoding()` now supports imports of `windows-1250` imported files via `import_spss()` with `UTF-8` encoding
 * `import_spss()` now transforms `DATEATIME` and `ADATE` variables to character, assigning an appropriate format
