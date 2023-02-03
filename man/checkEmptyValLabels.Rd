@@ -12,7 +12,12 @@ checkEmptyValLabels(
   output = c("list", "data.frame")
 )
 
-checkMissingValLabels(GADSdat, vars = namesGADS(GADSdat), valueRange = NULL)
+checkMissingValLabels(
+  GADSdat,
+  vars = namesGADS(GADSdat),
+  valueRange = NULL,
+  output = c("list", "data.frame")
+)
 }
 \arguments{
 \item{GADSdat}{A \code{GADSdat} object.}
