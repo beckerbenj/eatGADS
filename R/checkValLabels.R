@@ -104,18 +104,23 @@ checkMissingValLabels.GADSdat <- function(GADSdat, vars = namesGADS(GADSdat), va
 
   # reshape/restructure data.frame output as in checkEmptyValLabels()
   if(identical(output, "data.frame")) {
+    #browser()
     not_labeled2 <- lapply(not_labeled, function(single_not_labeled) {
       if(is.null(single_not_labeled)) return(data.frame(varLabel = character(),
-                                                        number_missing_labels = numeric(), missing_labels = character()))
+                                                        number_of_missing_labels = numeric(), values_with_missing_labels = character()))
       length_not_labeled <- length(single_not_labeled[["missing_labels"]])
 
       # print only first ten missing value labels
       if(length_not_labeled <= 10) {
         not_labeled_value_list <- paste(single_not_labeled[["missing_labels"]], collapse = ", ")
-      } else not_labeled_value_list <- paste(single_not_labeled[["missing_labels"]][1:10], collapse = ", ")
+      } else {
+        #browser()
+         not_labeled_value_list_pre <- paste(single_not_labeled[["missing_labels"]][1:10], collapse = ", ")
+         not_labeled_value_list <- paste0(not_labeled_value_list_pre, ", ...")
+      }
       data.frame(varLabel = single_not_labeled[["varLabel"]],
-                 number_missing_labels = length_not_labeled,
-                 missing_labels = not_labeled_value_list)
+                 number_of_missing_labels = length_not_labeled,
+                 values_with_missing_labels = not_labeled_value_list)
     })
     out <- eatTools::do_call_rbind_withName(not_labeled2, colName = "variable")
   } else out <- not_labeled
