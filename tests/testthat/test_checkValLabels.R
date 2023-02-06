@@ -35,10 +35,13 @@ test_that("give_GADSdat_classes", {
   out2 <- give_GADSdat_classes(dfSAV_mini)
   expect_equal(out2, c(VAR1 = "integer"))
 
-  out <- give_GADSdat_classes(iris_g)
-  expect_equal(out, c(Sepal_Length = "double", Sepal_Width = "double",
+  out3 <- give_GADSdat_classes(iris_g)
+  expect_equal(out3, c(Sepal_Length = "double", Sepal_Width = "double",
                       Petal_Length = "double", Petal_Width = "double",
                       Species = "integer", charVar = "character"))
+
+  out4 <- give_GADSdat_classes(pisa, vars = c("g8g9", "age"))
+  expect_equal(out4, c(g8g9 = "integer", age = "double"))
 })
 
 test_that("checkEmptyValLabels", {
@@ -82,6 +85,9 @@ test_that("checkMissingValLabels", {
 
   out4 <- checkMissingValLabels(iris_g)
   expect_equal(out4, list(Species = NULL))
+
+  out5 <- checkMissingValLabels(pisa, vars = c("g8g9", "age"))
+  expect_equal(out5, list(g8g9 = NULL))
 })
 
 test_that("checkMissingValLabels data.frame", {

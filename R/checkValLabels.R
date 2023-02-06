@@ -142,7 +142,7 @@ give_GADSdat_classes <- function(GADSdat, vars = namesGADS(GADSdat)) {
     return("double")
   })
   out <- unlist(out_list)
-  names(out) <- namesGADS(GADSdat)
+  names(out) <- vars
   out
 }
 
