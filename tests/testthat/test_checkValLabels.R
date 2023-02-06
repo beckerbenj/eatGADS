@@ -7,6 +7,10 @@ load(file = "helper_data.rda")
 df3 <- df2
 df3$dat[1, 1:2] <- 8
 
+iris2 <- iris
+iris2[, "charVar"] <- "test"
+suppressMessages(iris_g <- import_DF(iris2))
+
 test_that("Input validation", {
   expect_error(checkEmptyValLabels(df1, vars = 3:4),
                "The following 'vars' are not variables in the GADSdat: 3, 4")
@@ -21,6 +25,20 @@ test_that("Input validation", {
                "'valueRange' needs to be a numeric vector of length 2.")
   expect_error(checkMissingValLabels(df1, valueRange = letters[3:4]),
                "'valueRange' needs to be a numeric vector of length 2.")
+})
+
+test_that("give_GADSdat_classes", {
+  out <- give_GADSdat_classes(dfSAV)
+  expect_equal(out, c(VAR1 = "integer", VAR2 = "integer", VAR3 = "integer"))
+
+  suppressMessages(dfSAV_mini <- extractVars(dfSAV, vars = "VAR1"))
+  out2 <- give_GADSdat_classes(dfSAV_mini)
+  expect_equal(out2, c(VAR1 = "integer"))
+
+  out <- give_GADSdat_classes(iris_g)
+  expect_equal(out, c(Sepal_Length = "double", Sepal_Width = "double",
+                      Petal_Length = "double", Petal_Width = "double",
+                      Species = "integer", charVar = "character"))
 })
 
 test_that("checkEmptyValLabels", {
@@ -61,6 +79,9 @@ test_that("checkMissingValLabels", {
   dfSAV3 <- changeValLabels(dfSAV, "VAR1", value = c(2), valLabel = "test")
   out3 <- checkMissingValLabels(dfSAV3)
   expect_equal(out3[[1]], NULL)
+
+  out4 <- checkMissingValLabels(iris_g)
+  expect_equal(out4, list(Species = NULL))
 })
 
 test_that("checkMissingValLabels data.frame", {

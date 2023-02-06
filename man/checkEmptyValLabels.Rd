@@ -15,6 +15,7 @@ checkEmptyValLabels(
 checkMissingValLabels(
   GADSdat,
   vars = namesGADS(GADSdat),
+  classes = c("integer"),
   valueRange = NULL,
   output = c("list", "data.frame")
 )
@@ -28,6 +29,8 @@ checkMissingValLabels(
 If specified, only numeric values are returned and strings are omitted.}
 
 \item{output}{Should the output be structured as a \code{"list"} or a \code{"data.frame"}?}
+
+\item{classes}{Character vector with the classes to which \code{checkMissingLabels()} should be applied. Valid options are \code{"integer"}, \code{"double"}, and \code{"character"}.}
 }
 \value{
 Returns a list of length \code{vars} or a \code{data.frame}.

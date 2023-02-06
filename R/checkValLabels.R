@@ -9,6 +9,7 @@
 #'
 #'@param GADSdat A \code{GADSdat} object.
 #'@param vars Character vector with the variable names to which \code{checkValLabels()} should be applied.
+#'@param classes Character vector with the classes to which \code{checkMissingLabels()} should be applied. Valid options are \code{"integer"}, \code{"double"}, and \code{"character"}.
 #'@param valueRange [optional] Numeric vector of length 2: In which range should numeric values be checked?
 #'If specified, only numeric values are returned and strings are omitted.
 #'@param output Should the output be structured as a \code{"list"} or a \code{"data.frame"}?
@@ -66,15 +67,22 @@ checkEmptyValLabels.GADSdat <- function(GADSdat, vars = namesGADS(GADSdat), valu
 
 #' @describeIn checkEmptyValLabels check for missing value labels
 #'@export
-checkMissingValLabels <- function(GADSdat, vars = namesGADS(GADSdat), valueRange = NULL, output = c("list", "data.frame")) {
+checkMissingValLabels <- function(GADSdat, vars = namesGADS(GADSdat), classes = c("integer"), valueRange = NULL, output = c("list", "data.frame")) {
   UseMethod("checkMissingValLabels")
 }
 
 #'@export
-checkMissingValLabels.GADSdat <- function(GADSdat, vars = namesGADS(GADSdat), valueRange = NULL, output = c("list", "data.frame")) {
+checkMissingValLabels.GADSdat <- function(GADSdat, vars = namesGADS(GADSdat), classes = c("integer"), valueRange = NULL, output = c("list", "data.frame")) {
   check_GADSdat(GADSdat)
   check_vars_in_GADSdat(GADSdat, vars = vars)
   output <- match.arg(output)
+
+  ## select only specific var types for check
+  var_classes <- give_GADSdat_classes(GADSdat, vars = vars)
+  vars <- vars[var_classes %in% classes]
+  if(length(vars) == 0) stop("None of the specified 'vars' have the specified 'classes'.")
+
+  #browser()
 
   not_labeled <- vector("list", length = length(vars))
   names(not_labeled) <- vars
@@ -124,6 +132,17 @@ checkMissingValLabels.GADSdat <- function(GADSdat, vars = namesGADS(GADSdat), va
     })
     out <- eatTools::do_call_rbind_withName(not_labeled2, colName = "variable")
   } else out <- not_labeled
+  out
+}
+
+give_GADSdat_classes <- function(GADSdat, vars = namesGADS(GADSdat)) {
+  out_list <- lapply(GADSdat$dat[, vars, drop = FALSE], function(single_var) {
+    if(is.character(single_var)) return("character")
+    if(identical(single_var, as.double(as.integer(single_var)))) return("integer")
+    return("double")
+  })
+  out <- unlist(out_list)
+  names(out) <- namesGADS(GADSdat)
   out
 }
 
