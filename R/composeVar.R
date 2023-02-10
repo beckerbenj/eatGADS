@@ -52,7 +52,7 @@ composeVar <- function(GADSdat, sourceVars, primarySourceVar, newVar) {
   primary_meta <- extractMeta(GADSdat, primarySourceVar)[, c("value", "valLabel", "missings")]
   other_meta <- extractMeta(GADSdat, otherSourceVar)[, c("value", "valLabel", "missings")]
   row.names(primary_meta) <- row.names(other_meta) <- NULL
-  if(!identical(TRUE, all.equal(primary_meta, other_meta))) stop("Meta data of the two 'sourceVars' is not identical.")
+  if(!identical(TRUE, all.equal(primary_meta, other_meta))) stop("Meta data on value level ('value', 'valLabel', 'missings') of the two 'sourceVars' must be identical.")
 
   # compose
   comp_var <- ifelse(is.na(dat_vec), yes = GADSdat$dat[[otherSourceVar]],
