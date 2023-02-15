@@ -17,8 +17,9 @@ test_that("Errors", {
 
 test_that("works normally", {
   dfSAV2 <- reuseMeta(dfSAV, varName = "VAR2", other_GADSdat = dfSAV, other_varName = "VAR1")
+  dfSAV2$dat[2, "VAR2"] <- -96
   out <- composeVar(dfSAV2, sourceVars = c("VAR1", "VAR2"), newVar = "newVar", primarySourceVar = "VAR1")
 
-  expect_equal(out$dat$newVar, c(1, 1, 1, 2))
+  expect_equal(out$dat$newVar, c(1, -99, 1, 2))
   expect_equal(out$labels[1:3, "value"], c(-99, -96, 1))
 })
