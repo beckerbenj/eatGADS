@@ -25,13 +25,13 @@ char_valLabels2numeric.savDat<- function(rawDat, labeledStrings) {
 
     if(identical(labeledStrings, "keep")) { ## corresponding behavior in extract_labels has to be adapted!
       warning("Some values with value labels or missing tags of variable ", char_var,
-              " cannot be coerced to numeric. This possibly corrupts all meta data.")
+              " cannot be coerced to numeric. This possibly corrupts all meta data. For other import behavior check out the 'labeledStrings' argument.")
     }
 
     if(identical(labeledStrings, "drop")) {
       #browser()
       warning("Some values with value labels or missing tags of variable ", char_var,
-       " cannot be coerced to numeric and are therefore changed to NA.")
+       " cannot be coerced to numeric and are therefore changed to NA. For other import behavior check out the 'labeledStrings' argument.")
 
       if(!is.null(new_attributes$labels)) {
         suppressWarnings(new_attributes$labels <- eatTools::asNumericIfPossible(x = new_attributes$labels,
