@@ -2,6 +2,7 @@
 % Please edit documentation in R/checkMissings.R
 \name{checkMissings}
 \alias{checkMissings}
+\alias{checkMissingsByValues}
 \title{Check and Adjust Missing Coding}
 \usage{
 checkMissings(
@@ -10,31 +11,52 @@ checkMissings(
   addMissingCode = TRUE,
   addMissingLabel = FALSE
 )
+
+checkMissingsByValues(GADSdat, missingValues = -50:-99, addMissingCode = TRUE)
 }
 \arguments{
 \item{GADSdat}{\code{GADSdat} object imported via \code{eatGADS}.}
 
-\item{missingLabel}{Single string indicating how missing labels are commonly named in the value labels.}
+\item{missingLabel}{Single regular expression indicating how missing labels are commonly named in the value labels.}
 
-\item{addMissingCode}{If \code{TRUE}, missing codes are added according to occurrence of \code{"missingLabel"} in \code{"valLabel"}.}
+\item{addMissingCode}{If \code{TRUE}, missing codes are added according to  \code{missingLabel} or \code{missingValues}.}
 
 \item{addMissingLabel}{If \code{TRUE}, \code{"generic missing"} is added according to occurrence of \code{"miss"} in \code{"missings"}. As often various value labels for missings are used, this argument should be used with great care.}
+
+\item{missingValues}{Numeric vector of values which are commonly used for missing values.}
 }
 \value{
-Returns a \code{GADSdat} object.
+Returns a \code{GADSdat} object with - if specified - modified missing tags.
 }
 \description{
-Function to check if missings are coded and labeled correctly in a \code{GADSdat} object.
+Functions to check if missings are coded and labeled correctly in a \code{GADSdat} object.
 }
 \details{
-The function compares value labels \code{"valLabels"} and missing codes \code{"missings"} of a \code{GADSdat} object and its
-meta data information. Mismatches are reported and can be automatically adjusted.
+\code{checkMissings()} compares value labels (\code{valLabels}) and missing tags (\code{missings}) of a \code{GADSdat} object and its
+meta data information.
+\code{checkMissingsByValues()} compares labeled values (\code{value}) and missing codes (\code{missings}) of a \code{GADSdat} object
+and its meta data information.
+Mismatches are reported and can be automatically adjusted. Note that all checks are only applied to the
+meta data information, not the actual data. For detecting missing value labels, see \code{\link{checkMissingValLabels}}.
 }
+\section{Functions}{
+\itemize{
+\item \code{checkMissings()}: compare missing tags and value labels
+
+\item \code{checkMissingsByValues()}: compare missing tags and values in a certain range
+
+}}
 \examples{
-# Change example data set (create a value label with incorrect missing code)
+# checkMissings
 pisa2 <- changeValLabels(pisa, varName = "computer_age",
                         value = 5, valLabel = "missing: No computer use")
 
 pisa3 <- checkMissings(pisa2)
+
+# checkMissingsByValues
+pisa4 <- changeValLabels(pisa, varName = "computer_age",
+                        value = c(-49, -90, -99), valLabel = c("test1", "test2", "test3"))
+
+pisa5 <- checkMissingsByValues(pisa4, missingValues = -50:-99)
 
 }
