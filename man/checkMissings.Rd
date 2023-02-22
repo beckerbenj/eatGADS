@@ -26,7 +26,7 @@ checkMissingsByValues(GADSdat, missingValues = -50:-99, addMissingCode = TRUE)
 \item{missingValues}{Numeric vector of values which are commonly used for missing values.}
 }
 \value{
-Returns a \code{GADSdat} object.
+Returns a \code{GADSdat} object with - if specified - modified missing tags.
 }
 \description{
 Functions to check if missings are coded and labeled correctly in a \code{GADSdat} object.

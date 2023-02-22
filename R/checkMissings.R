@@ -17,7 +17,7 @@
 #'@param addMissingCode If \code{TRUE}, missing codes are added according to  \code{missingLabel} or \code{missingValues}.
 #'@param addMissingLabel If \code{TRUE}, \code{"generic missing"} is added according to occurrence of \code{"miss"} in \code{"missings"}. As often various value labels for missings are used, this argument should be used with great care.
 #'
-#'@return Returns a \code{GADSdat} object.
+#'@return Returns a \code{GADSdat} object with - if specified - modified missing tags.
 #'
 #'@examples
 #'# checkMissings
