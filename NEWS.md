@@ -1,6 +1,7 @@
 # eatGADS 0.20.0.9000
 
 ## new features
+* `multiChar2fac()` now allows converting to upper or lower cases via the `convertCases` argument
 * `checkMissingsByValues()` for checking missing tags for specific, labeled values (or a value range)
 * `import_spss()` with more informative error message
 * `checkMissingValLabels()` now allows checks for specific variable classes

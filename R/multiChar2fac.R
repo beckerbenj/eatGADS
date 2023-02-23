@@ -35,18 +35,26 @@
 #'gads3 <- checkMissings(gads2, missingLabel = "missing")
 #'
 #'@export
-multiChar2fac <- function(GADSdat, vars, var_suffix = "_r", label_suffix = "(recoded)") {
+multiChar2fac <- function(GADSdat, vars, var_suffix = "_r", label_suffix = "(recoded)", convertCases = NULL) {
   UseMethod("multiChar2fac")
 }
 
 #'@export
-multiChar2fac.GADSdat <- function(GADSdat, vars, var_suffix = "_r", label_suffix = "(recoded)") {
+multiChar2fac.GADSdat <- function(GADSdat, vars, var_suffix = "_r", label_suffix = "(recoded)", convertCases = NULL) {
   check_GADSdat(GADSdat)
   if(!is.character(vars) && length(vars) > 0) stop("vars needs to be a character vector of at least length 1.")
+  check_vars_in_GADSdat(GADSdat, vars)
 
-  suppressMessages(only_vars_gads <- removeVars(GADSdat, namesGADS(GADSdat)[!namesGADS(GADSdat) %in% vars]))
+  # convert case if specified
+  if(!is.null(convertCases)) {
+    if(!is.character(convertCases) || length(convertCases) != 1) stop("'convertCases' must be a character of length 1.")
+    if(!convertCases %in% c("lower", "upper", "upperFirst")) stop("'convertCases' must one of c('lower', 'upper', 'upperFirst').")
+    GADSdat <- convertCase(GADSdat, case = convertCases, vars = vars)
+  }
 
-  # potential problem: existing (non-missing) value labels
+  suppressMessages(only_vars_gads <- extractVars(GADSdat, vars = vars))
+
+  # potential problem: existing (non-missing) value labels: remove these values so no new value labels are used for them
   for(var in namesGADS(only_vars_gads)) {
     existing_meta <- extractMeta(only_vars_gads, var)
     existing_labels <- existing_meta[which(existing_meta$missings != "miss"), "value"]
@@ -55,6 +63,7 @@ multiChar2fac.GADSdat <- function(GADSdat, vars, var_suffix = "_r", label_suffix
   }
 
   suppressWarnings(df_no_miss <- extractData(only_vars_gads))
+
   all_levels <- unique(unlist(lapply(df_no_miss, function(x) x)))
   all_levels_fac <- data.frame("all_levels" = as.factor(all_levels))
   all_levels_gads <- import_DF(all_levels_fac)
