@@ -17,6 +17,7 @@
 #'@param vars A character vector with all variables that should be transformed to factor.
 #'@param var_suffix Variable suffix for the newly created \code{GADSdat}. If an empty character, the existing variables are overwritten.
 #'@param label_suffix Suffix added to variable label for the newly created variable in the \code{GADSdat}.
+#'@param convertCases Should cases be transformed for all variables? Available options are \code{'lower'}, \code{'upper'}, or \code{'upperFirst'}.
 #'
 #'@return Returns a \code{GADSdat} containing the newly computed variable.
 #'

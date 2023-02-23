@@ -4,7 +4,13 @@
 \alias{multiChar2fac}
 \title{Transform multiple character variables to factors with identical levels.}
 \usage{
-multiChar2fac(GADSdat, vars, var_suffix = "_r", label_suffix = "(recoded)")
+multiChar2fac(
+  GADSdat,
+  vars,
+  var_suffix = "_r",
+  label_suffix = "(recoded)",
+  convertCases = NULL
+)
 }
 \arguments{
 \item{GADSdat}{A \code{data.frame} or \code{GADSdat} object.}
@@ -14,6 +20,8 @@ multiChar2fac(GADSdat, vars, var_suffix = "_r", label_suffix = "(recoded)")
 \item{var_suffix}{Variable suffix for the newly created \code{GADSdat}. If an empty character, the existing variables are overwritten.}
 
 \item{label_suffix}{Suffix added to variable label for the newly created variable in the \code{GADSdat}.}
+
+\item{convertCases}{Should cases be transformed for all variables? Available options are \code{'lower'}, \code{'upper'}, or \code{'upperFirst'}.}
 }
 \value{
 Returns a \code{GADSdat} containing the newly computed variable.

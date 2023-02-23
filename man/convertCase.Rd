@@ -2,14 +2,19 @@
 % Please edit documentation in R/convertCase.R
 \name{convertCase}
 \alias{convertCase}
+\alias{convertCase.GADSdat}
 \title{Modify upper and lower case for strings.}
 \usage{
 convertCase(x, case = c("lower", "upper", "upperFirst"), ...)
+
+\method{convertCase}{GADSdat}(x, case = c("lower", "upper", "upperFirst"), vars, ...)
 }
 \arguments{
 \item{x}{A character vector, \code{data.frame}, or \code{GADSdat}.}
 
 \item{case}{What case should the strings be converted to?}
+
+\item{...}{further arguments passed to or from other methods.}
 
 \item{vars}{What variables in the GADSdat should the conversion be applied to?}
 }
@@ -20,6 +25,11 @@ Returns the converted object.
 Convert a character vector, all character variables in a \code{data.frame} or selected variables in a \code{GADSdat} to
 upper, lower or first letter upper and everything else lower case.
 }
+\section{Methods (by class)}{
+\itemize{
+\item \code{convertCase(GADSdat)}: convert case for \code{GADSdats}
+
+}}
 \examples{
 # for character
 convertCase(c("Hi", "HEllo", "greaT"), case = "upperFirst")

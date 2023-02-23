@@ -7,6 +7,7 @@
 #'
 #'@param x A character vector, \code{data.frame}, or \code{GADSdat}.
 #'@param case What case should the strings be converted to?
+#'@param ...	further arguments passed to or from other methods.
 #'@param vars What variables in the GADSdat should the conversion be applied to?
 #'
 #'@return Returns the converted object.
@@ -49,8 +50,9 @@ convertCase.data.frame <- function(x, case = c("lower", "upper", "upperFirst"), 
   x
 }
 
+#' @describeIn convertCase convert case for \code{GADSdats}
 #'@export
-convertCase.GADSdat <- function(x, case = c("lower", "upper", "upperFirst"), vars){
+convertCase.GADSdat <- function(x, case = c("lower", "upper", "upperFirst"), vars, ...){
   check_GADSdat(x)
   if(!is.character(vars) && length(vars) > 0) stop("vars needs to be a character vector of at least length 1.")
   check_vars_in_GADSdat(x, vars = vars)
