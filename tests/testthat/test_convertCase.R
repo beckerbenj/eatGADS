@@ -1,9 +1,9 @@
 
 
 test_that("lower case", {
-  y <- c("Hi", "HEllo", "greaT")
+  y <- c("Hi", "HEllo", NA, "greaT")
   out <- convertCase(y, case = "lower")
-  expect_equal(out, c(c("hi", "hello", "great")))
+  expect_equal(out, c(c("hi", "hello", NA, "great")))
 })
 
 test_that("upper case", {
@@ -32,13 +32,14 @@ test_that("data.frames", {
 
 
 test_that("GADSdat", {
-  input <- data.frame(v1 = 1:3, v2 = c("Hi", "HEllo", "greaT"), v3 = 3:1, stringsAsFactors = FALSE)
+  input <- data.frame(v1 = 1:5, v2 = c("Hi", NA, "HEllo", "greaT", -99), v3 = 5:1, stringsAsFactors = FALSE)
   input_g <- import_DF(input)
+  input_g <- changeMissings(input_g, varName = "v2", value = -99, missings = "miss")
 
   expect_error(convertCase(input_g, vars = 1), "vars needs to be a character vector of at least length 1.")
   expect_error(convertCase(input_g, vars = namesGADS(input_g)), "v1 is not a character variable and can not be case converted.")
 
   out <- convertCase(input_g, vars = "v2")
-  expect_equal(out$dat[[2]], c("hi", "hello", "great"))
+  expect_equal(out$dat[[2]], c("hi", NA, "hello", "great", -99))
   expect_equal(out$dat[[1]], input_g$dat[[1]])
 })

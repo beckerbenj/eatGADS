@@ -12,18 +12,19 @@ convertCase(x, case = c("lower", "upper", "upperFirst"), ...)
 \arguments{
 \item{x}{A character vector, \code{data.frame}, or \code{GADSdat}.}
 
-\item{case}{What case should the strings be converted to?}
+\item{case}{Character vector of length 1. What case should the strings be converted to? Available options are
+\code{"lower"}, \code{"upper"}, or \code{"upperFirst"}.}
 
 \item{...}{further arguments passed to or from other methods.}
 
-\item{vars}{What variables in the GADSdat should the conversion be applied to?}
+\item{vars}{Character vector. What variables in the GADSdat should the conversion be applied to?}
 }
 \value{
 Returns the converted object.
 }
 \description{
 Convert a character vector, all character variables in a \code{data.frame} or selected variables in a \code{GADSdat} to
-upper, lower or first letter upper and everything else lower case.
+upper (\code{"uppper"}), lower (\code{"lower"}), or first letter upper and everything else lower case (\code{"upperFirst"}).
 }
 \section{Methods (by class)}{
 \itemize{
