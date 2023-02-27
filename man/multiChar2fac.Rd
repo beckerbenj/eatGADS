@@ -21,7 +21,9 @@ multiChar2fac(
 
 \item{label_suffix}{Suffix added to variable label for the newly created variable in the \code{GADSdat}.}
 
-\item{convertCases}{Should cases be transformed for all variables? Available options are \code{'lower'}, \code{'upper'}, or \code{'upperFirst'}.}
+\item{convertCases}{Should cases be transformed for all variables? Default \code{NULL} leaves cases as they are.
+Available options for converting cases are all lower case (\code{'lower'}), all upper case (\code{'upper'}),
+or first letter upper case, everything else lower case (\code{'upperFirst'}).}
 }
 \value{
 Returns a \code{GADSdat} containing the newly computed variable.
@@ -38,6 +40,8 @@ The SPSS format of the newly created variables is set to \code{F10.0}.
 If necessary, missing codes can be set after transformation via \code{\link{checkMissings}} for setting missing codes
 depending on value labels for all variables or
 \code{\link{changeMissings}} for setting missing codes for specific values in a specific variable.
+
+The argument \code{convertCases} uses the function \code{\link{convertCase}} internally. See the respective documentation for more details.
 }
 \examples{
 ## create an example GADSdat

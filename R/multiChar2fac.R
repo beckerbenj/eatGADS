@@ -13,11 +13,15 @@
 #' depending on value labels for all variables or
 #' \code{\link{changeMissings}} for setting missing codes for specific values in a specific variable.
 #'
+#' The argument \code{convertCases} uses the function \code{\link{convertCase}} internally. See the respective documentation for more details.
+#'
 #'@param GADSdat A \code{data.frame} or \code{GADSdat} object.
 #'@param vars A character vector with all variables that should be transformed to factor.
 #'@param var_suffix Variable suffix for the newly created \code{GADSdat}. If an empty character, the existing variables are overwritten.
 #'@param label_suffix Suffix added to variable label for the newly created variable in the \code{GADSdat}.
-#'@param convertCases Should cases be transformed for all variables? Available options are \code{'lower'}, \code{'upper'}, or \code{'upperFirst'}.
+#'@param convertCases Should cases be transformed for all variables? Default \code{NULL} leaves cases as they are.
+#'Available options for converting cases are all lower case (\code{'lower'}), all upper case (\code{'upper'}),
+#'or first letter upper case, everything else lower case (\code{'upperFirst'}).
 #'
 #'@return Returns a \code{GADSdat} containing the newly computed variable.
 #'
