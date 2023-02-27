@@ -13,10 +13,15 @@
 #' depending on value labels for all variables or
 #' \code{\link{changeMissings}} for setting missing codes for specific values in a specific variable.
 #'
+#' The argument \code{convertCases} uses the function \code{\link{convertCase}} internally. See the respective documentation for more details.
+#'
 #'@param GADSdat A \code{data.frame} or \code{GADSdat} object.
 #'@param vars A character vector with all variables that should be transformed to factor.
 #'@param var_suffix Variable suffix for the newly created \code{GADSdat}. If an empty character, the existing variables are overwritten.
 #'@param label_suffix Suffix added to variable label for the newly created variable in the \code{GADSdat}.
+#'@param convertCases Should cases be transformed for all variables? Default \code{NULL} leaves cases as they are.
+#'Available options for converting cases are all lower case (\code{'lower'}), all upper case (\code{'upper'}),
+#'or first letter upper case, everything else lower case (\code{'upperFirst'}).
 #'
 #'@return Returns a \code{GADSdat} containing the newly computed variable.
 #'
@@ -35,18 +40,26 @@
 #'gads3 <- checkMissings(gads2, missingLabel = "missing")
 #'
 #'@export
-multiChar2fac <- function(GADSdat, vars, var_suffix = "_r", label_suffix = "(recoded)") {
+multiChar2fac <- function(GADSdat, vars, var_suffix = "_r", label_suffix = "(recoded)", convertCases = NULL) {
   UseMethod("multiChar2fac")
 }
 
 #'@export
-multiChar2fac.GADSdat <- function(GADSdat, vars, var_suffix = "_r", label_suffix = "(recoded)") {
+multiChar2fac.GADSdat <- function(GADSdat, vars, var_suffix = "_r", label_suffix = "(recoded)", convertCases = NULL) {
   check_GADSdat(GADSdat)
   if(!is.character(vars) && length(vars) > 0) stop("vars needs to be a character vector of at least length 1.")
+  check_vars_in_GADSdat(GADSdat, vars)
 
-  suppressMessages(only_vars_gads <- removeVars(GADSdat, namesGADS(GADSdat)[!namesGADS(GADSdat) %in% vars]))
+  # convert case if specified
+  if(!is.null(convertCases)) {
+    if(!is.character(convertCases) || length(convertCases) != 1) stop("'convertCases' must be a character of length 1.")
+    if(!convertCases %in% c("lower", "upper", "upperFirst")) stop("'convertCases' must one of c('lower', 'upper', 'upperFirst').")
+    GADSdat <- convertCase(GADSdat, case = convertCases, vars = vars)
+  }
 
-  # potential problem: existing (non-missing) value labels
+  suppressMessages(only_vars_gads <- extractVars(GADSdat, vars = vars))
+
+  # potential problem: existing (non-missing) value labels: remove these values so no new value labels are used for them
   for(var in namesGADS(only_vars_gads)) {
     existing_meta <- extractMeta(only_vars_gads, var)
     existing_labels <- existing_meta[which(existing_meta$missings != "miss"), "value"]
@@ -55,6 +68,7 @@ multiChar2fac.GADSdat <- function(GADSdat, vars, var_suffix = "_r", label_suffix
   }
 
   suppressWarnings(df_no_miss <- extractData(only_vars_gads))
+
   all_levels <- unique(unlist(lapply(df_no_miss, function(x) x)))
   all_levels_fac <- data.frame("all_levels" = as.factor(all_levels))
   all_levels_gads <- import_DF(all_levels_fac)

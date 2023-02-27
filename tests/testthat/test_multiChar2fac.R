@@ -15,6 +15,7 @@ mt4_gads_2$labels[1, c("valLabel")] <- c("missing")
 mt4_gads_2$labels[1, c("labeled")] <- c("yes")
 mt4_gads_2 <- checkMissings(mt4_gads_2, missingLabel = "missing")
 
+
 test_that("Multiple text variables to factors", {
   out <- multiChar2fac(mt4_gads, vars = namesGADS(mt4_gads))
   expect_equal(out$dat$text1_r, c(NA, 3, 1, 2))
@@ -62,4 +63,16 @@ test_that("Partially labeled variable", {
   meta <- extractMeta(out, "text1_r")
   expect_equal(meta$value, c(-99, 1:4))
   expect_equal(meta$valLabel, c("Austria", "Aus", "Eng", "Franz", "Ger"))
+})
+
+test_that("with convertCases", {
+  expect_error(multiChar2fac(mt4_gads, vars = namesGADS(mt4_gads), convertCases = 1:2),
+               "'convertCases' must be a character of length 1.")
+  expect_error(multiChar2fac(mt4_gads, vars = namesGADS(mt4_gads), convertCases = "middle"),
+               "'convertCases' must one of c('lower', 'upper', 'upperFirst').", fixed = TRUE)
+  out <- multiChar2fac(mt4_gads, vars = namesGADS(mt4_gads), convertCases = "lower")
+  expect_equal(out$dat$text1_r, c(NA, 3, 1, 2))
+  expect_equal(out$dat$text2_r, c(5, 4, 3, NA))
+  expect_equal(out$labels[out$labels$varName == "text1_r", "value"], out$labels[out$labels$varName == "text2_r", "value"])
+  expect_equal(out$labels[out$labels$varName == "text1_r", "valLabel"], c("aus", "aus2", "eng", "franz", "ger"))
 })
