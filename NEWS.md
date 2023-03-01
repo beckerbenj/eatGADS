@@ -20,6 +20,7 @@
 * bug fix in `checkUniqueness2()` for cases with differing numbers of cases per imputed data set
 * bug fix in `changeValLabels()` for a mixture of already existing and new values
 * bug fixes in `import_spss()` when setting `labeledStirngs = "transform"`
+* bug fix in `import_spss()` for variables with missing tags but no value labels (these missing tags were dropped before)
 
 
 # eatGADS 0.20.0

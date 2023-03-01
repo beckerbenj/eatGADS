@@ -3,6 +3,14 @@
 # rawDat <- load_spss(file = "c:/Benjamin_Becker/02_Repositories/packages/eatGADS/tests/testthat/helper_spss.sav")
 rawDat <- load_spss("helper_spss.sav")
 
+# rawDat_missings <- haven::read_spss(file = "tests/testthat/helper_spss_missings.sav", user_na = TRUE)
+rawDat_missings <- haven::read_spss("helper_spss_missings.sav", user_na = TRUE)
+
+# rawDat_miss_noValLabel <- haven::read_spss(file = "tests/testthat/helper_spss_missings_no_valLabels.sav", user_na = TRUE)
+rawDat_miss_noValLabel <- haven::read_spss("helper_spss_missings_no_valLabels.sav", user_na = TRUE)
+
+
+
 label_out1 <- data.frame(varName = c("VAR1", "VAR2", "VAR3"),
                          varLabel = c("Variable 1", "Variable 2", "Variable 3"),
                          format = c("F8.2", "F8.0", "A8"),
@@ -76,28 +84,36 @@ test_that("All labels extracted correctly ", {
 
 
 ### Missing Label extracting
-# rawDat_missings <- haven::read_spss(file = "tests/testthat/helper_spss_missings.sav", user_na = TRUE)
-rawDat_missings <- haven::read_spss("helper_spss_missings.sav", user_na = TRUE)
-
-label_miss <- data.frame(varName = rep("VAR1", 3), value = c(-99, -96, 1),
-                         valLabel = c("By design", "Omission", "One"), missings = c("miss", "miss", "valid"), stringsAsFactors = FALSE)
-label_miss2 <- data.frame(varName = rep("VAR2", 2), value = c(-96, -99),
-                          valLabel = c("missing", NA), missings = c("valid", "miss"), stringsAsFactors = FALSE)
-# value labels or empirical values are used correctly for missing code generation
-label_miss3 <- data.frame(varName = rep("VAR3", 2), value = c(-99, -98),
-                          valLabel = c("missing", NA), missings = c("miss", "miss"), stringsAsFactors = FALSE)
-
 test_that("Missings of single variable extracted correctly ", {
+  label_miss <- data.frame(varName = rep("VAR1", 3), value = c(-99, -96, 1),
+                           valLabel = c("By design", "Omission", "One"), missings = c("miss", "miss", "valid"), stringsAsFactors = FALSE)
   expect_equal(extract_value_level(rawDat_missings[, 1, drop = T], "VAR1"), label_miss)
+
+  label_miss2 <- data.frame(varName = rep("VAR2", 2), value = c(-96, -99),
+                            valLabel = c("missing", NA), missings = c("valid", "miss"), stringsAsFactors = FALSE)
   expect_equal(extract_value_level(rawDat_missings[, 2, drop = T], "VAR2"), label_miss2)
+
+  # value labels or empirical values are used correctly for missing code generation
+  label_miss3 <- data.frame(varName = rep("VAR3", 2), value = c(-99, -98),
+                            valLabel = c("missing", NA), missings = c("miss", "miss"), stringsAsFactors = FALSE)
   expect_equal(extract_value_level(rawDat_missings[, 3, drop = T], "VAR3"), label_miss3)
 })
-
-
 
 test_that("Haven missing lavel bug precautions", {
   expect_warning(checkValues_havenBug(c("", "la"), varName = "test"))
   expect_warning(checkValues_havenBug(c(NA, "la"), varName = "test"))
   expect_equal(suppressWarnings(checkValues_havenBug(c(NA, "", "la"), varName = "test")), "la")
 })
+
+test_that("Missings of single variable extracted correctly ", {
+  miss_noValLabel <- data.frame(varName = rep("VAR1", 2), value = c(-99, -88),
+                                valLabel = c(NA_character_, NA_character_), missings = c("miss", "miss"), stringsAsFactors = FALSE)
+  expect_equal(extract_value_level(rawDat_miss_noValLabel[, 1, drop = T], "VAR1"), miss_noValLabel)
+  miss_noValLabel2 <- data.frame(varName = rep("VAR2", 2), value = c(-99, "miss"),
+                                valLabel = c(NA_character_, NA_character_), missings = c("miss", "miss"), stringsAsFactors = FALSE)
+  expect_equal(extract_value_level(rawDat_miss_noValLabel[, 2, drop = T], "VAR2"), miss_noValLabel2)
+})
+
+
+
 
