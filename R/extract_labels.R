@@ -91,17 +91,24 @@ extract_value_level.factor <- function(var, varName) {
 # single variable for SPSS
 #'@export
 extract_value_level.haven_labelled <- function(var, varName) {
-  # check if there are value labels
-  if(is.null(attributes(var)$labels)) return(NULL)
+  # check if there are value labels or missing tags
+  if(is.null(attributes(var)$labels) && is.null(attributes(var)$na_value) && is.null(attributes(var)$na_range)) return(NULL)
   values <- attr(var, "labels")
+  valLabels <- attr(attr(var, "labels"), "names")
+  # proper initialization if no value labels and just missing tags are present
+  if(is.null(values)) {
+    values <- numeric()
+    valLabels <- character()
+  }
 
-  # default behavior: transform value labels to numeric if possible, leave characters as is
-  values <- suppressWarnings(eatTools::asNumericIfPossible(x = values, maintain.factor.scores = TRUE, force.string = FALSE, transform.factors = TRUE))
+  # transform values to numeric if possible, leave characters as is (rest is taking care of in char_valLabels2numeric.R)
+  values <- suppressWarnings(eatTools::asNumericIfPossible(x = values, maintain.factor.scores = TRUE,
+                                                           force.string = FALSE, transform.factors = TRUE))
 
   # extract value labels and return as long format df
   df <- data.frame(varName = rep(varName, length(values)),
                    value = values,
-                   valLabel = attr(attr(var, "labels"), "names"),
+                   valLabel = valLabels,
                    stringsAsFactors = FALSE)
 
   ## extract missings and add as extra label
@@ -120,9 +127,9 @@ extract_value_level.labelled_spss <- function(var, varName) {
 
 # extract if label is label for missing values
 extract_Miss_SPSS <- function(var, varName, label_df) {
-  # if(varName =="Pfluus03a") browser()
   na_range <- attr(var, "na_range")
   na_value <- attr(var, "na_value")
+
   # which values in na_range exist? (empirically and/or have label)
   suppressWarnings(existing_values <- as.numeric(names(table(var))))
   existing_values <- unique(c(existing_values, label_df$value))
@@ -130,9 +137,11 @@ extract_Miss_SPSS <- function(var, varName, label_df) {
 
   values <- c(na_value, na_range_used)
   values <- checkValues_havenBug(values, varName = varName)
-  values <- eatTools::catch_asNumericIfPossible(x = values, warn = paste("Some or all values for ", varName,
-                                                                         " cannot be coerced to numeric.", sep = ""),
-                                                maintain.factor.scores = TRUE, force.string = TRUE, transform.factors = TRUE)
+  # transform values to numeric if possible, leave characters as is (rest is taking care of in char_valLabels2numeric.R)
+  if(!is.null(values)) {
+    values <- suppressWarnings(eatTools::asNumericIfPossible(x = values, maintain.factor.scores = TRUE,
+                                                             force.string = FALSE, transform.factors = TRUE))
+  }
 
   # add missing code for existing values
   label_df[, "missings"] <- ifelse(label_df$value %in% values, "miss", "valid")
