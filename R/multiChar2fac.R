@@ -60,20 +60,37 @@ multiChar2fac.GADSdat <- function(GADSdat, vars, var_suffix = "_r", label_suffix
   suppressMessages(only_vars_gads <- extractVars(GADSdat, vars = vars))
 
   # potential problem: existing (non-missing) value labels: remove these values so no new value labels are used for them
+  all_existing_labels <- numeric()
   for(var in namesGADS(only_vars_gads)) {
     existing_meta <- extractMeta(only_vars_gads, var)
-    existing_labels <- existing_meta[which(existing_meta$missings != "miss"), "value"]
+    existing_labels <- existing_meta[, "value"]
+    #existing_labels <- existing_meta[which(existing_meta$missings != "miss"), "value"]
     existing_labels <- na_omit(existing_labels)
+    all_existing_labels <- c(all_existing_labels, existing_labels)
     only_vars_gads$dat[only_vars_gads$dat[, var] %in% existing_labels, var] <- NA
   }
 
+  ## problem: what if e.g. 1 is used as a missing label (#15)
+  #browser()
+  if(GADSdat$dat[1, 1] == 1) browser()
   suppressWarnings(df_no_miss <- extractData(only_vars_gads))
 
   all_levels <- unique(unlist(lapply(df_no_miss, function(x) x)))
-  all_levels_fac <- data.frame("all_levels" = as.factor(all_levels))
-  all_levels_gads <- import_DF(all_levels_fac)
-  all_levels_lookup <- all_levels_gads$labels[, c("valLabel", "value")]
-  names(all_levels_lookup) <- c("value", "value_new")
+  all_levels_sorted <- sort(all_levels[!is.na(all_levels)])
+  all_levels_lookup <- data.frame(value = all_levels_sorted,
+                       value_new = seq_but_skip(to = length(all_levels_sorted), skip = c(unique(all_existing_labels))))
+
+  ## This new approach is currently not working, as all_levels_gads is later used for meta data transfer.
+  ## Maybe redesign the function for concurrent recoding of values and value labels? Or integrate value specific value labels
+  ## into all_levels_gads?
+
+  ## Design choice: What happens if multiple chars are recoded with different existing value labels? -> This was not intended,
+  ## simply throw an error for now?
+
+  #all_levels_fac <- data.frame("all_levels" = as.factor(all_levels))
+  #all_levels_gads <- import_DF(all_levels_fac)
+  #all_levels_lookup <- all_levels_gads$labels[, c("valLabel", "value")]
+  #names(all_levels_lookup) <- c("value", "value_new")
 
   for(var in vars) {
     old_nam <- var

@@ -29,6 +29,14 @@ test_that("Multiple text variables to factors", {
   expect_equal(out2$labels[out$labels$varName == "text1", "varLabel"][1], "(recoded)")
 })
 
+test_that("Single text variable to factors with 1 as missing", {
+  mt4_gads_3 <- recodeGADS(mt4_gads_2, varName = "text1", oldValues = -99, newValues = 1)
+  out <- multiChar2fac(mt4_gads_3, vars = "text1")
+  expect_equal(out$dat$text1_r, c(1, 4, 2, 3))
+  expect_equal(out$labels[out$labels$varName == "text1_r", "value"], out$labels[out$labels$varName == "text2_r", "value"])
+  expect_equal(out$labels[out$labels$varName == "text1_r", "valLabel"], c("Aus", "Aus2", "Eng", "Franz", "Ger"))
+})
+
 test_that("Multiple text variables to factors, keeping var and missing codes", {
   out <- multiChar2fac(mt4_gads_2, vars = namesGADS(mt4_gads))
   expect_equal(unique(out$labels[out$labels$varName == "text1_r", "varLabel"]), "text var 1 (recoded)")
@@ -52,9 +60,9 @@ test_that("Multiple text variables to factors with other factor in data set", {
 })
 
 test_that("Partially labeled variable", {
-  mt5_gads <- changeValLabels(mt4_gads, varName = "text1", value = -99, valLabel = "Austria")
-  mt5_gads <- changeMissings(mt5_gads, varName = "text1", value = -99, missings =  "valid")
-  mt5_gads$dat[4, 1] <- -99
+  mt5_gads <- recodeGADS(mt4_gads_2, varName = "text1", oldValues = -99, newValues = 1)
+  mt5_gads <- changeValLabels(mt5_gads, varName = "text1", value = 1, valLabel = "Austria")
+  mt5_gads <- changeMissings(mt5_gads, varName = "text1", value = 1, missings =  "valid")
   out <- multiChar2fac(mt5_gads, vars = namesGADS(mt5_gads))
 
   expect_equal(dim(out$dat), c(4, 4))

@@ -37,7 +37,7 @@ composeVar <- function(GADSdat, sourceVars, primarySourceVar, newVar) {
   UseMethod("composeVar")
 }
 #'@export
-composeVar <- function(GADSdat, sourceVars, primarySourceVar, newVar) {
+composeVar.GADSdat <- function(GADSdat, sourceVars, primarySourceVar, newVar) {
   check_GADSdat(GADSdat)
   check_vars_in_GADSdat(GADSdat, vars = sourceVars)
   if(!is.character(sourceVars) || length(sourceVars) != 2) stop("'sourceVars' must be a character vector of length 2.")
