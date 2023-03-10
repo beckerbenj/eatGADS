@@ -11,7 +11,7 @@ test_that("Errors", {
   expect_error(composeVar(df1, sourceVars = "ID1", newVar = "newVar", primarySourceVar = "ID1"),
                "'sourceVars' must be a character vector of length 2.")
   expect_error(composeVar(dfSAV, sourceVars = c("VAR1", "VAR2"), newVar = "newVar", primarySourceVar = "VAR1"),
-               "Meta data on value level ('value', 'valLabel', 'missings') of the two 'sourceVars' must be identical.", fixed = TRUE)
+               "Meta data on value level ('value', 'valLabel', 'missings') of 'sourceVars' must be identical.", fixed = TRUE)
 })
 
 

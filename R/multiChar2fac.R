@@ -1,13 +1,17 @@
 #### Multiple Strings to Labeled Variables
 #############################################################################
-#' Transform multiple character variables to factors with identical levels.
+#' Transform one or multiple character variables to factor.
 #'
-#' Convert multiple character variables to factors, while creating a common set of value labels, which is identical across variables.
+#' Convert one or multiple character variables to factors. If multiple variables are converted, a common set of value labels is created,
+#'  which is identical across variables. Existing value labels are preserved.
 #'
 #' If a set of variables has the same possible values, it is desirable that these variables share the same
 #' value labels, even if some of the values do not occur on the individual variables. This function allows
 #' the transformation of multiple character variables to factors while assimilating the value labels.
 #' The SPSS format of the newly created variables is set to \code{F10.0}.
+#'
+#' A current limitation of the function is that prior to the conversion, all variables specified in \code{vars} must have identical
+#' meta data on value level (value labels and missing tags).
 #'
 #' If necessary, missing codes can be set after transformation via \code{\link{checkMissings}} for setting missing codes
 #' depending on value labels for all variables or
@@ -33,7 +37,10 @@
 #'                         stringsAsFactors = FALSE)
 #'gads <- import_DF(example_df)
 #'
-#'## transform multiple strings
+#'## transform one character variable
+#'gads2 <- multiChar2fac(gads, vars = "citizenship1")
+#'
+#'## transform multiple character variables
 #'gads2 <- multiChar2fac(gads, vars = c("citizenship1", "citizenship2"))
 #'
 #'## set values to missings
@@ -50,6 +57,14 @@ multiChar2fac.GADSdat <- function(GADSdat, vars, var_suffix = "_r", label_suffix
   if(!is.character(vars) && length(vars) > 0) stop("vars needs to be a character vector of at least length 1.")
   check_vars_in_GADSdat(GADSdat, vars)
 
+  ## current limitation: for multiple vars, meta data must be equal (maybe extend later?)
+  if(length(vars) > 1) {
+    for(nam in vars[-1]) {
+      variables_names_in_error <- paste0("variables '", vars[1], "' and '", nam, "'")
+      compare_meta_value_level(GADSdat, varName1 = vars[1], varName2 = nam, argumentName = variables_names_in_error)
+    }
+  }
+
   # convert case if specified
   if(!is.null(convertCases)) {
     if(!is.character(convertCases) || length(convertCases) != 1) stop("'convertCases' must be a character of length 1.")
@@ -57,54 +72,38 @@ multiChar2fac.GADSdat <- function(GADSdat, vars, var_suffix = "_r", label_suffix
     GADSdat <- convertCase(GADSdat, case = convertCases, vars = vars)
   }
 
+  # circumvent existing value labels & missing tags: remove these values so no new value labels are used for them
   suppressMessages(only_vars_gads <- extractVars(GADSdat, vars = vars))
-
-  # potential problem: existing (non-missing) value labels: remove these values so no new value labels are used for them
-  all_existing_labels <- numeric()
+  existing_meta <- extractMeta(only_vars_gads, vars[1])
+  existing_meta <- existing_meta[!is.na(existing_meta$value), ]
+  existing_labels <- existing_meta[, "value"]
   for(var in namesGADS(only_vars_gads)) {
-    existing_meta <- extractMeta(only_vars_gads, var)
-    existing_labels <- existing_meta[, "value"]
-    #existing_labels <- existing_meta[which(existing_meta$missings != "miss"), "value"]
-    existing_labels <- na_omit(existing_labels)
-    all_existing_labels <- c(all_existing_labels, existing_labels)
     only_vars_gads$dat[only_vars_gads$dat[, var] %in% existing_labels, var] <- NA
   }
 
-  ## problem: what if e.g. 1 is used as a missing label (#15)
-  #browser()
-  if(GADSdat$dat[1, 1] == 1) browser()
-  suppressWarnings(df_no_miss <- extractData(only_vars_gads))
-
-  all_levels <- unique(unlist(lapply(df_no_miss, function(x) x)))
+  # create common lookup table as combination of existing meta data and new meta data derived from data entries
+  suppressWarnings(df_no_meta <- extractData(only_vars_gads))
+  all_levels <- unique(unlist(lapply(df_no_meta, function(x) x)))
   all_levels_sorted <- sort(all_levels[!is.na(all_levels)])
   all_levels_lookup <- data.frame(value = all_levels_sorted,
-                       value_new = seq_but_skip(to = length(all_levels_sorted), skip = c(unique(all_existing_labels))))
+                       value_new = seq_but_skip(to = length(all_levels_sorted), skip = c(unique(existing_labels))))
+  #existing_meta2 <- existing_meta[, c("valLabel", "value")]
+  #names(existing_meta2) <- c("value", "value_new")
+  #all_levels_lookup_with_existing_meta <- rbind(all_levels_lookup, existing_meta2)
+  #all_levels_lookup_with_existing_meta <- all_levels_lookup_with_existing_meta[order(all_levels_lookup_with_existing_meta$value_new), ]
 
-  ## This new approach is currently not working, as all_levels_gads is later used for meta data transfer.
-  ## Maybe redesign the function for concurrent recoding of values and value labels? Or integrate value specific value labels
-  ## into all_levels_gads?
-
-  ## Design choice: What happens if multiple chars are recoded with different existing value labels? -> This was not intended,
-  ## simply throw an error for now?
-
-  #all_levels_fac <- data.frame("all_levels" = as.factor(all_levels))
-  #all_levels_gads <- import_DF(all_levels_fac)
-  #all_levels_lookup <- all_levels_gads$labels[, c("valLabel", "value")]
-  #names(all_levels_lookup) <- c("value", "value_new")
-
-  for(var in vars) {
-    old_nam <- var
-    var <- paste0(var, var_suffix)
+  for(nam in vars) {
+    old_nam <- nam
+    new_nam <- paste0(nam, var_suffix)
     specific_lookup <- data.frame(variable = old_nam, all_levels_lookup, stringsAsFactors = FALSE)
 
-    #browser()
+    # applyLookUp automatically transfers the existing meta data!
     GADSdat <- suppressMessages(suppressWarnings(applyLookup(GADSdat, lookup = specific_lookup, suffix = var_suffix)))
-    GADSdat$dat[, var] <- as.numeric(GADSdat$dat[, var])
+    GADSdat$dat[, new_nam] <- as.numeric(GADSdat$dat[, new_nam])
 
-    GADSdat <- reuseMeta(GADSdat, varName = var, other_GADSdat = all_levels_gads, other_varName = "all_levels",
-                         addValueLabels = TRUE)
-    GADSdat <- append_varLabel(GADSdat, varName = var, label_suffix = label_suffix)
-    GADSdat$labels[GADSdat$labels$varName == var, "format"] <- "F10.0"
+    GADSdat <- changeValLabels(GADSdat, varName = new_nam, value = specific_lookup$value_new, valLabel = specific_lookup$value)
+    GADSdat <- append_varLabel(GADSdat, varName = new_nam, label_suffix = label_suffix)
+    GADSdat$labels[GADSdat$labels$varName == new_nam, "format"] <- "F10.0"
   }
 
   GADSdat

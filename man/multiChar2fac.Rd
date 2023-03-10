@@ -2,7 +2,7 @@
 % Please edit documentation in R/multiChar2fac.R
 \name{multiChar2fac}
 \alias{multiChar2fac}
-\title{Transform multiple character variables to factors with identical levels.}
+\title{Transform one or multiple character variables to factor.}
 \usage{
 multiChar2fac(
   GADSdat,
@@ -29,13 +29,17 @@ or first letter upper case, everything else lower case (\code{'upperFirst'}).}
 Returns a \code{GADSdat} containing the newly computed variable.
 }
 \description{
-Convert multiple character variables to factors, while creating a common set of value labels, which is identical across variables.
+Convert one or multiple character variables to factors. If multiple variables are converted, a common set of value labels is created,
+ which is identical across variables. Existing value labels are preserved.
 }
 \details{
 If a set of variables has the same possible values, it is desirable that these variables share the same
 value labels, even if some of the values do not occur on the individual variables. This function allows
 the transformation of multiple character variables to factors while assimilating the value labels.
 The SPSS format of the newly created variables is set to \code{F10.0}.
+
+A current limitation of the function is that prior to the conversion, all variables specified in \code{vars} must have identical
+meta data on value level (value labels and missing tags).
 
 If necessary, missing codes can be set after transformation via \code{\link{checkMissings}} for setting missing codes
 depending on value labels for all variables or
@@ -51,7 +55,10 @@ example_df <- data.frame(ID = 1:4,
                         stringsAsFactors = FALSE)
 gads <- import_DF(example_df)
 
-## transform multiple strings
+## transform one character variable
+gads2 <- multiChar2fac(gads, vars = "citizenship1")
+
+## transform multiple character variables
 gads2 <- multiChar2fac(gads, vars = c("citizenship1", "citizenship2"))
 
 ## set values to missings
