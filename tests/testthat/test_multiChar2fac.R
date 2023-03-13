@@ -10,10 +10,17 @@ mt5_gads <- import_DF(mt5)
 
 mt4_gads_2 <- changeVarLabels(mt4_gads, varName = "text1", varLabel = "text var 1")
 mt4_gads_2$dat[1, "text1"] <- -99
-mt4_gads_2$labels[1, c("value")] <- c(-99)
-mt4_gads_2$labels[1, c("valLabel")] <- c("missing")
-mt4_gads_2$labels[1, c("labeled")] <- c("yes")
-mt4_gads_2 <- checkMissings(mt4_gads_2, missingLabel = "missing")
+mt4_gads_2$labels[1:2, c("value")] <- c(-99)
+mt4_gads_2$labels[1:2, c("valLabel")] <- c("missing")
+mt4_gads_2$labels[1:2, c("labeled")] <- c("yes")
+mt4_gads_2$labels[1:2, c("missings")] <- c("miss")
+
+test_that("errors", {
+  mt4_gads_3 <- changeMissings(mt4_gads_2, "text2", value = -99, missings = "valid")
+  expect_error(multiChar2fac(mt4_gads_3, vars = namesGADS(mt4_gads_2)),
+               "Meta data on value level ('value', 'valLabel', 'missings') of variables 'text1' and 'text2' must be identical.",
+               fixed = TRUE)
+})
 
 
 test_that("Multiple text variables to factors", {
@@ -27,6 +34,13 @@ test_that("Multiple text variables to factors", {
   expect_equal(out2$dat$text1, c(NA, 3, 1, 2))
   expect_equal(out2$dat$text2, c(5, 4, 3, NA))
   expect_equal(out2$labels[out$labels$varName == "text1", "varLabel"][1], "(recoded)")
+})
+
+test_that("Single text variable to factors with 1 as missing", {
+  mt4_gads_3 <- recodeGADS(mt4_gads_2, varName = "text1", oldValues = -99, newValues = 1)
+  out <- multiChar2fac(mt4_gads_3, vars = "text1")
+  expect_equal(out$dat$text1_r, c(1, 4, 2, 3))
+  expect_equal(out$labels[out$labels$varName == "text1_r", "valLabel"], c("missing", "Aus", "Aus2", "Eng"))
 })
 
 test_that("Multiple text variables to factors, keeping var and missing codes", {
@@ -52,17 +66,20 @@ test_that("Multiple text variables to factors with other factor in data set", {
 })
 
 test_that("Partially labeled variable", {
-  mt5_gads <- changeValLabels(mt4_gads, varName = "text1", value = -99, valLabel = "Austria")
-  mt5_gads <- changeMissings(mt5_gads, varName = "text1", value = -99, missings =  "valid")
-  mt5_gads$dat[4, 1] <- -99
+  mt5_gads <- mt4_gads_2
+  for(nam in namesGADS(mt5_gads)) {
+    mt5_gads <- recodeGADS(mt5_gads, varName = nam, oldValues = -99, newValues = 1)
+    mt5_gads <- changeValLabels(mt5_gads, varName = nam, value = 1, valLabel = "Austria")
+    mt5_gads <- changeMissings(mt5_gads, varName = nam, value = 1, missings =  "valid")
+  }
   out <- multiChar2fac(mt5_gads, vars = namesGADS(mt5_gads))
 
   expect_equal(dim(out$dat), c(4, 4))
-  expect_equal(out$dat[[1]], c(NA, "Eng", "Aus", -99))
-  expect_equal(out$dat[[3]], c(NA, 2, 1, -99))
+  expect_equal(out$dat[[1]], c(1, "Eng", "Aus", "Aus2"))
+  expect_equal(out$dat[[3]], c(1, 4, 2, 3))
   meta <- extractMeta(out, "text1_r")
-  expect_equal(meta$value, c(-99, 1:4))
-  expect_equal(meta$valLabel, c("Austria", "Aus", "Eng", "Franz", "Ger"))
+  expect_equal(meta$value, c(1:6))
+  expect_equal(meta$valLabel, c("Austria", "Aus", "Aus2", "Eng", "Franz", "Ger"))
 })
 
 test_that("with convertCases", {

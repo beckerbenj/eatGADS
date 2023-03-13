@@ -37,7 +37,7 @@ composeVar <- function(GADSdat, sourceVars, primarySourceVar, newVar) {
   UseMethod("composeVar")
 }
 #'@export
-composeVar <- function(GADSdat, sourceVars, primarySourceVar, newVar) {
+composeVar.GADSdat <- function(GADSdat, sourceVars, primarySourceVar, newVar) {
   check_GADSdat(GADSdat)
   check_vars_in_GADSdat(GADSdat, vars = sourceVars)
   if(!is.character(sourceVars) || length(sourceVars) != 2) stop("'sourceVars' must be a character vector of length 2.")
@@ -51,10 +51,7 @@ composeVar <- function(GADSdat, sourceVars, primarySourceVar, newVar) {
   dat_vec2 <- extracted_dat[[otherSourceVar]]
 
   # compare meta (otherwise error?)
-  primary_meta <- extractMeta(GADSdat, primarySourceVar)[, c("value", "valLabel", "missings")]
-  other_meta <- extractMeta(GADSdat, otherSourceVar)[, c("value", "valLabel", "missings")]
-  row.names(primary_meta) <- row.names(other_meta) <- NULL
-  if(!identical(TRUE, all.equal(primary_meta, other_meta))) stop("Meta data on value level ('value', 'valLabel', 'missings') of the two 'sourceVars' must be identical.")
+  compare_meta_value_level(GADSdat, varName1 = primarySourceVar, varName2 = otherSourceVar, argumentName = "'sourceVars'")
 
   # compose (if primary not missing or both missing => primary)
   comp_var <- ifelse(is.na(dat_vec1), yes = ifelse(is.na(dat_vec2),
@@ -77,7 +74,13 @@ composeVar <- function(GADSdat, sourceVars, primarySourceVar, newVar) {
   GADSdat_out3
 }
 
-
+compare_meta_value_level <- function(GADSdat, varName1, varName2, argumentName) {
+  primary_meta <- extractMeta(GADSdat, varName1)[, c("value", "valLabel", "missings")]
+  other_meta <- extractMeta(GADSdat, varName2)[, c("value", "valLabel", "missings")]
+  row.names(primary_meta) <- row.names(other_meta) <- NULL
+  if(!identical(TRUE, all.equal(primary_meta, other_meta))) stop("Meta data on value level ('value', 'valLabel', 'missings') of ", argumentName, " must be identical.")
+  return(NULL)
+}
 
 
 
