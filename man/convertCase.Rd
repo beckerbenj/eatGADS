@@ -17,7 +17,7 @@ convertCase(x, case = c("lower", "upper", "upperFirst"), ...)
 
 \item{...}{further arguments passed to or from other methods.}
 
-\item{vars}{Character vector. What variables in the GADSdat should the conversion be applied to?}
+\item{vars}{Character vector. What variables in the \code{GADSdat} should the conversion be applied to?}
 }
 \value{
 Returns the converted object.

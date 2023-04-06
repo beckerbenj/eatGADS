@@ -1,4 +1,4 @@
-# eatGADS 0.20.0.9000
+# eatGADS 1.0.0
 
 ## new features
 * `multiChar2fac()` now allows converting to upper or lower cases via the `convertCases` argument

@@ -9,7 +9,7 @@
 #'@param case Character vector of length 1. What case should the strings be converted to? Available options are
 #'\code{"lower"}, \code{"upper"}, or \code{"upperFirst"}.
 #'@param ...	further arguments passed to or from other methods.
-#'@param vars Character vector. What variables in the GADSdat should the conversion be applied to?
+#'@param vars Character vector. What variables in the \code{GADSdat} should the conversion be applied to?
 #'
 #'@return Returns the converted object.
 #'
