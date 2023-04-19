@@ -14,21 +14,6 @@ insertVariable(GADSdat, var, after = NULL)
 \item{after}{Character string of the variable name after which \code{var} should be inserted. If \code{NULL}, \code{var} is inserted at the beginning of the
 \code{GADSdat}.}
 }
-\value{
-Returns a \code{GADSdat} object.
-}
 \description{
-Reorder a single variables in a \code{GADSdat}. The variable (\code{var}) can be inserted right after another variable (\code{after}) or at the beginning
-of the \code{GADSdat} via \code{after = NULL}.
-}
-\details{
-The variables in the \code{dat} and in the \code{labels} section are ordered. For reordering the whole \code{GADSdat}, see
-\code{\link{orderLike}}.
-}
-\examples{
-# Insert variable 'migration' after variable 'idclass'
-pisa2 <- insertVariable(pisa, var = "migration", after = "idclass")
-
-# Insert variable 'idclass' at the beginning of the data set
-pisa2 <- insertVariable(pisa, var = "idclass", after = NULL)
+Deprecated. Please use \code{\link{relocateVariable}} instead.
 }
