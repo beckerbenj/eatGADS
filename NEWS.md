@@ -1,3 +1,11 @@
+# eatGADS 1.0.0.9000
+
+## new features
+* `insertVariable()` has been renamed `relocateVariable()` for clarity. Variables can now be inserted at the very beginning of a `GADSdat`
+* `cloneVariable()` and `autoRecode()` now allow automatic appending of variable label suffixes via the `label_suffix` argument
+* new function `emptyTheseVariables()` allows setting multiple variables to `NA`
+
+
 # eatGADS 1.0.0
 
 ## new features
