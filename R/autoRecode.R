@@ -11,7 +11,8 @@
 #'
 #'@param GADSdat A \code{GADSdat} object.
 #'@param var Character string of the variable name which should be sorted.
-#'@param suffix Character string of the variable suffix.
+#'@param var_suffix Variable suffix for the newly created \code{GADSdat}. If an empty character, the existing variables are overwritten.
+#'@param label_suffix Suffix added to variable label for the newly created variable in the \code{GADSdat}.
 #'@param csv_path Path for the \code{.csv} file for the look up table.
 #'@param template Existing look up table.
 #'
@@ -28,18 +29,18 @@
 #' gads2 <- autoRecode(gads, var = "v1", suffix = "_num", csv_path = f)
 #'
 #'@export
-autoRecode <- function(GADSdat, var, suffix = "", csv_path = NULL, template = NULL) {
+autoRecode <- function(GADSdat, var, var_suffix = "", label_suffix = "", csv_path = NULL, template = NULL) {
   UseMethod("autoRecode")
 }
 #'@export
-autoRecode.GADSdat <- function(GADSdat, var, suffix = "", csv_path = NULL, template = NULL) {
+autoRecode.GADSdat <- function(GADSdat, var, var_suffix = "", label_suffix = "", csv_path = NULL, template = NULL) {
   check_GADSdat(GADSdat)
   check_single_varName(var)
   check_vars_in_GADSdat(GADSdat, vars = c(var))
 
   # duplicate
-  new_var <- paste0(var, suffix)
-  GADSdat_out <- cloneVariable(GADSdat = GADSdat, varName = var, new_varName = new_var)
+  new_var <- paste0(var, var_suffix)
+  GADSdat_out <- cloneVariable(GADSdat = GADSdat, varName = var, new_varName = new_var, label_suffix = label_suffix)
 
   if(is.null(template)) {
     # to character
@@ -47,7 +48,7 @@ autoRecode.GADSdat <- function(GADSdat, var, suffix = "", csv_path = NULL, templ
     GADSdat_out <- changeSPSSformat(GADSdat_out, varName = new_var, format = "A10")
 
     # to factor
-    GADSdat_out <- multiChar2fac(GADSdat_out, vars = new_var, var_suffix = "")
+    GADSdat_out <- multiChar2fac(GADSdat_out, vars = new_var, var_suffix = "", label_suffix = "")
 
     # look up table
     lookup <- extractMeta(GADSdat_out, vars = new_var)[, c("valLabel", "value")]
