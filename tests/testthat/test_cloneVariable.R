@@ -21,5 +21,5 @@ test_that("Clone variable", {
 
 test_that("Append varLabel", {
   out <- cloneVariable(dfSAV, varName = "VAR1", new_varName = "VAR1_new", label_suffix = "(recoded)")
-  expect_equal(out$labels[8, 2], c("Variable 1 (recoded)"))
+  expect_equal(out$labels[c(8:10), 2], rep("Variable 1 (recoded)", 3))
 })

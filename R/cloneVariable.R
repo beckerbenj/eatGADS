@@ -25,7 +25,9 @@ cloneVariable <- function(GADSdat, varName, new_varName, label_suffix = "") {
 cloneVariable.GADSdat <- function(GADSdat, varName, new_varName, label_suffix = "") {
   check_GADSdat(GADSdat)
   check_vars_in_GADSdat(GADSdat, vars = varName)
-  if(new_varName %in% namesGADS(GADSdat)) stop("'",  new_varName, "' is already an existing variable in the 'GADSdat'.")
+  if(new_varName %in% namesGADS(GADSdat)) {
+    stop("'",  new_varName, "' is already an existing variable in the 'GADSdat'.")
+  }
 
   dat_only <- GADSdat$dat
   dat_only[[new_varName]] <- dat_only[[varName]]

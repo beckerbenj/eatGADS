@@ -54,7 +54,9 @@ autoRecode.GADSdat <- function(GADSdat, var, var_suffix = "", label_suffix = "",
     names(lookup) <- c("oldValue", "newValue")
     GADSdat_out <- removeValLabels(GADSdat_out, varName = new_var, value = c(lookup$newValue))
   } else {
-    if(!is.data.frame(template) || !identical(names(template), c("oldValue", "newValue"))) stop()
+    if(!is.data.frame(template) || !identical(names(template), c("oldValue", "newValue"))) {
+      stop()
+    }
 
     new_oldValues <- GADSdat$dat[[var]][!GADSdat$dat[[var]] %in% template$oldValue]
     new_newValues <- seq(from = max(template$newValue) + 1, length.out = length(new_oldValues))
