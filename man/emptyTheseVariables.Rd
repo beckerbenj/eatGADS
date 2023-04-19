@@ -4,12 +4,14 @@
 \alias{emptyTheseVariables}
 \title{Set variables to \code{NA}.}
 \usage{
-emptyTheseVariables(GADSdat, vars)
+emptyTheseVariables(GADSdat, vars, label_suffix = "")
 }
 \arguments{
 \item{GADSdat}{A \code{GADSdat} object.}
 
 \item{vars}{Character vector of variable names which should be set to \code{NA}.}
+
+\item{label_suffix}{Suffix added to variable labels for the affected variables in the \code{GADSdat}.}
 }
 \value{
 Returns the recoded \code{GADSdat}.

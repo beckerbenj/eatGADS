@@ -4,10 +4,12 @@
 dfSAV <- import_spss(file = "helper_spss.sav")
 
 test_that("emptyTheseVariables for GADSdat", {
-  out1 <- emptyTheseVariables(dfSAV, vars = c("VAR1", "VAR2"))
+  out1 <- emptyTheseVariables(dfSAV, vars = c("VAR1", "VAR2"), label_suffix = "(anonymized)")
   expect_equal(out1$dat$VAR1, rep(NA_real_, 1))
   expect_equal(out1$dat$VAR2, rep(NA_real_, 1))
   expect_equal(out1$dat$VAR3, dfSAV$dat$VAR3)
+  expect_equal(out1$labels[1, 2], "Variable 1 (anonymized)", fixed = TRUE)
+  expect_equal(out1$labels[2, 2], "Variable 2 (anonymized)", fixed = TRUE)
   out2 <- emptyTheseVariables(dfSAV, vars = "VAR3")
   expect_equal(out2$dat$VAR1, dfSAV$dat$VAR1)
   expect_equal(out2$dat$VAR2, dfSAV$dat$VAR2)
