@@ -4,14 +4,23 @@
 \alias{autoRecode}
 \title{Auto recode a variable in a \code{GADSdat}.}
 \usage{
-autoRecode(GADSdat, var, suffix = "", csv_path = NULL, template = NULL)
+autoRecode(
+  GADSdat,
+  var,
+  var_suffix = "",
+  label_suffix = "",
+  csv_path = NULL,
+  template = NULL
+)
 }
 \arguments{
 \item{GADSdat}{A \code{GADSdat} object.}
 
 \item{var}{Character string of the variable name which should be sorted.}
 
-\item{suffix}{Character string of the variable suffix.}
+\item{var_suffix}{Variable suffix for the newly created \code{GADSdat}. If an empty character, the existing variables are overwritten.}
+
+\item{label_suffix}{Suffix added to variable label for the newly created variable in the \code{GADSdat}.}
 
 \item{csv_path}{Path for the \code{.csv} file for the look up table.}
 
@@ -33,10 +42,9 @@ table will contain the existing recodes plus additional recode pairs required fo
 gads <- import_DF(data.frame(v1 = letters))
 
 # auto recode without saving look up table
-gads2 <- autoRecode(gads, var = "v1", suffix = "_num")
+gads2 <- autoRecode(gads, var = "v1", var_suffix = "_num")
 
 # auto recode with saving look up table
 f <- tempfile(fileext = ".csv")
-gads2 <- autoRecode(gads, var = "v1", suffix = "_num", csv_path = f)
-
+gads2 <- autoRecode(gads, var = "v1", var_suffix = "_num", csv_path = f)
 }
