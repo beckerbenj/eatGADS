@@ -12,8 +12,6 @@
 #'@examples
 #' # empty multiple variables
 #' pisa2 <- emptyTheseVariables(pisa, vars = c("idstud", "idschool"))
-#'
-#'
 #'@export
 emptyTheseVariables <- function(GADSdat, vars) {
   UseMethod("emptyTheseVariables")
@@ -22,7 +20,9 @@ emptyTheseVariables <- function(GADSdat, vars) {
 #'@export
 emptyTheseVariables.GADSdat <- function(GADSdat, vars) {
   check_GADSdat(GADSdat)
-  if(!is.character(vars) || length(vars) < 1) stop("'vars' needs to be character vector of at least length 1.")
+  if(!is.character(vars) || length(vars) < 1) {
+    stop("'vars' needs to be character vector of at least length 1.")
+  }
   check_vars_in_GADSdat(GADSdat, vars = vars)
 
   for(nam in vars) {

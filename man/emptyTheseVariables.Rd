@@ -20,6 +20,4 @@ Set all values within one or multiple variables to \code{NA}.
 \examples{
 # empty multiple variables
 pisa2 <- emptyTheseVariables(pisa, vars = c("idstud", "idschool"))
-
-
 }
