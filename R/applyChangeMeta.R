@@ -11,7 +11,8 @@
 #' data in the \code{changeTable} or, if incomplete, from the recoded value (\code{"value_new"}).
 #'
 #' Furthermore, one might recode multiple old values in the same new value. This is currently only possible with
-#' \code{existingMeta = "drop"}, which drops all related meta data on value level.
+#' \code{existingMeta = "drop"}, which drops all related meta data on value level or
+#' \code{existingMeta = "ignore"}, which leaves all related meta data on value level untouched.
 #'
 #'
 #'@param changeTable Change table as provided by \code{\link{getChangeMeta}}.
@@ -27,7 +28,6 @@
 #'varChangeTable[1, c("varName_new", "varLabel_new")] <- c("IDstud", "Person ID")
 #'
 #'pisa2 <- applyChangeMeta(varChangeTable, GADSdat = pisa)
-#'
 #'@export
 applyChangeMeta <- function(changeTable, GADSdat, ...) {
   UseMethod("applyChangeMeta")
@@ -69,7 +69,7 @@ applyChangeMeta.varChanges <- function(changeTable, GADSdat, ...) {
 
 #'@rdname applyChangeMeta
 #'@export
-applyChangeMeta.valChanges <- function(changeTable, GADSdat, existingMeta = c("stop", "value", "value_new", "drop"), ...) {
+applyChangeMeta.valChanges <- function(changeTable, GADSdat, existingMeta = c("stop", "value", "value_new", "drop", "ignore"), ...) {
   check_GADSdat(GADSdat)
   changeTable <- check_valChanges(changeTable)
   existingMeta <- match.arg(existingMeta)
@@ -197,16 +197,23 @@ recode_labels <- function(labels, changeTable, existingMeta) {
     dup_recode_values <- dup_recode_values[!dup_recode_values %in% single_simpleChanges[existing_value_vec, "value"]]
     new_dup_value_vec <- !is.na(single_simpleChanges$value_new) & single_simpleChanges$value_new %in% dup_recode_values
 
+    # ignore behavior: reset all changes for duplicate and existing value labels & missing tags
+    if(identical(existingMeta, "ignore")) {
+      single_simpleChanges[new_dup_value_vec | existing_value_vec, "value_new"] <- NA
+    }
+
     if(length(dup_recode_values) > 0 && !any(existing_value_vec)){
-      if(!identical(existingMeta, "drop")) {
+      if(!(identical(existingMeta, "drop") || identical(existingMeta, "ignore"))) {
         all_values <- single_simpleChanges[existing_value_vec, "value_new"]
         stop("Duplicated values in 'value_new' causing conflicting meta data in variable ", var_name, ": ",
              paste(dup_recode_values, collapse = ", "), ". Use 'existingMeta' = 'drop' to drop all related meta data.")
       }
       # drop behavior
-      remove_value_meta <- single_simpleChanges[new_dup_value_vec, "value"]
-      drop_meta_rows <- which(single_labels$value %in% remove_value_meta)
-      single_labels[drop_meta_rows, c("valLabel", "missings")] <- NA
+      if(identical(existingMeta, "drop")) {
+        remove_value_meta <- single_simpleChanges[new_dup_value_vec, "value"]
+        drop_meta_rows <- which(single_labels$value %in% remove_value_meta)
+        single_labels[drop_meta_rows, c("valLabel", "missings")] <- NA
+      }
     }
 
     # meta data conflicts with old values (and optionally new values)
@@ -245,6 +252,7 @@ recode_labels <- function(labels, changeTable, existingMeta) {
       }
     }
 
+    #if(identical(existingMeta, "ignore")) browser()
     ## Actual recoding: loop over rows and column names, overwrite if not NA
     old_single_labels <- single_labels
     for(i in seq(nrow(single_simpleChanges))) {

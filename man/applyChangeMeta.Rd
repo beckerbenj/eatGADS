@@ -13,7 +13,7 @@ applyChangeMeta(changeTable, GADSdat, ...)
 \method{applyChangeMeta}{valChanges}(
   changeTable,
   GADSdat,
-  existingMeta = c("stop", "value", "value_new", "drop"),
+  existingMeta = c("stop", "value", "value_new", "drop", "ignore"),
   ...
 )
 }
@@ -39,7 +39,8 @@ either raising an error if any occur (\code{"stop"}), keeping the original meta 
 data in the \code{changeTable} or, if incomplete, from the recoded value (\code{"value_new"}).
 
 Furthermore, one might recode multiple old values in the same new value. This is currently only possible with
-\code{existingMeta = "drop"}, which drops all related meta data on value level.
+\code{existingMeta = "drop"}, which drops all related meta data on value level or
+\code{existingMeta = "ignore"}, which leaves all related meta data on value level untouched.
 }
 \examples{
 # Change a variable name and label
@@ -47,5 +48,4 @@ varChangeTable <- getChangeMeta(pisa, level = "variable")
 varChangeTable[1, c("varName_new", "varLabel_new")] <- c("IDstud", "Person ID")
 
 pisa2 <- applyChangeMeta(varChangeTable, GADSdat = pisa)
-
 }

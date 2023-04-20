@@ -9,7 +9,7 @@ recodeGADS(
   varName,
   oldValues,
   newValues,
-  existingMeta = c("stop", "value", "value_new", "drop")
+  existingMeta = c("stop", "value", "value_new", "drop", "ignore")
 )
 }
 \arguments{
@@ -40,7 +40,8 @@ either raising an error if any occur (\code{"stop"}), keeping the original meta 
 data in the \code{changeTable} or, if incomplete, from the recoded value (\code{"value_new"}).
 
 Furthermore, one might recode multiple old values in the same new value. This is currently only possible with
-\code{existingMeta = "drop"}, which drops all related meta data on value level.
+\code{existingMeta = "drop"}, which drops all related meta data on value level or
+\code{existingMeta = "ignore"}, which leaves all related meta data on value level untouched.
 
 Missing values (\code{NA}) are supported in \code{oldValues} but not in \code{newValues}. For recoding values to
 \code{NA} see \code{\link{recode2NA}} instead.
@@ -59,6 +60,4 @@ gads <- import_DF(example_df)
 # simple recode
 gads2 <- recodeGADS(gads, varName = "animal",
                    oldValues = c(3, 4), newValues = c(7, 8))
-
-
 }
