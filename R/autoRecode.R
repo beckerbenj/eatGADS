@@ -10,7 +10,7 @@
 #' table will contain the existing recodes plus additional recode pairs required for the data.
 #'
 #'@param GADSdat A \code{GADSdat} object.
-#'@param var Character string of the variable name which should be sorted.
+#'@param var Character string of the variable name which should be recoded.
 #'@param var_suffix Variable suffix for the newly created \code{GADSdat}. If an empty character, the existing variables are overwritten.
 #'@param label_suffix Suffix added to variable label for the newly created variable in the \code{GADSdat}.
 #'@param csv_path Path for the \code{.csv} file for the look up table.

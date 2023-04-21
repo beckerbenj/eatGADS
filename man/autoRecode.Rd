@@ -16,7 +16,7 @@ autoRecode(
 \arguments{
 \item{GADSdat}{A \code{GADSdat} object.}
 
-\item{var}{Character string of the variable name which should be sorted.}
+\item{var}{Character string of the variable name which should be recoded.}
 
 \item{var_suffix}{Variable suffix for the newly created \code{GADSdat}. If an empty character, the existing variables are overwritten.}
 
