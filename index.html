@@ -81,8 +81,8 @@
 <div class="section level2">
 <h2 id="overview">Overview<a class="anchor" aria-label="anchor" href="#overview"></a>
 </h2>
-<p><code>eatGADS</code> (educational assessment tools: GADS) is the data management and data handling tool used by the Institute for Educational Quality Improvement in Germany (<code>IQB</code>). It has a strong focus of handling and processing meta data.</p>
-<p><code>eatGADS</code> uses <a href="https://www.sqlite.org/index.html" class="external-link">SQLite3</a> as a back end and is especially suited for importing data stored as <code>SPSS</code> files. <a href="https://github.com/beckerbenj/eatDB" class="external-link">eatDB</a> is used for data base creating and use, <a href="https://github.com/tidyverse/haven" class="external-link">haven</a> is used for importing SPSS files.</p>
+<p><code>eatGADS</code> (educational assessment tools: Greatest Assumable Data Set) is the data management and data handling tool used by the Institute for Educational Quality Improvement in Germany (<a href="https://www.iqb.hu-berlin.de/" class="external-link">IQB</a>). It has a strong focus on (automated) handling and processing of meta data.</p>
+<p><code>eatGADS</code> uses <a href="https://www.sqlite.org/index.html" class="external-link">SQLite3</a> as a back end and is especially suited for importing data stored as <code>SPSS</code> files. <a href="https://github.com/beckerbenj/eatDB" class="external-link">eatDB</a> is used for data base creation and use, <a href="https://github.com/tidyverse/haven" class="external-link">haven</a> is used for importing SPSS files.</p>
 </div>
 <div class="section level2">
 <h2 id="installation">Installation<a class="anchor" aria-label="anchor" href="#installation"></a>
@@ -92,20 +92,25 @@
 <span><span class="fu"><a href="https://rdrr.io/r/utils/install.packages.html" class="external-link">install.packages</a></span><span class="op">(</span><span class="st">"eatGADS"</span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># Install development version from GitHub via</span></span>
-<span><span class="fu">remotes</span><span class="fu">::</span><span class="fu">install_github</span><span class="op">(</span><span class="st">"beckerbenj/eatGADS"</span>, build_vignettes <span class="op">=</span> <span class="cn">TRUE</span>, dependencies <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></code></pre></div>
+<span><span class="fu">remotes</span><span class="fu">::</span><span class="fu">install_github</span><span class="op">(</span><span class="st">"beckerbenj/eatGADS"</span><span class="op">)</span></span></code></pre></div>
 </div>
 <div class="section level2">
-<h2 id="vignettes">Vignettes<a class="anchor" aria-label="anchor" href="#vignettes"></a>
+<h2 id="usage">Usage<a class="anchor" aria-label="anchor" href="#usage"></a>
 </h2>
-<p>The functionality of <code>eatGADS</code> is extensively documented in various vignettes. If you have questions regarding existing functionality or requests for new features, contact the package author.</p>
+<p>The functionality of <code>eatGADS</code> is extensively documented in its various vignettes. If you have questions regarding existing functionality or requests for new features, contact the package author.</p>
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="co">## See vignettes for exhaustive documentation</span></span>
-<span><span class="co"># overview over all vignettes</span></span>
-<span><span class="fu"><a href="https://rdrr.io/r/utils/vignette.html" class="external-link">vignette</a></span><span class="op">(</span>package <span class="op">=</span> <span class="st">"eatGADS"</span><span class="op">)</span></span>
+<code class="sourceCode R"><span><span class="co"># import SPSS data</span></span>
+<span><span class="va">sav_path</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/system.file.html" class="external-link">system.file</a></span><span class="op">(</span><span class="st">"extdata"</span>, <span class="st">"pisa.zsav"</span>, package <span class="op">=</span> <span class="st">"eatGADS"</span><span class="op">)</span></span>
+<span><span class="va">gads_obj</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/import_spss.html">import_spss</a></span><span class="op">(</span><span class="va">sav_path</span><span class="op">)</span></span>
 <span></span>
-<span><span class="co"># see a specific vignettes</span></span>
-<span><span class="fu"><a href="https://rdrr.io/r/utils/vignette.html" class="external-link">vignette</a></span><span class="op">(</span><span class="st">"import_spss"</span><span class="op">)</span> <span class="co"># how to import spss data?</span></span>
-<span><span class="fu"><a href="https://rdrr.io/r/utils/vignette.html" class="external-link">vignette</a></span><span class="op">(</span><span class="st">"getGADS"</span><span class="op">)</span> <span class="co"># how to use a eatGADS data base?</span></span></code></pre></div>
+<span><span class="co"># see names of variables in the data set</span></span>
+<span><span class="fu"><a href="reference/namesGADS.html">namesGADS</a></span><span class="op">(</span><span class="va">gads_obj</span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># extract meta data for specific variables</span></span>
+<span><span class="fu"><a href="reference/extractMeta.html">extractMeta</a></span><span class="op">(</span><span class="va">gads_obj</span>, vars <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"schtype"</span>, <span class="st">"idschool"</span><span class="op">)</span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># extract data for data analysis while applying missing tags and value labels</span></span>
+<span><span class="va">dat1</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/extractData.html">extractData</a></span><span class="op">(</span><span class="va">gads_obj</span>, convertLabels <span class="op">=</span> <span class="st">"character"</span><span class="op">)</span></span></code></pre></div>
 </div>
 </div>
   </main><aside class="col-md-3"><div class="links">
