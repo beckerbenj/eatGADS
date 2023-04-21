@@ -7,11 +7,13 @@
 #'
 #' Values for which the change columns contain \code{NA} remain unchanged. If changes are performed on value levels, recoding into
 #' existing values can occur. In these cases, \code{existingMeta} determines how the resulting meta data conflicts are handled,
-#' either raising an error if any occur (\code{"stop"}), keeping the original meta data for the value (\code{"value"}) or using the meta
-#' data in the \code{changeTable} or, if incomplete, from the recoded value (\code{"value_new"}).
+#' either raising an error if any occur (\code{"stop"}),
+#' keeping the original meta data for the value (\code{"value"}),
+#' using the meta data in the \code{changeTable} and, if incomplete, from the recoded value (\code{"value_new"}),
+#' or leaving the respective meta data untouched (\code{"ignore"}).
 #'
 #' Furthermore, one might recode multiple old values in the same new value. This is currently only possible with
-#' \code{existingMeta = "drop"}, which drops all related meta data on value level or
+#' \code{existingMeta = "drop"}, which drops all related meta data on value level, or
 #' \code{existingMeta = "ignore"}, which leaves all related meta data on value level untouched.
 #'
 #'
@@ -206,7 +208,7 @@ recode_labels <- function(labels, changeTable, existingMeta) {
       if(!(identical(existingMeta, "drop") || identical(existingMeta, "ignore"))) {
         all_values <- single_simpleChanges[existing_value_vec, "value_new"]
         stop("Duplicated values in 'value_new' causing conflicting meta data in variable ", var_name, ": ",
-             paste(dup_recode_values, collapse = ", "), ". Use 'existingMeta' = 'drop' to drop all related meta data.")
+             paste(dup_recode_values, collapse = ", "), ". Use 'existingMeta' = 'drop' or 'ignore' to drop all related meta data.")
       }
       # drop behavior
       if(identical(existingMeta, "drop")) {
