@@ -10,11 +10,14 @@
 #'
 #' If changes are performed on value levels, recoding into
 #' existing values can occur. In these cases, \code{existingMeta} determines how the resulting meta data conflicts are handled,
-#' either raising an error if any occur (\code{"stop"}), keeping the original meta data for the value (\code{"value"}) or using the meta
-#' data in the \code{changeTable} or, if incomplete, from the recoded value (\code{"value_new"}).
+#' either raising an error if any occur (\code{"stop"}),
+#' keeping the original meta data for the value (\code{"value"}),
+#' using the meta data in the \code{changeTable} and, if incomplete, from the recoded value (\code{"value_new"}),
+#' or leaving the respective meta data untouched (\code{"ignore"}).
 #'
 #' Furthermore, one might recode multiple old values in the same new value. This is currently only possible with
-#' \code{existingMeta = "drop"}, which drops all related meta data on value level.
+#' \code{existingMeta = "drop"}, which drops all related meta data on value level, or
+#' \code{existingMeta = "ignore"}, which leaves all related meta data on value level untouched.
 #'
 #' Missing values (\code{NA}) are supported in \code{oldValues} but not in \code{newValues}. For recoding values to
 #' \code{NA} see \code{\link{recode2NA}} instead.
@@ -41,14 +44,12 @@
 #'# simple recode
 #'gads2 <- recodeGADS(gads, varName = "animal",
 #'                    oldValues = c(3, 4), newValues = c(7, 8))
-#'
-#'
 #'@export
-recodeGADS <- function(GADSdat, varName, oldValues, newValues, existingMeta = c("stop", "value", "value_new", "drop")) {
+recodeGADS <- function(GADSdat, varName, oldValues, newValues, existingMeta = c("stop", "value", "value_new", "drop", "ignore")) {
   UseMethod("recodeGADS")
 }
 #'@export
-recodeGADS.GADSdat <- function(GADSdat, varName, oldValues, newValues, existingMeta = c("stop", "value", "value_new", "drop")) {
+recodeGADS.GADSdat <- function(GADSdat, varName, oldValues, newValues, existingMeta = c("stop", "value", "value_new", "drop", "ignore")) {
   checkRecodeVectors(oldValues = oldValues, newValues = newValues, varName = varName, dat = GADSdat$dat)
   #if(all(is.na(GADSdat$labels[GADSdat$labels$varName == varName, "value"]))) stop("'varName' needs to be a labeled variable in the GADS.")
   changeTable <- getChangeMeta(GADSdat, level = "value")
@@ -73,7 +74,7 @@ recodeGADS.GADSdat <- function(GADSdat, varName, oldValues, newValues, existingM
 }
 
 #'@export
-recodeGADS.all_GADSdat <- function(GADSdat, varName, oldValues, newValues, existingMeta = c("stop", "value", "value_new", "drop")) {
+recodeGADS.all_GADSdat <- function(GADSdat, varName, oldValues, newValues, existingMeta = c("stop", "value", "value_new", "drop", "ignore")) {
   check_all_GADSdat(GADSdat)
   singleGADS_list <- lapply(names(GADSdat$datList), function(nam ) {
     singleGADS <- extractGADSdat(GADSdat, name = nam)

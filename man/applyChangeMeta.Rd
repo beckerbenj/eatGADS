@@ -13,7 +13,7 @@ applyChangeMeta(changeTable, GADSdat, ...)
 \method{applyChangeMeta}{valChanges}(
   changeTable,
   GADSdat,
-  existingMeta = c("stop", "value", "value_new", "drop"),
+  existingMeta = c("stop", "value", "value_new", "drop", "ignore"),
   ...
 )
 }
@@ -35,11 +35,14 @@ Function to apply meta data changes to a \code{GADSdat} object specified by a ch
 \details{
 Values for which the change columns contain \code{NA} remain unchanged. If changes are performed on value levels, recoding into
 existing values can occur. In these cases, \code{existingMeta} determines how the resulting meta data conflicts are handled,
-either raising an error if any occur (\code{"stop"}), keeping the original meta data for the value (\code{"value"}) or using the meta
-data in the \code{changeTable} or, if incomplete, from the recoded value (\code{"value_new"}).
+either raising an error if any occur (\code{"stop"}),
+keeping the original meta data for the value (\code{"value"}),
+using the meta data in the \code{changeTable} and, if incomplete, from the recoded value (\code{"value_new"}),
+or leaving the respective meta data untouched (\code{"ignore"}).
 
 Furthermore, one might recode multiple old values in the same new value. This is currently only possible with
-\code{existingMeta = "drop"}, which drops all related meta data on value level.
+\code{existingMeta = "drop"}, which drops all related meta data on value level, or
+\code{existingMeta = "ignore"}, which leaves all related meta data on value level untouched.
 }
 \examples{
 # Change a variable name and label
@@ -47,5 +50,4 @@ varChangeTable <- getChangeMeta(pisa, level = "variable")
 varChangeTable[1, c("varName_new", "varLabel_new")] <- c("IDstud", "Person ID")
 
 pisa2 <- applyChangeMeta(varChangeTable, GADSdat = pisa)
-
 }
