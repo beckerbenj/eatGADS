@@ -23,21 +23,21 @@ gads <- pisa
 ```
 
 `eatGADS` allows importing data from `SPSS` files basically without any loss of data or meta data. 
-`eatGADS` stores these data and meta data in so-called `GADSdat` objects. These objects are lists of length two containing both the data (`"dat"`) as well as the meta data (`"labels"`).
+`eatGADS` stores these data and meta data in so-called `GADSdat` objects. These objects are lists of length two, containing both the data (`"dat"`) as well as the meta data (`"labels"`).
 
 ```{r GADSdat, echo = TRUE}
 class(pisa)
 names(pisa)
 ```
 
-As `GADSdat` objects have this specific structure, conventional data modification tools are not suitable for `GADSdat` objects. Instead, `eatGADS` provides designated data cleaning and data wrangling functions for the most common data cleaning and data wrangling tasks. This is especially relevant for data cleaning steps that require simultaneous modification of both the data and the meta data (e.g., recoding of values and value labels).
+As `GADSdat` objects have this specific structure, conventional data modification tools are not suitable for `GADSdat` objects. Instead, `eatGADS` provides designated data cleaning and data wrangling functions for most common data cleaning and data wrangling tasks. This is especially relevant for data cleaning steps that require simultaneous modification of both the data and the meta data (e.g., recoding of values and value labels).
 
 In this vignette 
 
 * the structure of `GADSdat`objects is illustrated and 
 * common data cleaning and data wrangling are explained. 
 
-For illustrative purposes we use a small example data set from the campus files of the German PISA Plus assessment (called `pisa`). The complete campus files and the original data set can be accessed [here](https://www.iqb.hu-berlin.de/fdz/Datenzugang/CF-Antrag/AntragsformularCF) and [here](https://www.iqb.hu-berlin.de/fdz/Datenzugang/SUF-Antrag). 
+For illustrative purposes, a small example data set from the campus files of the German PISA Plus assessment (called `pisa`) is used. The complete campus files and the original data set can be accessed [here](https://www.iqb.hu-berlin.de/fdz/Datenzugang/CF-Antrag/AntragsformularCF) and [here](https://www.iqb.hu-berlin.de/fdz/Datenzugang/SUF-Antrag). 
 
 ```{r setup, eval = FALSE}
 library(eatGADS)
@@ -62,31 +62,36 @@ Meta data are stored in a `GADSdat` object with the following structure:
 extractMeta(gads, vars = c("gender"))
 ```
 
-* `varLabel`: a variable label; describing, what a variable in the data represents
-* `format`: the `SPSS` format of a variable
+* `varLabel`: a variable label; describes a variable in the data
+* `format`: the `SPSS` format of a variable; `F` represents numeric, `A` represents character variables
 * `display_width`: the display width of a variable in the `SPSS` format
-* `labeled`: does the variable contain value labels or missing codes?
+* `labeled`: does the variable contain value labels or missing tags?
 
 On value level, additional meta data can be stored, namely:
 
 * `valLabel`: value labels; labels describing, what a certain value on a certain variable represents
-* `missings`: missing codes indicating whether a certain value represents a valid (`"valid"`) or a missing (`"miss"`) value
+* `missings`: missing tags (sometimes also referred to as missing codes) indicating whether a certain value represents a valid (`"valid"`) or a missing (`"miss"`) value
 
-With the function `extractMeta()` you can inspect the existing metadata of one, several or all variables in a `GADSdat` object. We will use this function frequently throughout the vignette to check whether changes to meta data have been performed successfully.
+Via the function `extractMeta()` the existing metadata of one, several or all variables in a `GADSdat` object can be inspected. This function is used frequently throughout the vignette to check whether changes to meta data have been performed successfully.
 
 ```{r overview}
 extractMeta(gads, vars = c("hisei", "schtype"))
 ```
 
 ## Modifying meta data
+This section discusses changes on meta data level, such as changes to variable names or labels.
 
 #### Changing variable names
 Changes to meta data on variable level are straightforward. Variable names can be changed with the `changeVarNames()` function. The old variable names are overwritten. Multiple variable names can be adjusted at once.
 
 ```{r names}
-# Changing variable names
+# inspect original meta data
 extractMeta(gads, vars = "hisei")
+
+# Change variable name
 gads_labeled <- changeVarNames(GADSdat = gads, oldNames = "hisei", newNames = "hisei_new")
+
+# inspect modified meta data
 extractMeta(gads_labeled, vars = "hisei_new")
 ```
 
@@ -94,10 +99,12 @@ extractMeta(gads_labeled, vars = "hisei_new")
 Variable labels can be adjusted analogously via the `changeVarLabels()` function. Again, multiple variable labels can be adjusted at once.
 
 ```{r varlabels}
-# Changing variable labels 
 extractMeta(gads_labeled, vars = "hisei_new")
+
+# Change variable label 
 gads_labeled <- changeVarLabels(GADSdat = gads_labeled, varName = "hisei_new", 
                                 varLabel = "Parental occupational status (highest)")
+
 extractMeta(gads_labeled, vars = "hisei_new")
 ```
 
@@ -105,10 +112,12 @@ extractMeta(gads_labeled, vars = "hisei_new")
 The same applies for the `SPSS` format of a variable using the `changeSPSSformat()` function.
 
 ```{r format}
-# Changing SPSS format
 extractMeta(gads_labeled, "hisei_new")
+
+# Change SPSS format
 gads_labeled <- changeSPSSformat(GADSdat = gads_labeled, varName = "hisei_new", 
                                  format = "F10.2")
+
 extractMeta(gads_labeled, "hisei_new")
 ```
 
@@ -155,7 +164,7 @@ extractMeta(gads_labeled, "hisei_new")
 ```
 
 #### Checking and adjusting missing tags and value labels
-Usually an alignment of value labels and missing codes is desirable. For example, in the variable `hisei_new` the value `-94` has received a missing code and the value label `"missing: Questions omitted"`. To make these alignments easier, the functions `checkMissings()` and `checkMissingsByValues()` exist. `checkMissings()` allows searching for regular expressions in the value labels and comparing missing codes and vice versa. Per default, missing codes are automatically adjusted (`addMissingCode = TRUE`) and value label mismatches just reported (`addMissingLabel = FALSE`). `checkMissingsByValues()` allows searching for labeled values in a specific value range (e.g., `-50:-99`).
+Usually an alignment of value labels and missing codes is desirable. For example, in the variable `hisei_new` the value `-94` has received a missing tag and the value label `"missing: Questions omitted"`. To make these alignments easier, the functions `checkMissings()` and `checkMissingsByValues()` exist. `checkMissings()` allows searching for regular expressions in the value labels and comparing missing tags and vice versa. Per default, missing codes are automatically adjusted (`addMissingCode = TRUE`) and value label mismatches just reported (`addMissingLabel = FALSE`). `checkMissingsByValues()` allows searching for labeled values in a specific value range (e.g., `-50:-99`).
 
 ```{r checkMissings}
 # Creating a new value label for a missing value but leaving the missing code as valid
@@ -204,12 +213,12 @@ namesGADS(gads_int)
 A variable can be cloned using the `cloneVariable()` function. Both the data and meta data are cloned. This function can be helpful if a modified copy of a variable should be created. For this purpose, the variable can be cloned and later modified (e.g., via `recodeGADS`).
 
 ```{r clone variable}
-# Clone the a variable "sameteach"
+# Clone the variable "sameteach"
 gads_labeled <- cloneVariable(gads_labeled, varName = "sameteach", new_varName = "sameteach2")
 ```
 
 #### Adding variables
-Adding variables to a `GADSdat` object is unfortunately not straight forward and requires some understanding of the underlying object structure. A `GADSdat` object is basically a list with two entries, the data (`dat` ) and the meta data (`labels`). For adding variables we need to extract the `dat` object and add the new variables to it. Afterwards, we need to update the meta data using the `updateMeta()` function.
+Adding variables to a `GADSdat` object is unfortunately not straight forward and requires utilizing the underlying object structure. For adding variables, the `dat` object needs to be abstracted and so that new variables ca be added to it. Afterwards, the meta data needs to be added using the `updateMeta()` function.
 
 ```{r add variables}
 # Extract the data
@@ -232,6 +241,7 @@ For instance for the purpose of ensuring the anonymity of person in a data set, 
 ```{r empty}
 # Empty a variable completely
 gads_labeled <- emptyTheseVariables(gads_labeled, vars = "idschool")
+# Resulting frequency table
 table(gads_labeled$dat$idschool, useNA = "ifany")
 ```
 
@@ -251,7 +261,7 @@ gads_labeled$dat$gender[1:10]
 extractMeta(gads_labeled, "gender")
 ```
 
-Moreover, the variable allows recoding of values that were not assigned value labels or even `NA` values.
+Moreover, `recodeGADS()` allows recoding values without value labels or even `NA` values.
 
 ```{r recoding old NA}
 # Recoding of NA values 
@@ -276,7 +286,9 @@ gads_labeled$dat$schtype[1:10]
 A character variable can be automatically recoded into a labeled numeric variable via `multiChar2fac()`.
 
 ```{r multiChar2fac}
-test_df <- data.frame(id = 1:5, varChar = c("german", "English", "english", "POLISH", "polish"),
+# Example data set
+test_df <- data.frame(id = 1:5, varChar = c("german", "English", 
+                                            "english", "POLISH", "polish"),
                         stringsAsFactors = FALSE)
 test_gads <- import_DF(test_df)
 
@@ -289,7 +301,8 @@ Via the argument `convertCase` upper and lower case can be automatically adjuste
 
 ```{r multiChar2fac convertCase}
 # Recoding a character variable to numeric while simplying case
-test_gads2 <- multiChar2fac(test_gads, vars = "varChar", var_suffix = "_new", convertCase = "upperFirst")
+test_gads2 <- multiChar2fac(test_gads, vars = "varChar", var_suffix = "_new",
+                            convertCase = "upperFirst")
 extractMeta(test_gads2, "varChar_new")
 ```
 
@@ -314,6 +327,11 @@ The sorting of variables in a `GADSdat` can be adjusted for individual variables
 The function `relocateVariable()` allows the relocation of a single variable within a `GADSdat`.
 
 ```{r relocate}
+namesGADS(gads_labeled)[1:5]
+
+# Relocate a single variable within a the data set
+gads_labeled <- relocateVariable(GADSdat = gads_labeled, var = "idschool",
+                           after = "schtype")
 namesGADS(gads_labeled)[1:5]
 
 # Relocate a single variable to the beginning of the data set
