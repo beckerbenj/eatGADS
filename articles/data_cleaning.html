@@ -81,7 +81,7 @@
                         <h4 data-toc-skip class="author">Benjamin
 Becker, Marlen Holtmann, Johanna Busse</h4>
             
-            <h4 data-toc-skip class="date">2023-04-21</h4>
+            <h4 data-toc-skip class="date">2023-04-25</h4>
       
       <small class="dont-index">Source: <a href="https://github.com/beckerbenj/eatGADS/blob/HEAD/vignettes/data_cleaning.Rmd" class="external-link"><code>vignettes/data_cleaning.Rmd</code></a></small>
       <div class="d-none name"><code>data_cleaning.Rmd</code></div>
@@ -92,7 +92,7 @@ Becker, Marlen Holtmann, Johanna Busse</h4>
 <p><code>eatGADS</code> allows importing data from <code>SPSS</code>
 files basically without any loss of data or meta data.
 <code>eatGADS</code> stores these data and meta data in so-called
-<code>GADSdat</code> objects. These objects are lists of length two
+<code>GADSdat</code> objects. These objects are lists of length two,
 containing both the data (<code>"dat"</code>) as well as the meta data
 (<code>"labels"</code>).</p>
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
@@ -103,20 +103,19 @@ containing both the data (<code>"dat"</code>) as well as the meta data
 <p>As <code>GADSdat</code> objects have this specific structure,
 conventional data modification tools are not suitable for
 <code>GADSdat</code> objects. Instead, <code>eatGADS</code> provides
-designated data cleaning and data wrangling functions for the most
-common data cleaning and data wrangling tasks. This is especially
-relevant for data cleaning steps that require simultaneous modification
-of both the data and the meta data (e.g., recoding of values and value
-labels).</p>
+designated data cleaning and data wrangling functions for most common
+data cleaning and data wrangling tasks. This is especially relevant for
+data cleaning steps that require simultaneous modification of both the
+data and the meta data (e.g., recoding of values and value labels).</p>
 <p>In this vignette</p>
 <ul>
 <li>the structure of <code>GADSdat</code>objects is illustrated and</li>
 <li>common data cleaning and data wrangling are explained.</li>
 </ul>
-<p>For illustrative purposes we use a small example data set from the
-campus files of the German PISA Plus assessment (called
-<code>pisa</code>). The complete campus files and the original data set
-can be accessed <a href="https://www.iqb.hu-berlin.de/fdz/Datenzugang/CF-Antrag/AntragsformularCF" class="external-link">here</a>
+<p>For illustrative purposes, a small example data set from the campus
+files of the German PISA Plus assessment (called <code>pisa</code>) is
+used. The complete campus files and the original data set can be
+accessed <a href="https://www.iqb.hu-berlin.de/fdz/Datenzugang/CF-Antrag/AntragsformularCF" class="external-link">here</a>
 and <a href="https://www.iqb.hu-berlin.de/fdz/Datenzugang/SUF-Antrag" class="external-link">here</a>.</p>
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/beckerbenj/eatGADS" class="external-link">eatGADS</a></span><span class="op">)</span></span>
@@ -147,16 +146,18 @@ following structure:</p>
 <span><span class="co">#&gt; 18  gender   Gender   F8.0            NA     yes     2     Male    valid</span></span></code></pre>
 <ul>
 <li>
-<code>varLabel</code>: a variable label; describing, what a variable
-in the data represents</li>
+<code>varLabel</code>: a variable label; describes a variable in the
+data</li>
 <li>
-<code>format</code>: the <code>SPSS</code> format of a variable</li>
+<code>format</code>: the <code>SPSS</code> format of a variable;
+<code>F</code> represents numeric, <code>A</code> represents character
+variables</li>
 <li>
 <code>display_width</code>: the display width of a variable in the
 <code>SPSS</code> format</li>
 <li>
 <code>labeled</code>: does the variable contain value labels or
-missing codes?</li>
+missing tags?</li>
 </ul>
 <p>On value level, additional meta data can be stored, namely:</p>
 <ul>
@@ -164,15 +165,14 @@ missing codes?</li>
 <code>valLabel</code>: value labels; labels describing, what a
 certain value on a certain variable represents</li>
 <li>
-<code>missings</code>: missing codes indicating whether a certain
-value represents a valid (<code>"valid"</code>) or a missing
-(<code>"miss"</code>) value</li>
+<code>missings</code>: missing tags (sometimes also referred to as
+missing codes) indicating whether a certain value represents a valid
+(<code>"valid"</code>) or a missing (<code>"miss"</code>) value</li>
 </ul>
-<p>With the function <code><a href="../reference/extractMeta.html">extractMeta()</a></code> you can inspect the
-existing metadata of one, several or all variables in a
-<code>GADSdat</code> object. We will use this function frequently
-throughout the vignette to check whether changes to meta data have been
-performed successfully.</p>
+<p>Via the function <code><a href="../reference/extractMeta.html">extractMeta()</a></code> the existing metadata of
+one, several or all variables in a <code>GADSdat</code> object can be
+inspected. This function is used frequently throughout the vignette to
+check whether changes to meta data have been performed successfully.</p>
 <div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/extractMeta.html">extractMeta</a></span><span class="op">(</span><span class="va">gads</span>, vars <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"hisei"</span>, <span class="st">"schtype"</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="co">#&gt;    varName                             varLabel format display_width labeled value</span></span>
@@ -189,6 +189,8 @@ performed successfully.</p>
 <div class="section level2">
 <h2 id="modifying-meta-data">Modifying meta data<a class="anchor" aria-label="anchor" href="#modifying-meta-data"></a>
 </h2>
+<p>This section discusses changes on meta data level, such as changes to
+variable names or labels.</p>
 <div class="section level4">
 <h4 id="changing-variable-names">Changing variable names<a class="anchor" aria-label="anchor" href="#changing-variable-names"></a>
 </h4>
@@ -197,13 +199,17 @@ names can be changed with the <code><a href="../reference/changeVarNames.html">c
 The old variable names are overwritten. Multiple variable names can be
 adjusted at once.</p>
 <div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="co"># Changing variable names</span></span>
+<code class="sourceCode R"><span><span class="co"># inspect original meta data</span></span>
 <span><span class="fu"><a href="../reference/extractMeta.html">extractMeta</a></span><span class="op">(</span><span class="va">gads</span>, vars <span class="op">=</span> <span class="st">"hisei"</span><span class="op">)</span></span>
 <span><span class="co">#&gt;    varName                             varLabel format display_width labeled value valLabel</span></span>
 <span><span class="co">#&gt; 39   hisei Highest parental occupational status   F8.2            NA      no    NA     &lt;NA&gt;</span></span>
 <span><span class="co">#&gt;    missings</span></span>
 <span><span class="co">#&gt; 39     &lt;NA&gt;</span></span>
+<span></span>
+<span><span class="co"># Change variable name</span></span>
 <span><span class="va">gads_labeled</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/changeVarNames.html">changeVarNames</a></span><span class="op">(</span>GADSdat <span class="op">=</span> <span class="va">gads</span>, oldNames <span class="op">=</span> <span class="st">"hisei"</span>, newNames <span class="op">=</span> <span class="st">"hisei_new"</span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># inspect modified meta data</span></span>
 <span><span class="fu"><a href="../reference/extractMeta.html">extractMeta</a></span><span class="op">(</span><span class="va">gads_labeled</span>, vars <span class="op">=</span> <span class="st">"hisei_new"</span><span class="op">)</span></span>
 <span><span class="co">#&gt;      varName                             varLabel format display_width labeled value valLabel</span></span>
 <span><span class="co">#&gt; 39 hisei_new Highest parental occupational status   F8.2            NA      no    NA     &lt;NA&gt;</span></span>
@@ -217,14 +223,16 @@ adjusted at once.</p>
 <code><a href="../reference/changeVarLabels.html">changeVarLabels()</a></code> function. Again, multiple variable labels
 can be adjusted at once.</p>
 <div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="co"># Changing variable labels </span></span>
-<span><span class="fu"><a href="../reference/extractMeta.html">extractMeta</a></span><span class="op">(</span><span class="va">gads_labeled</span>, vars <span class="op">=</span> <span class="st">"hisei_new"</span><span class="op">)</span></span>
+<code class="sourceCode R"><span><span class="fu"><a href="../reference/extractMeta.html">extractMeta</a></span><span class="op">(</span><span class="va">gads_labeled</span>, vars <span class="op">=</span> <span class="st">"hisei_new"</span><span class="op">)</span></span>
 <span><span class="co">#&gt;      varName                             varLabel format display_width labeled value valLabel</span></span>
 <span><span class="co">#&gt; 39 hisei_new Highest parental occupational status   F8.2            NA      no    NA     &lt;NA&gt;</span></span>
 <span><span class="co">#&gt;    missings</span></span>
 <span><span class="co">#&gt; 39     &lt;NA&gt;</span></span>
+<span></span>
+<span><span class="co"># Change variable label </span></span>
 <span><span class="va">gads_labeled</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/changeVarLabels.html">changeVarLabels</a></span><span class="op">(</span>GADSdat <span class="op">=</span> <span class="va">gads_labeled</span>, varName <span class="op">=</span> <span class="st">"hisei_new"</span>, </span>
 <span>                                varLabel <span class="op">=</span> <span class="st">"Parental occupational status (highest)"</span><span class="op">)</span></span>
+<span></span>
 <span><span class="fu"><a href="../reference/extractMeta.html">extractMeta</a></span><span class="op">(</span><span class="va">gads_labeled</span>, vars <span class="op">=</span> <span class="st">"hisei_new"</span><span class="op">)</span></span>
 <span><span class="co">#&gt;      varName                               varLabel format display_width labeled value valLabel</span></span>
 <span><span class="co">#&gt; 39 hisei_new Parental occupational status (highest)   F8.2            NA      no    NA     &lt;NA&gt;</span></span>
@@ -237,14 +245,16 @@ can be adjusted at once.</p>
 <p>The same applies for the <code>SPSS</code> format of a variable using
 the <code><a href="../reference/changeSPSSformat.html">changeSPSSformat()</a></code> function.</p>
 <div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="co"># Changing SPSS format</span></span>
-<span><span class="fu"><a href="../reference/extractMeta.html">extractMeta</a></span><span class="op">(</span><span class="va">gads_labeled</span>, <span class="st">"hisei_new"</span><span class="op">)</span></span>
+<code class="sourceCode R"><span><span class="fu"><a href="../reference/extractMeta.html">extractMeta</a></span><span class="op">(</span><span class="va">gads_labeled</span>, <span class="st">"hisei_new"</span><span class="op">)</span></span>
 <span><span class="co">#&gt;      varName                               varLabel format display_width labeled value valLabel</span></span>
 <span><span class="co">#&gt; 39 hisei_new Parental occupational status (highest)   F8.2            NA      no    NA     &lt;NA&gt;</span></span>
 <span><span class="co">#&gt;    missings</span></span>
 <span><span class="co">#&gt; 39     &lt;NA&gt;</span></span>
+<span></span>
+<span><span class="co"># Change SPSS format</span></span>
 <span><span class="va">gads_labeled</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/changeSPSSformat.html">changeSPSSformat</a></span><span class="op">(</span>GADSdat <span class="op">=</span> <span class="va">gads_labeled</span>, varName <span class="op">=</span> <span class="st">"hisei_new"</span>, </span>
 <span>                                 format <span class="op">=</span> <span class="st">"F10.2"</span><span class="op">)</span></span>
+<span></span>
 <span><span class="fu"><a href="../reference/extractMeta.html">extractMeta</a></span><span class="op">(</span><span class="va">gads_labeled</span>, <span class="st">"hisei_new"</span><span class="op">)</span></span>
 <span><span class="co">#&gt;      varName                               varLabel format display_width labeled value valLabel</span></span>
 <span><span class="co">#&gt; 39 hisei_new Parental occupational status (highest)  F10.2            NA      no    NA     &lt;NA&gt;</span></span>
@@ -341,12 +351,12 @@ for <code>missings</code> are <code>"miss"</code> and
 </h4>
 <p>Usually an alignment of value labels and missing codes is desirable.
 For example, in the variable <code>hisei_new</code> the value
-<code>-94</code> has received a missing code and the value label
+<code>-94</code> has received a missing tag and the value label
 <code>"missing: Questions omitted"</code>. To make these alignments
 easier, the functions <code><a href="../reference/checkMissings.html">checkMissings()</a></code> and
 <code><a href="../reference/checkMissings.html">checkMissingsByValues()</a></code> exist. <code><a href="../reference/checkMissings.html">checkMissings()</a></code>
 allows searching for regular expressions in the value labels and
-comparing missing codes and vice versa. Per default, missing codes are
+comparing missing tags and vice versa. Per default, missing codes are
 automatically adjusted (<code>addMissingCode = TRUE</code>) and value
 label mismatches just reported (<code>addMissingLabel = FALSE</code>).
 <code><a href="../reference/checkMissings.html">checkMissingsByValues()</a></code> allows searching for labeled values
@@ -441,19 +451,17 @@ helpful if a modified copy of a variable should be created. For this
 purpose, the variable can be cloned and later modified (e.g., via
 <code>recodeGADS</code>).</p>
 <div class="sourceCode" id="cb15"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="co"># Clone the a variable "sameteach"</span></span>
+<code class="sourceCode R"><span><span class="co"># Clone the variable "sameteach"</span></span>
 <span><span class="va">gads_labeled</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/cloneVariable.html">cloneVariable</a></span><span class="op">(</span><span class="va">gads_labeled</span>, varName <span class="op">=</span> <span class="st">"sameteach"</span>, new_varName <span class="op">=</span> <span class="st">"sameteach2"</span><span class="op">)</span></span></code></pre></div>
 </div>
 <div class="section level4">
 <h4 id="adding-variables">Adding variables<a class="anchor" aria-label="anchor" href="#adding-variables"></a>
 </h4>
 <p>Adding variables to a <code>GADSdat</code> object is unfortunately
-not straight forward and requires some understanding of the underlying
-object structure. A <code>GADSdat</code> object is basically a list with
-two entries, the data (<code>dat</code> ) and the meta data
-(<code>labels</code>). For adding variables we need to extract the
-<code>dat</code> object and add the new variables to it. Afterwards, we
-need to update the meta data using the <code><a href="../reference/updateMeta.html">updateMeta()</a></code>
+not straight forward and requires utilizing the underlying object
+structure. For adding variables, the <code>dat</code> object needs to be
+abstracted and so that new variables ca be added to it. Afterwards, the
+meta data needs to be added using the <code><a href="../reference/updateMeta.html">updateMeta()</a></code>
 function.</p>
 <div class="sourceCode" id="cb16"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Extract the data</span></span>
@@ -485,6 +493,7 @@ function.</p>
 <div class="sourceCode" id="cb17"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Empty a variable completely</span></span>
 <span><span class="va">gads_labeled</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/emptyTheseVariables.html">emptyTheseVariables</a></span><span class="op">(</span><span class="va">gads_labeled</span>, vars <span class="op">=</span> <span class="st">"idschool"</span><span class="op">)</span></span>
+<span><span class="co"># Resulting frequency table</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/table.html" class="external-link">table</a></span><span class="op">(</span><span class="va">gads_labeled</span><span class="op">$</span><span class="va">dat</span><span class="op">$</span><span class="va">idschool</span>, useNA <span class="op">=</span> <span class="st">"ifany"</span><span class="op">)</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; &lt;NA&gt; </span></span>
@@ -517,8 +526,8 @@ a variable.</p>
 <span><span class="co">#&gt; 15  gender   Gender   F8.0            NA     yes   -94 missing: Question omitted     miss</span></span>
 <span><span class="co">#&gt; 16  gender   Gender   F8.0            NA     yes    10                    Female    valid</span></span>
 <span><span class="co">#&gt; 17  gender   Gender   F8.0            NA     yes    20                      Male    valid</span></span></code></pre></div>
-<p>Moreover, the variable allows recoding of values that were not
-assigned value labels or even <code>NA</code> values.</p>
+<p>Moreover, <code><a href="../reference/recodeGADS.html">recodeGADS()</a></code> allows recoding values without
+value labels or even <code>NA</code> values.</p>
 <div class="sourceCode" id="cb19"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Recoding of NA values </span></span>
 <span><span class="va">gads_labeled</span><span class="op">$</span><span class="va">dat</span><span class="op">$</span><span class="va">int_a</span><span class="op">[</span><span class="fl">1</span><span class="op">:</span><span class="fl">10</span><span class="op">]</span></span>
@@ -555,7 +564,9 @@ variable<a class="anchor" aria-label="anchor" href="#automatically-recoding-a-ch
 <p>A character variable can be automatically recoded into a labeled
 numeric variable via <code><a href="../reference/multiChar2fac.html">multiChar2fac()</a></code>.</p>
 <div class="sourceCode" id="cb21"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">test_df</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/data.frame.html" class="external-link">data.frame</a></span><span class="op">(</span>id <span class="op">=</span> <span class="fl">1</span><span class="op">:</span><span class="fl">5</span>, varChar <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"german"</span>, <span class="st">"English"</span>, <span class="st">"english"</span>, <span class="st">"POLISH"</span>, <span class="st">"polish"</span><span class="op">)</span>,</span>
+<code class="sourceCode R"><span><span class="co"># Example data set</span></span>
+<span><span class="va">test_df</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/data.frame.html" class="external-link">data.frame</a></span><span class="op">(</span>id <span class="op">=</span> <span class="fl">1</span><span class="op">:</span><span class="fl">5</span>, varChar <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"german"</span>, <span class="st">"English"</span>, </span>
+<span>                                            <span class="st">"english"</span>, <span class="st">"POLISH"</span>, <span class="st">"polish"</span><span class="op">)</span>,</span>
 <span>                        stringsAsFactors <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span>
 <span><span class="va">test_gads</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/import_DF.html">import_DF</a></span><span class="op">(</span><span class="va">test_df</span><span class="op">)</span></span>
 <span></span>
@@ -572,7 +583,8 @@ numeric variable via <code><a href="../reference/multiChar2fac.html">multiChar2f
 automatically adjusted.</p>
 <div class="sourceCode" id="cb22"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Recoding a character variable to numeric while simplying case</span></span>
-<span><span class="va">test_gads2</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/multiChar2fac.html">multiChar2fac</a></span><span class="op">(</span><span class="va">test_gads</span>, vars <span class="op">=</span> <span class="st">"varChar"</span>, var_suffix <span class="op">=</span> <span class="st">"_new"</span>, convertCase <span class="op">=</span> <span class="st">"upperFirst"</span><span class="op">)</span></span>
+<span><span class="va">test_gads2</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/multiChar2fac.html">multiChar2fac</a></span><span class="op">(</span><span class="va">test_gads</span>, vars <span class="op">=</span> <span class="st">"varChar"</span>, var_suffix <span class="op">=</span> <span class="st">"_new"</span>,</span>
+<span>                            convertCase <span class="op">=</span> <span class="st">"upperFirst"</span><span class="op">)</span></span>
 <span><span class="fu"><a href="../reference/extractMeta.html">extractMeta</a></span><span class="op">(</span><span class="va">test_gads2</span>, <span class="st">"varChar_new"</span><span class="op">)</span></span>
 <span><span class="co">#&gt;       varName  varLabel format display_width labeled value valLabel missings</span></span>
 <span><span class="co">#&gt; 3 varChar_new (recoded)  F10.0            NA     yes     1  English    valid</span></span>
@@ -615,6 +627,12 @@ a single variable within a <code>GADSdat</code>.</p>
 <div class="sourceCode" id="cb24"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/namesGADS.html">namesGADS</a></span><span class="op">(</span><span class="va">gads_labeled</span><span class="op">)</span><span class="op">[</span><span class="fl">1</span><span class="op">:</span><span class="fl">5</span><span class="op">]</span></span>
 <span><span class="co">#&gt; [1] "idstud"    "idschool"  "idclass"   "schtype"   "sameteach"</span></span>
+<span></span>
+<span><span class="co"># Relocate a single variable within a the data set</span></span>
+<span><span class="va">gads_labeled</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/relocateVariable.html">relocateVariable</a></span><span class="op">(</span>GADSdat <span class="op">=</span> <span class="va">gads_labeled</span>, var <span class="op">=</span> <span class="st">"idschool"</span>,</span>
+<span>                           after <span class="op">=</span> <span class="st">"schtype"</span><span class="op">)</span></span>
+<span><span class="fu"><a href="../reference/namesGADS.html">namesGADS</a></span><span class="op">(</span><span class="va">gads_labeled</span><span class="op">)</span><span class="op">[</span><span class="fl">1</span><span class="op">:</span><span class="fl">5</span><span class="op">]</span></span>
+<span><span class="co">#&gt; [1] "idstud"    "idclass"   "schtype"   "idschool"  "sameteach"</span></span>
 <span></span>
 <span><span class="co"># Relocate a single variable to the beginning of the data set</span></span>
 <span><span class="va">gads_labeled</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/relocateVariable.html">relocateVariable</a></span><span class="op">(</span>GADSdat <span class="op">=</span> <span class="va">gads_labeled</span>, var <span class="op">=</span> <span class="st">"idschool"</span>,</span>
