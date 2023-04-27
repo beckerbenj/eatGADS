@@ -28,7 +28,7 @@
 #'are of type \code{ordered}.
 #'@param dropPartialLabels Should value labels for partially labeled variables be dropped?
 #'If \code{TRUE}, the partial labels will be dropped. If \code{FALSE}, the variable will be converted
-#'to the class specified in \code{convertLabels}.
+#'to the class specified in \code{labels2character}, \code{labels2factor}, or \code{labels2ordered}.
 #'
 #'@return Returns a data frame.
 #'
@@ -92,9 +92,19 @@ extractData2.GADSdat <- function(GADSdat, convertMiss = TRUE, labels2character =
 }
 
 #'@export
-extractData2.trend_GADSdat <- function(GADSdat, convertMiss = TRUE, labels2character = namesGADS(GADSdat), labels2factor = NULL,
+extractData2.trend_GADSdat <- function(GADSdat, convertMiss = TRUE, labels2character = NULL, labels2factor = NULL,
                                        labels2ordered = NULL, dropPartialLabels = TRUE) {
-  stop("extractData2 has not been implemented for 'trend_GADSdat' objects.")
+  check_trend_GADSdat(GADSdat)
+
+  dat_list <- lapply(names(GADSdat$datList), function(nam) {
+    gads <- extractGADSdat(all_GADSdat = GADSdat, name = nam)
+    dat <- extractData2(gads, convertMiss = convertMiss, labels2character = labels2character, labels2factor = labels2factor,
+                       labels2ordered = labels2ordered, dropPartialLabels = dropPartialLabels)
+    dat
+  })
+
+  dat_out <- do.call(plyr::rbind.fill, dat_list)
+  dat_out[, c(setdiff(names(dat_out), "year"), "year")]
 }
 
 

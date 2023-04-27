@@ -29,7 +29,7 @@ are of type \code{ordered}.}
 
 \item{dropPartialLabels}{Should value labels for partially labeled variables be dropped?
 If \code{TRUE}, the partial labels will be dropped. If \code{FALSE}, the variable will be converted
-to the class specified in \code{convertLabels}.}
+to the class specified in \code{labels2character}, \code{labels2factor}, or \code{labels2ordered}.}
 }
 \value{
 Returns a data frame.

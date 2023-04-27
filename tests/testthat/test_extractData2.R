@@ -198,6 +198,42 @@ test_that("extractData2 with some variables labels applied to (convertVariables 
                           b = c(2, 1), stringsAsFactors = TRUE))
 })
 
+test_that("Extract data trend GADS", {
+  # trend_gads <- getTrendGADS(filePaths = c("tests/testthat/helper_dataBase.db", "tests/testthat/helper_dataBase_uniqueVar.db"), years = c(2012, 2018), fast = FALSE)
+  trend_gads <- suppressWarnings(getTrendGADS(filePaths = c("helper_dataBase.db", "helper_dataBase_uniqueVar.db"),
+                                              years = c(2012, 2018), fast = FALSE, verbose = FALSE))
+  out <- extractData2(trend_gads)
+  expect_equal(dim(out), c(6, 5))
+  expect_equal(names(out), c("ID1", "V1", "V2", "V3", "year"))
+  comp <- c(rep(2012, 3), c(rep(2018, 3)))
+  attr(comp, "label") <- "Trendvariable, indicating the year of the assessment"
+  expect_equal(out$year, comp)
+
+  ## convertVariables if some variables are not in both GADS
+  out2 <- extractData(trend_gads, convertVariables = "V3")
+  expect_equal(out, out2)
+})
+
+
+test_that("Extract data trend GADS 3 MPs", {
+  fp1 <- system.file("extdata", "trend_gads_2020.db", package = "eatGADS")
+  fp2 <- system.file("extdata", "trend_gads_2015.db", package = "eatGADS")
+  fp3 <- system.file("extdata", "trend_gads_2010.db", package = "eatGADS")
+  s <- capture_output(gads_3mp <- getTrendGADS(filePaths = c(fp1, fp2, fp3), years = c(2020, 2015, 2010), fast = FALSE, verbose = FALSE))
+
+  out <- extractData2(gads_3mp)
+  expect_equal(dim(out), c(180, 10))
+  expect_equal(dim(out), c(180, 10))
+  expect_equal(names(out), c("idstud", "gender", "dimension", "imp", "score", "traitLevel", "failMin", "passReg", "passOpt", "year"))
+  expect_equal(out$dimension[1:2], c(1, 2))
+  expect_equal(as.numeric(out$year), c(rep(2020, 60), rep(2015, 60), rep(2010, 60)))
+
+  out2 <- extractData2(gads_3mp, labels2character = "dimension")
+  expect_equal(out2$dimension[1:2], c("listening", "reading"))
+
+  out3 <- extractData2(gads_3mp, labels2factor = "dimension")
+  expect_equal(out3$dimension[1:2], factor(c("listening", "reading")))
+})
 
 
 
