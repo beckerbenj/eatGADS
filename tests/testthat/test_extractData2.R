@@ -228,9 +228,14 @@ test_that("Extract data trend GADS", {
   attr(comp, "label") <- "Trendvariable, indicating the year of the assessment"
   expect_equal(out$year, comp)
 
-  ## convertVariables if some variables are not in both GADS
-  out2 <- extractData2(trend_gads, labels2character = "V3")
-  expect_equal(out, out2)
+  ## convertVariables if some variables are not in both GADS and value labels are applied
+  trend_gads2 <- trend_gads
+  trend_gads2$allLabels <- trend_gads2$allLabels[c(1:6, 7, 7, 8:9), ]
+  trend_gads2$allLabels[7:8, "value"] <- 8:9
+  trend_gads2$allLabels[7:8, "valLabel"] <- c("yes", "no")
+  trend_gads2$allLabels[7:8, "labeled"] <- "yes"
+  out2 <- extractData2(trend_gads2, labels2character = "V3")
+  expect_equal(out2$V3, c(NA, NA, NA, "yes", "yes", "no"))
 })
 
 
@@ -244,14 +249,14 @@ test_that("Extract data trend GADS 3 MPs", {
   expect_equal(dim(out), c(180, 10))
   expect_equal(dim(out), c(180, 10))
   expect_equal(names(out), c("idstud", "gender", "dimension", "imp", "score", "traitLevel", "failMin", "passReg", "passOpt", "year"))
-  expect_equal(out$dimension[1:2], c(1, 2))
+  expect_equal(out$dimension, rep(c(1, 2), 90))
   expect_equal(as.numeric(out$year), c(rep(2020, 60), rep(2015, 60), rep(2010, 60)))
 
   out2 <- extractData2(gads_3mp, labels2character = "dimension")
-  expect_equal(out2$dimension[1:2], c("listening", "reading"))
+  expect_equal(out2$dimension, rep(c("listening", "reading"), 90))
 
   out3 <- extractData2(gads_3mp, labels2factor = "dimension")
-  expect_equal(out3$dimension[1:2], factor(c("listening", "reading")))
+  expect_equal(out3$dimension, factor(rep(c("listening", "reading"), 90)))
 })
 
 

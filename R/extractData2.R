@@ -50,14 +50,22 @@
 #'                           labels2factor = c("migration"))
 #'
 #'@export
-extractData2 <- function(GADSdat, convertMiss = TRUE, labels2character = NULL, labels2factor = NULL,
-                         labels2ordered = NULL, dropPartialLabels = TRUE) {
+extractData2 <- function(GADSdat,
+                         convertMiss = TRUE,
+                         labels2character = NULL,
+                         labels2factor = NULL,
+                         labels2ordered = NULL,
+                         dropPartialLabels = TRUE) {
   UseMethod("extractData2")
 }
 
 #'@export
-extractData2.GADSdat <- function(GADSdat, convertMiss = TRUE, labels2character = NULL, labels2factor = NULL,
-                                 labels2ordered = NULL, dropPartialLabels = TRUE) {
+extractData2.GADSdat <- function(GADSdat,
+                                 convertMiss = TRUE,
+                                 labels2character = NULL,
+                                 labels2factor = NULL,
+                                 labels2ordered = NULL,
+                                 dropPartialLabels = TRUE) {
   check_GADSdat(GADSdat)
   # input validation
   if(!is.null(labels2character)) check_vars_in_GADSdat(GADSdat, labels2character)
@@ -92,8 +100,12 @@ extractData2.GADSdat <- function(GADSdat, convertMiss = TRUE, labels2character =
 }
 
 #'@export
-extractData2.trend_GADSdat <- function(GADSdat, convertMiss = TRUE, labels2character = NULL, labels2factor = NULL,
-                                       labels2ordered = NULL, dropPartialLabels = TRUE) {
+extractData2.trend_GADSdat <- function(GADSdat,
+                                       convertMiss = TRUE,
+                                       labels2character = NULL,
+                                       labels2factor = NULL,
+                                       labels2ordered = NULL,
+                                       dropPartialLabels = TRUE) {
   # Input validation
   check_trend_GADSdat(GADSdat)
   if(!is.null(labels2character) && !is.character(labels2character)) stop("'labels2character' must be a character vector.")
