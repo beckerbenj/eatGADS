@@ -15,3 +15,13 @@ check_vars_in_GADSdat <- function(GADSdat, vars) {
   return()
 }
 
+check_vars_in_vector <- function(vec, vars, vec_nam) {
+  dup_vars <- vars[duplicated(vars)]
+  if(length(dup_vars) > 0) stop("There are duplicates in 'vars': ",
+                                paste(dup_vars, collapse = ", "))
+
+  other_vars <- vars[!vars %in% vec]
+  if(length(other_vars) > 0) stop("The following 'vars' are not variables in the ", vec_nam, ": ",
+                                  paste(other_vars, collapse = ", "))
+  return()
+}

@@ -70,26 +70,33 @@ extractMeta(db_path, c("idstud", "schtype"))
 To extract a data set from the data base, we can use the function `getGADS()`. If the data base is stored on a server drive, `getGADS_fast()` provides identical functionality but substantially increases the performance. With the `vSelect` argument we specify our variable selection. It is important to note that `getGADS()` returns a so called `GADSdat` object. This object type contains complex meta information (that is for example also available in a `SPSS` data set), and is therefore not directly usable for data analysis. We can, however, use the `extractMeta()` function on it to access the meta data.     
 
 ```{r getGADS}
-gads1 <- getGADS(filePath = db_path, vSelect = c("idstud", "schtype"))
+gads1 <- getGADS(filePath = db_path, vSelect = c("idstud", "schtype", "gender"))
 class(gads1)
 extractMeta(gads1)
 ```
 
 ## Extract data from `GADSdat`
 
-If we want to use the data for analyses in `R` we have to extract it from the `GADSdat` object via the function `extractData()`. In doing so, we have to make two important decisions: (a) how should values marked as missing values be treated (`convertMiss`)? And (b) how should labeled values in general be treated (`convertLabels`, `dropPartialLabels`, `convertVariables`)? See `?extractData` for more details.
+If we want to use the data for analyses in `R` we have to extract it from the `GADSdat` object via the function `extractData2()`. In doing so, we have to make two important decisions: (a) how should values marked as missing values be treated (`convertMiss`)? And (b) how should labeled values in general be treated (`labels2character`, `labels2factor`, `labels2ordered`, and `dropPartialLabels`)? 
+
+Per default, all missing tags are applied, meaning all values tagged as missing are recoded to `NA` (`convertMiss == TRUE`). Furthermore, per default, all value labels are dropped (`labels2character = NULL`, `labels2factor = NULL`, `labels2ordered = NULL`). If for specific variables, value labels should be applied and the resulting variable should be a character variable, this can specified via, for example, setting `labels2character = c("var1", "var2")`. 
 
 ```{r extractdata}
-## convert labeled variables to characters
-dat1 <- extractData(gads1, convertLabels = "character")
+## leave all labeled variables as numeric, convert missings to NA
+dat1 <- extractData2(gads1)
 head(dat1)
 
-## leave labeled variables as numeric
-dat2 <- extractData(gads1, convertLabels = "numeric")
+## convert selected labeled variable(s) to character, convert missings to NA
+dat2 <- extractData2(gads1, labels2character = c("schtype"))
 head(dat2)
+
+## convert all labeled variables to character, convert missings to NA
+dat3 <- extractData2(gads1, labels2character = namesGADS(gads1))
+head(dat3)
+
 ```
 
-In general, we recommend leaving labeled variables as numeric and converting values with missing codes to `NA`. The latter is the default behavior for the argument `checkMissings`. If required, values labels can always be accessed via using `extractMeta()` on the `GADSdat` object or the data base.
+In general, we recommend leaving labeled variables as numeric and converting values with missing codes to `NA`. If required, values labels can always be accessed via using `extractMeta()` on the `GADSdat` object or the data base.
 
 ## Selecting different hierarchy levels
 
@@ -99,7 +106,7 @@ The function `getGADS()` extracts data automatically in the appropriate structur
 
 ```{r noImp hierarchy levels}
 gads1 <- getGADS(db_path, vSelect = c("schtype", "g8g9"))
-dat1 <- extractData(gads1)
+dat1 <- extractData2(gads1)
 dim(dat1)
 head(dat1)
 ```
@@ -108,7 +115,7 @@ If additionally variables from the plausible Value data table are extracted, the
 
 ```{r PVs hierarchy levels}
 gads2 <- getGADS(db_path, vSelect = c("schtype", "value"))
-dat2 <- extractData(gads2)
+dat2 <- extractData2(gads2)
 dim(dat2)
 head(dat2)
 ```
@@ -131,7 +138,7 @@ trend_path3 <- system.file("extdata", "trend_gads_2010.db", package = "eatGADS")
 gads_trend <- getTrendGADS(filePaths = c(trend_path1, trend_path2, trend_path3), 
                            vSelect = c("idstud", "dimension", "score"), 
                            years = c(2020, 2015, 2010), fast = FALSE)
-dat_trend <- extractData(gads_trend)
+dat_trend <- extractData2(gads_trend)
 head(dat_trend)
 ```
 
