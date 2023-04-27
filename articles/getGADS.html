@@ -81,7 +81,7 @@
                         <h4 data-toc-skip class="author">Benjamin
 Becker</h4>
             
-            <h4 data-toc-skip class="date">2023-04-25</h4>
+            <h4 data-toc-skip class="date">2023-04-27</h4>
       
       <small class="dont-index">Source: <a href="https://github.com/beckerbenj/eatGADS/blob/HEAD/vignettes/getGADS.Rmd" class="external-link"><code>vignettes/getGADS.Rmd</code></a></small>
       <div class="d-none name"><code>getGADS.Rmd</code></div>
@@ -235,16 +235,20 @@ also available in a <code>SPSS</code> data set), and is therefore not
 directly usable for data analysis. We can, however, use the
 <code><a href="../reference/extractMeta.html">extractMeta()</a></code> function on it to access the meta data.</p>
 <div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">gads1</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/getGADS.html">getGADS</a></span><span class="op">(</span>filePath <span class="op">=</span> <span class="va">db_path</span>, vSelect <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"idstud"</span>, <span class="st">"schtype"</span><span class="op">)</span><span class="op">)</span></span>
+<code class="sourceCode R"><span><span class="va">gads1</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/getGADS.html">getGADS</a></span><span class="op">(</span>filePath <span class="op">=</span> <span class="va">db_path</span>, vSelect <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"idstud"</span>, <span class="st">"schtype"</span>, <span class="st">"gender"</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/class.html" class="external-link">class</a></span><span class="op">(</span><span class="va">gads1</span><span class="op">)</span></span>
 <span><span class="co">#&gt; [1] "GADSdat" "list"</span></span>
 <span><span class="fu"><a href="../reference/extractMeta.html">extractMeta</a></span><span class="op">(</span><span class="va">gads1</span><span class="op">)</span></span>
 <span><span class="co">#&gt;     varName     varLabel format display_width labeled value</span></span>
+<span><span class="co">#&gt; 194  gender       Gender   F8.0            NA     yes     1</span></span>
+<span><span class="co">#&gt; 195  gender       Gender   F8.0            NA     yes     2</span></span>
 <span><span class="co">#&gt; 236  idstud   Student-ID   F8.0            NA      no    NA</span></span>
 <span><span class="co">#&gt; 360 schtype School track   F8.0            NA     yes     1</span></span>
 <span><span class="co">#&gt; 361 schtype School track   F8.0            NA     yes     2</span></span>
 <span><span class="co">#&gt; 362 schtype School track   F8.0            NA     yes     3</span></span>
 <span><span class="co">#&gt;                                      valLabel missings</span></span>
+<span><span class="co">#&gt; 194                                    Female    valid</span></span>
+<span><span class="co">#&gt; 195                                      Male    valid</span></span>
 <span><span class="co">#&gt; 236                                      &lt;NA&gt;     &lt;NA&gt;</span></span>
 <span><span class="co">#&gt; 360                Gymnasium (academic track)    valid</span></span>
 <span><span class="co">#&gt; 361                                Realschule    valid</span></span>
@@ -255,38 +259,56 @@ directly usable for data analysis. We can, however, use the
 </h2>
 <p>If we want to use the data for analyses in <code>R</code> we have to
 extract it from the <code>GADSdat</code> object via the function
-<code><a href="../reference/extractData.html">extractData()</a></code>. In doing so, we have to make two important
+<code><a href="../reference/extractData2.html">extractData2()</a></code>. In doing so, we have to make two important
 decisions: (a) how should values marked as missing values be treated
 (<code>convertMiss</code>)? And (b) how should labeled values in general
-be treated (<code>convertLabels</code>, <code>dropPartialLabels</code>,
-<code>convertVariables</code>)? See <code><a href="../reference/extractData.html">?extractData</a></code> for more
-details.</p>
+be treated (<code>labels2character</code>, <code>labels2factor</code>,
+<code>labels2ordered</code>, and <code>dropPartialLabels</code>)?</p>
+<p>Per default, all missing tags are applied, meaning all values tagged
+as missing are recoded to <code>NA</code>
+(<code>convertMiss == TRUE</code>). Furthermore, per default, all value
+labels are dropped (<code>labels2character = NULL</code>,
+<code>labels2factor = NULL</code>, <code>labels2ordered = NULL</code>).
+If for specific variables, value labels should be applied and the
+resulting variable should be a character variable, this can specified
+via, for example, setting
+<code>labels2character = c("var1", "var2")</code>.</p>
 <div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="co">## convert labeled variables to characters</span></span>
-<span><span class="va">dat1</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/extractData.html">extractData</a></span><span class="op">(</span><span class="va">gads1</span>, convertLabels <span class="op">=</span> <span class="st">"character"</span><span class="op">)</span></span>
+<code class="sourceCode R"><span><span class="co">## leave all labeled variables as numeric, convert missings to NA</span></span>
+<span><span class="va">dat1</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/extractData2.html">extractData2</a></span><span class="op">(</span><span class="va">gads1</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="va">dat1</span><span class="op">)</span></span>
-<span><span class="co">#&gt;   idstud                                   schtype</span></span>
-<span><span class="co">#&gt; 1      1                                Realschule</span></span>
-<span><span class="co">#&gt; 2      2 schools with several courses of education</span></span>
-<span><span class="co">#&gt; 3      3                Gymnasium (academic track)</span></span>
-<span><span class="co">#&gt; 4      4 schools with several courses of education</span></span>
-<span><span class="co">#&gt; 5      5                                Realschule</span></span>
-<span><span class="co">#&gt; 6      6 schools with several courses of education</span></span>
+<span><span class="co">#&gt;   idstud schtype gender</span></span>
+<span><span class="co">#&gt; 1      1       2      1</span></span>
+<span><span class="co">#&gt; 2      2       3      1</span></span>
+<span><span class="co">#&gt; 3      3       1      2</span></span>
+<span><span class="co">#&gt; 4      4       3      2</span></span>
+<span><span class="co">#&gt; 5      5       2      1</span></span>
+<span><span class="co">#&gt; 6      6       3      1</span></span>
 <span></span>
-<span><span class="co">## leave labeled variables as numeric</span></span>
-<span><span class="va">dat2</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/extractData.html">extractData</a></span><span class="op">(</span><span class="va">gads1</span>, convertLabels <span class="op">=</span> <span class="st">"numeric"</span><span class="op">)</span></span>
+<span><span class="co">## convert selected labeled variable(s) to character, convert missings to NA</span></span>
+<span><span class="va">dat2</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/extractData2.html">extractData2</a></span><span class="op">(</span><span class="va">gads1</span>, labels2character <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"schtype"</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="va">dat2</span><span class="op">)</span></span>
-<span><span class="co">#&gt;   idstud schtype</span></span>
-<span><span class="co">#&gt; 1      1       2</span></span>
-<span><span class="co">#&gt; 2      2       3</span></span>
-<span><span class="co">#&gt; 3      3       1</span></span>
-<span><span class="co">#&gt; 4      4       3</span></span>
-<span><span class="co">#&gt; 5      5       2</span></span>
-<span><span class="co">#&gt; 6      6       3</span></span></code></pre></div>
+<span><span class="co">#&gt;   idstud                                   schtype gender</span></span>
+<span><span class="co">#&gt; 1      1                                Realschule      1</span></span>
+<span><span class="co">#&gt; 2      2 schools with several courses of education      1</span></span>
+<span><span class="co">#&gt; 3      3                Gymnasium (academic track)      2</span></span>
+<span><span class="co">#&gt; 4      4 schools with several courses of education      2</span></span>
+<span><span class="co">#&gt; 5      5                                Realschule      1</span></span>
+<span><span class="co">#&gt; 6      6 schools with several courses of education      1</span></span>
+<span></span>
+<span><span class="co">## convert all labeled variables to character, convert missings to NA</span></span>
+<span><span class="va">dat3</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/extractData2.html">extractData2</a></span><span class="op">(</span><span class="va">gads1</span>, labels2character <span class="op">=</span> <span class="fu"><a href="../reference/namesGADS.html">namesGADS</a></span><span class="op">(</span><span class="va">gads1</span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="va">dat3</span><span class="op">)</span></span>
+<span><span class="co">#&gt;   idstud                                   schtype gender</span></span>
+<span><span class="co">#&gt; 1      1                                Realschule Female</span></span>
+<span><span class="co">#&gt; 2      2 schools with several courses of education Female</span></span>
+<span><span class="co">#&gt; 3      3                Gymnasium (academic track)   Male</span></span>
+<span><span class="co">#&gt; 4      4 schools with several courses of education   Male</span></span>
+<span><span class="co">#&gt; 5      5                                Realschule Female</span></span>
+<span><span class="co">#&gt; 6      6 schools with several courses of education Female</span></span></code></pre></div>
 <p>In general, we recommend leaving labeled variables as numeric and
-converting values with missing codes to <code>NA</code>. The latter is
-the default behavior for the argument <code>checkMissings</code>. If
-required, values labels can always be accessed via using
+converting values with missing codes to <code>NA</code>. If required,
+values labels can always be accessed via using
 <code><a href="../reference/extractMeta.html">extractMeta()</a></code> on the <code>GADSdat</code> object or the
 data base.</p>
 </div>
@@ -307,34 +329,34 @@ select only variables from the student level, the data returned is on
 the student level. Each student is represented in a single row.</p>
 <div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">gads1</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/getGADS.html">getGADS</a></span><span class="op">(</span><span class="va">db_path</span>, vSelect <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"schtype"</span>, <span class="st">"g8g9"</span><span class="op">)</span><span class="op">)</span></span>
-<span><span class="va">dat1</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/extractData.html">extractData</a></span><span class="op">(</span><span class="va">gads1</span><span class="op">)</span></span>
+<span><span class="va">dat1</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/extractData2.html">extractData2</a></span><span class="op">(</span><span class="va">gads1</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/dim.html" class="external-link">dim</a></span><span class="op">(</span><span class="va">dat1</span><span class="op">)</span></span>
 <span><span class="co">#&gt; [1] 500   3</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="va">dat1</span><span class="op">)</span></span>
-<span><span class="co">#&gt;   idstud                                   schtype                   g8g9</span></span>
-<span><span class="co">#&gt; 1      1                                Realschule                   &lt;NA&gt;</span></span>
-<span><span class="co">#&gt; 2      2 schools with several courses of education                   &lt;NA&gt;</span></span>
-<span><span class="co">#&gt; 3      3                Gymnasium (academic track) G8 - 8 years to abitur</span></span>
-<span><span class="co">#&gt; 4      4 schools with several courses of education                   &lt;NA&gt;</span></span>
-<span><span class="co">#&gt; 5      5                                Realschule                   &lt;NA&gt;</span></span>
-<span><span class="co">#&gt; 6      6 schools with several courses of education                   &lt;NA&gt;</span></span></code></pre></div>
+<span><span class="co">#&gt;   idstud schtype g8g9</span></span>
+<span><span class="co">#&gt; 1      1       2   NA</span></span>
+<span><span class="co">#&gt; 2      2       3   NA</span></span>
+<span><span class="co">#&gt; 3      3       1    1</span></span>
+<span><span class="co">#&gt; 4      4       3   NA</span></span>
+<span><span class="co">#&gt; 5      5       2   NA</span></span>
+<span><span class="co">#&gt; 6      6       3   NA</span></span></code></pre></div>
 <p>If additionally variables from the plausible Value data table are
 extracted, the returned data structure changes. In the <code>PVs</code>
 data table, data is stored on the “student x dimension x plausible value
 number” level. The returned data has exactly this structure.</p>
 <div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">gads2</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/getGADS.html">getGADS</a></span><span class="op">(</span><span class="va">db_path</span>, vSelect <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"schtype"</span>, <span class="st">"value"</span><span class="op">)</span><span class="op">)</span></span>
-<span><span class="va">dat2</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/extractData.html">extractData</a></span><span class="op">(</span><span class="va">gads2</span><span class="op">)</span></span>
+<span><span class="va">dat2</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/extractData2.html">extractData2</a></span><span class="op">(</span><span class="va">gads2</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/dim.html" class="external-link">dim</a></span><span class="op">(</span><span class="va">dat2</span><span class="op">)</span></span>
 <span><span class="co">#&gt; [1] 7500    5</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="va">dat2</span><span class="op">)</span></span>
-<span><span class="co">#&gt;   idstud    schtype dimension imp       value</span></span>
-<span><span class="co">#&gt; 1      1 Realschule        ma   1  0.15372011</span></span>
-<span><span class="co">#&gt; 2      1 Realschule       rea   1  0.43914365</span></span>
-<span><span class="co">#&gt; 3      1 Realschule       sci   1  0.13177617</span></span>
-<span><span class="co">#&gt; 4      1 Realschule        ma   2 -0.04119330</span></span>
-<span><span class="co">#&gt; 5      1 Realschule       rea   2  0.01991714</span></span>
-<span><span class="co">#&gt; 6      1 Realschule       sci   2  0.67830064</span></span></code></pre></div>
+<span><span class="co">#&gt;   idstud schtype dimension imp       value</span></span>
+<span><span class="co">#&gt; 1      1       2         1   1  0.15372011</span></span>
+<span><span class="co">#&gt; 2      1       2         2   1  0.43914365</span></span>
+<span><span class="co">#&gt; 3      1       2         3   1  0.13177617</span></span>
+<span><span class="co">#&gt; 4      1       2         1   2 -0.04119330</span></span>
+<span><span class="co">#&gt; 5      1       2         2   2  0.01991714</span></span>
+<span><span class="co">#&gt; 6      1       2         3   2  0.67830064</span></span></code></pre></div>
 <p>These two examples highlight another feature of
 <code><a href="../reference/getGADS.html">getGADS()</a></code>: Only variables of substantial interest have to
 be selected for extraction. The correct ID variables are added
@@ -360,15 +382,15 @@ can be used for illustrative purposes.</p>
 <span><span class="co">#&gt;  -----  Loading GADS 2020 ----- </span></span>
 <span><span class="co">#&gt;  -----  Loading GADS 2015 ----- </span></span>
 <span><span class="co">#&gt;  -----  Loading GADS 2010 -----</span></span>
-<span><span class="va">dat_trend</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/extractData.html">extractData</a></span><span class="op">(</span><span class="va">gads_trend</span><span class="op">)</span></span>
+<span><span class="va">dat_trend</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/extractData2.html">extractData2</a></span><span class="op">(</span><span class="va">gads_trend</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="va">dat_trend</span><span class="op">)</span></span>
 <span><span class="co">#&gt;   idstud dimension imp    score year</span></span>
-<span><span class="co">#&gt; 1     61 listening   2 434.1060 2020</span></span>
-<span><span class="co">#&gt; 2     61   reading   2 434.1060 2020</span></span>
-<span><span class="co">#&gt; 3     62 listening   1 426.8199 2020</span></span>
-<span><span class="co">#&gt; 4     62   reading   1 426.8199 2020</span></span>
-<span><span class="co">#&gt; 5     63 listening   2 427.7327 2020</span></span>
-<span><span class="co">#&gt; 6     63   reading   2 427.7327 2020</span></span></code></pre></div>
+<span><span class="co">#&gt; 1     61         1   2 434.1060 2020</span></span>
+<span><span class="co">#&gt; 2     61         2   2 434.1060 2020</span></span>
+<span><span class="co">#&gt; 3     62         1   1 426.8199 2020</span></span>
+<span><span class="co">#&gt; 4     62         2   1 426.8199 2020</span></span>
+<span><span class="co">#&gt; 5     63         1   2 427.7327 2020</span></span>
+<span><span class="co">#&gt; 6     63         2   2 427.7327 2020</span></span></code></pre></div>
 </div>
   </main><aside class="col-md-3"><nav id="toc"><h2>On this page</h2>
     </nav></aside>
