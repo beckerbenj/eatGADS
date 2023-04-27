@@ -20,3 +20,12 @@ test_that("check_vars_in_GADSdat", {
   expect_error(check_vars_in_GADSdat(dfSAV, vars = c("VAR4", "VAR6")),
                "The following 'vars' are not variables in the GADSdat: VAR4, VAR6")
 })
+
+test_that("check_vars_in_vec", {
+  expect_error(check_vars_in_vector(namesGADS(dfSAV), vars = c("VAR1", "VAR1"), vec_nam = "GADSdat"),
+               "There are duplicates in 'vars': VAR1")
+  expect_error(check_vars_in_vector(namesGADS(dfSAV), vars = c("VAR4"), vec_nam = "GADSdat"),
+               "The following 'vars' are not variables in the GADSdat: VAR4")
+  expect_error(check_vars_in_vector(dfSAV, vars = c("VAR4", "VAR6"), vec_nam = "GADSdats"),
+               "The following 'vars' are not variables in the GADSdats: VAR4, VAR6")
+})

@@ -198,6 +198,25 @@ test_that("extractData2 with some variables labels applied to (convertVariables 
                           b = c(2, 1), stringsAsFactors = TRUE))
 })
 
+test_that("Spefific trend GADS errors", {
+  # trend_gads <- getTrendGADS(filePaths = c("tests/testthat/helper_dataBase.db", "tests/testthat/helper_dataBase_uniqueVar.db"), years = c(2012, 2018), fast = FALSE)
+  trend_gads <- suppressWarnings(getTrendGADS(filePaths = c("helper_dataBase.db", "helper_dataBase_uniqueVar.db"),
+                                              years = c(2012, 2018), fast = FALSE, verbose = FALSE))
+  expect_error(extractData2(trend_gads, labels2character = list("v5")),
+               "'labels2character' must be a character vector.")
+  expect_error(extractData2(trend_gads, labels2factor = list("v5")),
+               "'labels2factor' must be a character vector.")
+  expect_error(extractData2(trend_gads, labels2ordered = list("v5")),
+               "'labels2ordered' must be a character vector.")
+
+  expect_error(extractData2(trend_gads, labels2character = c("v5", "v3")),
+               "The following 'vars' are not variables in the GADSdats: v5")
+  expect_error(extractData2(trend_gads, labels2factor = c("v5", "v3")),
+               "The following 'vars' are not variables in the GADSdats: v5")
+  expect_error(extractData2(trend_gads, labels2ordered = c("v5", "v3")),
+               "The following 'vars' are not variables in the GADSdats: v5")
+})
+
 test_that("Extract data trend GADS", {
   # trend_gads <- getTrendGADS(filePaths = c("tests/testthat/helper_dataBase.db", "tests/testthat/helper_dataBase_uniqueVar.db"), years = c(2012, 2018), fast = FALSE)
   trend_gads <- suppressWarnings(getTrendGADS(filePaths = c("helper_dataBase.db", "helper_dataBase_uniqueVar.db"),
@@ -210,7 +229,7 @@ test_that("Extract data trend GADS", {
   expect_equal(out$year, comp)
 
   ## convertVariables if some variables are not in both GADS
-  out2 <- extractData(trend_gads, convertVariables = "V3")
+  out2 <- extractData2(trend_gads, labels2character = "V3")
   expect_equal(out, out2)
 })
 

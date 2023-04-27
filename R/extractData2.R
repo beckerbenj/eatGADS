@@ -94,12 +94,25 @@ extractData2.GADSdat <- function(GADSdat, convertMiss = TRUE, labels2character =
 #'@export
 extractData2.trend_GADSdat <- function(GADSdat, convertMiss = TRUE, labels2character = NULL, labels2factor = NULL,
                                        labels2ordered = NULL, dropPartialLabels = TRUE) {
+  # Input validation
   check_trend_GADSdat(GADSdat)
+  if(!is.null(labels2character) && !is.character(labels2character)) stop("'labels2character' must be a character vector.")
+  if(!is.null(labels2factor) && !is.character(labels2factor)) stop("'labels2factor' must be a character vector.")
+  if(!is.null(labels2ordered) && !is.character(labels2ordered)) stop("'labels2ordered' must be a character vector.")
+  all_GADSdat_names <- unique(unlist(namesGADS(GADSdat)))
+  check_vars_in_vector(all_GADSdat_names, vars = labels2character, vec_nam = "GADSdats")
+  check_vars_in_vector(all_GADSdat_names, vars = labels2factor, vec_nam = "GADSdats")
+  check_vars_in_vector(all_GADSdat_names, vars = labels2ordered, vec_nam = "GADSdats")
 
   dat_list <- lapply(names(GADSdat$datList), function(nam) {
     gads <- extractGADSdat(all_GADSdat = GADSdat, name = nam)
-    dat <- extractData2(gads, convertMiss = convertMiss, labels2character = labels2character, labels2factor = labels2factor,
-                       labels2ordered = labels2ordered, dropPartialLabels = dropPartialLabels)
+
+    single_labels2character <- labels2character[labels2character %in% namesGADS(gads)]
+    single_labels2factor <- labels2factor[labels2factor %in% namesGADS(gads)]
+    single_labels2ordered <- labels2ordered[labels2ordered %in% namesGADS(gads)]
+
+    dat <- extractData2(gads, convertMiss = convertMiss, labels2character = single_labels2character, labels2factor = single_labels2factor,
+                       labels2ordered = single_labels2ordered, dropPartialLabels = dropPartialLabels)
     dat
   })
 
@@ -113,7 +126,7 @@ labels2values2 <- function(dat, labels, convertMiss, dropPartialLabels, labels2c
   if(is.null(labels2character) && is.null(labels2factor)) return(dat)
   # Which variables should their value labels be applied to?
   convertVariables <- c(labels2character, labels2factor, labels2ordered)
-  stopifnot(is.character(convertVariables) && length(convertVariables) > 0)
+  #stopifnot(is.character(convertVariables) && length(convertVariables) > 0)
 
   change_labels <- labels[labels[, "varName"] %in% convertVariables, ]    # careful, from here use only change_labels!
   # check value labels, remove incomplete labels from insertion to protect variables
