@@ -14,7 +14,7 @@
 #'@param GADSdat \code{GADSdat} object imported via \code{eatGADS}.
 #'@param missingLabel Single regular expression indicating how missing labels are commonly named in the value labels.
 #'@param missingValues Numeric vector of values which are commonly used for missing values.
-#'@param addMissingCode If \code{TRUE}, missing tags are added according to  \code{missingLabel} or \code{missingValues}.
+#'@param addMissingCode If \code{TRUE}, missing tags are added according to \code{missingLabel} or \code{missingValues}.
 #'@param addMissingLabel If \code{TRUE}, \code{"generic missing"} is added according to occurrence of \code{"miss"} in \code{"missings"}. As often various value labels for missings are used, this argument should be used with great care.
 #'
 #'@return Returns a \code{GADSdat} object with - if specified - modified missing tags.
