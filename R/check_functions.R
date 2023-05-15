@@ -25,3 +25,10 @@ check_vars_in_vector <- function(vec, vars, vec_nam) {
                                   paste(other_vars, collapse = ", "))
   return()
 }
+
+check_logicalArgument <- function(arg, argName) {
+  if(!is.logical(arg) || length(arg) != 1) {
+    stop("'", argName, "' needs to be a logical vector of length 1.")
+  }
+  return()
+}

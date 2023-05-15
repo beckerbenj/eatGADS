@@ -29,3 +29,12 @@ test_that("check_vars_in_vec", {
   expect_error(check_vars_in_vector(dfSAV, vars = c("VAR4", "VAR6"), vec_nam = "GADSdats"),
                "The following 'vars' are not variables in the GADSdats: VAR4, VAR6")
 })
+
+test_that("check_logicalArgument", {
+  expect_error(check_logicalArgument(1, "test"),
+               "'test' needs to be a logical vector of length 1.")
+  expect_error(check_logicalArgument(c(TRUE, FALSE), "test"),
+               "'test' needs to be a logical vector of length 1.")
+  expect_silent(check_logicalArgument(TRUE, "test"))
+
+})

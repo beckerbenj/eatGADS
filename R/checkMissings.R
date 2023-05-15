@@ -41,6 +41,17 @@ checkMissings <- function(GADSdat, missingLabel = "missing", addMissingCode = TR
 #'@export
 checkMissings.GADSdat <- function(GADSdat, missingLabel = "missing", addMissingCode = TRUE, addMissingLabel = FALSE) {
   check_GADSdat(GADSdat)
+  if(!is.character(missingLabel) || length(missingLabel) != 1) {
+    stop("'missingLabel' needs to be a character vector of exactly length 1.")
+  }
+  if(is.na(missingLabel)) {
+    stop("'missingLabel' is NA.")
+  }
+  if(nchar(missingLabel) == 0) {
+    stop("'missingLabel' is an empty string.")
+  }
+  check_logicalArgument(addMissingCode, argName = "addMissingCode")
+  check_logicalArgument(addMissingCode, argName = "addMissingLabel")
   labels <- GADSdat$labels
 
   missCode_rows_fail <- which(grepl(missingLabel, labels$valLabel) & (is.na(labels$missings) | labels$missings == "valid"))
@@ -79,6 +90,14 @@ checkMissingsByValues <- function(GADSdat, missingValues = -50:-99, addMissingCo
 #'@export
 checkMissingsByValues.GADSdat <- function(GADSdat, missingValues = -50:-99, addMissingCode = TRUE) {
   check_GADSdat(GADSdat)
+  if(!is.numeric(missingValues) || length(missingValues) == 0) {
+    stop("'missingValues' needs to be a numeric vector of at least length 1.")
+  }
+  if(any(is.na(missingValues))) {
+    stop("'missingValues' contains NAs.")
+  }
+  check_logicalArgument(addMissingCode, argName = "addMissingCode")
+
   labels <- GADSdat$labels
 
   missCode_missing_rows <- which(labels$value %in% missingValues & (is.na(labels$missings) | labels$missings == "valid"))
@@ -100,7 +119,6 @@ checkMissingsByValues.GADSdat <- function(GADSdat, missingValues = -50:-99, addM
   GADSdat$labels <- labels
   GADSdat
 }
-
 
 
 
