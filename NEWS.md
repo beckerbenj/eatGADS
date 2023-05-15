@@ -7,6 +7,9 @@
 * `cloneVariable()` and `autoRecode()` now allow automatic appending of variable label suffixes via the `label_suffix` argument
 * new function `emptyTheseVariables()` allows setting multiple variables to `NA`
 
+## bug fixes
+* bug fix in `checkMissingsByValues()`, now correctly reports missing tags outside of the specified value range
+
 
 # eatGADS 1.0.0
 

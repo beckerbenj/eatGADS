@@ -3,7 +3,7 @@
 \name{checkMissings}
 \alias{checkMissings}
 \alias{checkMissingsByValues}
-\title{Check and Adjust Missing Coding}
+\title{Check and Adjust Missing Tags}
 \usage{
 checkMissings(
   GADSdat,
@@ -19,7 +19,7 @@ checkMissingsByValues(GADSdat, missingValues = -50:-99, addMissingCode = TRUE)
 
 \item{missingLabel}{Single regular expression indicating how missing labels are commonly named in the value labels.}
 
-\item{addMissingCode}{If \code{TRUE}, missing codes are added according to  \code{missingLabel} or \code{missingValues}.}
+\item{addMissingCode}{If \code{TRUE}, missing tags are added according to \code{missingLabel} or \code{missingValues}.}
 
 \item{addMissingLabel}{If \code{TRUE}, \code{"generic missing"} is added according to occurrence of \code{"miss"} in \code{"missings"}. As often various value labels for missings are used, this argument should be used with great care.}
 
@@ -29,12 +29,12 @@ checkMissingsByValues(GADSdat, missingValues = -50:-99, addMissingCode = TRUE)
 Returns a \code{GADSdat} object with - if specified - modified missing tags.
 }
 \description{
-Functions to check if missings are coded and labeled correctly in a \code{GADSdat} object.
+Functions to check if missings are tagged and labeled correctly in a \code{GADSdat} object.
 }
 \details{
 \code{checkMissings()} compares value labels (\code{valLabels}) and missing tags (\code{missings}) of a \code{GADSdat} object and its
 meta data information.
-\code{checkMissingsByValues()} compares labeled values (\code{value}) and missing codes (\code{missings}) of a \code{GADSdat} object
+\code{checkMissingsByValues()} compares labeled values (\code{value}) and missing tags (\code{missings}) of a \code{GADSdat} object
 and its meta data information.
 Mismatches are reported and can be automatically adjusted. Note that all checks are only applied to the
 meta data information, not the actual data. For detecting missing value labels, see \code{\link{checkMissingValLabels}}.
