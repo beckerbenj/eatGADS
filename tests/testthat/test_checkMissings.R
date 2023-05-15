@@ -36,8 +36,11 @@ test_that("checkMissings: Missing codes are correctly checked and added", {
 })
 
 test_that("checkMissingsByValues: Missing codes are correctly checked and added", {
-  all_messages <- capture_messages(out <- checkMissingsByValues(df4))
+  all_messages <- capture_messages(out <- checkMissingsByValues(df4, missingValues = -50:-99))
   expect_equal(all_messages[1], "The following variables have values in the 'missingValues' range which are not coded as missing:\nV1\n")
   expect_equal(all_messages[2], "'miss' is inserted into column missings for 1 rows.\n")
+  expect_equal(all_messages[3], "The following variables have values coded as missings which are outside of the specified 'missingValues' range:\nV1\n")
   expect_equal(out$labels[2:5, "missings"], c("miss", "miss", "miss", "valid"))
+
+  expect_silent(out2 <- checkMissingsByValues(out, missingValues = -5:-99))
 })
