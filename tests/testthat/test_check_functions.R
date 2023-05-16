@@ -38,3 +38,12 @@ test_that("check_logicalArgument", {
   expect_silent(check_logicalArgument(TRUE, "test"))
 
 })
+
+test_that("check_characterArgument", {
+  expect_error(check_characterArgument(1, "test"),
+               "'test' needs to be a character vector of length 1.")
+  expect_error(check_characterArgument(c("a", "b"), "test"),
+               "'test' needs to be a character vector of length 1.")
+  expect_silent(check_characterArgument("a", "test"))
+
+})

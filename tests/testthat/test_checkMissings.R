@@ -13,7 +13,7 @@ df4 <- changeValLabels(df4, varName = "V1", value = c(3, -9, -99, -98), valLabel
 
 test_that("Missing checks input validation", {
   expect_error(checkMissings(df4, missingLabel = 1),
-               "'missingLabel' needs to be a character vector of exactly length 1.")
+               "'missingLabel' needs to be a character vector of length 1.")
   expect_error(checkMissings(df4, missingLabel = NA_character_),
                "'missingLabel' is NA.")
   expect_error(checkMissings(df4, missingLabel = ""),

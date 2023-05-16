@@ -32,3 +32,10 @@ check_logicalArgument <- function(arg, argName) {
   }
   return()
 }
+
+check_characterArgument <- function(arg, argName) {
+  if(!is.character(arg) || length(arg) != 1) {
+    stop("'", argName, "' needs to be a character vector of length 1.")
+  }
+  return()
+}
