@@ -1,6 +1,7 @@
 # eatGADS 1.0.0.9000
 
 ## new features
+* `updateMeta()` is now compatible with `extractData()` and `extractData2()`
 * S3 method of `extractData2()` now available for `trend_GADSdat` objects
 * `recodeGADS()` and `applyChangeMeta()` allow recoding values without recoding value labels (via `existingMeta = "ignore"`)
 * `insertVariable()` has been renamed `relocateVariable()` for clarity. Variables can now be inserted at the very beginning of a `GADSdat`
