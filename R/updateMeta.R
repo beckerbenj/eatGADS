@@ -38,6 +38,9 @@ updateMeta.GADSdat <- function(GADSdat, newDat) {
   ## replace variables that have been imported newly
   newDat[, names(addData[["dat"]])] <- addData[["dat"]]
 
+  # drop additional attributes from data
+  newDat[] <- lapply(newDat, c)
+
   mod_GADSdat <- new_GADSdat(dat = newDat, labels = labels)
   check_GADSdat(mod_GADSdat)
   mod_GADSdat

@@ -2,6 +2,10 @@
 # load(file = "tests/testthat/helper_data.rda")
 load(file = "helper_data.rda")
 
+# dfSAV <- import_spss(file = "tests/testthat/helper_spss_missings.sav")
+dfSAV <- import_spss(file = "helper_spss_missings.sav")
+
+
 ### Update Meta
 newDat <- df1$dat
 newDat$v3 <- c(4, 5)
@@ -57,4 +61,11 @@ test_that("illegal variable names", {
   mess <- capture_messages(out_both <- updateMeta(df1, newDat_ill))
   expect_equal(mess[2], "Alter has been renamed to AlterVar\n")
   expect_equal(names(out_both$dat), c("ID1", "V1", "AlterVar"))
+})
+
+test_that("updateMeta extractData combination", {
+  suppressWarnings(newDat_ill <- extractData2(dfSAV, labels2character = namesGADS(dfSAV), dropPartialLabels = FALSE))
+  suppressMessages(out_both <- updateMeta(dfSAV, newDat_ill))
+  expect_equal(attr(out_both$dat[[1]], "label"), NULL)
+  expect_equal(attr(out_both$dat[[3]], "label"), NULL)
 })
