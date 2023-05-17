@@ -56,6 +56,10 @@ multiChar2fac.GADSdat <- function(GADSdat, vars, var_suffix = "_r", label_suffix
   check_GADSdat(GADSdat)
   if(!is.character(vars) && length(vars) > 0) stop("vars needs to be a character vector of at least length 1.")
   check_vars_in_GADSdat(GADSdat, vars)
+  all_content <- unlist(GADSdat$dat[, vars])
+  if(all(is.na(all_content))) {
+    stop("Variables in 'vars' contain only NAs. Transforming to factor is not meaningful.")
+  }
 
   ## current limitation: for multiple vars, meta data must be equal (maybe extend later?)
   if(length(vars) > 1) {
