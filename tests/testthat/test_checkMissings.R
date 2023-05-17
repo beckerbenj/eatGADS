@@ -11,6 +11,20 @@ df4 <- changeMissings(df1, varName = "V1", value = c(3, -9, -99, -98), missings 
 df4 <- changeValLabels(df4, varName = "V1", value = c(3, -9, -99, -98), valLabel = c("missing", "missing by intention",
                                                                                      "missing by design", "not reached"))
 
+test_that("Missing checks input validation", {
+  expect_error(checkMissings(df4, missingLabel = 1),
+               "'missingLabel' needs to be a character vector of length 1.")
+  expect_error(checkMissings(df4, missingLabel = NA_character_),
+               "'missingLabel' is NA.")
+  expect_error(checkMissings(df4, missingLabel = ""),
+               "'missingLabel' is an empty string.")
+  expect_error(checkMissingsByValues(df4, missingValues = c(1, NA)),
+               "'missingValues' contains NAs.")
+  expect_error(checkMissingsByValues(df4, missingValues = numeric()),
+               "'missingValues' needs to be a numeric vector of at least length 1.")
+})
+
+
 test_that("Missing checks raise no false alarms", {
   expect_equal(df1, checkMissings(df1))
   expect_equal(df1, checkMissingsByValues(df1))
