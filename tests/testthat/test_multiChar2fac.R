@@ -16,10 +16,15 @@ mt4_gads_2$labels[1:2, c("labeled")] <- c("yes")
 mt4_gads_2$labels[1:2, c("missings")] <- c("miss")
 
 test_that("errors", {
-  mt4_gads_3 <- changeMissings(mt4_gads_2, "text2", value = -99, missings = "valid")
+  mt4_gads_4 <- mt4_gads_3 <- changeMissings(mt4_gads_2, "text2", value = -99, missings = "valid")
   expect_error(multiChar2fac(mt4_gads_3, vars = namesGADS(mt4_gads_2)),
                "Meta data on value level ('value', 'valLabel', 'missings') of variables 'text1' and 'text2' must be identical.",
                fixed = TRUE)
+  mt4_gads_4$dat[] <- NA
+  expect_error(multiChar2fac(mt4_gads_4, vars = namesGADS(mt4_gads_2)),
+               "Variables in 'vars' contain only NAs. Transforming to factor is not meaningful.")
+  expect_error(multiChar2fac(mt4_gads_4, vars = "text1"),
+               "Variables in 'vars' contain only NAs. Transforming to factor is not meaningful.")
 })
 
 
