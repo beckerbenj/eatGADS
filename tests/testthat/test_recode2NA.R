@@ -27,13 +27,18 @@ test_that("Recode2NA mixed data and missings in string", {
 
 
 test_that("Errors for Recode2NA", {
-  expect_error(out <- recode2NA(txt_gads, value = c("", "la")), "'value' needs to be a vector of exactly length 1.")
+  expect_error(out <- recode2NA(txt_gads, value = c()), "'value' needs to be a vector of at least length 1.")
   expect_error(out <- recode2NA(mt_gads, recodeVar = mtcars, value = c("1")), "'recodeVars' needs to be character vector of at least length 1.")
 })
 
 
 test_that("Recode2NA numerics", {
-  out <- recode2NA(dfSAV, recodeVars =  "VAR1", value = 1)
+  expect_warning(out <- recode2NA(dfSAV, recodeVars =  "VAR1", value = 1),
+                 "Some 'value' is labeled in the following variables in 'recodeVars': VAR1")
   expect_equal(out$dat$VAR1, c(NA, -99, -96, 2))
+
+  expect_warning(out <- recode2NA(dfSAV, recodeVars =  "VAR1", value = 1:2),
+                 "Some 'value' is labeled in the following variables in 'recodeVars': VAR1")
+  expect_equal(out$dat$VAR1, c(NA, -99, -96, NA))
 })
 
