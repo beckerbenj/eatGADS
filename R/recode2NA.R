@@ -6,8 +6,8 @@
 #'
 #' If there are value labels given to the specified value, a warning is issued. Number of recodes per variable are reported.
 #'
-#' If a data set is imported from \code{.sav} character variables frequently contain empty strings. Especially if parts of the
-#' data are written to \code{.xlsx} this can cause problems (e.g. as look up tables from \code{\link{createLookup}}),
+#' If a data set is imported from \code{.sav}, character variables frequently contain empty strings. Especially if parts of the
+#' data are written to \code{.xlsx}, this can cause problems (e.g. as look up tables from \code{\link{createLookup}}),
 #' as most function which write to \code{.xlsx} convert empty strings to \code{NAs}. \code{recodeString2NA} can be
 #' used to recode all empty strings to \code{NA} beforehand.
 #'
@@ -39,9 +39,13 @@ recode2NA <- function(GADSdat, recodeVars = namesGADS(GADSdat), value = "") {
 #'@export
 recode2NA.GADSdat <- function(GADSdat, recodeVars = namesGADS(GADSdat), value = "") {
   check_GADSdat(GADSdat)
-  if(!is.character(recodeVars) || length(recodeVars) < 1) stop("'recodeVars' needs to be character vector of at least length 1.")
-  check_vars_in_GADSdat(GADSdat, vars = recodeVars)
-  if(!is.vector(value) || length(value) == 0) stop("'value' needs to be a vector of at least length 1.")
+  if(!is.character(recodeVars) || length(recodeVars) < 1) {
+    stop("'recodeVars' needs to be character vector of at least length 1.")
+  }
+  check_vars_in_GADSdat(GADSdat, vars = recodeVars, argName = "recodeVars")
+  if(!is.vector(value) || length(value) == 0) {
+    stop("'value' needs to be a vector of at least length 1.")
+  }
 
   labeled_values <- GADSdat$labels[GADSdat$labels$varName %in% recodeVars, c("varName", "value")]
   labeled_values_recode <- unique(labeled_values[which(labeled_values$value %in% value), "varName"])

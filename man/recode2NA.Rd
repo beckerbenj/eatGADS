@@ -22,8 +22,8 @@ Recode multiple values in multiple variables in a \code{GADSdat} to \code{NA}.
 \details{
 If there are value labels given to the specified value, a warning is issued. Number of recodes per variable are reported.
 
-If a data set is imported from \code{.sav} character variables frequently contain empty strings. Especially if parts of the
-data are written to \code{.xlsx} this can cause problems (e.g. as look up tables from \code{\link{createLookup}}),
+If a data set is imported from \code{.sav}, character variables frequently contain empty strings. Especially if parts of the
+data are written to \code{.xlsx}, this can cause problems (e.g. as look up tables from \code{\link{createLookup}}),
 as most function which write to \code{.xlsx} convert empty strings to \code{NAs}. \code{recodeString2NA} can be
 used to recode all empty strings to \code{NA} beforehand.
 }
