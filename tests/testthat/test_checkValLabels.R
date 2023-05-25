@@ -115,7 +115,7 @@ test_that("checkMissingValLabels data.frame", {
 
 
 test_that("With NAs", {
-  suppressMessages(dfSAV2 <- recode2NA(dfSAV, value = 1))
+  suppressMessages(suppressWarnings(dfSAV2 <- recode2NA(dfSAV, value = 1)))
   out <- checkEmptyValLabels(dfSAV2)
   expect_equal(out[[2]], checkEmptyValLabels(dfSAV)[[2]])
   expect_equal(out[[3]], checkEmptyValLabels(dfSAV)[[3]])

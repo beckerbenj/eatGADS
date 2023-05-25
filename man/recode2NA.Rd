@@ -2,7 +2,7 @@
 % Please edit documentation in R/recode2NA.R
 \name{recode2NA}
 \alias{recode2NA}
-\title{Recode a value to \code{NA}.}
+\title{Recode values to \code{NA}.}
 \usage{
 recode2NA(GADSdat, recodeVars = namesGADS(GADSdat), value = "")
 }
@@ -11,19 +11,19 @@ recode2NA(GADSdat, recodeVars = namesGADS(GADSdat), value = "")
 
 \item{recodeVars}{Character vector of variable names which should be recoded.}
 
-\item{value}{Which value should be recoded to \code{NA}?}
+\item{value}{Which values should be recoded to \code{NA}?}
 }
 \value{
 Returns the recoded \code{GADSdat}.
 }
 \description{
-Recode a value in multiple variables in a \code{GADSdat} to \code{NA}.
+Recode multiple values in multiple variables in a \code{GADSdat} to \code{NA}.
 }
 \details{
-If there are value labels given to the specified value, these are removed. Number of recodes per variable are reported.
+If there are value labels given to the specified value, a warning is issued. Number of recodes per variable are reported.
 
-If a data set is imported from \code{.sav} character variables frequently contain empty strings. Especially if parts of the
-data are written to \code{.xlsx} this can cause problems (e.g. as look up tables from \code{\link{createLookup}}),
+If a data set is imported from \code{.sav}, character variables frequently contain empty strings. Especially if parts of the
+data are written to \code{.xlsx}, this can cause problems (e.g. as look up tables from \code{\link{createLookup}}),
 as most function which write to \code{.xlsx} convert empty strings to \code{NAs}. \code{recodeString2NA} can be
 used to recode all empty strings to \code{NA} beforehand.
 }
@@ -38,7 +38,7 @@ gads <- import_DF(dat)
 gads2 <- recode2NA(gads)
 
 # recode numeric value
-gads3 <- recode2NA(gads, recodeVars = "ID", value = 1)
+gads3 <- recode2NA(gads, recodeVars = "ID", value = 1:3)
 
 
 }

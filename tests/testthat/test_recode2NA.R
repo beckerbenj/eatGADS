@@ -23,17 +23,27 @@ test_that("Recode2NA mixed data and missings in string", {
   mess2 <- capture_messages(out <- recode2NA(mt_gads))
   expect_equal(out$dat$text, c(NA, NA, "Aus", "Aus2"))
   expect_equal(mess2[[3]], "Recodes in variable text: 1\n")
+
+  mess3 <- capture_messages(out2 <- recode2NA(mt_gads, value = c("", "Aus")))
+  expect_equal(out2$dat$text, c(NA, NA, NA, "Aus2"))
+  expect_equal(mess3[[3]], "Recodes in variable text: 2\n")
 })
 
 
 test_that("Errors for Recode2NA", {
-  expect_error(out <- recode2NA(txt_gads, value = c("", "la")), "'value' needs to be a vector of exactly length 1.")
-  expect_error(out <- recode2NA(mt_gads, recodeVar = mtcars, value = c("1")), "'recodeVars' needs to be character vector of at least length 1.")
+  expect_error(recode2NA(txt_gads, value = c()), "'value' needs to be a vector of at least length 1.")
+  expect_error(recode2NA(mt_gads, recodeVar = 1, value = c("1")), "'recodeVars' needs to be character vector of at least length 1.")
+  expect_error(recode2NA(mt_gads, recodeVar = "test1", value = 1), "The following 'recodeVars' are not variables in the GADSdat: test1")
 })
 
 
 test_that("Recode2NA numerics", {
-  out <- recode2NA(dfSAV, recodeVars =  "VAR1", value = 1)
+  expect_warning(out <- recode2NA(dfSAV, recodeVars =  "VAR1", value = 1),
+                 "Some 'value' is labeled in the following variables in 'recodeVars': VAR1")
   expect_equal(out$dat$VAR1, c(NA, -99, -96, 2))
+
+  expect_warning(out <- recode2NA(dfSAV, recodeVars =  "VAR1", value = 1:2),
+                 "Some 'value' is labeled in the following variables in 'recodeVars': VAR1")
+  expect_equal(out$dat$VAR1, c(NA, -99, -96, NA))
 })
 
