@@ -1,6 +1,7 @@
 # eatGADS 1.0.0.9000
 
 ## new features
+* `recodeNA2missing()` for recoding `NAs` to a specific missing code
 * `recode2NA()` now allows the recoding of multiple `values` at once and returns a warning, if the recoded values have existing value labels in the recoded variables
 * `updateMeta()` is now compatible with `extractData()` and `extractData2()`
 * S3 method of `extractData2()` now available for `trend_GADSdat` objects
