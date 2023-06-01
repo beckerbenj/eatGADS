@@ -39,3 +39,10 @@ check_characterArgument <- function(arg, argName) {
   }
   return()
 }
+
+check_numericArgument <- function(arg, argName) {
+  if(!is.numeric(arg) || length(arg) != 1) {
+    stop("'", argName, "' needs to be a numeric vector of length 1.")
+  }
+  return()
+}
