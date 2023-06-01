@@ -1,7 +1,7 @@
 
 #' Recode \code{NAs} to Missing.
 #'
-#' Recode \code{NAs} in multiple variables in a \code{GADSdat} to a numeric value with a value label and misisng tag.
+#' Recode \code{NAs} in multiple variables in a \code{GADSdat} to a numeric value with a value label and a missing tag.
 #'
 #' The value label and missing tag are only added to variables which contain \code{NAs} and which have been recoded.
 #' If a variable has an existing value label for \code{value}, the existing value label is overwritten and a missing tag is added.
@@ -35,9 +35,7 @@ recodeNA2missing.GADSdat <- function(GADSdat, recodeVars = namesGADS(GADSdat), v
     stop("'recodeVars' needs to be character vector of at least length 1.")
   }
   check_vars_in_GADSdat(GADSdat, vars = recodeVars, argName = "recodeVars")
-  if(!is.numeric(value) || length(value) != 1) {
-    stop("'value' needs to be a numeric vector of length 1.")
-  }
+  check_numericArgument(value, argName = "value")
   check_characterArgument(valLabel, argName = "valLabel")
 
   for(recodeVar in recodeVars) {
@@ -45,7 +43,7 @@ recodeNA2missing.GADSdat <- function(GADSdat, recodeVars = namesGADS(GADSdat), v
       ## check for valueLabel conflicts
       labeled_values <- extractMeta(GADSdat, recodeVar)
       if(!all(is.na(labeled_values$value)) && value %in% labeled_values$value) {
-        warning("For the following variable in 'recodeVars', 'value' is already labeled: ", recodeVar)
+        warning("'value' is already labeled for the following variable in 'recodeVars': ", recodeVar)
       }
       GADSdat <- recodeGADS(GADSdat, varName = recodeVar, oldValues = NA, newValues = value)
       GADSdat <- changeValLabels(GADSdat, varName = recodeVar, value = value, valLabel = valLabel)

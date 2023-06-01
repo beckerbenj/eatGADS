@@ -12,9 +12,12 @@ txt_gads <- import_DF(txt)
 
 
 test_that("Errors", {
-  expect_error(recodeNA2missing(dfSAV, value = c()), "'value' needs to be a numeric vector of length 1.")
-  expect_error(recodeNA2missing(dfSAV, recodeVar = 1, value = c("1")), "'recodeVars' needs to be character vector of at least length 1.")
-  expect_error(recodeNA2missing(dfSAV, recodeVar = "test1", value = 1), "The following 'recodeVars' are not variables in the GADSdat: test1")
+  expect_error(recodeNA2missing(dfSAV, value = c()),
+               "'value' needs to be a numeric vector of length 1.")
+  expect_error(recodeNA2missing(dfSAV, recodeVar = 1, value = 1),
+               "'recodeVars' needs to be character vector of at least length 1.")
+  expect_error(recodeNA2missing(dfSAV, recodeVar = "test1", value = 1),
+               "The following 'recodeVars' are not variables in the GADSdat: test1")
 })
 
 test_that("RecodeNA2missing", {
@@ -41,12 +44,12 @@ test_that("Recode2NA numerics", {
   dfSAV2$dat[2:3, "VAR1"] <- NA
   dfSAV2$dat[1, "VAR3"] <- NA
   expect_warning(out <- recodeNA2missing(dfSAV2, recodeVars =  "VAR1", value = 1),
-                 "For the following variable in 'recodeVars', 'value' is already labeled: VAR1")
+                 "'value' is already labeled for the following variable in 'recodeVars': VAR1")
   expect_equal(out$dat$VAR1, c(1, 1, 1, 2))
 
   warns <- capture_warnings(out2 <- recodeNA2missing(dfSAV2, value = -99, valLabel = "miss test"))
-  expect_equal(warns[1], "For the following variable in 'recodeVars', 'value' is already labeled: VAR1")
-  expect_equal(warns[2], "For the following variable in 'recodeVars', 'value' is already labeled: VAR3")
+  expect_equal(warns[1], "'value' is already labeled for the following variable in 'recodeVars': VAR1")
+  expect_equal(warns[2], "'value' is already labeled for the following variable in 'recodeVars': VAR3")
   expect_equal(out2$dat$VAR1, c(1, -99, -99, 2))
   expect_equal(out2$dat$VAR2, dfSAV2$dat$VAR2)
   expect_equal(out2$dat$VAR3, c(-99, 1, 1, -98))

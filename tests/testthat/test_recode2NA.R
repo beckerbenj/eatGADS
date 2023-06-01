@@ -31,9 +31,12 @@ test_that("Recode2NA mixed data and missings in string", {
 
 
 test_that("Errors for Recode2NA", {
-  expect_error(recode2NA(txt_gads, value = c()), "'value' needs to be a vector of at least length 1.")
-  expect_error(recode2NA(mt_gads, recodeVar = 1, value = c("1")), "'recodeVars' needs to be character vector of at least length 1.")
-  expect_error(recode2NA(mt_gads, recodeVar = "test1", value = 1), "The following 'recodeVars' are not variables in the GADSdat: test1")
+  expect_error(recode2NA(txt_gads, value = c()),
+               "'value' needs to be a vector of at least length 1.")
+  expect_error(recode2NA(mt_gads, recodeVar = 1, value = c("1")),
+               "'recodeVars' needs to be character vector of at least length 1.")
+  expect_error(recode2NA(mt_gads, recodeVar = "test1", value = 1),
+               "The following 'recodeVars' are not variables in the GADSdat: test1")
 })
 
 

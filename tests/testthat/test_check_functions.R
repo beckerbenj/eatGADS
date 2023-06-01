@@ -45,5 +45,12 @@ test_that("check_characterArgument", {
   expect_error(check_characterArgument(c("a", "b"), "test"),
                "'test' needs to be a character vector of length 1.")
   expect_silent(check_characterArgument("a", "test"))
+})
 
+test_that("check_numericArgument", {
+  expect_error(check_numericArgument("1", "test"),
+               "'test' needs to be a numeric vector of length 1.")
+  expect_error(check_numericArgument(1:2, "test"),
+               "'test' needs to be a numeric vector of length 1.")
+  expect_silent(check_numericArgument(1, "test"))
 })

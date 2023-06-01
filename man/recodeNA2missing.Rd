@@ -24,7 +24,7 @@ recodeNA2missing(
 Returns the recoded \code{GADSdat}.
 }
 \description{
-Recode \code{NAs} in multiple variables in a \code{GADSdat} to a numeric value with a value label and misisng tag.
+Recode \code{NAs} in multiple variables in a \code{GADSdat} to a numeric value with a value label and a missing tag.
 }
 \details{
 The value label and missing tag are only added to variables which contain \code{NAs} and which have been recoded.
