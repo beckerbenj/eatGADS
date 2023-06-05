@@ -8,6 +8,8 @@
 #' An error is thrown if the key structure or the data table structure differs between the two data bases. Differences regarding
 #' meta data for missing value labels and for variables labels (and formatting) are ignored.
 #'
+#' Reported differences regarding meta data can be inspected further via \code{\link{inspectMetaDifferences}}.
+#'
 #'@param filePath1 Path of the first \code{eatGADS} \code{.db} file.
 #'@param filePath2 Path of the second \code{eatGADS} \code{.db} file.
 #'
