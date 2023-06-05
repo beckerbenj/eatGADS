@@ -2,7 +2,7 @@
 % Please edit documentation in R/equalGADS.R
 \name{equalGADS}
 \alias{equalGADS}
-\title{Test if Two \code{GADSdat} Objects are (Nearly) Equal}
+\title{Test if two \code{GADSdat} objects are (nearly) equal}
 \usage{
 equalGADS(
   target,
@@ -27,4 +27,8 @@ Returns a list.
 \description{
 Run tests to check whether two \code{GADSdat} objects are (nearly) equal. Variable names, number of rows in the data,
 meta data and data differences are checked and reported as a list output.
+}
+\details{
+More detailed checks for individual variables can be performed via \code{\link{inspectDifferences}}
+and \code{\link{inspectMetaDifferences}}.
 }

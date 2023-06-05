@@ -1,9 +1,12 @@
 
 #############################################################################
-#' Test if Two \code{GADSdat} Objects are (Nearly) Equal
+#' Test if two \code{GADSdat} objects are (nearly) equal
 #'
 #' Run tests to check whether two \code{GADSdat} objects are (nearly) equal. Variable names, number of rows in the data,
 #' meta data and data differences are checked and reported as a list output.
+#'
+#' More detailed checks for individual variables can be performed via \code{\link{inspectDifferences}}
+#' and \code{\link{inspectMetaDifferences}}.
 #'
 #'@param target A \code{GADSdat} object.
 #'@param current A \code{GADSdat} object.

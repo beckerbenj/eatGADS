@@ -2,7 +2,7 @@
 % Please edit documentation in R/inspectMetaDifferences.R
 \name{inspectMetaDifferences}
 \alias{inspectMetaDifferences}
-\title{Inspect differences in a variable.}
+\title{Inspect meta differences in a variable.}
 \usage{
 inspectMetaDifferences(varName, GADSdat1, GADSdat2)
 }
@@ -17,11 +17,13 @@ inspectMetaDifferences(varName, GADSdat1, GADSdat2)
 A list.
 }
 \description{
-Inspect differences between two \code{GADSdat} objects in a specific variable.
+Inspect meta differences between two \code{GADSdat} objects or \code{GADSdat} data bases regarding a specific variable.
 }
 \details{
-Two \code{GADSdat} objects can be compared using \code{\link{equalGADS}}. If differences in the meta data are indicated for specific variables,
+Two \code{GADSdat} objects can be compared using \code{\link{equalGADS}}.
+If differences in the meta data are indicated for specific variables,
 these variables can be further inspected using \code{inspectMetaDifferences}.
+For differences on data level for a specific variable, see \code{\link{inspectDifferences}}.
 }
 \examples{
 # create a second GADS with different meta data
