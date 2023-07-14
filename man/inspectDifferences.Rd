@@ -23,8 +23,8 @@ Inspect differences between two \code{GADSdat} objects in a specific variable.
 }
 \details{
 Two \code{GADSdat} objects can be compared using \code{\link{equalGADS}}.
-If differences in the data are indicated for specific variables,
-these variables can be further inspected using \code{inspectDifferences}. Differences in meta data can be inspected via
+If differences in the data for specific variables in the two objects occur,
+these variables can be further inspected using \code{inspectDifferences}. Differences on meta data-level can be inspected via
 \code{\link{inspectMetaDifferences}}.
 }
 \examples{

@@ -1,13 +1,13 @@
 ####
 #############################################################################
-#' Inspect meta differences in a variable.
+#' Inspect meta data differences in a variable.
 #'
-#' Inspect meta differences between two \code{GADSdat} objects or \code{GADSdat} data bases regarding a specific variable.
+#' Inspect meta data differences between two \code{GADSdat} objects or \code{GADSdat} data bases regarding a specific variable.
 #'
 #' Two \code{GADSdat} objects can be compared using \code{\link{equalGADS}}.
-#' If differences in the meta data are indicated for specific variables,
+#' If meta data differences for specific variables in the two objects occur,
 #' these variables can be further inspected using \code{inspectMetaDifferences}.
-#' For differences on data level for a specific variable, see \code{\link{inspectDifferences}}.
+#' For data-level differences for a specific variable, see \code{\link{inspectDifferences}}.
 #'
 #'@param varName A character vector of length 1 containing the variable name.
 #'@param GADSdat1 A \code{GADSdat} object.
@@ -30,9 +30,8 @@
 #'@export
 inspectMetaDifferences <- function(varName, GADSdat1, GADSdat2) {
   check_characterArgument(varName, argName = "varName")
-  check_vars_in_GADSdat
-  if(!varName %in% unlist(namesGADS(GADSdat1))) stop("'varName' is not a variable in 'GADSdat1'.")
-  if(!varName %in% unlist(namesGADS(GADSdat2))) stop("'varName' is not a variable in 'GADSdat2'.")
+  check_vars_in_GADSdat(GADSdat1, vars = varName, argName = "varName", GADSdatName = "GADSdat1")
+  check_vars_in_GADSdat(GADSdat2, vars = varName, argName = "varName", GADSdatName = "GADSdat2")
 
   meta1 <- extractMeta(GADSdat1, varName)
   meta2 <- extractMeta(GADSdat2, varName)

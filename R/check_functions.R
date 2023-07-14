@@ -4,13 +4,15 @@ check_single_varName <- function(var, argumentName = "varName") {
 }
 
 
-check_vars_in_GADSdat <- function(GADSdat, vars, argName = "vars") {
+check_vars_in_GADSdat <- function(GADSdat, vars, argName = "vars", GADSdatName = "GADSdat") {
   dup_vars <- vars[duplicated(vars)]
   if(length(dup_vars) > 0) stop("There are duplicates in '", argName,"': ",
                                 paste(dup_vars, collapse = ", "))
 
-  other_vars <- vars[!vars %in% namesGADS(GADSdat)]
-  if(length(other_vars) > 0) stop("The following '", argName,"' are not variables in the GADSdat: ",
+  nams <- namesGADS(GADSdat)
+  if(is.list(nams)) nams <- unlist(nams)
+  other_vars <- vars[!vars %in% nams]
+  if(length(other_vars) > 0) stop("The following '", argName,"' are not variables in the ", GADSdatName, ": ",
                                   paste(other_vars, collapse = ", "))
   return()
 }

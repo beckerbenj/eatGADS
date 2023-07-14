@@ -6,6 +6,8 @@ test_that("Errors",{
   df1_5 <- df1_4 <- df1_2 <- df1_3 <- df1
   expect_error(inspectMetaDifferences(c("1", "2"), df1, df1_2),
                "'varName' needs to be a character vector of length 1.")
+  expect_error(inspectMetaDifferences("v1", df1, df1_2),
+               "The following 'varName' are not variables in the GADSdat1: v1")
 })
 
 test_that("Compare two identical GADSdat objects",{
