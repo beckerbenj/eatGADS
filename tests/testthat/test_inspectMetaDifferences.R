@@ -5,13 +5,20 @@ load(file = "helper_data.rda")
 test_that("Errors",{
   df1_5 <- df1_4 <- df1_2 <- df1_3 <- df1
   expect_error(inspectMetaDifferences(c("1", "2"), df1, df1_2),
-               "'varName' must be a character of length 1.")
+               "'varName' needs to be a character vector of length 1.")
+  expect_error(inspectMetaDifferences("v1", df1, df1_2),
+               "The following 'varName' are not variables in the GADSdat1: v1")
 })
 
 test_that("Compare two identical GADSdat objects",{
   out <- inspectMetaDifferences("V1", df1, df1)
   expect_null(out$varDiff)
   expect_null(out$valDiff)
+
+  out2 <- inspectMetaDifferences("V1", "helper_dataBase.db",
+                                "helper_dataBase.db")
+  expect_null(out2$varDiff)
+  expect_null(out2$valDiff)
 })
 
 test_that("Differences on variable level",{

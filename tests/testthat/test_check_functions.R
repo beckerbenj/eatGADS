@@ -19,6 +19,9 @@ test_that("check_vars_in_GADSdat", {
                "The following 'vars' are not variables in the GADSdat: VAR4")
   expect_error(check_vars_in_GADSdat(dfSAV, vars = c("VAR4", "VAR6")),
                "The following 'vars' are not variables in the GADSdat: VAR4, VAR6")
+
+  expect_error(check_vars_in_GADSdat("helper_dataBase.db", vars = c("VAR4", "VAR6"), GADSdatName = "GADSdat1"),
+               "The following 'vars' are not variables in the GADSdat1: VAR4, VAR6")
 })
 
 test_that("check_vars_in_vec", {

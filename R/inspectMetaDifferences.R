@@ -1,11 +1,13 @@
 ####
 #############################################################################
-#' Inspect differences in a variable.
+#' Inspect meta data differences in a variable.
 #'
-#' Inspect differences between two \code{GADSdat} objects in a specific variable.
+#' Inspect meta data differences between two \code{GADSdat} objects or \code{GADSdat} data bases regarding a specific variable.
 #'
-#' Two \code{GADSdat} objects can be compared using \code{\link{equalGADS}}. If differences in the meta data are indicated for specific variables,
+#' Two \code{GADSdat} objects can be compared using \code{\link{equalGADS}}.
+#' If meta data differences for specific variables in the two objects occur,
 #' these variables can be further inspected using \code{inspectMetaDifferences}.
+#' For data-level differences for a specific variable, see \code{\link{inspectDifferences}}.
 #'
 #'@param varName A character vector of length 1 containing the variable name.
 #'@param GADSdat1 A \code{GADSdat} object.
@@ -27,13 +29,9 @@
 #'
 #'@export
 inspectMetaDifferences <- function(varName, GADSdat1, GADSdat2) {
-  check_GADSdat(GADSdat1)
-  check_GADSdat(GADSdat2)
-  if(!is.character(varName) || length(varName) != 1) stop("'varName' must be a character of length 1.")
-  if(!varName %in% namesGADS(GADSdat1)) stop("'varName' is not a variable in 'GADSdat1'.")
-  if(!varName %in% namesGADS(GADSdat2)) stop("'varName' is not a variable in 'GADSdat2'.")
-
-  #if(isTRUE(all.equal(GADSdat2$dat[, varName], GADSdat1$dat[, varName], scale = 1))) return("all.equal")
+  check_characterArgument(varName, argName = "varName")
+  check_vars_in_GADSdat(GADSdat1, vars = varName, argName = "varName", GADSdatName = "GADSdat1")
+  check_vars_in_GADSdat(GADSdat2, vars = varName, argName = "varName", GADSdatName = "GADSdat2")
 
   meta1 <- extractMeta(GADSdat1, varName)
   meta2 <- extractMeta(GADSdat2, varName)
@@ -44,7 +42,11 @@ inspectMetaDifferences <- function(varName, GADSdat1, GADSdat2) {
   row.names(metaVar1) <- row.names(metaVar2) <- NULL
 
   varDiff <- NULL
-  if(!identical(metaVar1, metaVar2)) varDiff <- data.frame(varName = varName, GADS1 = metaVar1[, 2:3], GADS2 = metaVar2[, 2:3])
+  if(!identical(metaVar1, metaVar2)) {
+    varDiff <- data.frame(varName = varName,
+                          GADS1 = metaVar1[, 2:3],
+                          GADS2 = metaVar2[, 2:3])
+  }
 
   ## Value level
   metaVal1 <- meta1[, c("varName", "value", "valLabel", "missings")]
@@ -65,7 +67,6 @@ inspectMetaDifferences <- function(varName, GADSdat1, GADSdat2) {
     }
     valDiff <- valDiff[order(valDiff$value), ]
   }
-
 
   list(varDiff = varDiff, valDiff = valDiff)
 }
