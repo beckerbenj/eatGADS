@@ -37,7 +37,7 @@ as \code{eatGADS} supports unlimited discrete missing tags (but no range of miss
 \code{SPSS} only supports up to three discrete missing tags or ranges of missing tags. For this purpose, if a variable
 is assigned more than three discrete missing tags, \code{write_spss} (more precisely \code{\link{export_tibble}})
 performs a silent conversion of the discrete missing tags into a missing range.
-If this conversion affects values not tagged as missing in the data, an error is issued.}
+If this conversion affects other value labels or values in the data not tagged as missing, an error is issued.}
 }
 
 Currently known limitations for \code{write_stata} are:

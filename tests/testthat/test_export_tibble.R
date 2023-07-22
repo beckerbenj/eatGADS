@@ -85,24 +85,41 @@ test_that("Variable labels are added correctly for factor", {
 
 ### To many missings defined for discrete missing values
 dfSAV2 <- changeMissings(dfSAV, varName = "VAR1", value = c(-90, -80), missings = c("miss", "miss"))
-miss_labs <- dfSAV2$labels[dfSAV2$labels$varName == "VAR1" & dfSAV2$labels$missings == "miss", "value"]
-miss_dat2 <- miss_dat <- dfSAV$dat$VAR1
-miss_dat2[c(1, 4)] <- c(-85, -86)
+miss_labs <- dfSAV2$labels[dfSAV2$labels$varName == "VAR1", ]
 
 test_that("add_miss_tags", {
-  out <- add_miss_tags(varName = "VAR1", attr_list = list(), miss_values = miss_labs, raw_dat = miss_dat)
+  out <- add_miss_tags(varName = "VAR1", attr_list = list(), label_df = miss_labs, raw_dat = miss_dat)
   expect_equal(out, list(na_range = c(-99, -80)))
-  expect_error(add_miss_tags(varName = "VAR1", attr_list = list(),
-                                       miss_values = miss_labs, raw_dat = miss_dat2),
-               "Missing tag conversion for variable 'VAR1' to SPSS conventions is not possible, as the new missing range (-99 to -80) would include the following values not tagged as missing in the data: -85, -86. Adjust missing tags to export to tibble or write to SPSS.", fixed = TRUE)
 })
 
-test_that("addLabels_single", {
-  test_labeled <- addLabels_single(varName = "VAR1", label_df = dfSAV2$labels[dfSAV2$labels$varName == "VAR1", ],
-                                   raw_dat = dfSAV2$dat$VAR1, varClass = "numeric")
-  expect_equal(test_labeled$na_range, c(-99, -80))
-  label_vec <- c(-99, -96, -90, -80, 1)
-  names(label_vec) <- c("By design", "Omission", NA, NA, "One")
-  expect_equal(test_labeled$labels, label_vec)
+test_that("add_miss_tags errors", {
+  # conflict in data
+  miss_dat2 <- miss_dat <- dfSAV$dat$VAR1
+  miss_dat2[c(1, 4)] <- c(-85, -86)
+
+  expect_error(add_miss_tags(varName = "VAR1", attr_list = list(),
+                                       label_df = miss_labs, raw_dat = miss_dat2),
+               "Missing tag conversion for variable 'VAR1' to SPSS conventions is not possible, as the new missing range (-99 to -80) would include the following values not tagged as missing in the data: -85, -86. Adjust missing tags to export to tibble or write to SPSS.", fixed = TRUE)
+
+  # conflict in value labels
+  dfSAV3 <- changeValLabels(dfSAV2, varName = "VAR1", value = c(-85), valLabel = c("some label"))
+  miss_labs3 <- dfSAV3$labels[dfSAV3$labels$varName == "VAR1", ]
+
+  expect_error(add_miss_tags(varName = "VAR1", attr_list = list(),
+                             label_df = miss_labs3, raw_dat = miss_dat),
+               "Missing tag conversion for variable 'VAR1' to SPSS conventions is not possible, as the new missing range (-99 to -80) would include the following labeled values not tagged as missing: -85. Adjust missing tags to export to tibble or write to SPSS.", fixed = TRUE)
+
+  # character variable
+  dfSAV4 <- dfSAV2
+  dfSAV4$dat$VAR1[c(1, 4)] <- c("a", "b")
+  dfSAV4 <- changeSPSSformat(dfSAV4, varName = "VAR1", format = "A10")
+  miss_labs4 <- dfSAV2$labels[dfSAV2$labels$varName == "VAR1", ]
+
+  expect_error(add_miss_tags(varName = "VAR1", attr_list = list(),
+                             label_df = miss_labs4, raw_dat = miss_dat5),
+               "Missing tag conversion for variable 'VAR1' to SPSS conventions is not possible, as too many missings are declared for a character variable (maximum 3). Adjust missing tags to export to tibble or write to SPSS.", fixed = TRUE)
+
+
 })
+
 
