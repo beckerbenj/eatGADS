@@ -3,6 +3,9 @@
 df <- getGADS(filePath = "helper_dataBase.db")
 # label_df <- labelsGADS(filePath = "tests/testthat/helper_database.db")
 label_df <- labelsGADS(filePath = "helper_dataBase.db")
+# dfSAV <- import_spss(file = "tests/testthat/helper_spss_missings.sav")
+dfSAV <- import_spss(file = "helper_spss_missings.sav")
+
 
 label_df_V2 <- label_df[which(label_df == "V2"), ]
 
@@ -28,13 +31,13 @@ test_that("Check for variable type and format.spss", {
 
 ### check single variable label adding
 test_that("Variable labels are added correctly to attributes, for single variable", {
-  expect_equal(addLabels_single(label_df_V2, varClass = "numeric"), expected_V2)
+  expect_equal(addLabels_single(varName = "test", label_df_V2, varClass = "numeric"), expected_V2)
 })
 
 test_that("Variable labels are added correctly to attributes, for single character variable", {
   label_df_V2_string <- label_df_V2
   label_df_V2_string$format <- "A20"
-  expect_equal(class(addLabels_single(label_df_V2_string, "character")$labels), "character")
+  expect_equal(class(addLabels_single(varName = "test", label_df_V2_string, "character")$labels), "character")
 })
 
 test_that("Value labels work correctly for character variable with and without SPSS format", {
@@ -75,19 +78,31 @@ expected_Species <- list(class = c("haven_labelled"),
                          labels = c(setosa = 1, versicolor = 2, virginica = 3))
 
 test_that("Variable labels are added correctly for factor", {
-  expect_equal(addLabels_single(iris2$labels[iris2$labels$varName == "Species", ], varClass = "numeric"),
+  expect_equal(addLabels_single(varName = "Species", iris2$labels[iris2$labels$varName == "Species", ],
+                                varClass = "numeric"),
                expected_Species)
 })
 
 ### To many missings defined for discrete missing values
-test_that("Variable labels are added correctly for factor", {
-  df_test <- df
-  df_test$labels[4, ] <- df_test$labels[3, ]
-  df_test$labels[4, "value"] <- 98
-  df_test$labels[5, ] <- df_test$labels[3, ]
-  df_test$labels[5, "value"] <- 97
-  df_test$labels[6, ] <- df_test$labels[3, ]
-  df_test$labels[6, "value"] <- 96
-  test_labeled <- addLabels_single(df_test$labels[df_test$labels$varName == "V2", ], varClass = "numeric")
-  expect_equal(test_labeled$na_range,c(96, 99))
+dfSAV2 <- changeMissings(dfSAV, varName = "VAR1", value = c(-90, -80), missings = c("miss", "miss"))
+miss_labs <- dfSAV2$labels[dfSAV2$labels$varName == "VAR1" & dfSAV2$labels$missings == "miss", "value"]
+miss_dat2 <- miss_dat <- dfSAV$dat$VAR1
+miss_dat2[c(1, 4)] <- c(-85, -86)
+
+test_that("add_miss_tags", {
+  out <- add_miss_tags(varName = "VAR1", attr_list = list(), miss_values = miss_labs, raw_dat = miss_dat)
+  expect_equal(out, list(na_range = c(-99, -80)))
+  expect_error(add_miss_tags(varName = "VAR1", attr_list = list(),
+                                       miss_values = miss_labs, raw_dat = miss_dat2),
+               "Missing tag conversion for variable 'VAR1' to SPSS conventions is not possible, as the new missing range (-99 to -80) would include the following values not tagged as missing in the data: -85, -86. Adjust missing tags to export to tibble or write to SPSS.", fixed = TRUE)
 })
+
+test_that("addLabels_single", {
+  test_labeled <- addLabels_single(varName = "VAR1", label_df = dfSAV2$labels[dfSAV2$labels$varName == "VAR1", ],
+                                   raw_dat = dfSAV2$dat$VAR1, varClass = "numeric")
+  expect_equal(test_labeled$na_range, c(-99, -80))
+  label_vec <- c(-99, -96, -90, -80, 1)
+  names(label_vec) <- c("By design", "Omission", NA, NA, "One")
+  expect_equal(test_labeled$labels, label_vec)
+})
+

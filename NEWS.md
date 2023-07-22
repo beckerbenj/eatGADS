@@ -12,6 +12,7 @@
 * new function `emptyTheseVariables()` allows setting multiple variables to `NA`
 
 ## bug fixes
+* `export_tibble()` and `write_spss()` now throw an error if a conversion of four or more discrete missing tags into a missing range leads to values in the data, which are not tagged as missing, being turned into missing tags
 * bug fix in `checkMissingsByValues()`, now correctly reports missing tags outside of the specified value range
 
 
