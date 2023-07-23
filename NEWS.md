@@ -1,6 +1,7 @@
 # eatGADS 1.0.0.9000
 
 ## new features
+* `reuseMeta()` now can be use on multiple variables at once
 * `inspectMetaDifferences()` now can be applied to data bases as well
 * `recodeNA2missing()` for recoding `NAs` to a specific missing code
 * `recode2NA()` now allows the recoding of multiple `values` at once and returns a warning, if the recoded values have existing value labels in the recoded variables

@@ -2,7 +2,7 @@
 % Please edit documentation in R/reuseMeta.R
 \name{reuseMeta}
 \alias{reuseMeta}
-\title{Use meta data for a variable from another \code{GADSdat}.}
+\title{Use meta data for variables from another \code{GADSdat}.}
 \usage{
 reuseMeta(
   GADSdat,
@@ -16,11 +16,11 @@ reuseMeta(
 \arguments{
 \item{GADSdat}{\code{GADSdat} object imported via \code{eatGADS}.}
 
-\item{varName}{Name of the variable that should get the new meta data.}
+\item{varName}{Character vector with the names of the variables that should get the new meta data.}
 
-\item{other_GADSdat}{\code{GADSdat} object imported via \code{eatGADS} including the desired meta information. Can also be a GADS db or an \code{all_GADSdat} object.}
+\item{other_GADSdat}{\code{GADSdat} object imported via \code{eatGADS} including the desired meta information. Can either be a \code{GADSdat}, an \code{eatGADS} data base or an \code{all_GADSdat} object.}
 
-\item{other_varName}{Name of the variable that should get the new meta data in the \code{other_GADSdat}.}
+\item{other_varName}{Character vector with the names of the variables in \code{other_GADSdat} that contain the meta data which should be copied.}
 
 \item{missingLabels}{How should meta data for missing values be treated? If \code{NULL}, missing values are transferred as all other labels. If \code{"drop"}, missing labels are dropped (useful for imputed data). If \code{"leave"}, missing labels remain untouched. If \code{"only"}, all valid value labels are dropped.}
 
@@ -30,12 +30,12 @@ reuseMeta(
 Returns the original object with updated meta data.
 }
 \description{
-Transfer meta information from one \code{GADSdat} to another.
+Transfer meta information from one \code{GADSdat} to another for one or multiple variables.
 }
 \details{
 Transfer of meta information can mean substituting the complete meta information, only adding value labels, adding only
 \code{"valid"} or adding only \code{"miss"} missing labels.
-See the arguments \code{missingLabels} and \code{addValueLabels} for further information.
+See the arguments \code{missingLabels} and \code{addValueLabels} for further details.
 }
 \examples{
 # see createGADS vignette
