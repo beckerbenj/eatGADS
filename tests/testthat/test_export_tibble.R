@@ -88,13 +88,13 @@ dfSAV2 <- changeMissings(dfSAV, varName = "VAR1", value = c(-90, -80), missings 
 miss_labs <- dfSAV2$labels[dfSAV2$labels$varName == "VAR1", ]
 
 test_that("add_miss_tags", {
-  out <- add_miss_tags(varName = "VAR1", attr_list = list(), label_df = miss_labs, raw_dat = miss_dat)
+  out <- add_miss_tags(varName = "VAR1", attr_list = list(), label_df = miss_labs, raw_dat = dfSAV$dat$VAR1)
   expect_equal(out, list(na_range = c(-99, -80)))
 })
 
 test_that("add_miss_tags errors", {
   # conflict in data
-  miss_dat2 <- miss_dat <- dfSAV$dat$VAR1
+  miss_dat2 <- dfSAV$dat$VAR1
   miss_dat2[c(1, 4)] <- c(-85, -86)
 
   expect_error(add_miss_tags(varName = "VAR1", attr_list = list(),
@@ -106,7 +106,7 @@ test_that("add_miss_tags errors", {
   miss_labs3 <- dfSAV3$labels[dfSAV3$labels$varName == "VAR1", ]
 
   expect_error(add_miss_tags(varName = "VAR1", attr_list = list(),
-                             label_df = miss_labs3, raw_dat = miss_dat),
+                             label_df = miss_labs3, raw_dat = dfSAV$dat$VAR1),
                "Missing tag conversion for variable 'VAR1' to SPSS conventions is not possible, as the new missing range (-99 to -80) would include the following labeled values not tagged as missing: -85. Adjust missing tags to export to tibble or write to SPSS.", fixed = TRUE)
 
   # character variable
@@ -116,7 +116,7 @@ test_that("add_miss_tags errors", {
   miss_labs4 <- dfSAV2$labels[dfSAV2$labels$varName == "VAR1", ]
 
   expect_error(add_miss_tags(varName = "VAR1", attr_list = list(),
-                             label_df = miss_labs4, raw_dat = miss_dat5),
+                             label_df = miss_labs4, raw_dat = dfSAV4$dat$VAR1),
                "Missing tag conversion for variable 'VAR1' to SPSS conventions is not possible, as too many missings are declared for a character variable (maximum 3). Adjust missing tags to export to tibble or write to SPSS.", fixed = TRUE)
 
 
