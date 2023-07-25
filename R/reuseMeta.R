@@ -1,17 +1,17 @@
 #### Reuse Meta
 #############################################################################
-#' Use meta data for a variable from another \code{GADSdat}.
+#' Use meta data for variables from another \code{GADSdat}.
 #'
-#' Transfer meta information from one \code{GADSdat} to another.
+#' Transfer meta information from one \code{GADSdat} to another for one or multiple variables.
 #'
 #' Transfer of meta information can mean substituting the complete meta information, only adding value labels, adding only
 #' \code{"valid"} or adding only \code{"miss"} missing labels.
-#' See the arguments \code{missingLabels} and \code{addValueLabels} for further information.
+#' See the arguments \code{missingLabels} and \code{addValueLabels} for further details.
 #'
 #'@param GADSdat \code{GADSdat} object imported via \code{eatGADS}.
-#'@param varName Name of the variable that should get the new meta data.
-#'@param other_GADSdat \code{GADSdat} object imported via \code{eatGADS} including the desired meta information. Can also be a GADS db or an \code{all_GADSdat} object.
-#'@param other_varName Name of the variable that should get the new meta data in the \code{other_GADSdat}.
+#'@param varName Character vector with the names of the variables that should get the new meta data.
+#'@param other_GADSdat \code{GADSdat} object imported via \code{eatGADS} including the desired meta information. Can either be a \code{GADSdat}, an \code{eatGADS} data base or an \code{all_GADSdat} object.
+#'@param other_varName Character vector with the names of the variables in \code{other_GADSdat} that contain the meta data which should be copied.
 #'@param missingLabels How should meta data for missing values be treated? If \code{NULL}, missing values are transferred as all other labels. If \code{"drop"}, missing labels are dropped (useful for imputed data). If \code{"leave"}, missing labels remain untouched. If \code{"only"}, all valid value labels are dropped.
 #'@param addValueLabels Should only value labels be added and all other meta information retained?
 #'
@@ -21,15 +21,38 @@
 #'# see createGADS vignette
 #'
 #'@export
-reuseMeta <- function(GADSdat, varName, other_GADSdat, other_varName = NULL, missingLabels = NULL, addValueLabels = FALSE) {
+reuseMeta <- function(GADSdat, varName, other_GADSdat, other_varName = NULL,
+                      missingLabels = NULL, addValueLabels = FALSE) {
   UseMethod("reuseMeta")
 }
 #'@export
-reuseMeta.GADSdat <- function(GADSdat, varName, other_GADSdat, other_varName = NULL, missingLabels = NULL, addValueLabels = FALSE) {
-  if(!is.null(missingLabels) && !missingLabels %in% c("drop", "leave", "only")) stop("Invalid input for argument missingLabels.")
-  if(!varName %in% names(GADSdat$dat)) stop("varName is not a variable in the GADSdat.")
-  # extract meta data
+reuseMeta.GADSdat <- function(GADSdat, varName, other_GADSdat, other_varName = NULL,
+                              missingLabels = NULL, addValueLabels = FALSE) {
+  check_GADSdat(GADSdat)
+  check_vars_in_GADSdat(GADSdat, vars = varName)
+  if(inherits(other_GADSdat, "GADSdat")) check_GADSdat(other_GADSdat)
+  if(inherits(other_GADSdat, "all_GADSdat")) check_all_GADSdat(other_GADSdat)
   if(is.null(other_varName)) other_varName <- varName
+  check_vars_in_GADSdat(other_GADSdat, vars = other_varName)
+  if(length(varName) != length(other_varName)) {
+    stop("'varName' and 'other_varName' have different length.")
+  }
+
+  if(!is.null(missingLabels) && !missingLabels %in% c("drop", "leave", "only")) {
+    stop("Invalid input for argument missingLabels. Must be either NULL, 'drop', 'leave', or 'only'.")
+  }
+  check_logicalArgument(addValueLabels, argName = "addValueLabels")
+
+  for(i in seq_along(varName)) {
+    GADSdat <- reuseMeta_singleVariable(GADSdat, varName = varName[i],
+                                        other_GADSdat = other_GADSdat, other_varName = other_varName[i],
+                                        missingLabels = missingLabels, addValueLabels = addValueLabels)
+  }
+  GADSdat
+}
+
+reuseMeta_singleVariable <- function(GADSdat, varName, other_GADSdat, other_varName = NULL,
+                                     missingLabels = NULL, addValueLabels = FALSE){
   new_meta <- extractMeta(other_GADSdat, other_varName)
   # compatability with meta data from all_GADSdat or data base (variable can be foreign key and occur multiply)
   if("data_table" %in% names(new_meta)) {

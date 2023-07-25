@@ -5,6 +5,14 @@ load(file = "helper_data.rda")
 dfSAV <- import_spss(file = "helper_spss_missings.sav")
 
 
+test_that("Input validation", {
+  expect_error(reuseMeta(dfSAV, varName = "VAR1", other_GADSdat = dfSAV, other_varName = c("VAR1", "VAR2")),
+               "'varName' and 'other_varName' have different length.")
+  expect_error(reuseMeta(dfSAV, varName = "VAR1", other_GADSdat = dfSAV, other_varName = "VAR1",
+                         missingLabels = "test"),
+               "Invalid input for argument missingLabels. Must be either NULL, 'drop', 'leave', or 'only'.")
+})
+
 test_that("Drop missing labels from meta", {
   # if no changes
   expect_equal(drop_missing_labels(df1$labels[df1$labels$varName == "ID1", ]), df1$labels[df1$labels$varName == "ID1", ])
@@ -81,4 +89,14 @@ test_that("Reuse meta adding value labels to an unlabeled variable", {
 test_that("Bugfix if only missing rows and missingLabels = leave", {
   out <- reuseMeta(dfSAV, varName = "VAR3", other_GADSdat = dfSAV, other_varName = "VAR1", missingLabels = "leave")
   expect_equal(nrow(out$labels), 8)
+})
+
+test_that("Transfer meta information for multiple variables", {
+  dat2 <- import_DF(dfSAV$dat)
+  dat3 <- reuseMeta(dat2, varName = c("VAR1", "VAR2", "VAR3"), dfSAV)
+  expect_equal(dfSAV, dat3)
+  dat4 <- changeVarNames(dat2, oldNames = "VAR1", newNames = "v1")
+  dat5 <- reuseMeta(dat4, varName = c("v1", "VAR2", "VAR3"), dfSAV, other_varName = c("VAR1", "VAR2", "VAR3"))
+  dat5 <- changeVarNames(dat5, oldNames = "v1", newNames = "VAR1")
+  expect_equal(dfSAV, dat5)
 })
