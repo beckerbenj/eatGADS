@@ -3,10 +3,10 @@
 #############################################################################
 #' Transform a \code{GADSdat} to a \code{tibble}
 #'
-#' \code{haven}'s \code{\link[haven]{read_spss()}} stores data together with meta data (e.g. value and variable labels) in a
+#' \code{haven}'s \code{\link[haven]{read_spss}} stores data together with meta data (e.g. value and variable labels) in a
 #' \code{tibble} with attributes on variable level. This function transforms a \code{GADSdat} object to such a \code{tibble}.
 #'
-#' This function is mainly intended for internal use. For further documentation see also \code{\link{write_spss()}}.
+#' This function is mainly intended for internal use. For further documentation see also \code{\link{write_spss}}.
 #'
 #'@param GADSdat \code{GADSdat} object imported via \code{eatGADS}.
 #'

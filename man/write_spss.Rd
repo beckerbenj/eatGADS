@@ -23,10 +23,10 @@ or \code{Stata} file (\code{dta}).
 See 'details' for some important limitations.
 }
 \details{
-The provided functionality relies on \code{havens} \code{\link[haven:read_spss]{write_sav()}} and
-\code{\link[haven:read_dta]{write_dta()}} functions.
+The provided functionality relies on \code{havens} \code{\link[haven:read_spss]{write_sav}} and
+\code{\link[haven:read_dta]{write_dta}} functions.
 
-Currently known limitations for \code{write_spss()} are:
+Currently known limitations for \code{write_spss} are:
 \itemize{
 \item{a) } {value labels for long character variables (> \code{A10}) are dropped,}
 \item{b) } {under specific conditions very long character variables (> \code{A254}) are incorrectly
@@ -35,12 +35,12 @@ displayed as multiple character variables in \code{SPSS},}
 \item{d) } {missing tags are slightly incompatible between \code{SPSS} and \code{eatGADS}
 as \code{eatGADS} supports unlimited discrete missing tags (but no range of missing tags) and
 \code{SPSS} only supports up to three discrete missing tags or ranges of missing tags. For this purpose, if a variable
-is assigned more than three discrete missing tags, \code{write_spss()} (more precisely \code{\link{export_tibble()}})
+is assigned more than three discrete missing tags, \code{write_spss()} (more precisely \code{\link{export_tibble}})
 performs a silent conversion of the discrete missing tags into a missing range.
 If this conversion affects other value labels or values in the data not tagged as missing, an error is issued.}
 }
 
-Currently known limitations for \code{write_stata()} are:
+Currently known limitations for \code{write_stata} are:
 \itemize{
 \item{a) }{Variable format is dropped,}
 \item{b) }{missing codes are dropped.}
