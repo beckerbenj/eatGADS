@@ -17,7 +17,7 @@ Returns a \code{tibble}.
 \code{tibble} with attributes on variable level. This function transforms a \code{GADSdat} object to such a \code{tibble}.
 }
 \details{
-This function is mainly intended for internal use.
+This function is mainly intended for internal use. For further documentation see also \code{\link{write_spss}}.
 }
 \examples{
 pisa_tbl <- export_tibble(pisa)
