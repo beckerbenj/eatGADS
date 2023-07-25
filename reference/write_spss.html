@@ -94,13 +94,19 @@ See 'details' for some important limitations.</p>
     <h2 id="details">Details<a class="anchor" aria-label="anchor" href="#details"></a></h2>
     <p>The provided functionality relies on <code>havens</code> <code><a href="https://haven.tidyverse.org/reference/read_spss.html" class="external-link">write_sav</a></code> and
 <code><a href="https://haven.tidyverse.org/reference/read_dta.html" class="external-link">write_dta</a></code> functions.</p>
-<p>Currently known limitations for <code>write_spss</code> are:
-(a) value labels for long character variables (&gt; <code>A10</code>) are
-dropped, (b) under specific conditions very long character variables (&gt; <code>A254</code>) are incorrectly displayed as multiple
-character variables in <code>SPSS</code>. Furthermore, <code>write_spss</code> currently does not support exporting date or time variables.</p>
-<p>Currently known limitations for <code>write_stata</code> are:
-(a) Variable format is dropped, (b) missing codes are dropped.</p>
-    </div>
+<p>Currently known limitations for <code>write_spss</code> are:</p><ul><li><p>a)  value labels for long character variables (&gt; <code>A10</code>) are dropped,</p></li>
+<li><p>b)  under specific conditions very long character variables (&gt; <code>A254</code>) are incorrectly
+displayed as multiple character variables in <code>SPSS</code>,</p></li>
+<li><p>c)  exporting date or time variables is currently not supported,</p></li>
+<li><p>d)  missing tags are slightly incompatible between <code>SPSS</code> and <code>eatGADS</code>
+as <code>eatGADS</code> supports unlimited discrete missing tags (but no range of missing tags) and
+<code>SPSS</code> only supports up to three discrete missing tags or ranges of missing tags. For this purpose, if a variable
+is assigned more than three discrete missing tags, <code>write_spss()</code> (more precisely <code><a href="export_tibble.html">export_tibble</a></code>)
+performs a silent conversion of the discrete missing tags into a missing range.
+If this conversion affects other value labels or values in the data not tagged as missing, an error is issued.</p></li>
+</ul><p>Currently known limitations for <code>write_stata</code> are:</p><ul><li><p>a) Variable format is dropped,</p></li>
+<li><p>b) missing codes are dropped.</p></li>
+</ul></div>
 
     <div class="section level2">
     <h2 id="ref-examples">Examples<a class="anchor" aria-label="anchor" href="#ref-examples"></a></h2>
