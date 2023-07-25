@@ -3,10 +3,10 @@
 #############################################################################
 #' Transform a \code{GADSdat} to a \code{tibble}
 #'
-#' \code{haven}'s \code{\link[haven]{read_spss}} stores data together with meta data (e.g. value and variable labels) in a
+#' \code{haven}'s \code{\link[haven]{read_spss()}} stores data together with meta data (e.g. value and variable labels) in a
 #' \code{tibble} with attributes on variable level. This function transforms a \code{GADSdat} object to such a \code{tibble}.
 #'
-#' This function is mainly intended for internal use. For further documentation see also \code{\link{write_spss}}.
+#' This function is mainly intended for internal use. For further documentation see also \code{\link{write_spss()}}.
 #'
 #'@param GADSdat \code{GADSdat} object imported via \code{eatGADS}.
 #'
@@ -33,8 +33,7 @@ export_tibble.GADSdat <- function(GADSdat) {
     single_label_df <- label_df[label_df$varName == n, ]
     # add labels if any rows in label data frame
     if(nrow(single_label_df) > 0) {
-      attributes(df[, n]) <- addLabels_single(varName = n, label_df = single_label_df,
-                                              raw_dat = df[[n]], varClass = class(df[[n]]))
+      attributes(df[, n]) <- addLabels_single(varName = n, label_df = single_label_df, raw_dat = df[[n]])
     }
   }
   tibble::as_tibble(df)
@@ -52,8 +51,9 @@ check_var_type <- function(GADSdat) {
 
 
 ###  add labels to a single variable ---------------------------------------------------------
-addLabels_single <- function(varName, label_df, raw_dat, varClass) {
+addLabels_single <- function(varName, label_df, raw_dat) {
   attr_list <- list()
+  varClass <- class(raw_dat)
   # attributes on variable level
   if(!all(is.na(label_df[, "varLabel"]))) attr_list[["label"]] <- unique(label_df[, "varLabel"])
   if(!all(is.na(label_df[, "format"]))) attr_list[["format.spss"]] <- unique(label_df[, "format"])
@@ -67,10 +67,16 @@ addLabels_single <- function(varName, label_df, raw_dat, varClass) {
   attr_list <- add_miss_tags(varName = varName, attr_list = attr_list, label_df = label_df, raw_dat = raw_dat)
 
   # give specific class depending on a) value labels are needed or not and b) missings are given or not:
-  if(identical(labeled, "yes")) attr_list[["class"]] <- c("haven_labelled")
-  if(identical(labeled, "yes") & all(is.na(label_df$value))) attr_list[["class"]] <- c("haven_labelled_spss")
   any_miss <- !is.null(attr_list$na_values) || !is.null(attr_list$na_range)
-  if(identical(attr_list[["class"]], "haven_labelled") && any_miss) attr_list[["class"]] <- c("haven_labelled_spss", "haven_labelled")
+
+  if(identical(labeled, "yes")) {
+    attr_list[["class"]] <- c("haven_labelled")
+    if(all(is.na(label_df$value))) {
+      attr_list[["class"]] <- c("haven_labelled_spss")
+    } else if(any_miss){
+      attr_list[["class"]] <- c("haven_labelled_spss", "haven_labelled")
+    }
+  }
 
   # experimental class modification (due to haven 2.3.0 classes got modified)
   #stopifnot(varClass %in% c("numeric", "character"))
@@ -102,43 +108,49 @@ addLabels_single <- function(varName, label_df, raw_dat, varClass) {
 add_miss_tags <- function(varName, attr_list, label_df, raw_dat) {
   miss_values <- label_df[which(label_df$missings == "miss"), "value"]
 
-  if(length(miss_values) > 0 && length(miss_values) <= 3)  {
-    attr_list[["na_values"]] <- miss_values
-  }
-  if(length(miss_values) > 3) {
-    full_range <- range(miss_values)
-    # check variable class
-    if(is.character(raw_dat)) {
-      stop("Missing tag conversion for variable '", varName,
-           "' to SPSS conventions is not possible, as too many missings are declared for a character variable (maximum 3). Adjust missing tags to export to tibble or write to SPSS.")
-    }
-    # check other labels
-    non_miss_labels <- label_df[is.na(label_df$missings) | label_df$missings == "valid", "value"]
-    accidental_miss_tags_labels <- non_miss_labels[!is.na(non_miss_labels) &
-                                                     non_miss_labels >= full_range[1] & non_miss_labels <= full_range[2]]
-    if(length(accidental_miss_tags_labels) > 0) {
-      stop("Missing tag conversion for variable '", varName,
-           "' to SPSS conventions is not possible, as the new missing range (",
-           full_range[1], " to ", full_range[2],
-           ") would include the following labeled values not tagged as missing: ",
-           paste(accidental_miss_tags_labels, collapse = ", "),
-           ". Adjust missing tags to export to tibble or write to SPSS.")
-    }
+  if(length(miss_values) > 0){
+    # compatibel case
+    if(length(miss_values) <= 3)  {
+      attr_list[["na_values"]] <- miss_values
+    # incompatibel case
+    } else {
+      full_range <- range(miss_values)
+      # check variable class
+      if(is.character(raw_dat)) {
+        stop("Conversion of missing tags for variable '", varName,
+             "' to SPSS conventions is not possible, as too many missings are declared for a character variable (maximum 3). Adjust missing tags to export to tibble or write to SPSS.")
+      }
+      # check other labels
+      non_miss_labels <- label_df[is.na(label_df$missings) | label_df$missings == "valid", "value"]
+      accidental_miss_tags_labels <- non_miss_labels[!is.na(non_miss_labels) &
+                                                       non_miss_labels >= full_range[1] & non_miss_labels <= full_range[2]]
+      if(length(accidental_miss_tags_labels) > 0) {
+        stop("Conversion of missing tags for variable '", varName,
+             "' to SPSS conventions is not possible, as the new missing range (",
+             full_range[1], " to ", full_range[2],
+             ") would include the following labeled values not tagged as missing: ",
+             paste(accidental_miss_tags_labels, collapse = ", "),
+             ". Adjust missing tags to export to tibble or write to SPSS.")
+      }
 
-    # check actual data
-    other_raw_dat <- raw_dat[!raw_dat %in% miss_values]
-    accidental_miss_tags_data <- other_raw_dat[!is.na(other_raw_dat) &
-                                            other_raw_dat >= full_range[1] & other_raw_dat <= full_range[2]]
-    if(length(accidental_miss_tags_data) > 0) {
-      stop("Missing tag conversion for variable '", varName,
-           "' to SPSS conventions is not possible, as the new missing range (",
-           full_range[1], " to ", full_range[2],
-           ") would include the following values not tagged as missing in the data: ",
-              paste(accidental_miss_tags_data, collapse = ", "),
-           ". Adjust missing tags to export to tibble or write to SPSS.")
-    }
+      # check actual data
+      other_raw_dat <- raw_dat[!raw_dat %in% miss_values]
+      accidental_miss_tags_data <- other_raw_dat[!is.na(other_raw_dat) &
+                                                   other_raw_dat >= full_range[1] & other_raw_dat <= full_range[2]]
+      if(length(accidental_miss_tags_data) > 0) {
+        stop("Conversion of missing tags for variable '", varName,
+             "' to SPSS conventions is not possible, as the new missing range (",
+             full_range[1], " to ", full_range[2],
+             ") would include the following values not tagged as missing in the data: ",
+             paste(accidental_miss_tags_data, collapse = ", "),
+             ". Adjust missing tags to export to tibble or write to SPSS.")
+      }
 
-    attr_list[["na_range"]] <- full_range
+      attr_list[["na_range"]] <- full_range
+    }
   }
+
+
+
   attr_list
 }
