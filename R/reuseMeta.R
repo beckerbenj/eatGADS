@@ -39,7 +39,7 @@ reuseMeta.GADSdat <- function(GADSdat, varName, other_GADSdat, other_varName = N
   }
 
   if(!is.null(missingLabels) && !missingLabels %in% c("drop", "leave", "only")) {
-    stop("Invalid input for argument missingLabels.")
+    stop("Invalid input for argument missingLabels. Must be either NULL, 'drop', 'leave', or 'only'.")
   }
   check_logicalArgument(addValueLabels, argName = "addValueLabels")
 

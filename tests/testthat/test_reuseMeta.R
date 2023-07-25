@@ -10,7 +10,7 @@ test_that("Input validation", {
                "'varName' and 'other_varName' have different length.")
   expect_error(reuseMeta(dfSAV, varName = "VAR1", other_GADSdat = dfSAV, other_varName = "VAR1",
                          missingLabels = "test"),
-               "Invalid input for argument missingLabels.")
+               "Invalid input for argument missingLabels. Must be either NULL, 'drop', 'leave', or 'only'.")
 })
 
 test_that("Drop missing labels from meta", {
