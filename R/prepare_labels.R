@@ -3,7 +3,7 @@
 prepare_labels <- function(rawDat, checkVarNames, labeledStrings) {
   # 1) check and prepare variable names
   if(anyDuplicated(tolower(names(rawDat)))) names(rawDat) <- unduplicate(names(rawDat))
-  if(identical(checkVarNames, TRUE)) names(rawDat) <- unlist(lapply(names(rawDat), transf_names))
+  if(identical(checkVarNames, TRUE)) rawDat <- checkVarNames(rawDat)
 
   # 2a) dates and times to character
   rawDat <- times2character(rawDat = rawDat)
@@ -40,20 +40,6 @@ unduplicate <- function(x) {
     if(!identical(NewName, vec_name)) message(paste(vec_name, "has been renamed to", NewName))
   }, vec_name = x, NewName = out)
   out
-}
-
-# 02.2) Check variable names ---------------------------------------------------------
-# function for preparing of variable names (to be in line with sqlite rules)
-transf_names <- function(vec_name) {
-  NewName <- vec_name
-  if(any(grepl(paste0("^", vec_name, "$"), eatDB::sqlite_keywords, ignore.case = TRUE))) {
-    NewName <- paste0(vec_name, "Var")
-  }
-  NewName <- make.names(NewName)
-  if(grepl("\\.", NewName))       NewName <- gsub("\\.", "_", NewName)
-
-  if(!identical(NewName, vec_name)) message(paste(vec_name, "has been renamed to", NewName))
-  NewName
 }
 
 # 02.3) extract labels ---------------------------------------------------------
