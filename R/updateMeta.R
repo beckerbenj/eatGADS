@@ -30,7 +30,7 @@ updateMeta.GADSdat <- function(GADSdat, newDat) {
   labels <- remove_rows_meta(labels = labels, allNames = names(newDat))
 
   ## transform variable names in newDat; is done automatically for labels via import_DF
-  names(newDat) <- sapply(names(newDat), transf_names)
+  newDat <- checkVarNames(newDat)
 
   addData <- add_rows_meta(labels = labels, newDat = newDat)
   addLabels <- addData[["labels"]]

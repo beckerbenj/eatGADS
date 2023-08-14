@@ -2,22 +2,39 @@
 % Please edit documentation in R/checkVarNames.R
 \name{checkVarNames}
 \alias{checkVarNames}
-\title{Check names for \code{SQLite} conventions.}
+\title{Check names for \code{SQLite} column name conventions.}
 \usage{
-checkVarNames(GADSdat)
+checkVarNames(GADSdat, checkKeywords = TRUE, checkDots = TRUE)
 }
 \arguments{
-\item{GADSdat}{\code{GADSdat} or \code{all_GADSdat} object imported via eatGADS.}
+\item{GADSdat}{\code{GADSdat} or \code{all_GADSdat} object.}
+
+\item{checkKeywords}{Logical. Should \code{SQLite} keywords be checked and modified?}
+
+\item{checkDots}{Logical. Should occurrences of \code{"."} be checked and modified?}
 }
 \value{
 Returns the original object with updated variable names.
 }
 \description{
-Applies variable names changes to \code{GADSdat} or \code{all_GADSdat} objects.
+Checks names for \code{SQLite} column name conventions and
+applies appropriate variable name changes to \code{GADSdat} or \code{all_GADSdat} objects.
 }
 \details{
-Illegal names in a \code{SQLite} data base include \code{SQLite} keywords (see \code{\link[eatDB]{sqlite_keywords}}) and names
-with a \code{"."} in it.
+Invalid column names in a \code{SQLite} data base include
+\itemize{
+\item \code{SQLite} keywords (see \code{\link[eatDB]{sqlite_keywords}}) and
+\item column names with a \code{"."} in it.
+}
+
+The corresponding variable name changes are
+\itemize{
+\item appending the suffix \code{"Var"} to all \code{SQLite} keywords and
+\item changing all \code{"."} in variable names to \code{"_"}.
+}
+
+Note that avoiding \code{"."} in variable names is beneficial for multiple reasons, such as
+avoiding confusion with \code{S3} methods in \code{R} and issues when importing from \code{Stata}.
 }
 \examples{
 # Change example data set (create an invalid variable name)

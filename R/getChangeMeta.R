@@ -70,11 +70,8 @@ check_varChanges <- function(changeTable) {
   if(any(!names(changeTable) %in% colNames)) stop("Irregular column names in changeTable.")
   # tbd: content checks for format and display width
   # SQLite compliance
-  changeTable$varName_new <- sapply(changeTable$varName_new, function(x) {
-    if(is.na(x)) return(NA)
-    transf_names(x)
-    })
-
+  not_na <- !is.na(changeTable$varName_new)
+  changeTable$varName_new[not_na] <- checkVarNames(as.character(changeTable$varName_new[not_na]))
   changeTable
 }
 

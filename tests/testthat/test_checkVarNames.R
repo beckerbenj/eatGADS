@@ -1,3 +1,7 @@
+### Name transformation
+# rawDat_names <- haven::read_spss("tests/testthat/helper_spss_names.sav", user_na = TRUE)
+rawDat_names <- haven::read_spss("helper_spss_names.sav", user_na = TRUE)
+
 # load test data (df1, df2, pkList, fkList)
 # load(file = "tests/testthat/helper_data.rda")
 load(file = "helper_data.rda")
@@ -13,6 +17,25 @@ df4$labels[3, "valLabel"] <- "missing by design"
 df4$labels[3, "missings"] <- "valid"
 df4$labels[2:3, "labeled"] <- "yes"
 
+
+test_that("Variable name are transformed correctly for character vectors", {
+  expect_error(checkVarNames(c("group", "var.1", "Select", NA)),
+               "Column names can not be NA.")
+  all_messages <- capture_messages(out <- checkVarNames(c("group", "var.1", "Select")))
+
+  expect_equal(all_messages[1], "group has been renamed to groupVar\n")
+  expect_equal(all_messages[2], "var.1 has been renamed to var_1\n")
+  expect_equal(all_messages[3], "Select has been renamed to SelectVar\n")
+  expect_identical(out, c("groupVar", "var_1", "SelectVar"))
+})
+
+test_that("Variable name are transformed correctly for data.frames", {
+  all_messages2 <- capture_messages(out2 <- checkVarNames(rawDat_names))
+
+  expect_equal(all_messages2[1], "group has been renamed to groupVar\n")
+  expect_equal(all_messages2[2], "var.1 has been renamed to var_1\n")
+  expect_identical(names(out2), c("groupVar", "var_1"))
+})
 
 ### Check VarNames
 dot_df <- import_DF(iris, checkVarNames = FALSE)
