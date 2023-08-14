@@ -16,9 +16,9 @@
 #' \code{existingMeta = "drop"}, which drops all related meta data on value level, or
 #' \code{existingMeta = "ignore"}, which leaves all related meta data on value level untouched.
 #'
-#'
 #'@param changeTable Change table as provided by \code{\link{getChangeMeta}}.
 #'@param GADSdat \code{GADSdat} object imported via \code{eatGADS}.
+#'@param checkVarNames Logical. Should new variable names be checked by \code{\link{checkVarNames}}?
 #'@param existingMeta If values are recoded, which meta data should be used (see details)?
 #'@param ... further arguments passed to or from other methods.
 #'
@@ -37,9 +37,9 @@ applyChangeMeta <- function(changeTable, GADSdat, ...) {
 
 #'@rdname applyChangeMeta
 #'@export
-applyChangeMeta.varChanges <- function(changeTable, GADSdat, ...) {
+applyChangeMeta.varChanges <- function(changeTable, GADSdat, checkVarNames = TRUE, ...) {
   check_GADSdat(GADSdat)
-  changeTable <- check_varChanges(changeTable)
+  changeTable <- check_varChanges(changeTable, checkVarNames = checkVarNames)
   check_changeTable(GADSdat, changeTable)
   check_format_vector(changeTable$format_new)
 

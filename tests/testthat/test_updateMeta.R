@@ -55,12 +55,14 @@ test_that("Update Meta all_GADSdat", {
   expect_equal(changes_out$allLabels$varName, c("ID1", "v3", "ID1", "V2", "v5", "v5"))
 })
 
-test_that("illegal variable names", {
+test_that("Invalid variable names are no longer changed", {
   newDat_ill <- df1$dat
   newDat_ill[, "Alter"] <- NA
-  mess <- capture_messages(out_both <- updateMeta(df1, newDat_ill))
-  expect_equal(mess[2], "Alter has been renamed to AlterVar\n")
-  expect_equal(names(out_both$dat), c("ID1", "V1", "AlterVar"))
+  #mess <- capture_messages(out_both <- updateMeta(df1, newDat_ill))
+  #expect_equal(mess[2], "Alter has been renamed to AlterVar\n")
+  #expect_equal(names(out_both$dat), c("ID1", "V1", "AlterVar"))
+  out_both <- updateMeta(df1, newDat_ill)
+  expect_equal(names(out_both$dat), c("ID1", "V1", "Alter"))
 })
 
 test_that("updateMeta extractData combination", {

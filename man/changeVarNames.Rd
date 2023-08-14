@@ -4,7 +4,7 @@
 \alias{changeVarNames}
 \title{Change Variable Names.}
 \usage{
-changeVarNames(GADSdat, oldNames, newNames)
+changeVarNames(GADSdat, oldNames, newNames, checkVarNames = TRUE)
 }
 \arguments{
 \item{GADSdat}{\code{GADSdat} object imported via \code{eatGADS}.}
@@ -12,6 +12,8 @@ changeVarNames(GADSdat, oldNames, newNames)
 \item{oldNames}{Vector containing the old variable names.}
 
 \item{newNames}{Vector containing the new variable names, in identical order as \code{oldNames}.}
+
+\item{checkVarNames}{Logical. Should new variable names be checked by \code{\link{checkVarNames}}?}
 }
 \value{
 Returns the \code{GADSdat} object with changed variable names.

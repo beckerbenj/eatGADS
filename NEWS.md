@@ -1,6 +1,8 @@
 # eatGADS 1.0.0.9000
 
 ## new features
+* `updateMeta()` no longer internally calls `checkVarNames()`
+* `changeVarNames()` and `applyChangeMeta()` now have checks of new variables names optional via the `checkVarNames` argument
 * `reuseMeta()` now can be use on multiple variables at once
 * `inspectMetaDifferences()` now can be applied to data bases as well
 * `recodeNA2missing()` for recoding `NAs` to a specific missing code
@@ -15,6 +17,7 @@
 ## bug fixes
 * `export_tibble()` and `write_spss()` now throw an error if a conversion of four or more discrete missing tags into a missing range has undesired side effects
 * bug fix in `checkMissingsByValues()`, now correctly reports missing tags outside of the specified value range
+* bug fix in `cloneVariable()`, now is able to assign all possible variables names (fixed conflicts caused by `checkVarName()`)
 
 
 # eatGADS 1.0.0

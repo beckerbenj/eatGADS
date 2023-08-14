@@ -63,15 +63,17 @@ new_varChanges <- function(df) {
   stopifnot(is.data.frame(df))
   structure(df, class = c("varChanges", "data.frame"))
 }
-check_varChanges <- function(changeTable) {
+check_varChanges <- function(changeTable, checkVarNames) {
   if(!is.data.frame(changeTable)) stop("changeTable is not a data.frame.")
   colNames <- c("varName", "varLabel", "format", "display_width")
   colNames <- c(colNames, paste0(colNames, "_new"))
   if(any(!names(changeTable) %in% colNames)) stop("Irregular column names in changeTable.")
   # tbd: content checks for format and display width
   # SQLite compliance
-  not_na <- !is.na(changeTable$varName_new)
-  changeTable$varName_new[not_na] <- checkVarNames(as.character(changeTable$varName_new[not_na]))
+  if(checkVarNames) {
+    not_na <- !is.na(changeTable$varName_new)
+    changeTable$varName_new[not_na] <- checkVarNames(as.character(changeTable$varName_new[not_na]))
+  }
   changeTable
 }
 

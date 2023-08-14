@@ -29,9 +29,6 @@ updateMeta.GADSdat <- function(GADSdat, newDat) {
   labels <- GADSdat[["labels"]]
   labels <- remove_rows_meta(labels = labels, allNames = names(newDat))
 
-  ## transform variable names in newDat; is done automatically for labels via import_DF
-  newDat <- checkVarNames(newDat)
-
   addData <- add_rows_meta(labels = labels, newDat = newDat)
   addLabels <- addData[["labels"]]
   labels <- rbind(labels, addLabels) # Reihenfolge der Variablen, ist das wichtig?
@@ -83,6 +80,7 @@ add_rows_meta <- function(labels, newDat) {
   }
   message("Adding meta data for the following variables: ", paste(new_vars, collapse = ", "))
   addDat <- newDat[, new_vars, drop = FALSE]
-  suppressMessages(import_DF(addDat))
+  # do not check variable names!
+  suppressMessages(import_DF(addDat, checkVarNames = FALSE))
 }
 

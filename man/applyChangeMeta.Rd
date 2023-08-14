@@ -8,7 +8,7 @@
 \usage{
 applyChangeMeta(changeTable, GADSdat, ...)
 
-\method{applyChangeMeta}{varChanges}(changeTable, GADSdat, ...)
+\method{applyChangeMeta}{varChanges}(changeTable, GADSdat, checkVarNames = TRUE, ...)
 
 \method{applyChangeMeta}{valChanges}(
   changeTable,
@@ -23,6 +23,8 @@ applyChangeMeta(changeTable, GADSdat, ...)
 \item{GADSdat}{\code{GADSdat} object imported via \code{eatGADS}.}
 
 \item{...}{further arguments passed to or from other methods.}
+
+\item{checkVarNames}{Logical. Should new variable names be checked by \code{\link{checkVarNames}}?}
 
 \item{existingMeta}{If values are recoded, which meta data should be used (see details)?}
 }

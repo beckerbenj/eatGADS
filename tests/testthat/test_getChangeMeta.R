@@ -19,7 +19,7 @@ test_that("Extract variable level meta change table", {
 test_that("check_varChanges", {
   changes_var2 <-changes_var1 <- changes_var
   changes_var1$varName_new[1] <- "alter"
-  expect_message(out <- check_varChanges(changes_var1),
+  expect_message(out <- check_varChanges(changes_var1, checkVarNames = TRUE),
                  "alter has been renamed to alterVar")
   expect_equal(out[1, "varName_new"], "alterVar")
 
