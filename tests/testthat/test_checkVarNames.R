@@ -18,7 +18,7 @@ df4$labels[3, "missings"] <- "valid"
 df4$labels[2:3, "labeled"] <- "yes"
 
 
-test_that("Variable name are transformed correctly", {
+test_that("Variable name are transformed correctly for character vectors", {
   expect_error(checkVarNames(c("group", "var.1", "Select", NA)),
                "Column names can not be NA.")
   all_messages <- capture_messages(out <- checkVarNames(c("group", "var.1", "Select")))
@@ -27,7 +27,9 @@ test_that("Variable name are transformed correctly", {
   expect_equal(all_messages[2], "var.1 has been renamed to var_1\n")
   expect_equal(all_messages[3], "Select has been renamed to SelectVar\n")
   expect_identical(out, c("groupVar", "var_1", "SelectVar"))
+})
 
+test_that("Variable name are transformed correctly for data.frames", {
   all_messages2 <- capture_messages(out2 <- checkVarNames(rawDat_names))
 
   expect_equal(all_messages2[1], "group has been renamed to groupVar\n")
