@@ -4,13 +4,15 @@
 \alias{updateMeta}
 \title{Update meta data.}
 \usage{
-updateMeta(GADSdat, newDat)
+updateMeta(GADSdat, newDat, checkVarNames = TRUE)
 }
 \arguments{
 \item{GADSdat}{\code{GADSdat} or \code{all_GADSdat} object.}
 
 \item{newDat}{\code{data.frame} or list of \code{data.frames} with the modified data. \code{tibbles} and \code{data.tables}
 are currently not supported and need to be transformed to \code{data.frames} beforehand.}
+
+\item{checkVarNames}{Logical. Should new variable names be checked by \code{\link{checkVarNames}}?}
 }
 \value{
 Returns the original object with updated meta data (and removes factors from the data).

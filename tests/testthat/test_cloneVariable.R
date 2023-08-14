@@ -19,6 +19,16 @@ test_that("Clone variable", {
 
 })
 
+test_that("Clone variable with invalid variable name", {
+  out <- cloneVariable(dfSAV, varName = "VAR1", new_varName = "Alter", checkVarName = FALSE)
+  expect_equal(namesGADS(out), c("VAR1", "VAR2", "VAR3", "Alter"))
+  expect_equal(out$dat$VAR1, out$dat$Alter)
+
+  expect_message(out2 <- cloneVariable(dfSAV, varName = "VAR1", new_varName = "Alter", checkVarName = TRUE),
+                 "Alter has been renamed to AlterVar")
+  expect_equal(namesGADS(out2), c("VAR1", "VAR2", "VAR3", "AlterVar"))
+})
+
 test_that("Append varLabel", {
   out <- cloneVariable(dfSAV, varName = "VAR1", new_varName = "VAR1_new", label_suffix = "(recoded)")
   expect_equal(out$labels[c(8:10), 2], rep("Variable 1 (recoded)", 3))
