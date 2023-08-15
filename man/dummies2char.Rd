@@ -4,7 +4,7 @@
 \alias{dummies2char}
 \title{Transform dummy variables to character variables.}
 \usage{
-dummies2char(GADSdat, dummies, dummyValues, charNames)
+dummies2char(GADSdat, dummies, dummyValues, charNames, checkVarNames = TRUE)
 }
 \arguments{
 \item{GADSdat}{A \code{GADSdat} object.}
@@ -14,6 +14,8 @@ dummies2char(GADSdat, dummies, dummyValues, charNames)
 \item{dummyValues}{A vector with the values which the dummy variables represent.}
 
 \item{charNames}{A character vector containing the new variable names.}
+
+\item{checkVarNames}{Logical. Should \code{charNames} be checked by \code{\link{checkVarNames}}?}
 }
 \value{
 Returns a \code{GADSdat}.
