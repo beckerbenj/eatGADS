@@ -1,8 +1,7 @@
 # eatGADS 1.0.0.9000
 
 ## new features
-* `updateMeta()` no longer internally calls `checkVarNames()`
-* `changeVarNames()` and `applyChangeMeta()` now have checks of new variables names optional via the `checkVarNames` argument
+* `updateMeta()`, `applyChangeMeta()`, `changeVarNames()`, `cloneVariable()`, `createVariable()`, `composeVar()`, and `dummies2char()` now have optional checks of new variables names via the `checkVarNames` argument
 * `reuseMeta()` now can be use on multiple variables at once
 * `inspectMetaDifferences()` now can be applied to data bases as well
 * `recodeNA2missing()` for recoding `NAs` to a specific missing code
