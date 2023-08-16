@@ -111,10 +111,29 @@ extract_value_level.haven_labelled <- function(var, varName) {
                    valLabel = valLabels,
                    stringsAsFactors = FALSE)
 
-  ## extract missings and add as extra label
+  # extract missings and add as extra label
   df <- extract_Miss_SPSS(var = var, varName = varName, label_df = df)
 
+  # deal with duplicate values
+  df <- remove_duplicate_value_rows(df)
+
   rownames(df) <- NULL
+  df
+}
+
+remove_duplicate_value_rows <- function(df) {
+  #browser()
+  dup_rows <- duplicated(df$value)
+
+  # tbd: if all equal, select first row
+  # otherwise select first row and raise warning? should this be parameterized via an argument?
+  if(any(dup_rows)) {
+    all_dup_rows <- df[df$value %in% df[dup_rows, "value"], ]
+    for(i in unique(all_dup_rows$value)){
+
+    }
+  }
+
   df
 }
 
