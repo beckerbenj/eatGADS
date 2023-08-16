@@ -40,9 +40,15 @@ dummies2char <- function(GADSdat, dummies, dummyValues, charNames, checkVarNames
 dummies2char.GADSdat <- function(GADSdat, dummies, dummyValues, charNames, checkVarNames = TRUE) {
   check_GADSdat(GADSdat)
   check_logicalArgument(checkVarNames, argName = "checkVarNames")
-  if(!is.character(dummies)) stop("'dummies' needs to be a character vector.")
-  if(length(dummies) != length(dummyValues)) stop("'dummyValues' needs to be the same length as 'dummies'.")
-  if(length(dummies) != length(charNames)) stop("'charNames' needs to be the same length as 'dummies'.")
+  if(!is.character(dummies)) {
+    stop("'dummies' needs to be a character vector.")
+  }
+  if(length(dummies) != length(dummyValues)) {
+    stop("'dummyValues' needs to be the same length as 'dummies'.")
+  }
+  if(length(dummies) != length(charNames)) {
+    stop("'charNames' needs to be the same length as 'dummies'.")
+  }
   check_vars_in_GADSdat(GADSdat, dummies)
   if(checkVarNames) {
     charNames <- checkVarNames(charNames)
