@@ -12,6 +12,7 @@
 #'@param GADSdat \code{GADSdat} or \code{all_GADSdat} object.
 #'@param newDat \code{data.frame} or list of \code{data.frames} with the modified data. \code{tibbles} and \code{data.tables}
 #'are currently not supported and need to be transformed to \code{data.frames} beforehand.
+#'@param checkVarNames Logical. Should new variable names be checked by \code{\link{checkVarNames}}?
 #'
 #'@return Returns the original object with updated meta data (and removes factors from the data).
 #'
@@ -19,20 +20,23 @@
 #' # see createGADS vignette
 #'
 #'@export
-updateMeta <- function(GADSdat, newDat) {
+updateMeta <- function(GADSdat, newDat, checkVarNames = TRUE) {
   UseMethod("updateMeta")
 }
 #'@export
-updateMeta.GADSdat <- function(GADSdat, newDat) {
+updateMeta.GADSdat <- function(GADSdat, newDat, checkVarNames = TRUE) {
   check_GADSdat(GADSdat)
+  check_logicalArgument(checkVarNames, argName = checkVarNames)
   if(!identical(class(newDat), "data.frame")) stop("newDat needs to be a data.frame. Use as.data.frame is necessary.")
   labels <- GADSdat[["labels"]]
   labels <- remove_rows_meta(labels = labels, allNames = names(newDat))
 
   ## transform variable names in newDat; is done automatically for labels via import_DF
-  newDat <- checkVarNames(newDat)
+  if(checkVarNames){
+    newDat <- checkVarNames(newDat)
+  }
 
-  addData <- add_rows_meta(labels = labels, newDat = newDat)
+  addData <- add_rows_meta(labels = labels, newDat = newDat, checkVarNames = checkVarNames)
   addLabels <- addData[["labels"]]
   labels <- rbind(labels, addLabels) # Reihenfolge der Variablen, ist das wichtig?
   ## replace variables that have been imported newly
@@ -46,7 +50,7 @@ updateMeta.GADSdat <- function(GADSdat, newDat) {
   mod_GADSdat
 }
 #'@export
-updateMeta.all_GADSdat <- function(GADSdat, newDat) {
+updateMeta.all_GADSdat <- function(GADSdat, newDat, checkVarNames = TRUE) {
   check_all_GADSdat(GADSdat)
   stopifnot(is.list(newDat) && all(sapply(newDat, is.data.frame)))
   labels <- GADSdat[["allLabels"]]
@@ -54,7 +58,7 @@ updateMeta.all_GADSdat <- function(GADSdat, newDat) {
   mod_single_GADSdats <- lapply(names(GADSdat[["datList"]]), function(i) {
     message("Analyzing data table ", i, ":")
     single_GADSdat <- new_GADSdat(dat = GADSdat[["datList"]][[i]], labels = labels[labels[, "data_table"] == i, names(labels) != "data_table"])
-    updateMeta(single_GADSdat, newDat = newDat[[i]])
+    updateMeta(single_GADSdat, newDat = newDat[[i]], checkVarNames = checkVarNames)
   })
   names(mod_single_GADSdats) <- names(newDat)
   mod_all_GADSdat <- do.call(mergeLabels, mod_single_GADSdats)
@@ -75,7 +79,7 @@ remove_rows_meta <- function(labels, allNames) {
 }
 
 ### 2) add necessary rows
-add_rows_meta <- function(labels, newDat) {
+add_rows_meta <- function(labels, newDat, checkVarNames) {
   new_vars <- unique(names(newDat)[!names(newDat) %in% labels[, "varName"]])
   if(!length(new_vars) > 0) {
     message("No rows added to meta data.")
@@ -83,6 +87,6 @@ add_rows_meta <- function(labels, newDat) {
   }
   message("Adding meta data for the following variables: ", paste(new_vars, collapse = ", "))
   addDat <- newDat[, new_vars, drop = FALSE]
-  suppressMessages(import_DF(addDat))
+  suppressMessages(import_DF(addDat, checkVarNames = checkVarNames))
 }
 

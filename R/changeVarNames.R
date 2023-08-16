@@ -11,6 +11,7 @@
 #'@param GADSdat \code{GADSdat} object imported via \code{eatGADS}.
 #'@param oldNames Vector containing the old variable names.
 #'@param newNames Vector containing the new variable names, in identical order as \code{oldNames}.
+#'@param checkVarNames Logical. Should new variable names be checked by \code{\link{checkVarNames}}?
 #'
 #'@return Returns the \code{GADSdat} object with changed variable names.
 #'
@@ -20,29 +21,35 @@
 #'                         newNames = c("IDstud", "IDschool"))
 #'
 #'@export
-changeVarNames <- function(GADSdat, oldNames, newNames) {
+changeVarNames <- function(GADSdat, oldNames, newNames, checkVarNames = TRUE) {
   UseMethod("changeVarNames")
 }
 #### Note: changeVarNames.all_GADSdat could be blueprint for other changes on all_GADSdat level!
 #'@export
-changeVarNames.all_GADSdat <- function(GADSdat, oldNames, newNames) {
+changeVarNames.all_GADSdat <- function(GADSdat, oldNames, newNames, checkVarNames = TRUE) {
+  check_all_GADSdat(GADSdat)
+
   changeDF <- data.frame(oldNames = oldNames, newNames = newNames, stringsAsFactors = FALSE)
   out <- list()
   for(i in names(GADSdat[["datList"]])) {
     GADSdat_single <- extractGADSdat(GADSdat, name = i)
     changeDF_single <- changeDF[changeDF$oldNames %in% names(GADSdat[["datList"]][[i]]), ]
-    out[[i]] <- changeVarNames(GADSdat = GADSdat_single, oldNames = changeDF_single[["oldNames"]], newNames = changeDF_single[["newNames"]])
+    out[[i]] <- changeVarNames(GADSdat = GADSdat_single, oldNames = changeDF_single[["oldNames"]],
+                               newNames = changeDF_single[["newNames"]], checkVarNames = checkVarNames)
   }
   do.call(mergeLabels, out)
 }
 #'@export
-changeVarNames.GADSdat <- function(GADSdat, oldNames, newNames) {
+changeVarNames.GADSdat <- function(GADSdat, oldNames, newNames, checkVarNames = TRUE) {
+  check_GADSdat(GADSdat)
+  check_logicalArgument(checkVarNames, argName = checkVarNames)
+
   checkNamesVectors(oldNames = oldNames, newNames = newNames, dat = GADSdat[["dat"]])
   changeTable <- getChangeMeta(GADSdat, level = "variable")
   for(i in seq_along(oldNames)) {
     changeTable[changeTable$varName == oldNames[i], "varName_new"] <- newNames[i]
   }
-  applyChangeMeta(GADSdat, changeTable = changeTable)
+  applyChangeMeta(GADSdat, changeTable = changeTable, checkVarNames = checkVarNames)
 }
 
 

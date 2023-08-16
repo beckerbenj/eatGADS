@@ -13,6 +13,7 @@
 #'@param dummies A character vector with the names of the dummy variables.
 #'@param dummyValues A vector with the values which the dummy variables represent.
 #'@param charNames A character vector containing the new variable names.
+#'@param checkVarNames Logical. Should \code{charNames} be checked by \code{\link{checkVarNames}}?
 #'
 #'@return Returns a \code{GADSdat}.
 #'
@@ -31,17 +32,21 @@
 #'
 #'
 #'@export
-dummies2char <- function(GADSdat, dummies, dummyValues, charNames) {
+dummies2char <- function(GADSdat, dummies, dummyValues, charNames, checkVarNames = TRUE) {
   UseMethod("dummies2char")
 }
 
 #'@export
-dummies2char.GADSdat <- function(GADSdat, dummies, dummyValues, charNames) {
+dummies2char.GADSdat <- function(GADSdat, dummies, dummyValues, charNames, checkVarNames = TRUE) {
   check_GADSdat(GADSdat)
+  check_logicalArgument(checkVarNames, argName = "checkVarNames")
   if(!is.character(dummies)) stop("'dummies' needs to be a character vector.")
   if(length(dummies) != length(dummyValues)) stop("'dummyValues' needs to be the same length as 'dummies'.")
   if(length(dummies) != length(charNames)) stop("'charNames' needs to be the same length as 'dummies'.")
   check_vars_in_GADSdat(GADSdat, dummies)
+  if(checkVarNames) {
+    charNames <- checkVarNames(charNames)
+  }
 
   names(dummyValues) <- names(charNames) <- dummies
   for(dummy in dummies) {
@@ -54,7 +59,7 @@ dummies2char.GADSdat <- function(GADSdat, dummies, dummyValues, charNames) {
 
     dat <- GADSdat$dat
     dat[, charName] <- ifelse(dat[, dummy] == 1, yes = dummyValue, no = NA)
-    suppressMessages(GADSdat <- updateMeta(GADSdat, dat))
+    suppressMessages(GADSdat <- updateMeta(GADSdat, dat, checkVarNames = FALSE))
     GADSdat <- reuseMeta(GADSdat, charName, other_GADSdat = GADSdat, other_varName = dummy,
                          missingLabels =  "only", addValueLabels = TRUE)
   }

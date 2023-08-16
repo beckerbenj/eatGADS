@@ -4,7 +4,7 @@
 \alias{composeVar}
 \title{Create a composite variable.}
 \usage{
-composeVar(GADSdat, sourceVars, primarySourceVar, newVar)
+composeVar(GADSdat, sourceVars, primarySourceVar, newVar, checkVarName = TRUE)
 }
 \arguments{
 \item{GADSdat}{\code{GADSdat} or \code{all_GADSdat} object imported via eatGADS.}
@@ -14,6 +14,8 @@ composeVar(GADSdat, sourceVars, primarySourceVar, newVar)
 \item{primarySourceVar}{Character vector containing a single variable name. Which of the \code{sourceVars} should be preferred?}
 
 \item{newVar}{Character vector containing the name of the new composite variable.}
+
+\item{checkVarName}{Logical. Should \code{newVar} be checked by \code{\link{checkVarNames}}?}
 }
 \value{
 The modified \code{GADSdat}.

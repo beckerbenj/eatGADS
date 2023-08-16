@@ -4,7 +4,13 @@
 \alias{cloneVariable}
 \title{Clone a variable.}
 \usage{
-cloneVariable(GADSdat, varName, new_varName, label_suffix = "")
+cloneVariable(
+  GADSdat,
+  varName,
+  new_varName,
+  label_suffix = "",
+  checkVarName = TRUE
+)
 }
 \arguments{
 \item{GADSdat}{\code{GADSdat} object imported via \code{eatGADS}.}
@@ -14,6 +20,8 @@ cloneVariable(GADSdat, varName, new_varName, label_suffix = "")
 \item{new_varName}{Name of the new variable.}
 
 \item{label_suffix}{Suffix added to variable label for the newly created variable in the \code{GADSdat}.}
+
+\item{checkVarName}{Logical. Should \code{new_varName} be checked by \code{\link{checkVarNames}}?}
 }
 \value{
 Returns a \code{GADSdat}.

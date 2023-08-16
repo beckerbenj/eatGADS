@@ -4,12 +4,14 @@
 \alias{createVariable}
 \title{Create a variable.}
 \usage{
-createVariable(GADSdat, varName)
+createVariable(GADSdat, varName, checkVarName = TRUE)
 }
 \arguments{
 \item{GADSdat}{\code{GADSdat} object imported via \code{eatGADS}.}
 
 \item{varName}{Name of the variable to be cloned.}
+
+\item{checkVarName}{Logical. Should \code{varName} be checked by \code{\link{checkVarNames}}?}
 }
 \value{
 Returns a \code{GADSdat}.

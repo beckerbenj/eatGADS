@@ -14,6 +14,7 @@
 #'@param sourceVars Character vector of length two containing the variable names which represent the sources of information.
 #'@param primarySourceVar Character vector containing a single variable name. Which of the \code{sourceVars} should be preferred?
 #'@param newVar Character vector containing the name of the new composite variable.
+#'@param checkVarName Logical. Should \code{newVar} be checked by \code{\link{checkVarNames}}?
 #'
 #'@return The modified \code{GADSdat}.
 #'
@@ -33,17 +34,25 @@
 #'
 #'
 #'@export
-composeVar <- function(GADSdat, sourceVars, primarySourceVar, newVar) {
+composeVar <- function(GADSdat, sourceVars, primarySourceVar, newVar, checkVarName = TRUE) {
   UseMethod("composeVar")
 }
 #'@export
-composeVar.GADSdat <- function(GADSdat, sourceVars, primarySourceVar, newVar) {
+composeVar.GADSdat <- function(GADSdat, sourceVars, primarySourceVar, newVar, checkVarName = TRUE) {
   check_GADSdat(GADSdat)
   check_vars_in_GADSdat(GADSdat, vars = sourceVars)
-  if(!is.character(sourceVars) || length(sourceVars) != 2) stop("'sourceVars' must be a character vector of length 2.")
-  if(!is.character(primarySourceVar) || length(primarySourceVar) != 1) stop("'primarySourceVar' must be a character vector of length 1.")
-  if(!is.character(primarySourceVar) || length(newVar) != 1) stop("'newVar' must be a character vector of length 1.")
-  if(!primarySourceVar %in% sourceVars) stop("'primarySourceVar' must be a name in 'sourceVars'.")
+  check_logicalArgument(checkVarName, argName = "checkVarName")
+  if(!is.character(sourceVars) || length(sourceVars) != 2) {
+    stop("'sourceVars' must be a character vector of length 2.")
+  }
+  check_characterArgument(primarySourceVar)
+  check_characterArgument(newVar)
+  if(!primarySourceVar %in% sourceVars) {
+    stop("'primarySourceVar' must be a name in 'sourceVars'.")
+  }
+  if(checkVarName) {
+    newVar <- checkVarNames(newVar)
+  }
 
   otherSourceVar <- sourceVars[sourceVars != primarySourceVar]
   suppressWarnings(extracted_dat <- extractData(GADSdat))
@@ -62,8 +71,9 @@ composeVar.GADSdat <- function(GADSdat, sourceVars, primarySourceVar, newVar) {
   ## put into GADS, add meta
   dat_out <- data.frame(GADSdat$dat, comp_var, stringsAsFactors = FALSE)
   names(dat_out)[ncol(dat_out)] <- newVar
-  GADSdat_out <- updateMeta(GADSdat, newDat = dat_out)
-  GADSdat_out2 <- reuseMeta(GADSdat_out, varName = newVar, other_GADSdat = GADSdat_out, other_varName = primarySourceVar, addValueLabels = TRUE)
+  suppressMessages(GADSdat_out <- updateMeta(GADSdat, newDat = dat_out, checkVarNames = FALSE))
+  GADSdat_out2 <- reuseMeta(GADSdat_out, varName = newVar,
+                            other_GADSdat = GADSdat_out, other_varName = primarySourceVar, addValueLabels = TRUE)
 
   # sort
   index_primarySource <- which(namesGADS(GADSdat) == primarySourceVar)
