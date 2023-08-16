@@ -16,7 +16,7 @@
 ## bug fixes
 * `export_tibble()` and `write_spss()` now throw an error if a conversion of four or more discrete missing tags into a missing range has undesired side effects
 * bug fix in `checkMissingsByValues()`, now correctly reports missing tags outside of the specified value range
-* bug fix in `cloneVariable()`, now is able to assign all possible variables names (fixed conflicts caused by `checkVarName()`)
+* bug fix in `cloneVariable()`, now new variables names which are also `SQLite` keywords no longer throw a error (fixed conflicts caused by `checkVarName()`)
 
 
 # eatGADS 1.0.0

@@ -11,7 +11,6 @@ newDat <- df1$dat
 newDat$v3 <- c(4, 5)
 newDat$V1 <- NULL
 
-
 test_that("Remove rows meta helper", {
   expect_message(remove_rows_meta(df1$labels, names(newDat)), "Removing the following rows from meta data: V1")
   expect_equal(suppressMessages(remove_rows_meta(df1$labels, names(newDat))), df1$labels[df1$labels$varName == "ID1", ])
@@ -57,7 +56,7 @@ test_that("Update Meta all_GADSdat", {
   expect_equal(changes_out$allLabels$varName, c("ID1", "v3", "ID1", "V2", "v5", "v5"))
 })
 
-test_that("Invalid variable names are check and changed", {
+test_that("Invalid variable names are checked and changed", {
   newDat_ill <- df1$dat
   newDat_ill[, "Alter"] <- NA
   mess <- capture_messages(out_both <- updateMeta(df1, newDat_ill))

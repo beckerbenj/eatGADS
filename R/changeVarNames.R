@@ -27,6 +27,8 @@ changeVarNames <- function(GADSdat, oldNames, newNames, checkVarNames = TRUE) {
 #### Note: changeVarNames.all_GADSdat could be blueprint for other changes on all_GADSdat level!
 #'@export
 changeVarNames.all_GADSdat <- function(GADSdat, oldNames, newNames, checkVarNames = TRUE) {
+  check_all_GADSdat(GADSdat)
+
   changeDF <- data.frame(oldNames = oldNames, newNames = newNames, stringsAsFactors = FALSE)
   out <- list()
   for(i in names(GADSdat[["datList"]])) {
@@ -39,6 +41,9 @@ changeVarNames.all_GADSdat <- function(GADSdat, oldNames, newNames, checkVarName
 }
 #'@export
 changeVarNames.GADSdat <- function(GADSdat, oldNames, newNames, checkVarNames = TRUE) {
+  check_GADSdat(GADSdat)
+  check_logicalArgument(checkVarNames, argName = checkVarNames)
+
   checkNamesVectors(oldNames = oldNames, newNames = newNames, dat = GADSdat[["dat"]])
   changeTable <- getChangeMeta(GADSdat, level = "variable")
   for(i in seq_along(oldNames)) {

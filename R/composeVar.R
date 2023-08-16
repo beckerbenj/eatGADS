@@ -45,12 +45,8 @@ composeVar.GADSdat <- function(GADSdat, sourceVars, primarySourceVar, newVar, ch
   if(!is.character(sourceVars) || length(sourceVars) != 2) {
     stop("'sourceVars' must be a character vector of length 2.")
   }
-  if(!is.character(primarySourceVar) || length(primarySourceVar) != 1) {
-    stop("'primarySourceVar' must be a character vector of length 1.")
-  }
-  if(!is.character(primarySourceVar) || length(newVar) != 1) {
-    stop("'newVar' must be a character vector of length 1.")
-  }
+  check_characterArgument(primarySourceVar)
+  check_characterArgument(newVar)
   if(!primarySourceVar %in% sourceVars) {
     stop("'primarySourceVar' must be a name in 'sourceVars'.")
   }

@@ -18,7 +18,7 @@ test_that("Errors", {
 })
 
 
-test_that("composeVar", {
+test_that("compose a variable", {
   out <- composeVar(dfSAV2, sourceVars = c("VAR1", "VAR2"), newVar = "newVar", primarySourceVar = "VAR1")
 
   expect_equal(out$dat$newVar, c(1, -99, 1, 2))
