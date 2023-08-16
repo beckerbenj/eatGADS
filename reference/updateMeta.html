@@ -63,7 +63,7 @@
 
     <div class="section level2">
     <h2 id="ref-usage">Usage<a class="anchor" aria-label="anchor" href="#ref-usage"></a></h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">updateMeta</span><span class="op">(</span><span class="va">GADSdat</span>, <span class="va">newDat</span><span class="op">)</span></span></code></pre></div>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">updateMeta</span><span class="op">(</span><span class="va">GADSdat</span>, <span class="va">newDat</span>, checkVarNames <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div class="section level2">
@@ -75,6 +75,10 @@
 <dt>newDat</dt>
 <dd><p><code>data.frame</code> or list of <code>data.frames</code> with the modified data. <code>tibbles</code> and <code>data.tables</code>
 are currently not supported and need to be transformed to <code>data.frames</code> beforehand.</p></dd>
+
+
+<dt>checkVarNames</dt>
+<dd><p>Logical. Should new variable names be checked by <code><a href="checkVarNames.html">checkVarNames</a></code>?</p></dd>
 
 </dl></div>
     <div class="section level2">

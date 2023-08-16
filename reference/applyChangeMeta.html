@@ -66,7 +66,7 @@
     <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">applyChangeMeta</span><span class="op">(</span><span class="va">changeTable</span>, <span class="va">GADSdat</span>, <span class="va">...</span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># S3 method for varChanges</span></span>
-<span><span class="fu">applyChangeMeta</span><span class="op">(</span><span class="va">changeTable</span>, <span class="va">GADSdat</span>, <span class="va">...</span><span class="op">)</span></span>
+<span><span class="fu">applyChangeMeta</span><span class="op">(</span><span class="va">changeTable</span>, <span class="va">GADSdat</span>, checkVarNames <span class="op">=</span> <span class="cn">TRUE</span>, <span class="va">...</span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># S3 method for valChanges</span></span>
 <span><span class="fu">applyChangeMeta</span><span class="op">(</span></span>
@@ -89,6 +89,10 @@
 
 <dt>...</dt>
 <dd><p>further arguments passed to or from other methods.</p></dd>
+
+
+<dt>checkVarNames</dt>
+<dd><p>Logical. Should new variable names be checked by <code><a href="checkVarNames.html">checkVarNames</a></code>?</p></dd>
 
 
 <dt>existingMeta</dt>

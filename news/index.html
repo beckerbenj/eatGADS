@@ -61,6 +61,8 @@
 <div class="section level3">
 <h3 id="new-features-1-0-0-9000">new features<a class="anchor" aria-label="anchor" href="#new-features-1-0-0-9000"></a></h3>
 <ul><li>
+<code><a href="../reference/updateMeta.html">updateMeta()</a></code>, <code><a href="../reference/applyChangeMeta.html">applyChangeMeta()</a></code>, <code><a href="../reference/changeVarNames.html">changeVarNames()</a></code>, <code><a href="../reference/cloneVariable.html">cloneVariable()</a></code>, <code><a href="../reference/createVariable.html">createVariable()</a></code>, <code><a href="../reference/composeVar.html">composeVar()</a></code>, and <code><a href="../reference/dummies2char.html">dummies2char()</a></code> now have optional checks of new variables names via the <code>checkVarNames</code> argument</li>
+<li>
 <code><a href="../reference/reuseMeta.html">reuseMeta()</a></code> now can be use on multiple variables at once</li>
 <li>
 <code><a href="../reference/inspectMetaDifferences.html">inspectMetaDifferences()</a></code> now can be applied to data bases as well</li>
@@ -87,6 +89,7 @@
 <ul><li>
 <code><a href="../reference/export_tibble.html">export_tibble()</a></code> and <code><a href="../reference/write_spss.html">write_spss()</a></code> now throw an error if a conversion of four or more discrete missing tags into a missing range has undesired side effects</li>
 <li>bug fix in <code><a href="../reference/checkMissings.html">checkMissingsByValues()</a></code>, now correctly reports missing tags outside of the specified value range</li>
+<li>bug fix in <code><a href="../reference/cloneVariable.html">cloneVariable()</a></code>, now new variables names which are also <code>SQLite</code> keywords no longer throw a error (fixed conflicts caused by <code>checkVarName()</code>)</li>
 </ul></div>
 </div>
     <div class="section level2">

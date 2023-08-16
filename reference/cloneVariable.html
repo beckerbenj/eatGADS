@@ -63,7 +63,13 @@
 
     <div class="section level2">
     <h2 id="ref-usage">Usage<a class="anchor" aria-label="anchor" href="#ref-usage"></a></h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">cloneVariable</span><span class="op">(</span><span class="va">GADSdat</span>, <span class="va">varName</span>, <span class="va">new_varName</span>, label_suffix <span class="op">=</span> <span class="st">""</span><span class="op">)</span></span></code></pre></div>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">cloneVariable</span><span class="op">(</span></span>
+<span>  <span class="va">GADSdat</span>,</span>
+<span>  <span class="va">varName</span>,</span>
+<span>  <span class="va">new_varName</span>,</span>
+<span>  label_suffix <span class="op">=</span> <span class="st">""</span>,</span>
+<span>  checkVarName <span class="op">=</span> <span class="cn">TRUE</span></span>
+<span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div class="section level2">
@@ -82,6 +88,10 @@
 
 <dt>label_suffix</dt>
 <dd><p>Suffix added to variable label for the newly created variable in the <code>GADSdat</code>.</p></dd>
+
+
+<dt>checkVarName</dt>
+<dd><p>Logical. Should <code>new_varName</code> be checked by <code><a href="checkVarNames.html">checkVarNames</a></code>?</p></dd>
 
 </dl></div>
     <div class="section level2">

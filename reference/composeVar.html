@@ -63,7 +63,7 @@
 
     <div class="section level2">
     <h2 id="ref-usage">Usage<a class="anchor" aria-label="anchor" href="#ref-usage"></a></h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">composeVar</span><span class="op">(</span><span class="va">GADSdat</span>, <span class="va">sourceVars</span>, <span class="va">primarySourceVar</span>, <span class="va">newVar</span><span class="op">)</span></span></code></pre></div>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">composeVar</span><span class="op">(</span><span class="va">GADSdat</span>, <span class="va">sourceVars</span>, <span class="va">primarySourceVar</span>, <span class="va">newVar</span>, checkVarName <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div class="section level2">
@@ -82,6 +82,10 @@
 
 <dt>newVar</dt>
 <dd><p>Character vector containing the name of the new composite variable.</p></dd>
+
+
+<dt>checkVarName</dt>
+<dd><p>Logical. Should <code>newVar</code> be checked by <code><a href="checkVarNames.html">checkVarNames</a></code>?</p></dd>
 
 </dl></div>
     <div class="section level2">
@@ -150,8 +154,6 @@ to substitute missing values.</p>
 <span class="r-in"><span><span class="co"># compose variable</span></span></span>
 <span class="r-in"><span><span class="fu">composeVar</span><span class="op">(</span><span class="va">gads</span>, sourceVars <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"nat_lang_child"</span>, <span class="st">"nat_lang_father"</span><span class="op">)</span>,</span></span>
 <span class="r-in"><span>           primarySourceVar <span class="op">=</span> <span class="st">"nat_lang_child"</span>, newVar <span class="op">=</span> <span class="st">"nat_lang_comp"</span><span class="op">)</span></span></span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> No rows removed from meta data.</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Adding meta data for the following variables: nat_lang_comp</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> $dat</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   ID nat_lang_comp nat_lang_child nat_lang_father</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> 1  1             1              1               1</span>
