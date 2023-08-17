@@ -14,6 +14,7 @@
 * new function `emptyTheseVariables()` allows setting multiple variables to `NA`
 
 ## bug fixes
+* `import_spss()` now removes duplicate meta data rows, which caused an error in, e.g., `recodeGADS()`
 * `export_tibble()` and `write_spss()` now throw an error if a conversion of four or more discrete missing tags into a missing range has undesired side effects
 * bug fix in `checkMissingsByValues()`, now correctly reports missing tags outside of the specified value range
 * bug fix in `cloneVariable()`, now new variables names which are also `SQLite` keywords no longer throw a error (fixed conflicts caused by `checkVarName()`)
