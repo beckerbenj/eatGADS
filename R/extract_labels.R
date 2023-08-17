@@ -101,7 +101,7 @@ extract_value_level.haven_labelled <- function(var, varName) {
     valLabels <- character()
   }
 
-  # transform values to numeric if possible, leave characters as is (rest is taking care of in char_valLabels2numeric.R)
+  # transform values to numeric if possible, leave characters as is (rest has been taking care of in char_valLabels2numeric.R)
   values <- suppressWarnings(eatTools::asNumericIfPossible(x = values, maintain.factor.scores = TRUE,
                                                            force.string = FALSE, transform.factors = TRUE))
 
@@ -114,26 +114,27 @@ extract_value_level.haven_labelled <- function(var, varName) {
   # extract missings and add as extra label
   df <- extract_Miss_SPSS(var = var, varName = varName, label_df = df)
 
-  # deal with duplicate values
-  df <- remove_duplicate_value_rows(df)
+  # deal with duplicate values in character variables caused by decimals
+  if(is.character(var)) {
+    df <- remove_duplicate_value_rows(df, varName)
+  }
 
   rownames(df) <- NULL
   df
 }
 
-remove_duplicate_value_rows <- function(df) {
-  #browser()
-  dup_rows <- duplicated(df$value)
-
+remove_duplicate_value_rows <- function(df, varName) {
+  values_with_dups <- unique(df$value[duplicated(df$value)])
   # tbd: if all equal, select first row
   # otherwise select first row and raise warning? should this be parameterized via an argument?
-  if(any(dup_rows)) {
-    all_dup_rows <- df[df$value %in% df[dup_rows, "value"], ]
-    for(i in unique(all_dup_rows$value)){
-
+  if(length(values_with_dups) > 0) {
+    warning("Duplicate value labels or missing tags are dropped for variable '", varName,"'.")
+    for(i in values_with_dups){
+      dup_rows <- which(df$value == i)
+      rows_to_remove <- dup_rows[!dup_rows == min(dup_rows)]
+      df <- df[-rows_to_remove, ]
     }
   }
-
   df
 }
 

@@ -60,17 +60,20 @@ test_that("Conflicting value label for string variable from SPSS", {
                                   "another value" = "98", "another value" = "98.0"))
   f2 <- haven::labelled("a", labels = c("a value" = "99", "another value" = "99.0" ))
 
-  out <- extract_value_level(f, varName = "test")
-  expect_equal(out$value, c(99))
-  expect_equal(out$valLabel, c("a value"))
+  expect_warning(out <- extract_value_level(f, varName = "test"),
+                 "Duplicate value labels or missing tags are dropped for variable 'test'.")
+  expect_equal(out$value, c(99, 98))
+  expect_equal(out$valLabel, c("a value", "another value"))
 
-  out2 <- extract_value_level(f2, varName = "test")
+  expect_warning(out2 <- extract_value_level(f2, varName = "test"),
+                 "Duplicate value labels or missing tags are dropped for variable 'test'.")
   expect_equal(out2$value, c(99))
   expect_equal(out2$valLabel, c("a value"))
 
-  out3 <- extract_value_level(rawDat_miss_noValLabel$VAR3, varName = "test")
+  expect_warning(out3 <- extract_value_level(rawDat_miss_noValLabel$VAR3, varName = "test"),
+                 "Duplicate value labels or missing tags are dropped for variable 'test'.")
   expect_equal(out3$value, c(99))
-  expect_equal(out3$valLabel, NA)
+  expect_equal(out3$valLabel, NA_character_)
   expect_equal(out3$missings, "miss")
 })
 
