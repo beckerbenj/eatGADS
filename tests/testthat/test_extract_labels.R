@@ -55,23 +55,23 @@ test_that("Value label of single variable extracted for SPSS types", {
 })
 
 test_that("Conflicting value label for string variable from SPSS", {
-  f <- haven::labelled("a",
+  f1 <- haven::labelled("a",
                        labels = c("a value" = "99", "a value" = "99.0", "a value" = "99.00",
                                   "another value" = "98", "another value" = "98.0"))
   f2 <- haven::labelled("a", labels = c("a value" = "99", "another value" = "99.0" ))
 
-  expect_warning(out <- extract_value_level(f, varName = "test"),
-                 "Duplicate value labels or missing tags are dropped for variable 'test'.")
-  expect_equal(out$value, c(99, 98))
-  expect_equal(out$valLabel, c("a value", "another value"))
+  expect_warning(out1 <- extract_value_level(f1, varName = "test"),
+                 "Duplicate value labels or missing tags are dropped for variable 'test'. Only the respective first value label or missing tag is preserved and zero-decimals are dropped.")
+  expect_equal(out1$value, c(99, 98))
+  expect_equal(out1$valLabel, c("a value", "another value"))
 
   expect_warning(out2 <- extract_value_level(f2, varName = "test"),
-                 "Duplicate value labels or missing tags are dropped for variable 'test'.")
+                 "Duplicate value labels or missing tags are dropped for variable 'test'. Only the respective first value label or missing tag is preserved and zero-decimals are dropped.")
   expect_equal(out2$value, c(99))
   expect_equal(out2$valLabel, c("a value"))
 
   expect_warning(out3 <- extract_value_level(rawDat_miss_noValLabel$VAR3, varName = "test"),
-                 "Duplicate value labels or missing tags are dropped for variable 'test'.")
+                 "Duplicate value labels or missing tags are dropped for variable 'test'. Only the respective first value label or missing tag is preserved and zero-decimals are dropped.")
   expect_equal(out3$value, c(99))
   expect_equal(out3$valLabel, NA_character_)
   expect_equal(out3$missings, "miss")
