@@ -101,7 +101,7 @@ extract_value_level.haven_labelled <- function(var, varName) {
     valLabels <- character()
   }
 
-  # transform values to numeric if possible, leave characters as is (rest is taking care of in char_valLabels2numeric.R)
+  # transform values to numeric if possible, leave characters as is (rest has been taken care of in char_valLabels2numeric.R)
   values <- suppressWarnings(eatTools::asNumericIfPossible(x = values, maintain.factor.scores = TRUE,
                                                            force.string = FALSE, transform.factors = TRUE))
 
@@ -111,10 +111,31 @@ extract_value_level.haven_labelled <- function(var, varName) {
                    valLabel = valLabels,
                    stringsAsFactors = FALSE)
 
-  ## extract missings and add as extra label
+  # extract missings and add as extra label
   df <- extract_Miss_SPSS(var = var, varName = varName, label_df = df)
 
+  # deal with duplicate values in character variables caused by decimals
+  if(is.character(var)) {
+    df <- remove_duplicate_value_rows(df, varName)
+  }
+
   rownames(df) <- NULL
+  df
+}
+
+remove_duplicate_value_rows <- function(df, varName) {
+  values_with_dups <- unique(df$value[duplicated(df$value)])
+  # tbd: if all equal, select first row
+  # otherwise select first row and raise warning? should this be parameterized via an argument?
+  if(length(values_with_dups) > 0) {
+    warning("Duplicate value labels or missing tags are dropped for variable '", varName,
+            "'. Only the respective first value label or missing tag is preserved and zero-decimals are dropped.")
+    for(i in values_with_dups){
+      dup_rows <- which(df$value == i)
+      rows_to_remove <- dup_rows[dup_rows != min(dup_rows)]
+      df <- df[-rows_to_remove, ]
+    }
+  }
   df
 }
 
