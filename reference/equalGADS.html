@@ -69,6 +69,7 @@ meta data and data differences are checked and reported as a list output.</p>
     <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">equalGADS</span><span class="op">(</span></span>
 <span>  <span class="va">target</span>,</span>
 <span>  <span class="va">current</span>,</span>
+<span>  id <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  metaExceptions <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"display_width"</span>, <span class="st">"labeled"</span><span class="op">)</span>,</span>
 <span>  tolerance <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/MathFun.html" class="external-link">sqrt</a></span><span class="op">(</span><span class="va">.Machine</span><span class="op">$</span><span class="va">double.eps</span><span class="op">)</span></span>
 <span><span class="op">)</span></span></code></pre></div>
@@ -82,6 +83,11 @@ meta data and data differences are checked and reported as a list output.</p>
 
 <dt>current</dt>
 <dd><p>A <code>GADSdat</code> object.</p></dd>
+
+
+<dt>id</dt>
+<dd><p>A character vector of length 1 containing the unique identifier column of both <code>GADSdat</code>.
+If specified, both <code>GADSdat</code> are ordered according to <code>ID</code> before comparing their data.</p></dd>
 
 
 <dt>metaExceptions</dt>
