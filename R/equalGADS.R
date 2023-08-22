@@ -10,6 +10,8 @@
 #'
 #'@param target A \code{GADSdat} object.
 #'@param current A \code{GADSdat} object.
+#'@param id A character vector of length 1 containing the unique identifier column of both \code{GADSdat}.
+#'If specified, both \code{GADSdat} are ordered according to \code{ID} before comparing their data.
 #'@param metaExceptions Should certain meta data columns be excluded from the comparison?
 #'@param tolerance A numeric value greater than or equal to \code{0}. Differences smaller than \code{tolerance} are not reported.
 #'The default value is close to \code{1.5e-8}.
@@ -18,19 +20,32 @@
 #'
 #'
 #'@export
-equalGADS <- function(target, current, metaExceptions = c("display_width", "labeled"), tolerance = sqrt(.Machine$double.eps)) {
+equalGADS <- function(target, current, id = NULL,
+                      metaExceptions = c("display_width", "labeled"), tolerance = sqrt(.Machine$double.eps)) {
   UseMethod("equalGADS")
 }
 #'@export
-equalGADS.GADSdat <- function(target, current, metaExceptions = c("display_width", "labeled"), tolerance = sqrt(.Machine$double.eps)) {
+equalGADS.GADSdat <- function(target, current, id = NULL,
+                              metaExceptions = c("display_width", "labeled"), tolerance = sqrt(.Machine$double.eps)) {
   check_GADSdat(target)
   check_GADSdat(current)
-  if(!(is.null(metaExceptions) || is.character(metaExceptions))) stop("'metaExceptions' must be NULL or a character vector.")
-  if(any(!metaExceptions %in% c("varLabel", 'format', 'display_width', 'valLabel', 'missings', 'labeled'))) stop("Entries in 'metaExceptions' can only be 'varLabel', 'format', 'display_width', 'labeled', 'valLabel', and 'missings'.")
+  if(!(is.null(metaExceptions) || is.character(metaExceptions))) {
+    stop("'metaExceptions' must be NULL or a character vector.")
+  }
+  if(any(!metaExceptions %in% c("varLabel", 'format', 'display_width', 'valLabel', 'missings', 'labeled'))) {
+    stop("Entries in 'metaExceptions' can only be 'varLabel', 'format', 'display_width', 'labeled', 'valLabel', and 'missings'.")
+  }
+  # sort if possible
+  if(!is.null(id)) {
+    check_vars_in_GADSdat(target, vars = id, argName = "id", GADSdatName = "target")
+    check_vars_in_GADSdat(current, vars = id, argName = "id", GADSdatName = "current")
+
+    target$dat <- target$dat[order(target$dat[, id]), ]
+    current$dat <- current$dat[order(current$dat[, id]), ]
+  }
 
   out <- list()
 
-  #browser()
   # variable names
   target_names <- namesGADS(target)
   current_names <- namesGADS(current)

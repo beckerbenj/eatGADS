@@ -28,12 +28,23 @@ test_that("Compare two identical GADSdat objects",{
   expect_equal(out$data_nrow, "all.equal")
 })
 
-test_that("Compare while ignoring order differences",{
+test_that("Compare while ignoring order differences for meta data",{
   dfSAV2 <- dfSAV
   dfSAV2$labels <- dfSAV2$labels[c(2:1, 3:7), ]
   out <- equalGADS(dfSAV, dfSAV2)
   expect_equal(out$meta_data_differences, character())
 })
+
+test_that("Compare while ignoring order differences for data",{
+  dfSAV2 <- dfSAV
+  dfSAV2$dat <- dfSAV2$dat[c(2, 4, 3, 1), ]
+  out <- equalGADS(dfSAV, dfSAV2)
+  expect_equal(out$data_differences, c("VAR1", "VAR3"))
+
+  out2 <- equalGADS(dfSAV, dfSAV2, id = "VAR1")
+  expect_equal(out2$data_differences, character())
+})
+
 
 test_that("Compare while ignoring irrelevant format differences",{
   dfSAV2 <- changeSPSSformat(dfSAV, "VAR1", format = "F8")

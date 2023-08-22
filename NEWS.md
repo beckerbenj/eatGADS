@@ -1,6 +1,7 @@
 # eatGADS 1.0.0.9000
 
 ## new features
+* `equalGADS()` now allows pre-sorting the data by an identifier variable
 * `updateMeta()`, `applyChangeMeta()`, `changeVarNames()`, `cloneVariable()`, `createVariable()`, `composeVar()`, and `dummies2char()` now have optional checks of new variables names via the `checkVarNames` argument
 * `reuseMeta()` now can be use on multiple variables at once
 * `inspectMetaDifferences()` now can be applied to data bases as well

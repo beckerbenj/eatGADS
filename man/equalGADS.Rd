@@ -7,6 +7,7 @@
 equalGADS(
   target,
   current,
+  id = NULL,
   metaExceptions = c("display_width", "labeled"),
   tolerance = sqrt(.Machine$double.eps)
 )
@@ -15,6 +16,9 @@ equalGADS(
 \item{target}{A \code{GADSdat} object.}
 
 \item{current}{A \code{GADSdat} object.}
+
+\item{id}{A character vector of length 1 containing the unique identifier column of both \code{GADSdat}.
+If specified, both \code{GADSdat} are ordered according to \code{ID} before comparing their data.}
 
 \item{metaExceptions}{Should certain meta data columns be excluded from the comparison?}
 
