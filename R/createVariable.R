@@ -33,6 +33,6 @@ createVariable.GADSdat <- function(GADSdat, varName, checkVarName = TRUE) {
   dat_only[[varName]] <- NA
 
   # perform checkVarNames in this function, as updateMeta provides more messages than desired
-  suppressMessages(GADSdat2 <- updateMeta(GADSdat, newDat = dat_only, checkVarName = FALSE))
+  suppressMessages(GADSdat2 <- updateMeta(GADSdat, newDat = dat_only, checkVarNames = FALSE))
   GADSdat2
 }
