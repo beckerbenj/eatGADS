@@ -1,4 +1,4 @@
-# eatGADS 1.0.0.9000
+# eatGADS 1.1.0
 
 ## new features
 * `equalGADS()` now allows pre-sorting the data by an identifier variable
