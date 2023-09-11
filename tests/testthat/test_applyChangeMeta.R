@@ -311,3 +311,22 @@ test_that("sort value labels", {
   expect_equal(out, dfSAV$labels[1:3,])
 })
 
+
+test_that("Multiple meta data conflicts during value recoding", {
+  dat <- data.frame(v1 = factor(c("a", "b", "c", "d", "e")))
+  gads <- import_DF(dat)
+
+  expect_error(recodeGADS(gads, "v1", oldValues = c(1, 2), newValues = c(6, 6), existingMeta = "value_new"),
+               "Duplicated values in 'value_new' causing conflicting meta data in variable v1: 6. Use 'existingMeta' = 'drop' or 'ignore' to drop all related meta data.")
+  expect_error(recodeGADS(gads, "v1", oldValues = c(1, 2, 4), newValues = c(6, 6, 5), existingMeta = "value_new"),
+               "Duplicated values in 'value_new' causing conflicting meta data in variable v1: 6. Use 'existingMeta' = 'drop' or 'ignore' to drop all related meta data.")
+
+  expect_error(recodeGADS(gads, "v1", oldValues = c(1, 2), newValues = c(6, 6), existingMeta = "value"),
+               "Duplicated values in 'value_new' causing conflicting meta data in variable v1: 6. Use 'existingMeta' = 'drop' or 'ignore' to drop all related meta data.")
+  expect_error(recodeGADS(gads, "v1", oldValues = c(1, 2, 4), newValues = c(6, 6, 5), existingMeta = "value"),
+               "Duplicated values in 'value_new' causing conflicting meta data in variable v1: 6. Use 'existingMeta' = 'drop' or 'ignore' to drop all related meta data.")
+
+  out <- recodeGADS(gads, "v1", oldValues = c(1, 2), newValues = c(6, 6), existingMeta = "drop")
+  out2 <- recodeGADS(gads, "v1", oldValues = c(1, 2, 4), newValues = c(6, 6, 5), existingMeta = "drop")
+  expect_equal(sum(out2$labels$value == 6), 1)
+})
