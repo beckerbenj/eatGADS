@@ -213,7 +213,7 @@ recode_labels <- function(labels, changeTable, existingMeta) {
       if(!(identical(existingMeta, "drop") || identical(existingMeta, "ignore"))) {
         all_values <- single_simpleChanges[existing_value_logical, "value_new"]
         stop("Duplicated values in 'value_new' causing conflicting meta data in variable ", var_name, ": ",
-             paste(dup_recode_values, collapse = ", "), ". Use 'existingMeta' = 'drop' or 'ignore' to drop all related meta data.")
+             paste(dup_recode_values, collapse = ", "), ". Use existingMeta = 'drop' or 'ignore' to drop all related meta data.")
       }
       # drop behavior
       if(identical(existingMeta, "drop")) {
@@ -236,7 +236,7 @@ recode_labels <- function(labels, changeTable, existingMeta) {
         remove_rows <- which(single_labels$value %in% remove_value_meta)
         dups <- duplicated(remove_value_meta)
         if(any(dups)) stop("Multiple values are recoded into ", remove_value_meta[dups], " for variable ",
-                           var_name, ". Value meta data can thus not be used from 'value'. Set 'existingMeta' to 'value_new'.")
+                           var_name, ". Value meta data can thus not be used from 'value'. Set existingMeta = 'value_new'.")
       }
       if(identical(existingMeta, "value_new")) {
         # remove meta data of value which is being recoded
