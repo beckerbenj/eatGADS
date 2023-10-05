@@ -198,12 +198,11 @@ recode_labels <- function(labels, changeTable, existingMeta) {
 
     # meta data conflicts only with new values
     recode_values <- single_simpleChanges$value_new[!is.na(single_simpleChanges$value_new)]
-    only_new_recode_values <- recode_values[!recode_values %in% single_simpleChanges[existing_value_logical, "value_new"]]
+    only_new_recode_values <- recode_values[!recode_values %in% existing_value_vec]
     dup_recode_values <- unique(only_new_recode_values[duplicated(only_new_recode_values)])
     dup_recode_values <- dup_recode_values[!dup_recode_values %in% single_simpleChanges[existing_value_logical, "value"]]
     new_dup_value_vec <- !is.na(single_simpleChanges$value_new) & single_simpleChanges$value_new %in% dup_recode_values
 
-    #browser()
     # ignore behavior: reset all changes for duplicate and existing value labels & missing tags
     if(identical(existingMeta, "ignore")) {
       single_simpleChanges[new_dup_value_vec | existing_value_logical, "value_new"] <- NA
@@ -211,7 +210,7 @@ recode_labels <- function(labels, changeTable, existingMeta) {
 
     if(length(dup_recode_values) > 0 && !all(dup_recode_values %in% existing_value_vec)){
       if(!(identical(existingMeta, "drop") || identical(existingMeta, "ignore"))) {
-        all_values <- single_simpleChanges[existing_value_logical, "value_new"]
+        all_values <- existing_value_vec
         stop("Duplicated values in 'value_new' causing conflicting meta data in variable ", var_name, ": ",
              paste(dup_recode_values, collapse = ", "), ". Use existingMeta = 'drop' or 'ignore' to drop all related meta data.")
       }
@@ -226,13 +225,13 @@ recode_labels <- function(labels, changeTable, existingMeta) {
     # meta data conflicts with old values (and optionally new values)
     if(any(existing_value_logical)){
       if(identical(existingMeta, "stop")) {
-        all_values <- single_simpleChanges[existing_value_logical, "value_new"]
+        all_values <- existing_value_vec
         stop("Values in 'value_new' with existing meta data in variable ", var_name, ": ",
                                                paste(all_values, collapse = ", "))
       }
       if(identical(existingMeta, "value")) {
         # remove meta data of value which is being recoded
-        remove_value_meta <- single_simpleChanges[existing_value_logical, "value_new"]
+        remove_value_meta <- existing_value_vec
         remove_rows <- which(single_labels$value %in% remove_value_meta)
         dups <- duplicated(remove_value_meta)
         if(any(dups)) stop("Multiple values are recoded into ", remove_value_meta[dups], " for variable ",
@@ -240,7 +239,7 @@ recode_labels <- function(labels, changeTable, existingMeta) {
       }
       if(identical(existingMeta, "value_new")) {
         # remove meta data of value which is being recoded
-        remove_value_meta <- single_simpleChanges[existing_value_logical, "value_new"]
+        remove_value_meta <- existing_value_vec
         remove_rows <- which(single_labels$value %in% remove_value_meta)
         # if no new value labels or missing codes are specified, recode new meta data rows based on old ones
         single_simpleChanges[existing_value_logical, "valLabel_new"] <- ifelse(is.na(single_simpleChanges[existing_value_logical, "valLabel_new"]),
@@ -251,9 +250,8 @@ recode_labels <- function(labels, changeTable, existingMeta) {
                                                                            no = single_simpleChanges[existing_value_logical, "missings_new"])
       }
       if(identical(existingMeta, "drop")) {
-        #browser()
-        # remove meta data of value which is being recoded
-        remove_value_meta <- single_simpleChanges[existing_value_logical, "value_new"]
+        #remove_value_meta <- single_simpleChanges[existing_value_logical, "value_new"]
+        remove_value_meta <- existing_value_vec
         remove_value_meta <- unique(c(remove_value_meta, single_simpleChanges[existing_value_logical, "value"]))
         drop_meta_rows <- which(single_labels$value %in% remove_value_meta)
         single_labels[drop_meta_rows, c("valLabel", "missings")] <- NA
