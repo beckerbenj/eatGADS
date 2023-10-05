@@ -102,11 +102,11 @@ test_that("Recoding multiple value into the same value (without meta data confli
   changes_val3[1:3, "value_new"] <- c(1, 1, NA)
 
   expect_error(recode_labels(dfSAV$labels, changes_val2, existingMeta = "stop"),
-               "Duplicated values in 'value_new' causing conflicting meta data in variable VAR1: 10. Use 'existingMeta' = 'drop' or 'ignore' to drop all related meta data.")
+               "Duplicated values in 'value_new' causing conflicting meta data in variable VAR1: 10. Use existingMeta = 'drop' or 'ignore' to drop all related meta data.")
   expect_error(recode_labels(dfSAV$labels, changes_val2, existingMeta = "value"),
-               "Duplicated values in 'value_new' causing conflicting meta data in variable VAR1: 10. Use 'existingMeta' = 'drop' or 'ignore' to drop all related meta data.")
+               "Duplicated values in 'value_new' causing conflicting meta data in variable VAR1: 10. Use existingMeta = 'drop' or 'ignore' to drop all related meta data.")
   expect_error(recode_labels(dfSAV$labels, changes_val2, existingMeta = "value_new"),
-               "Duplicated values in 'value_new' causing conflicting meta data in variable VAR1: 10. Use 'existingMeta' = 'drop' or 'ignore' to drop all related meta data.")
+               "Duplicated values in 'value_new' causing conflicting meta data in variable VAR1: 10. Use existingMeta = 'drop' or 'ignore' to drop all related meta data.")
 
   out2 <- recode_labels(dfSAV$labels, changes_val2, existingMeta = "drop")
   expect_equal(out2[1, "value"], 10)
@@ -128,7 +128,7 @@ test_that("Recoding multiple value into the same value (with meta data conflicts
   expect_error(recode_labels(dfSAV$labels, changes_val2, existingMeta = "stop"),
                "Values in 'value_new' with existing meta data in variable VAR1: 1")
   expect_error(recode_labels(dfSAV$labels, changes_val2, existingMeta = "value"),
-               "Multiple values are recoded into 1 for variable VAR1. Value meta data can thus not be used from 'value'. Set 'existingMeta' to 'value_new'.")
+               "Multiple values are recoded into 1 for variable VAR1. Value meta data can thus not be used from 'value'. Set existingMeta = 'value_new'.")
 
   out2 <- recode_labels(dfSAV$labels, changes_val2, existingMeta = "value_new")
   comp2 <- dfSAV$labels[-(2:3), ]
@@ -155,11 +155,11 @@ test_that("Recoding multiple value into the same value (with and without meta da
   changes_valb[1:2, "value_new"] <- 1
   changes_valb[3:4, "value_new"] <- 10
   expect_error(recode_labels(dfSAVb$labels, changes_valb, existingMeta = "stop"),
-               "Duplicated values in 'value_new' causing conflicting meta data in variable VAR1: 1, 10. Use 'existingMeta' = 'drop' or 'ignore' to drop all related meta data.")
+               "Duplicated values in 'value_new' causing conflicting meta data in variable VAR1: 1, 10. Use existingMeta = 'drop' or 'ignore' to drop all related meta data.")
   expect_error(recode_labels(dfSAVb$labels, changes_valb, existingMeta = "value"),
-               "Duplicated values in 'value_new' causing conflicting meta data in variable VAR1: 1, 10. Use 'existingMeta' = 'drop' or 'ignore' to drop all related meta data.")
+               "Duplicated values in 'value_new' causing conflicting meta data in variable VAR1: 1, 10. Use existingMeta = 'drop' or 'ignore' to drop all related meta data.")
   expect_error(recode_labels(dfSAVb$labels, changes_valb, existingMeta = "value_new"),
-               "Duplicated values in 'value_new' causing conflicting meta data in variable VAR1: 1, 10. Use 'existingMeta' = 'drop' or 'ignore' to drop all related meta data.")
+               "Duplicated values in 'value_new' causing conflicting meta data in variable VAR1: 1, 10. Use existingMeta = 'drop' or 'ignore' to drop all related meta data.")
 
   out2 <- recode_labels(dfSAVb$labels, changes_valb, existingMeta = "drop")
   expect_equal(out2[1, "value"], 1)
@@ -311,3 +311,26 @@ test_that("sort value labels", {
   expect_equal(out, dfSAV$labels[1:3,])
 })
 
+
+test_that("Multiple meta data conflicts during value recoding", {
+  dat <- data.frame(v1 = factor(c("a", "b", "c", "d", "e")))
+  gads <- import_DF(dat)
+
+  expect_error(recodeGADS(gads, "v1", oldValues = c(1, 2), newValues = c(6, 6), existingMeta = "value_new"),
+               "Duplicated values in 'value_new' causing conflicting meta data in variable v1: 6. Use existingMeta = 'drop' or 'ignore' to drop all related meta data.")
+  expect_error(recodeGADS(gads, "v1", oldValues = c(1, 2, 4), newValues = c(6, 6, 5), existingMeta = "value_new"),
+               "Duplicated values in 'value_new' causing conflicting meta data in variable v1: 6. Use existingMeta = 'drop' or 'ignore' to drop all related meta data.")
+
+  expect_error(recodeGADS(gads, "v1", oldValues = c(1, 2), newValues = c(6, 6), existingMeta = "value"),
+               "Duplicated values in 'value_new' causing conflicting meta data in variable v1: 6. Use existingMeta = 'drop' or 'ignore' to drop all related meta data.")
+  expect_error(recodeGADS(gads, "v1", oldValues = c(1, 2, 4), newValues = c(6, 6, 5), existingMeta = "value"),
+               "Duplicated values in 'value_new' causing conflicting meta data in variable v1: 6. Use existingMeta = 'drop' or 'ignore' to drop all related meta data.")
+
+  out <- recodeGADS(gads, "v1", oldValues = c(1, 2), newValues = c(6, 6), existingMeta = "drop")
+  out2 <- recodeGADS(gads, "v1", oldValues = c(1, 2, 4), newValues = c(6, 6, 5), existingMeta = "drop")
+  expect_equal(sum(out2$labels$value == 6), 1)
+
+  out3 <- recodeGADS(gads, "v1", oldValues = c(1, 2), newValues = c(6, 6), existingMeta = "ignore")
+  out4 <- recodeGADS(gads, "v1", oldValues = c(1, 2, 4), newValues = c(6, 6, 5), existingMeta = "ignore")
+  expect_equal(out3$labels, out4$labels)
+})
