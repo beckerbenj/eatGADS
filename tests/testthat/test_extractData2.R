@@ -154,6 +154,14 @@ test_that("Correct behavior if not all value labels in actual values", {
   expect_equal(as.numeric(dat$v1), c(1, 2, 1))
 })
 
+test_that("Correct behavior if values are being recoded into then to be recoded values", {
+  dat <- data.frame(v1 = c(1, 2, 98, 99))
+  gads <- import_DF(dat)
+  gads2 <- changeValLabels(gads, "v1", value = c(1, 2, 98, 99),
+                           valLabel = c(98, 99, "missing 1", "missing 2"))
+  out <- extractData2(gads2, labels2character = namesGADS(gads2))
+  expect_equal(out[[1]], c(98, 99, "missing 1", "missing 2"))
+})
 
 mixed_values <- new_GADSdat(dat = data.frame(x = 0, y = 1, stringsAsFactors = FALSE),
                             labels = data.frame(varName = c("x", "y"),
