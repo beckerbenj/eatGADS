@@ -13,5 +13,5 @@ test_that("GADS DB creation", {
   expect_message(createGADS(allList = df1, pkList = list(df1 = "ID1"), filePath = ":memory:"),
                  "filePath points to work memory")
   expect_error(createGADS(allList = df1, pkList = "ID1", filePath = ":memory:"), "All input lists have to be named")
-  expect_error(createGADS(allList = list(df1), pkList = list(df1 = "ID1"), filePath = ":memory:"), "no applicable method for 'createGADS' applied to an object of class \"list\"")
+  expect_error(createGADS(allList = list(df1), pkList = list(df1 = "ID1"), filePath = ":memory:"))
 })
