@@ -11,7 +11,7 @@ removeEmptyValLabels(GADSdat, vars, whichValLabels = c("miss", "valid", "all"))
 
 \item{vars}{Character string of variable names.}
 
-\item{whichValLabels}{Should unused missing value tags and labels (\code{"miss"}).}
+\item{whichValLabels}{Should unused missing value tags and labels (\code{"miss"}), unused value labels for non-missing values (\code{"valid"}), or both (\code{"all"}) be removed?}
 }
 \value{
 Returns the \code{GADSdat} object with changed meta data.
@@ -20,6 +20,11 @@ Returns the \code{GADSdat} object with changed meta data.
 Remove unused value labels of a variable as part of a \code{GADSdat} object.
 }
 \examples{
-#tbd
+gads <- import_DF(data.frame(v1 = 1))
+gads <- changeMissings(gads, varName = "v1", value = c(-99, -98), missings = c("miss", "miss"))
+gads <- changeValLabels(gads, varName = "v1", value = c(-99), valLabel = c("not reached"))
+
+gads2 <- removeEmptyValLabels(gads, vars = "v1")
+
 
 }

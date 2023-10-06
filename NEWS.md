@@ -1,7 +1,7 @@
 # eatGADS 1.1.0.9000
 ## bug fixes
 * `applyChangeMeta()` and `recodeGADS()` now correctly perform recodings (and throw errors) if multiple meta data conflicts occur (#57)
-
+* `removeEmptyValLabels()` for removing unused missing tags and value labels (#4)
 
 # eatGADS 1.1.0
 

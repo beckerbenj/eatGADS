@@ -9,8 +9,7 @@ test_that("Errors", {
                "'arg' should be one of “miss”, “valid”, “all”")
 })
 
-
-test_that("removeEmptyValLabels for missing tags", {
+test_that("removeEmptyValLabels for value labels", {
   dfSAV2 <- changeValLabels(dfSAV, varName = "VAR2", value = c(-99, 5), valLabel = c("someMiss", "test"))
   dfSAV2 <- changeValLabels(dfSAV2, varName = "VAR3", value = c(-98, 5), valLabel = c("someMiss", "test"))
   dfSAV2 <- changeMissings(dfSAV2, varName = "VAR2", value = -96, missings = "miss")
@@ -25,9 +24,7 @@ test_that("removeEmptyValLabels for missing tags", {
   expect_equal(out3$labels$value, c(-99, -96, 1, NA, -98))
 })
 
-
-# requires implementation in checkEmptyValLabels?
-test_that("removeEmptyValLabels for missing tags", {
-  out <- removeEmptyValLabels(dfSAV, vars = namesGADS(dfSAV))
-  expect_equal(out$labels$value, c(-99, -96, 1, -96))
+test_that("removeEmptyValLabels also for missing tags", {
+  out <- removeEmptyValLabels(dfSAV, vars = namesGADS(dfSAV), whichValLabels = "all")
+  expect_equal(out$labels$value, c(-99, -96, 1, NA, -98))
 })
