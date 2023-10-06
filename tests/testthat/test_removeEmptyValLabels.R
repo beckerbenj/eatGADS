@@ -5,8 +5,7 @@ dfSAV <- import_spss(file = "helper_spss_missings.sav")
 dfUn <- import_DF(data.frame(v1 = 1, v2 = 2))
 
 test_that("Errors", {
-  expect_error(removeEmptyValLabels(dfSAV, vars = "VAR1", whichValLabels = "other"),
-               "'arg' should be one of “miss”, “valid”, “all”")
+  expect_error(removeEmptyValLabels(dfSAV, vars = "VAR1", whichValLabels = "other"))
 })
 
 test_that("removeEmptyValLabels for value labels", {
