@@ -119,29 +119,24 @@ labels2values <- function(dat, labels, convertLabels, convertMiss, dropPartialLa
                                  convertMiss = convertMiss))
     change_labels <- change_labels[!change_labels$varName %in% drop_labels, ]
   }
-  # convert labels into values
-  changed_variables <- character(0)
   # early return, if no values are to be recoded
   if(nrow(change_labels) == 0) return(dat)
-  # recode values
-  for(i in seq(nrow(change_labels))) {
-    curRow <- change_labels[i, , drop = FALSE]
-    #browser()
-    if(!is.na(curRow$valLabel)) {
-      ## preserve numeric type of variable if possible (although not sure whether this could realistically be the case...)
-      curRow$valLabel <- suppressWarnings(eatTools::asNumericIfPossible(curRow$valLabel, force.string = FALSE))
-      # so far fastest: maybe car? mh...
-      dat[which(dat[, curRow$varName] == curRow$value), curRow$varName] <- curRow$valLabel
-      # dat[, curRow$varName] <- ifelse(dat[, curRow$varName] == curRow$value, curRow$valLabel, dat[, curRow$varName])
-      changed_variables <- unique(c(curRow$varName, changed_variables))
-    }
-  }
+
+  # convert labels into values (use recode function from applyChangeMeta)
+  change_table <- change_labels[, c("varName", "value", "valLabel")]
+  names(change_table) <- c("varName", "value", "value_new")
+  dat2 <- recode_dat(dat, changeTable = change_table)
+
+  # identify modified variables
+  is_character_old <- unlist(lapply(dat, function(var) is.character(var)))
+  is_character_new <- unlist(lapply(dat2, function(var) is.character(var)))
+  changed_variables <- names(dat2)[is_character_new & !is_character_old]
 
   # convert characters to factor if specified (keep ordering if possible)
   if(identical(convertLabels, "factor")) {
-    dat <- char2fac(dat = dat, labels = labels, vars = changed_variables, convertMiss = convertMiss)
+    dat2 <- char2fac(dat = dat2, labels = labels, vars = changed_variables, convertMiss = convertMiss)
   }
-  dat
+  dat2
 }
 
 # check if variable is correctly labeled, issues warning
