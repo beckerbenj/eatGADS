@@ -4,26 +4,27 @@ load(file = "helper_data.rda")
 
 test_that("Errors",{
   df1_5 <- df1_4 <- df1_2 <- df1_3 <- df1
-  expect_error(inspectMetaDifferences(c("1", "2"), df1, df1_2),
+  expect_error(inspectMetaDifferences(df1, varName = c("1", "2"), other_GADSdat = df1_2),
                "'varName' needs to be a character vector of length 1.")
-  expect_error(inspectMetaDifferences("v1", df1, df1_2),
-               "The following 'varName' are not variables in the GADSdat1: v1")
+  expect_error(inspectMetaDifferences(df1, varName = "v1", other_GADSdat = df1_2),
+               "The following 'varName' are not variables in the GADSdat: v1")
+  expect_error(inspectMetaDifferences(df1, varName = "V1", other_GADSdat = df2),
+               "The following 'other_varName' are not variables in the other_GADSdat: V1")
 })
 
 test_that("Compare two identical GADSdat objects",{
-  out <- inspectMetaDifferences("V1", df1, df1)
+  out <- inspectMetaDifferences(df1, varName = "V1")
   expect_null(out$varDiff)
   expect_null(out$valDiff)
 
-  out2 <- inspectMetaDifferences("V1", "helper_dataBase.db",
-                                "helper_dataBase.db")
+  out2 <- inspectMetaDifferences("helper_dataBase.db", varName = "V1")
   expect_null(out2$varDiff)
   expect_null(out2$valDiff)
 })
 
 test_that("Differences on variable level",{
   df1_2 <- changeVarLabels(df1, "V1", "some label")
-  out <- inspectMetaDifferences("V1", df1, df1_2)
+  out <- inspectMetaDifferences(df1, varName = "V1", other_GADSdat = df1_2)
   expect_equal(names(out), c("varDiff", "valDiff"))
   expect_equal(dim(out$varDiff), c(1, 5))
   expect_equal(out$varDiff[1, 2], NA_character_)
@@ -34,7 +35,7 @@ test_that("Differences on variable level",{
 
 test_that("Differences on value level",{
   df1_2 <- changeValLabels(df1, "V1", value = c(1, 3), valLabel = c("test 1", "test 2"))
-  out <- inspectMetaDifferences("V1", df1, df1_2)
+  out <- inspectMetaDifferences(df1, varName = "V1", other_GADSdat = df1_2)
 
   expect_equal(dim(out$valDiff), c(2, 6))
   expect_equal(out$valDiff[, "value"], c(1, 3))
@@ -42,7 +43,7 @@ test_that("Differences on value level",{
   expect_equal(out$valDiff[, "GADS2.valLabel"], c("test 1", "test 2"))
 
   df1_3 <- changeValLabels(df1, "V1", value = c(1, 3), valLabel = c("test 1", "test 2b"))
-  out2 <- inspectMetaDifferences("V1", df1_2, df1_3)
+  out2 <- inspectMetaDifferences(df1_2, varName = "V1", other_GADSdat = df1_3)
 
   expect_equal(dim(out2$valDiff), c(1, 6))
   expect_equal(out2$valDiff[, "value"], 3)
@@ -50,7 +51,7 @@ test_that("Differences on value level",{
   expect_equal(out2$valDiff[, "GADS2.valLabel"], c("test 2b"))
 
   df1_4 <- changeMissings(df1_3, "V1", value = c(1), missings = "miss")
-  out3 <- inspectMetaDifferences("V1", df1_4, df1_3)
+  out3 <- inspectMetaDifferences(df1_4, varName = "V1", other_GADSdat = df1_3)
 
   expect_equal(out3$valDiff[, "value"], 1)
   expect_equal(out3$valDiff[, "GADS1.missings"], c("miss"))
@@ -60,7 +61,7 @@ test_that("Differences on value level",{
 test_that("Differences after recoding",{
   pisa2 <- changeVarLabels(pisa, varName = "sameteach", varLabel = "Same math teacher")
   pisa2 <- recodeGADS(pisa2, varName = "sameteach", oldValues = c(1, 2), newValues = c(0, 1))
-  out <- inspectMetaDifferences("sameteach", pisa, pisa2)
+  out <- inspectMetaDifferences(pisa, varName = "sameteach", other_GADSdat = pisa2)
 
   expect_equal(dim(out$valDiff), c(3, 6))
   expect_equal(out$valDiff[, "value"], 0:2)

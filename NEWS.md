@@ -1,4 +1,7 @@
 # eatGADS 1.1.0.9000
+## new features
+* `inspectDifferences()` and `inspectMetaDifferences()` now allow comparisons of variables within the same `GADSdat` object (#62)
+
 ## bug fixes
 * `applyChangeMeta()` and `recodeGADS()` now correctly perform recodings (and throw errors) if multiple meta data conflicts occur (#57)
 

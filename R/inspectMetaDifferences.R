@@ -2,17 +2,21 @@
 #############################################################################
 #' Inspect meta data differences in a variable.
 #'
-#' Inspect meta data differences between two \code{GADSdat} objects or \code{GADSdat} data bases regarding a specific variable.
+#' Inspect meta data differences within a single \code{GADSdat} or between two \code{GADSdat} objects
+#' or \code{GADSdat} data bases regarding a specific variable.
 #'
 #' Two \code{GADSdat} objects can be compared using \code{\link{equalGADS}}.
 #' If meta data differences for specific variables in the two objects occur,
 #' these variables can be further inspected using \code{inspectMetaDifferences}.
 #' For data-level differences for a specific variable, see \code{\link{inspectDifferences}}.
 #'
+#'@param GADSdat A \code{GADSdat} object.
 #'@param varName A character vector of length 1 containing the variable name.
-#'@param GADSdat1 A \code{GADSdat} object.
-#'@param GADSdat2 A \code{GADSdat} object.
-
+#'@param other_GADSdat A second \code{GADSdat} object. If omitted, it is assumed that both variables are part of the
+#'first \code{GADSdat}.
+#'@param other_varName A character vector of length 1 containing the other variable name.
+#'If omitted, it is assumed that both variables have identical names (as supplied in \code{varName}).
+#'
 #'@return A list.
 #'
 #'@examples
@@ -25,16 +29,17 @@
 #' equalGADS(pisa, pisa2)
 #'
 #' # inspect via inspectMetaDifferences()
-#' inspectMetaDifferences("sameteach", GADSdat1 = pisa, GADSdat2 = pisa2)
+#' inspectMetaDifferences(GADSdat = pisa, varName = "sameteach", other_GADSdat = pisa2)
 #'
 #'@export
-inspectMetaDifferences <- function(varName, GADSdat1, GADSdat2) {
+inspectMetaDifferences <- function(GADSdat, varName, other_GADSdat = GADSdat, other_varName = varName) {
   check_characterArgument(varName, argName = "varName")
-  check_vars_in_GADSdat(GADSdat1, vars = varName, argName = "varName", GADSdatName = "GADSdat1")
-  check_vars_in_GADSdat(GADSdat2, vars = varName, argName = "varName", GADSdatName = "GADSdat2")
+  check_characterArgument(other_varName, argName = "other_varName")
+  check_vars_in_GADSdat(GADSdat, vars = varName, argName = "varName", GADSdatName = "GADSdat")
+  check_vars_in_GADSdat(other_GADSdat, vars = other_varName, argName = "other_varName", GADSdatName = "other_GADSdat")
 
-  meta1 <- extractMeta(GADSdat1, varName)
-  meta2 <- extractMeta(GADSdat2, varName)
+  meta1 <- extractMeta(GADSdat, varName)
+  meta2 <- extractMeta(other_GADSdat, other_varName)
 
   ## Variable level
   metaVar1 <- meta1[1, c("varName", "varLabel", "format")]
