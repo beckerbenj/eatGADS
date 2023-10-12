@@ -32,11 +32,8 @@ removeEmptyValLabels.GADSdat <- function(GADSdat, vars, whichValLabels = c("miss
     #browser()
     emptyValLabels_nam <- emptyValLabels[[nam]]
 
-    if(identical(whichValLabels, "miss")) {
-      emptyValLabels_nam <- emptyValLabels_nam[which(emptyValLabels_nam$missings == "miss"), ]
-    }
-    if(identical(whichValLabels, "valid")) {
-      emptyValLabels_nam <- emptyValLabels_nam[which(emptyValLabels_nam$missings == "valid"), ]
+    if (whichValLabels %in% c("miss", "valid")) {
+      emptyValLabels_nam <- emptyValLabels_nam[which(emptyValLabels_nam$missings == whichValLabels), ]
     }
 
     if(is.null(emptyValLabels_nam) || nrow(emptyValLabels_nam) == 0) next
