@@ -42,15 +42,15 @@ inspectMetaDifferences <- function(GADSdat, varName, other_GADSdat = GADSdat, ot
   meta2 <- extractMeta(other_GADSdat, other_varName)
 
   ## Variable level
-  metaVar1 <- meta1[1, c("varName", "varLabel", "format")]
-  metaVar2 <- meta2[1, c("varName", "varLabel", "format")]
+  metaVar1 <- meta1[1, c("varLabel", "format")]
+  metaVar2 <- meta2[1, c("varLabel", "format")]
   row.names(metaVar1) <- row.names(metaVar2) <- NULL
 
   varDiff <- NULL
   if(!identical(metaVar1, metaVar2)) {
     varDiff <- data.frame(varName = varName,
-                          GADS1 = metaVar1[, 2:3],
-                          GADS2 = metaVar2[, 2:3])
+                          GADS1 = metaVar1,
+                          GADS2 = metaVar2)
   }
 
   ## Value level
@@ -58,8 +58,12 @@ inspectMetaDifferences <- function(GADSdat, varName, other_GADSdat = GADSdat, ot
   metaVal2 <- meta2[, c("varName", "value", "valLabel", "missings")]
   row.names(metaVal1) <- row.names(metaVal2) <- NULL
 
+  # hotfix, this should be properly fixed someday
+  metaVal1$value <- as.numeric(metaVal1$value)
+  metaVal2$value <- as.numeric(metaVal2$value)
+
   valDiff <- NULL
-  if(!identical(metaVal1, metaVal2)) {
+  if(!identical(metaVal1[, c("value", "valLabel", "missings")], metaVal2[, c("value", "valLabel", "missings")])) {
     all_values <- unique(stats::na.omit(c(metaVal1$value, metaVal2$value)))
     for(val in all_values) {
       #browser()

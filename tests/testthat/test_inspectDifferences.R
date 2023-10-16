@@ -23,12 +23,14 @@ test_that("Errors",{
                "Missing values in 'id' column of 'GADSdat'.")
   df1_5$dat[, 2] <- as.character(df1_5$dat[, 1])
   expect_error(inspectDifferences(df1, varName = "V1", other_GADSdat = df1_5, id = "ID1"),
-               "'varName' column is numeric in 'GADSdat' but not in 'other_GADSdat'.")
+               "'varName' column is numeric in 'GADSdat' but 'other_varName' is not numeric in 'other_GADSdat'.")
   expect_error(inspectDifferences(df1_5, varName = "V1", other_GADSdat = df1, id = "ID1"),
-               "'varName' column is numeric in 'other_GADSdat' but not in 'GADSdat'.")
+               "'other_varName' column is numeric in 'other_GADSdat' but 'varName' is not numeric in 'GADSdat'.")
+  expect_error(inspectDifferences(df1_5, varName = "V1", other_GADSdat = df1, other_varName = "ID1", id = "ID1"),
+               "'other_varName' column is numeric in 'other_GADSdat' but 'varName' is not numeric in 'GADSdat'.")
 })
 
-test_that("Compare two different GADSdat objects",{
+test_that("Compare two different GADSdat objects but the same variable",{
   df1_2 <- df1
   df1_2$dat[1, 2] <- 9
   out <- inspectDifferences(df1, varName = "V1", other_GADSdat = df1_2, id = "ID1")
@@ -38,6 +40,18 @@ test_that("Compare two different GADSdat objects",{
   expect_equal(out$some_unequals_GADSdat2, df1_2$dat[1, ])
   expect_equal(out$cross_table, table(df1$dat$V1, df1_2$dat$V1, dnn = c("GADSdat1", "GADSdat2")))
 })
+
+test_that("Compare two different GADSdat objects and different variables",{
+  df1_2 <- df1
+  df1_2$dat[1, 2] <- 9
+  out <- inspectDifferences(df1, varName = "ID1", other_GADSdat = df1_2, other_varName = "V1", id = "ID1")
+  expect_equal(names(out), c("cross_table", "some_unequals_GADSdat1", "some_unequals_GADSdat2", "unequal_IDs"))
+  expect_equal(out$unequal_IDs, 1:2)
+  expect_equal(out$some_unequals_GADSdat1, df1$dat)
+  expect_equal(out$some_unequals_GADSdat2, df1_2$dat)
+  expect_equal(out$cross_table, table(df1$dat$ID1, df1_2$dat$V1, dnn = c("GADSdat1", "GADSdat2")))
+})
+
 
 test_that("Compare two identical GADSdat objects",{
   out <- inspectDifferences(df1, varName = "V1", id = "ID1")

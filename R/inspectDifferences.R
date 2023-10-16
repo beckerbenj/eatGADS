@@ -47,14 +47,20 @@ inspectDifferences <- function(GADSdat, varName, other_GADSdat = GADSdat, other_
   if(any(is.na(other_GADSdat$dat[, id]))) stop("Missing values in 'id' column of 'other_GADSdat'.")
   if(any(GADSdat$dat[, id] != other_GADSdat$dat[, id])) stop("'id' column is not equal for 'GADSdat' and 'other_GADSdat'.")
 
-  if(is.numeric(GADSdat$dat[, varName]) && !is.numeric(other_GADSdat$dat[, varName])) stop("'varName' column is numeric in 'GADSdat' but not in 'other_GADSdat'.")
-  if(!is.numeric(GADSdat$dat[, varName]) && is.numeric(other_GADSdat$dat[, varName])) stop("'varName' column is numeric in 'other_GADSdat' but not in 'GADSdat'.")
+  if(is.numeric(GADSdat$dat[, varName]) && !is.numeric(other_GADSdat$dat[, other_varName])) {
+    stop("'varName' column is numeric in 'GADSdat' but 'other_varName' is not numeric in 'other_GADSdat'.")
+  }
+  if(!is.numeric(GADSdat$dat[, varName]) && is.numeric(other_GADSdat$dat[, other_varName])) {
+    stop("'other_varName' column is numeric in 'other_GADSdat' but 'varName' is not numeric in 'GADSdat'.")
+  }
 
-  if(isTRUE(all.equal(GADSdat$dat[, varName], other_GADSdat$dat[, varName], scale = 1))) return("all.equal")
+  if(isTRUE(all.equal(GADSdat$dat[, varName], other_GADSdat$dat[, other_varName], scale = 1))) {
+    return("all.equal")
+  }
 
-  unequal_rows <- c(which(other_GADSdat$dat[, varName] != GADSdat$dat[, varName]),
-                    which(is.na(other_GADSdat$dat[, varName]) & !is.na(GADSdat$dat[, varName])),
-                    which(!is.na(other_GADSdat$dat[, varName]) & is.na(GADSdat$dat[, varName])))
+  unequal_rows <- c(which(other_GADSdat$dat[, other_varName] != GADSdat$dat[, varName]),
+                    which(is.na(other_GADSdat$dat[, other_varName]) & !is.na(GADSdat$dat[, varName])),
+                    which(!is.na(other_GADSdat$dat[, other_varName]) & is.na(GADSdat$dat[, varName])))
   unequal_case_dat2 <- other_GADSdat$dat[unequal_rows, ]
   unequal_case_dat1 <- GADSdat$dat[unequal_rows, ]
 
@@ -63,10 +69,10 @@ inspectDifferences <- function(GADSdat, varName, other_GADSdat = GADSdat, other_
   nrow1 <- ifelse(nrow(unequal_case_dat1) > 5, yes = 5, no = nrow(unequal_case_dat1))
   nrow2 <- ifelse(nrow(unequal_case_dat2) > 5, yes = 5, no = nrow(unequal_case_dat2))
 
-  list(cross_table = table(GADSdat$dat[, varName], other_GADSdat$dat[, varName], useNA = "if",
+  list(cross_table = table(GADSdat$dat[, varName], other_GADSdat$dat[, other_varName], useNA = "if",
                            dnn = c("GADSdat1", "GADSdat2")),
        some_unequals_GADSdat1 = unequal_case_dat1[1:nrow1, unique(c(namesGADS(GADSdat)[1:ncol1], varName))],
-       some_unequals_GADSdat2 = unequal_case_dat2[1:nrow2, unique(c(namesGADS(other_GADSdat)[1:ncol2], varName))],
+       some_unequals_GADSdat2 = unequal_case_dat2[1:nrow2, unique(c(namesGADS(other_GADSdat)[1:ncol2], other_varName))],
        unequal_IDs = unequal_case_dat2[, id]
   )
 }

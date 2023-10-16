@@ -17,6 +17,10 @@ test_that("Compare two identical GADSdat objects",{
   expect_null(out$varDiff)
   expect_null(out$valDiff)
 
+  out <- inspectMetaDifferences(df1, varName = "V1", other_GADSdat = df2, other_varName = "ID1")
+  expect_null(out$varDiff)
+  expect_null(out$valDiff)
+
   out2 <- inspectMetaDifferences("helper_dataBase.db", varName = "V1")
   expect_null(out2$varDiff)
   expect_null(out2$valDiff)
