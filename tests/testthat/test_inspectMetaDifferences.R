@@ -14,52 +14,59 @@ test_that("Errors",{
 
 test_that("Compare two identical GADSdat objects",{
   out <- inspectMetaDifferences(df1, varName = "V1")
-  expect_null(out$varDiff)
-  expect_null(out$valDiff)
+  expect_equal(out$varDiff, "all.equal")
+  expect_equal(out$valDiff, "all.equal")
 
   out <- inspectMetaDifferences(df1, varName = "V1", other_GADSdat = df2, other_varName = "ID1")
-  expect_null(out$varDiff)
-  expect_null(out$valDiff)
+  expect_equal(out$varDiff, "all.equal")
+  expect_equal(out$valDiff, "all.equal")
 
   out2 <- inspectMetaDifferences("helper_dataBase.db", varName = "V1")
-  expect_null(out2$varDiff)
-  expect_null(out2$valDiff)
+  expect_equal(out2$varDiff, "all.equal")
+  expect_equal(out2$valDiff, "all.equal")
 })
 
 test_that("Differences on variable level",{
   df1_2 <- changeVarLabels(df1, "V1", "some label")
   out <- inspectMetaDifferences(df1, varName = "V1", other_GADSdat = df1_2)
   expect_equal(names(out), c("varDiff", "valDiff"))
-  expect_equal(dim(out$varDiff), c(1, 5))
-  expect_equal(out$varDiff[1, 2], NA_character_)
-  expect_equal(out$varDiff[1, 4], "some label")
-  expect_null(out$valDiff)
+  expect_equal(names(out$varDiff), c("GADSdat_varLabel", "other_GADSdat_varLabel"))
+  expect_equal(as.character(out$varDiff[1, ]), c(NA, "some label"))
+  expect_equal(out$valDiff, "all.equal")
+
+  out2 <- inspectMetaDifferences(df1_2, varName = "ID1", other_varName = "V1")
+  expect_equal(names(out2$varDiff), c("ID1_varLabel", "V1_varLabel"))
+  expect_equal(as.character(out2$varDiff[1, ]), c(NA, "some label"))
 })
 
 
 test_that("Differences on value level",{
   df1_2 <- changeValLabels(df1, "V1", value = c(1, 3), valLabel = c("test 1", "test 2"))
   out <- inspectMetaDifferences(df1, varName = "V1", other_GADSdat = df1_2)
-
-  expect_equal(dim(out$valDiff), c(2, 6))
+  expect_equal(dim(out$valDiff), c(2, 5))
   expect_equal(out$valDiff[, "value"], c(1, 3))
-  expect_equal(out$valDiff[, "GADS1.valLabel"], c(NA_character_, NA))
-  expect_equal(out$valDiff[, "GADS2.valLabel"], c("test 1", "test 2"))
+  expect_equal(names(out$valDiff),
+               c("value", "GADSdat_valLabel", "GADSdat_missings", "other_GADSdat_valLabel", "other_GADSdat_missings"))
+  expect_equal(out$valDiff[, "GADSdat_valLabel"], c(NA_character_, NA))
+  expect_equal(out$valDiff[, "other_GADSdat_valLabel"], c("test 1", "test 2"))
 
   df1_3 <- changeValLabels(df1, "V1", value = c(1, 3), valLabel = c("test 1", "test 2b"))
   out2 <- inspectMetaDifferences(df1_2, varName = "V1", other_GADSdat = df1_3)
-
-  expect_equal(dim(out2$valDiff), c(1, 6))
   expect_equal(out2$valDiff[, "value"], 3)
-  expect_equal(out2$valDiff[, "GADS1.valLabel"], c("test 2"))
-  expect_equal(out2$valDiff[, "GADS2.valLabel"], c("test 2b"))
+  expect_equal(out2$valDiff[, "GADSdat_valLabel"], c("test 2"))
+  expect_equal(out2$valDiff[, "other_GADSdat_valLabel"], c("test 2b"))
+
+  out2b <- inspectMetaDifferences(df1_3, varName = "V1", other_varName = "ID1")
+  expect_equal(out2b$valDiff[, "value"], c(1, 3))
+  expect_equal(names(out2b$valDiff),
+               c("value", "V1_valLabel", "V1_missings", "ID1_valLabel", "ID1_missings"))
+
 
   df1_4 <- changeMissings(df1_3, "V1", value = c(1), missings = "miss")
   out3 <- inspectMetaDifferences(df1_4, varName = "V1", other_GADSdat = df1_3)
-
   expect_equal(out3$valDiff[, "value"], 1)
-  expect_equal(out3$valDiff[, "GADS1.missings"], c("miss"))
-  expect_equal(out3$valDiff[, "GADS2.missings"], c("valid"))
+  expect_equal(out3$valDiff[, "GADSdat_missings"], c("miss"))
+  expect_equal(out3$valDiff[, "other_GADSdat_missings"], c("valid"))
 })
 
 test_that("Differences after recoding",{
@@ -67,8 +74,8 @@ test_that("Differences after recoding",{
   pisa2 <- recodeGADS(pisa2, varName = "sameteach", oldValues = c(1, 2), newValues = c(0, 1))
   out <- inspectMetaDifferences(pisa, varName = "sameteach", other_GADSdat = pisa2)
 
-  expect_equal(dim(out$valDiff), c(3, 6))
+  expect_equal(dim(out$valDiff), c(3, 5))
   expect_equal(out$valDiff[, "value"], 0:2)
-  expect_equal(out$valDiff[, "GADS1.valLabel"], c(NA, "No", "Yes"))
-  expect_equal(out$valDiff[, "GADS2.valLabel"], c("No", "Yes", NA))
+  expect_equal(out$valDiff[, "GADSdat_valLabel"], c(NA, "No", "Yes"))
+  expect_equal(out$valDiff[, "other_GADSdat_valLabel"], c("No", "Yes", NA))
 })

@@ -64,15 +64,14 @@ inspectDifferences <- function(GADSdat, varName, other_GADSdat = GADSdat, other_
   unequal_case_dat2 <- other_GADSdat$dat[unequal_rows, ]
   unequal_case_dat1 <- GADSdat$dat[unequal_rows, ]
 
-  ncol1 <- ifelse(ncol(GADSdat$dat) > 8, yes = 8, no = ncol(GADSdat$dat))
-  ncol2 <- ifelse(ncol(other_GADSdat$dat) > 8, yes = 8, no = ncol(other_GADSdat$dat))
-  nrow1 <- ifelse(nrow(unequal_case_dat1) > 5, yes = 5, no = nrow(unequal_case_dat1))
-  nrow2 <- ifelse(nrow(unequal_case_dat2) > 5, yes = 5, no = nrow(unequal_case_dat2))
+  # naming for cross_table
+  nam_dnn <- c(varName, other_varName)
+  if(identical(varName, other_varName)) {
+    nam_dnn <- c("GADSdat", "other_GADSdat")
+  }
 
   list(cross_table = table(GADSdat$dat[, varName], other_GADSdat$dat[, other_varName], useNA = "if",
-                           dnn = c("GADSdat1", "GADSdat2")),
-       some_unequals_GADSdat1 = unequal_case_dat1[1:nrow1, unique(c(namesGADS(GADSdat)[1:ncol1], varName))],
-       some_unequals_GADSdat2 = unequal_case_dat2[1:nrow2, unique(c(namesGADS(other_GADSdat)[1:ncol2], other_varName))],
+                           dnn = nam_dnn),
        unequal_IDs = unequal_case_dat2[, id]
   )
 }

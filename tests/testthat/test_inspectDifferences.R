@@ -34,22 +34,17 @@ test_that("Compare two different GADSdat objects but the same variable",{
   df1_2 <- df1
   df1_2$dat[1, 2] <- 9
   out <- inspectDifferences(df1, varName = "V1", other_GADSdat = df1_2, id = "ID1")
-  expect_equal(names(out), c("cross_table", "some_unequals_GADSdat1", "some_unequals_GADSdat2", "unequal_IDs"))
+  expect_equal(names(out), c("cross_table", "unequal_IDs"))
   expect_equal(out$unequal_IDs, 1)
-  expect_equal(out$some_unequals_GADSdat1, df1$dat[1, ])
-  expect_equal(out$some_unequals_GADSdat2, df1_2$dat[1, ])
-  expect_equal(out$cross_table, table(df1$dat$V1, df1_2$dat$V1, dnn = c("GADSdat1", "GADSdat2")))
+  expect_equal(out$cross_table, table(df1$dat$V1, df1_2$dat$V1, dnn = c("GADSdat", "other_GADSdat")))
 })
 
 test_that("Compare two different GADSdat objects and different variables",{
   df1_2 <- df1
   df1_2$dat[1, 2] <- 9
   out <- inspectDifferences(df1, varName = "ID1", other_GADSdat = df1_2, other_varName = "V1", id = "ID1")
-  expect_equal(names(out), c("cross_table", "some_unequals_GADSdat1", "some_unequals_GADSdat2", "unequal_IDs"))
   expect_equal(out$unequal_IDs, 1:2)
-  expect_equal(out$some_unequals_GADSdat1, df1$dat)
-  expect_equal(out$some_unequals_GADSdat2, df1_2$dat)
-  expect_equal(out$cross_table, table(df1$dat$ID1, df1_2$dat$V1, dnn = c("GADSdat1", "GADSdat2")))
+  expect_equal(out$cross_table, table(df1$dat$ID1, df1_2$dat$V1, dnn = c("ID1", "V1")))
 })
 
 
@@ -73,14 +68,12 @@ test_that("Differences with NA",{
   df1_2$dat[1, 2] <- NA
   out <- inspectDifferences(df1, varName = "V1", other_GADSdat = df1_2, id = "ID1")
   expect_equal(out$unequal_IDs, 1)
-  expect_equal(out$some_unequals_GADSdat1, df1$dat[1, ])
-  expect_equal(out$some_unequals_GADSdat2, df1_2$dat[1, ])
-  expect_equal(out$cross_table, table(df1$dat$V1, df1_2$dat$V1, useNA = "if", dnn = c("GADSdat1", "GADSdat2")))
+  expect_equal(out$cross_table,
+               table(df1$dat$V1, df1_2$dat$V1, useNA = "if", dnn = c("GADSdat", "other_GADSdat")))
 
   df1_3$dat[1:2, 1] <- NA
   out <- inspectDifferences(df1_3, varName = "ID1", other_GADSdat = df1, id = "V1")
   expect_equal(out$unequal_IDs, c(3, 5))
-  expect_equal(out$some_unequals_GADSdat1, df1_3$dat[1:2, ])
-  expect_equal(out$some_unequals_GADSdat2, df1$dat[1:2, ])
-  expect_equal(out$cross_table, table(df1_3$dat$ID1, df1$dat$ID1, useNA = "if", dnn = c("GADSdat1", "GADSdat2")))
+  expect_equal(out$cross_table,
+               table(df1_3$dat$ID1, df1$dat$ID1, useNA = "if", dnn = c("GADSdat", "other_GADSdat")))
 })
