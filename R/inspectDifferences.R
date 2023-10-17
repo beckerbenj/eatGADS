@@ -2,16 +2,19 @@
 #############################################################################
 #' Inspect differences in a variable.
 #'
-#' Inspect differences between two \code{GADSdat} objects in a specific variable.
+#' Inspect differences within a single \code{GADSdat} or between two \code{GADSdat} objects for a specific variable.
 #'
 #' Two \code{GADSdat} objects can be compared using \code{\link{equalGADS}}.
 #' If differences in the data for specific variables in the two objects occur,
-#' these variables can be further inspected using \code{inspectDifferences}. Differences on meta data-level can be inspected via
-#' \code{\link{inspectMetaDifferences}}.
+#' these variables can be further inspected using \code{inspectDifferences}.
+#' Differences on meta data-level can be inspected via \code{\link{inspectMetaDifferences}}.
 #'
+#'@param GADSdat A \code{GADSdat} object.
 #'@param varName A character vector of length 1 containing the variable name.
-#'@param GADSdat1 A \code{GADSdat} object.
-#'@param GADSdat2 A \code{GADSdat} object.
+#'@param other_GADSdat A second \code{GADSdat} object. If omitted, it is assumed that both variables are part of the
+#'first \code{GADSdat}.
+#'@param other_varName A character vector of length 1 containing the other variable name.
+#'If omitted, it is assumed that both variables have identical names (as supplied in \code{varName}).
 #'@param id A character vector of length 1 containing the unique identifier column of both \code{GADSdat}.
 #'
 #'@return A list.
@@ -25,43 +28,50 @@
 #' equalGADS(pisa, pisa2)
 #'
 #' # inspect via inspectDifferences()
-#' inspectDifferences("age", GADSdat1 = pisa, GADSdat2 = pisa2, id = "idstud")
+#' inspectDifferences(GADSdat = pisa, varName = "age", other_GADSdat = pisa2, id = "idstud")
 #'
 #'@export
-inspectDifferences <- function(varName, GADSdat1, GADSdat2, id) {
-  check_GADSdat(GADSdat1)
-  check_GADSdat(GADSdat2)
-  if(!is.character(varName) || length(varName) != 1) stop("'varName' must be a character of length 1.")
-  if(!is.character(id) || length(id) != 1) stop("'id' must be a character of length 1.")
-  if(!varName %in% namesGADS(GADSdat1)) stop("'varName' is not a variable in 'GADSdat1'.")
-  if(!varName %in% namesGADS(GADSdat2)) stop("'varName' is not a variable in 'GADSdat2'.")
-  if(!id %in% namesGADS(GADSdat1)) stop("'id' is not a variable in 'GADSdat1'.")
-  if(!id %in% namesGADS(GADSdat2)) stop("'id' is not a variable in 'GADSdat2'.")
-  if(nrow(GADSdat1$dat) != nrow(GADSdat2$dat)) stop("'GADSdat1' and 'GADSdat2' have different row numbers.")
-  if(any(is.na(GADSdat1$dat[, id]))) stop("Missing values in 'id' column of 'GADSdat1'.")
-  if(any(is.na(GADSdat2$dat[, id]))) stop("Missing values in 'id' column of 'GADSdat2'.")
-  if(any(GADSdat1$dat[, id] != GADSdat2$dat[, id])) stop("'id' column is not equal for 'GADSdat1' and 'GADSdat2'.")
+inspectDifferences <- function(GADSdat, varName, other_GADSdat = GADSdat, other_varName = varName, id) {
+  check_GADSdat(GADSdat)
+  check_GADSdat(other_GADSdat)
+  check_characterArgument(varName, argName = "varName")
+  check_characterArgument(other_varName, argName = "other_varName")
+  check_characterArgument(id, argName = "id")
+  check_vars_in_GADSdat(GADSdat, vars = varName, argName = "varName", GADSdatName = "GADSdat")
+  check_vars_in_GADSdat(other_GADSdat, vars = other_varName, argName = "other_varName", GADSdatName = "other_GADSdat")
+  check_vars_in_GADSdat(GADSdat, vars = id, argName = "id", GADSdatName = "GADSdat")
+  check_vars_in_GADSdat(other_GADSdat, vars = id, argName = "id", GADSdatName = "other_GADSdat")
 
-  if(is.numeric(GADSdat1$dat[, varName]) && !is.numeric(GADSdat2$dat[, varName])) stop("'varName' column is numeric in 'GADSdat1' but not in 'GADSdat2'.")
-  if(!is.numeric(GADSdat1$dat[, varName]) && is.numeric(GADSdat2$dat[, varName])) stop("'varName' column is numeric in 'GADSdat2' but not in 'GADSdat1'.")
+  if(nrow(GADSdat$dat) != nrow(other_GADSdat$dat)) stop("'GADSdat' and 'other_GADSdat' have different row numbers.")
+  if(any(is.na(GADSdat$dat[, id]))) stop("Missing values in 'id' column of 'GADSdat'.")
+  if(any(is.na(other_GADSdat$dat[, id]))) stop("Missing values in 'id' column of 'other_GADSdat'.")
+  if(any(GADSdat$dat[, id] != other_GADSdat$dat[, id])) stop("'id' column is not equal for 'GADSdat' and 'other_GADSdat'.")
 
-  if(isTRUE(all.equal(GADSdat2$dat[, varName], GADSdat1$dat[, varName], scale = 1))) return("all.equal")
+  if(is.numeric(GADSdat$dat[, varName]) && !is.numeric(other_GADSdat$dat[, other_varName])) {
+    stop("'varName' column is numeric in 'GADSdat' but 'other_varName' is not numeric in 'other_GADSdat'.")
+  }
+  if(!is.numeric(GADSdat$dat[, varName]) && is.numeric(other_GADSdat$dat[, other_varName])) {
+    stop("'other_varName' column is numeric in 'other_GADSdat' but 'varName' is not numeric in 'GADSdat'.")
+  }
 
-  unequal_rows <- c(which(GADSdat2$dat[, varName] != GADSdat1$dat[, varName]),
-                    which(is.na(GADSdat2$dat[, varName]) & !is.na(GADSdat1$dat[, varName])),
-                    which(!is.na(GADSdat2$dat[, varName]) & is.na(GADSdat1$dat[, varName])))
-  unequal_case_dat2 <- GADSdat2$dat[unequal_rows, ]
-  unequal_case_dat1 <- GADSdat1$dat[unequal_rows, ]
+  if(isTRUE(all.equal(GADSdat$dat[, varName], other_GADSdat$dat[, other_varName], scale = 1))) {
+    return("all.equal")
+  }
 
-  ncol1 <- ifelse(ncol(GADSdat1$dat) > 8, yes = 8, no = ncol(GADSdat1$dat))
-  ncol2 <- ifelse(ncol(GADSdat2$dat) > 8, yes = 8, no = ncol(GADSdat2$dat))
-  nrow1 <- ifelse(nrow(unequal_case_dat1) > 5, yes = 5, no = nrow(unequal_case_dat1))
-  nrow2 <- ifelse(nrow(unequal_case_dat2) > 5, yes = 5, no = nrow(unequal_case_dat2))
+  unequal_rows <- c(which(other_GADSdat$dat[, other_varName] != GADSdat$dat[, varName]),
+                    which(is.na(other_GADSdat$dat[, other_varName]) & !is.na(GADSdat$dat[, varName])),
+                    which(!is.na(other_GADSdat$dat[, other_varName]) & is.na(GADSdat$dat[, varName])))
+  unequal_case_dat2 <- other_GADSdat$dat[unequal_rows, ]
+  unequal_case_dat1 <- GADSdat$dat[unequal_rows, ]
 
-  list(cross_table = table(GADSdat1$dat[, varName], GADSdat2$dat[, varName], useNA = "if",
-                           dnn = c("GADSdat1", "GADSdat2")),
-       some_unequals_GADSdat1 = unequal_case_dat1[1:nrow1, unique(c(namesGADS(GADSdat1)[1:ncol1], varName))],
-       some_unequals_GADSdat2 = unequal_case_dat2[1:nrow2, unique(c(namesGADS(GADSdat2)[1:ncol2], varName))],
+  # naming for cross_table
+  nam_dnn <- c(varName, other_varName)
+  if(identical(varName, other_varName)) {
+    nam_dnn <- c("GADSdat", "other_GADSdat")
+  }
+
+  list(cross_table = table(GADSdat$dat[, varName], other_GADSdat$dat[, other_varName], useNA = "if",
+                           dnn = nam_dnn),
        unequal_IDs = unequal_case_dat2[, id]
   )
 }

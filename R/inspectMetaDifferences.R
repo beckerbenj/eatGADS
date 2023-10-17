@@ -2,17 +2,21 @@
 #############################################################################
 #' Inspect meta data differences in a variable.
 #'
-#' Inspect meta data differences between two \code{GADSdat} objects or \code{GADSdat} data bases regarding a specific variable.
+#' Inspect meta data differences within a single \code{GADSdat} or between two \code{GADSdat} objects
+#' or \code{GADSdat} data bases regarding a specific variable.
 #'
 #' Two \code{GADSdat} objects can be compared using \code{\link{equalGADS}}.
 #' If meta data differences for specific variables in the two objects occur,
 #' these variables can be further inspected using \code{inspectMetaDifferences}.
 #' For data-level differences for a specific variable, see \code{\link{inspectDifferences}}.
 #'
+#'@param GADSdat A \code{GADSdat} object.
 #'@param varName A character vector of length 1 containing the variable name.
-#'@param GADSdat1 A \code{GADSdat} object.
-#'@param GADSdat2 A \code{GADSdat} object.
-
+#'@param other_GADSdat A second \code{GADSdat} object. If omitted, it is assumed that both variables are part of the
+#'first \code{GADSdat}.
+#'@param other_varName A character vector of length 1 containing the other variable name.
+#'If omitted, it is assumed that both variables have identical names (as supplied in \code{varName}).
+#'
 #'@return A list.
 #'
 #'@examples
@@ -25,27 +29,45 @@
 #' equalGADS(pisa, pisa2)
 #'
 #' # inspect via inspectMetaDifferences()
-#' inspectMetaDifferences("sameteach", GADSdat1 = pisa, GADSdat2 = pisa2)
+#' inspectMetaDifferences(GADSdat = pisa, varName = "sameteach", other_GADSdat = pisa2)
 #'
 #'@export
-inspectMetaDifferences <- function(varName, GADSdat1, GADSdat2) {
+inspectMetaDifferences <- function(GADSdat, varName, other_GADSdat = GADSdat, other_varName = varName) {
   check_characterArgument(varName, argName = "varName")
-  check_vars_in_GADSdat(GADSdat1, vars = varName, argName = "varName", GADSdatName = "GADSdat1")
-  check_vars_in_GADSdat(GADSdat2, vars = varName, argName = "varName", GADSdatName = "GADSdat2")
+  check_characterArgument(other_varName, argName = "other_varName")
+  check_vars_in_GADSdat(GADSdat, vars = varName, argName = "varName", GADSdatName = "GADSdat")
+  check_vars_in_GADSdat(other_GADSdat, vars = other_varName, argName = "other_varName", GADSdatName = "other_GADSdat")
 
-  meta1 <- extractMeta(GADSdat1, varName)
-  meta2 <- extractMeta(GADSdat2, varName)
+  meta1 <- extractMeta(GADSdat, varName)
+  meta2 <- extractMeta(other_GADSdat, other_varName)
+
+  # naming for columns in output
+  nam_col <- c(varName, other_varName)
+  if(identical(varName, other_varName)) {
+    nam_col <- c("GADSdat", "other_GADSdat")
+  }
 
   ## Variable level
-  metaVar1 <- meta1[1, c("varName", "varLabel", "format")]
-  metaVar2 <- meta2[1, c("varName", "varLabel", "format")]
+  metaVar1 <- meta1[1, c("varLabel", "format")]
+  metaVar2 <- meta2[1, c("varLabel", "format")]
   row.names(metaVar1) <- row.names(metaVar2) <- NULL
 
-  varDiff <- NULL
+  varDiff <- "all.equal"
   if(!identical(metaVar1, metaVar2)) {
-    varDiff <- data.frame(varName = varName,
-                          GADS1 = metaVar1[, 2:3],
-                          GADS2 = metaVar2[, 2:3])
+    # only return column with differences
+    if(!identical(metaVar1$varLabel, metaVar2$varLabel)) {
+      varDiff <- data.frame(metaVar1$varLabel, metaVar2$varLabel)
+      names(varDiff) <- paste(nam_col, "varLabel", sep = "_")
+      if(!identical(metaVar1$format, metaVar2$format)) {
+        varDiff2 <- data.frame(metaVar1$format, metaVar2$format)
+        names(varDiff) <- paste(nam_col, "format", sep = "_")
+
+        varDiff <- cbind(varDiff, varDiff2)[, c(1, 3, 2, 4)]
+      }
+    } else {
+      varDiff <- data.frame(metaVar1$format, metaVar2$format)
+      names(varDiff) <- paste(nam_col, "format", sep = "_")
+    }
   }
 
   ## Value level
@@ -53,8 +75,16 @@ inspectMetaDifferences <- function(varName, GADSdat1, GADSdat2) {
   metaVal2 <- meta2[, c("varName", "value", "valLabel", "missings")]
   row.names(metaVal1) <- row.names(metaVal2) <- NULL
 
-  valDiff <- NULL
-  if(!identical(metaVal1, metaVal2)) {
+  # hotfix, this should be properly fixed someday
+  metaVal1$value <- as.numeric(metaVal1$value)
+  metaVal2$value <- as.numeric(metaVal2$value)
+
+  valDiff <- "all.equal"
+  if(!identical(metaVal1[, c("value", "valLabel", "missings")], metaVal2[, c("value", "valLabel", "missings")])) {
+    valDiff <- data.frame(value = integer(),
+                          valLabel1 = character(), missings2 = character(),
+                          valLabel2 = character(), missings2 = character())
+
     all_values <- unique(stats::na.omit(c(metaVal1$value, metaVal2$value)))
     for(val in all_values) {
       #browser()
@@ -62,10 +92,13 @@ inspectMetaDifferences <- function(varName, GADSdat1, GADSdat2) {
       meta_row2 <- metaVal2[metaVal2$value == val, ]
       if(nrow(meta_row1) == 0) meta_row1[1, ] <- NA
       if(nrow(meta_row2) == 0) meta_row2[1, ] <- NA
-      valDiff_new <- data.frame(varName = varName, value = val, GADS1 = meta_row1[, 3:4], GADS2 = meta_row2[, 3:4])
+      valDiff_new <- data.frame(value = val, meta_row1[, 3:4], meta_row2[, 3:4])
       if(!identical(meta_row1, meta_row2)) valDiff <- rbind(valDiff, valDiff_new)
     }
     valDiff <- valDiff[order(valDiff$value), ]
+    names(valDiff) <- c("value", paste0(nam_col[1], "_valLabel"), paste0(nam_col[1], "_missings"),
+                        paste0(nam_col[2], "_valLabel"), paste0(nam_col[2], "_missings"))
+    rownames(valDiff) <- NULL
   }
 
   list(varDiff = varDiff, valDiff = valDiff)
