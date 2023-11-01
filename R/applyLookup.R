@@ -72,9 +72,17 @@ applyLookup.GADSdat <- function(GADSdat, lookup, suffix = NULL) {
     }
 
     suppressWarnings(test <- compare_and_order(rec_df[[nam]], set2 = sub_lu[[nam]]))
-    if(length(test$not_in_set1) != 0) warning("For variable ", nam, " the following values are in the lookup table but not in the data: ", paste(test$not_in_set1, collapse = ", "))
-    if(length(test$not_in_set2) != 0) warning("For variable ", nam, " the following values are in the data but not in the lookup table: ", paste(test$not_in_set2, collapse = ", "))
-    if(length(test$not_in_set2) != 0 && "" %in% test$not_in_set2) warning("Empty strings are values in the data but not in the look up table. Using recodeString2NA() is recommended.")
+    if(length(test$not_in_set1) != 0) {
+      warning("For variable ", nam, " the following values are in the lookup table but not in the data: ",
+              paste(test$not_in_set1, collapse = ", "))
+    }
+    if(length(test$not_in_set2) != 0) {
+      warning("For variable ", nam, " the following values are in the data but not in the lookup table: ",
+              paste(test$not_in_set2, collapse = ", "))
+    }
+    if(length(test$not_in_set2) != 0 && "" %in% test$not_in_set2) {
+      warning("Empty strings are values in the data but not in the look up table. Using recodeString2NA() is recommended.")
+    }
 
     old_nam <- nam
     if(!is.null(suffix)) {
@@ -101,9 +109,25 @@ applyLookup.GADSdat <- function(GADSdat, lookup, suffix = NULL) {
 
 
 check_lookup <- function(lookup, GADSdat) {
-  if(!all(lookup$variable %in% namesGADS(GADSdat))) stop("Some of the variables are not variables in the GADSdat.")
-  if(!identical(names(lookup), c("variable", "value", "value_new"))) stop("'lookup' table has to be formatted correctly.")
-  if(sum(is.na(lookup$value)) > 1) stop("In more than 1 row value is missing.")
-  if(all(is.na(lookup$value_new))) stop("No values have a recode value assigned (missings in value_new).")
-  if(any(is.na(lookup$value_new))) warning("Not all values have a recode value assigned (missings in value_new).")
+  if(!all(lookup$variable %in% namesGADS(GADSdat))) {
+    stop("Some of the variables are not variables in the GADSdat.")
+  }
+  if(!identical(names(lookup), c("variable", "value", "value_new"))) {
+    stop("'lookup' table has to be formatted correctly.")
+  }
+  if(all(is.na(lookup$value_new))) {
+    stop("No values have a recode value assigned (missings in value_new).")
+  }
+  by(lookup, lookup$variable, function(sub_lookup) {
+    dup_values <- sub_lookup$value[duplicated(sub_lookup$value)]
+    if(length(dup_values) > 0) {
+      varName <- sub_lookup[1, "variable"]
+      stop("There are duplicate values in the lookup for variable '", varName,"': ",
+           paste(dup_values, collapse = ", "))
+    }
+  })
+  if(any(is.na(lookup$value_new))) {
+    warning("Not all values have a recode value assigned (missings in value_new).")
+  }
+  NULL
 }

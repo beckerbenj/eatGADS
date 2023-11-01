@@ -8,20 +8,24 @@ lu2 <- createLookup(testM, recodeVars = c("VAR1"), sort_by = "value")
 lu3 <- createLookup(testM, recodeVars = c("VAR1", "VAR2"), sort_by = "value")
 
 test_that("Check Lookup, errors and warnings",{
-  expect_error(check_lookup(lu2, testM), "No values have a recode value assigned (missings in value_new).", fixed = TRUE)
+  expect_error(check_lookup(lu2, testM),
+               "No values have a recode value assigned (missings in value_new).", fixed = TRUE)
 
   lu2_3 <- lu2_2 <- lu2_1 <- lu2
   lu2_1[1, 1] <- "v10"
-  expect_error(check_lookup(lu2_1, testM), "Some of the variables are not variables in the GADSdat.")
+  expect_error(check_lookup(lu2_1, testM),
+               "Some of the variables are not variables in the GADSdat.")
   lu2_2[1, 2] <- NA
   lu2_2[1, 3] <- 1
   expect_silent(suppressWarnings(check_lookup(lu2_2, testM)))
   lu2_2[2, 2] <- NA
-  expect_error(check_lookup(lu2_2, testM), "In more than 1 row value is missing.")
+  expect_error(check_lookup(lu2_2, testM),
+               "There are duplicate values in the lookup for variable 'VAR1': NA")
 
   lu2_3[1, 3] <- -9
   w <- capture_warnings(applyLookup(testM, lu2_3, suffix = "_r"))
-  expect_equal(w[1], "Not all values have a recode value assigned (missings in value_new).")
+  expect_equal(w[1],
+               "Not all values have a recode value assigned (missings in value_new).")
 })
 
 test_that("Warnings for incomplete lookup/lookup with additional values",{
@@ -143,7 +147,6 @@ test_that("Workflow multiple columns, collapse, apply",{
   expect_equal(testM2$dat$VAR1_r, c(1, -2, 3, 4))
 })
 
-
 test_that("Specific warning for empty strings (necessary due to readxl)",{
   df <- data.frame(v1 = c(1, 1, 2), v2 = c("lala", "", ""), stringsAsFactors = FALSE)
   gads <-import_DF(df)
@@ -153,4 +156,15 @@ test_that("Specific warning for empty strings (necessary due to readxl)",{
   warns <- capture_warnings(applyLookup(gads, l, suffix = "_r"))
 
   expect_equal(warns[3], "Empty strings are values in the data but not in the look up table. Using recodeString2NA() is recommended.")
+})
+
+test_that("Applying recode for multiple variables with NAs",{
+  dat <- data.frame(v1 = c(1, NA), v2 = c(1, NA))
+  gads <- import_DF(dat)
+  lookup <- createLookup(gads, c("v1", "v2"))
+  lookup$value_new <- c(5, -99, 6, -99)
+  out <- applyLookup(gads, lookup, suffix = NULL)
+
+  expect_equal(out$dat$v1, c(5, -99))
+  expect_equal(out$dat$v2, c(6, -99))
 })
