@@ -18,11 +18,16 @@ stringSplit.GADSdat <- function(GADSdat, varName, pattern) {
   check_GADSdat(GADSdat)
   check_vars_in_GADSdat(GADSdat, vars = varName, argName = "varName")
 
-  ## split
+  ## extract data
 
-  ## update meta
+  ## split variable into multiple variables, e.g. via strsplit(); if possible, avoid additional dependencies
 
-  ## reuse meta
+  ## make sure to either (a) duplicate missing values or (b) insert appropriate default values (discuss this with BT
+  ## team)
+
+  ## incorporate data back into GADSdat object via updateMeta
+
+  ## duplicate meta data via reuseMeta()
 
   GADSdat_out
 }
