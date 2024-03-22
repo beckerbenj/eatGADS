@@ -197,7 +197,7 @@ extractMeta(gads_labeled, "age")
 In `GADSdat` objects, meta data is stored alongside with the actual data set. Therefore, changes to the actual data often imply changes to the meta data. If a variable is removed from the data set, its meta data is no longer needed. If a new variable is created, new meta data needs to be created. If a variable is recoded, the meta data entries need to be recoded accordingly.
 
 #### Selecting or removing variables
-If a certain subset of variables in the `GADSdat` is needed, individual variables can either be extracted via `extractVars()` or removed via `removeVars()`.
+If a certain subset of variables in the `GADSdat` object is needed, individual variables can either be extracted via `extractVars()` or removed via `removeVars()`.
 
 ```{r select}
 # Selecting variables
@@ -321,10 +321,10 @@ id_gads2$dat[, c("id", "id_new")]
 ```
 
 ## Variable sorting
-The sorting of variables in a `GADSdat` can be adjusted for individual variables and for the complete set of variables.
+The sorting of variables in a `GADSdat` object can be adjusted for individual variables and for the complete set of variables.
 
 #### Relocating a specific variable
-The function `relocateVariable()` allows the relocation of a single variable within a `GADSdat`.
+The function `relocateVariable()` allows the relocation of a single variable within a `GADSdat` object.
 
 ```{r relocate}
 namesGADS(gads_labeled)[1:5]
@@ -341,7 +341,7 @@ namesGADS(gads_labeled)[1:5]
 ```
 
 #### Ordering all variables
-The function `orderLike()` allows reordering all variables within a `GADSdat`.
+The function `orderLike()` allows reordering all variables within a `GADSdat` object.
 
 
 ## Changing meta data (and data) via an Excel sheet
