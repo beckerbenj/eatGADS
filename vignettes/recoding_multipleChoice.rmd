@@ -74,7 +74,7 @@ Now you have to add the desired values for recoding. You should use (a) unique p
 To fill in the columns you could use `R` directly to modify the columns. Alternatively, we recommend using `eatAnalysis::write_xlsx()` to create an Excel file in which you can fill in the values. 
 
 ```{r lookup export, eval=FALSE}
-# write look up table to Excel
+# write lookup table to Excel
 eatAnalysis::write_xlsx(lookup, "lookup_forcedChoice.xlsx")
 ```
 
@@ -114,7 +114,7 @@ lookup$language3 <- c(NA, NA, "Italian", NA, NA,
 lookup
 ```
 
-## Apply look up to `GADSdat`
+## Apply lookup to `GADSdat`
 
 You perform the actual data recoding using the `applyLookup_expandVar()` function. It applies the recodes defined in the lookup table, thereby creating as many character variables as there are additional columns in the lookup table. Variable names are generated automatically.
 
