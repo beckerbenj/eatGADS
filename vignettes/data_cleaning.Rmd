@@ -47,7 +47,7 @@ gads <- pisa
 
 ## Data structure
 
-The raw data in a `GADSdat` object is represented as raw, unlabeled values. It can be accessed via `GADSdat$dat`. For the extraction of data suitable for data analyses, see the `extractData2()` function.
+The raw data in a `GADSdat` object are represented as raw, unlabeled values. They can be accessed via `GADSdat$dat`. For the extraction of data suitable for data analyses, see the `extractData2()` function.
 
 ```{r data raw, echo = TRUE}
 pisa$dat[1:5, 1:5]
@@ -56,21 +56,21 @@ pisa$dat[1:5, 1:5]
 
 ## Meta data structure
 
-Meta data is stored in a `GADSdat` object with the following structure: 
+Meta data are stored in a `GADSdat` object with the following structure: 
 
 ```{r meta raw, echo = FALSE}
 extractMeta(gads, vars = c("gender"))
 ```
 
-* `varLabel`: a variable label; describes a variable in the data.
-* `format`: the `SPSS` format of a variable; `F` represents numeric, `A` represents character variables.
-* `display_width`: the display width of a variable in the `SPSS` format.
+* `varLabel`: a variable label; describes a variable in the data
+* `format`: the `SPSS` format of a variable; `F` represents numeric, `A` represents character variables
+* `display_width`: the display width of a variable in the `SPSS` format
 * `labeled`: does the variable contain value labels or missing tags?
 
 On value level, additional meta data can be stored, namely:
 
-* `valLabel`: value labels; labels describing, what a certain value on a certain variable represents.
-* `missings`: missing tags (sometimes also referred to as missing codes) indicating whether a certain value represents a valid (`"valid"`) or a missing (`"miss"`) value.
+* `valLabel`: value labels; labels describing, what a certain value on a certain variable represents
+* `missings`: missing tags (sometimes also referred to as missing codes) indicating whether a certain value represents a valid (`"valid"`) or a missing (`"miss"`) value
 
 Via the function `extractMeta()` the existing meta data of one, several or all variables in a `GADSdat` object can be inspected. This function is used frequently throughout the vignette to check whether changes to meta data have been performed successfully.
 
@@ -197,7 +197,7 @@ extractMeta(gads_labeled, "age")
 In `GADSdat` objects, meta data is stored alongside with the actual data set. Therefore, changes to the actual data often imply changes to the meta data. If a variable is removed from the data set, its meta data is no longer needed. If a new variable is created, new meta data needs to be created. If a variable is recoded, the meta data entries need to be recoded accordingly.
 
 #### Selecting or removing variables
-If a certain subset of variables in the `GADSdat` object is needed, individual variables can either be extracted via `extractVars()` or removed via `removeVars()`.
+If a certain subset of variables in the `GADSdat` is needed, individual variables can either be extracted via `extractVars()` or removed via `removeVars()`.
 
 ```{r select}
 # Selecting variables
@@ -321,7 +321,7 @@ id_gads2$dat[, c("id", "id_new")]
 ```
 
 ## Variable sorting
-The sorting of variables in a `GADSdat` object can be adjusted for individual variables and for the complete set of variables.
+The sorting of variables in a `GADSdat` can be adjusted for individual variables and for the complete set of variables.
 
 #### Relocating a specific variable
 The function `relocateVariable()` allows the relocation of a single variable within a `GADSdat` object.
