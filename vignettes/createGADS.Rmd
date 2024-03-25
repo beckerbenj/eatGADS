@@ -35,7 +35,7 @@ sav_path <- system.file("extdata", "pisa.zsav", package = "eatGADS")
 dat <- import_spss(sav_path)
 ```
 
-The next steps depend on the data structure: If the different hierarchy levels are saved in different source data sets (e.g. different `.sav` files) the next section can be skipped. However, sometimes data from different hierarchy levels is save in one data file. Then, splitting and reshaping becomes necessary.
+The next steps depend on the data structure: If the different hierarchy levels are saved in different source data sets (e.g. different `.sav` files) the next section can be skipped. However, sometimes data from different hierarchy levels is saved in one data file. Then, splitting and reshaping becomes necessary.
 
 ## Splitting and Reshaping
 
