@@ -28,6 +28,7 @@ checkFormat <- function(GADSdat, type = "SPSS", changeFormat = TRUE) {
 checkFormat.GADSdat <- function(GADSdat, type = "SPSS", changeFormat = TRUE) {
   check_GADSdat(GADSdat)
   labels <- GADSdat$labels
+  UF <- FALSE
 
   naNam <- names(GADSdat$dat)[which(unlist(lapply(GADSdat$dat, function(x) all(is.na(x)))))]
   for(hh in naNam) {
@@ -41,6 +42,7 @@ checkFormat.GADSdat <- function(GADSdat, type = "SPSS", changeFormat = TRUE) {
     } else {
      warning("Unkown format for variable ", hh, ". Will be set to character.")
       GADSdat$dat[,hh] <- as.character(GADSdat$dat[,hh])
+      UF <- TRUE
     }
     }
 
@@ -59,7 +61,7 @@ checkFormat.GADSdat <- function(GADSdat, type = "SPSS", changeFormat = TRUE) {
     }
   })
 
-  lengths[lengths == -Inf] <- 1
+  if(UF) lengths[lengths == -Inf] <- 1
 
   decimals <- sapply(names(GADSdat$dat), function(ll) { if(isTRUE(is.numeric(GADSdat$dat[,ll]) &
                                                                   all(is.numeric(utils::type.convert(labels$value[labels$varName==ll],as.is=TRUE))|
@@ -74,7 +76,7 @@ checkFormat.GADSdat <- function(GADSdat, type = "SPSS", changeFormat = TRUE) {
   }
   })
 
-  decimals[decimals == -Inf] <- 1
+  if(UF) decimals[decimals == -Inf] <- 1
 
   varsWithDecimals <-  names(which(lengths != decimals))
 

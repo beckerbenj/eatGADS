@@ -7,7 +7,11 @@ g <- import_raw(df = data.frame(var1 = c("ab c","bb"), var2 = c(1,NaN), var3 = c
 
 f_txt <- tempfile(fileext = ".txt")
 f_sps <- gsub("txt$", "sps", f_txt)
-write_spss2(g, txtPath = f_txt, dec=",")
+
+test_that("writeData", {
+  expect_warning(write_spss2(g, txtPath = f_txt, dec=","), "Unkown format for variable var7. Will be set to character.", fixed=TRUE)
+})
+
 syntax <- readChar(f_sps, file.info(f_sps)$size)
 
 
@@ -46,7 +50,7 @@ test_that("Format and writeHeader", {
 test_that("writeData", {
   expect_message(g1<-writeData(g, txtPath = f_txt, dec=",", fileEncoding = "UTF-8"),"In character variable(s) var5, var6 quotation marks (\") had to be replaced with inverted commas (').", fixed=TRUE)
   expect_equal(g1$dat, data.frame(var1 = c("ab c","bb"), var2 = c(1,NaN), var3 = c(1.01, 2.00), var4 = c(1.0001, 4.00187243564195786431587643596),var5 = c("ab c","b'b"),var6 = c("ab c","b'b"),var7=NA,stringsAsFactors = FALSE))
-  expect_equal(read.csv2(f_txt, header=FALSE), data.frame(V1 = c("ab c","bb"), V2 = c(1,NaN), V3 = c(1.01, 2.00), V4 = c(1.0001, 4.00187243564195786431587643596),V5 = c("ab c","b'b"),V6 = c("ab c","b'b"),var7=NA,stringsAsFactors = FALSE))
+  expect_equal(read.csv2(f_txt, header=FALSE), data.frame(V1 = c("ab c","bb"), V2 = c(1,NaN), V3 = c(1.01, 2.00), V4 = c(1.0001, 4.00187243564195786431587643596),V5 = c("ab c","b'b"),V6 = c("ab c","b'b"),V7=NA,stringsAsFactors = FALSE))
 })
 
 
