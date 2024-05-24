@@ -39,6 +39,8 @@ write_spss2.GADSdat <- function(GADSdat, txtPath, spsPath = NULL, savPath = NULL
   check_GADSdat_varLevel_meta(GADSdat)
   checkz <- check4SPSS(GADSdat)
 
+  browser()
+
   if(length(checkz$varNames_special) > 0) stop("Please remove special characters in variable names: ", paste(checkz$varNames_special, collapse=" "))
   if(length(checkz$varNames_length) > 0) stop("Please shorten variable names to < 64 byte: ", paste(checkz$varNames_length, collapse=" "))
   if(length(checkz$varLabels) > 0) stop("Please shorten variable labels to < 256 byte: ", paste(checkz$varLabels, collapse=" "))

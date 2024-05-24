@@ -2,7 +2,7 @@
 % Please edit documentation in R/removeEmptyValLabels.R
 \name{removeEmptyValLabels}
 \alias{removeEmptyValLabels}
-\title{Remove unused value labels.}
+\title{Remove unused value labels and missing tags.}
 \usage{
 removeEmptyValLabels(GADSdat, vars, whichValLabels = c("miss", "valid", "all"))
 }
@@ -17,7 +17,7 @@ removeEmptyValLabels(GADSdat, vars, whichValLabels = c("miss", "valid", "all"))
 Returns the \code{GADSdat} object with changed meta data.
 }
 \description{
-Remove unused value labels of a variable as part of a \code{GADSdat} object.
+Remove unused value labels and missing tags of a variable as part of a \code{GADSdat} object.
 }
 \examples{
 gads <- import_DF(data.frame(v1 = 1))
@@ -25,6 +25,4 @@ gads <- changeMissings(gads, varName = "v1", value = c(-99, -98), missings = c("
 gads <- changeValLabels(gads, varName = "v1", value = c(-99), valLabel = c("not reached"))
 
 gads2 <- removeEmptyValLabels(gads, vars = "v1")
-
-
 }
