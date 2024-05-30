@@ -9,7 +9,7 @@ f_txt <- tempfile(fileext = ".txt")
 f_sps <- gsub("txt$", "sps", f_txt)
 
 test_that("writeData", {
-  expect_warning(write_spss2(g, txtPath = f_txt, dec=","), "Unkown format for variable var7. Will be set to character.", fixed=TRUE)
+  expect_message(write_spss2(g, txtPath = f_txt, dec=","), "Format and data for variable 'var7' are NA. Format cannot be derived from data and will be set to A1.", fixed=TRUE)
 })
 
 syntax <- readChar(f_sps, file.info(f_sps)$size)
