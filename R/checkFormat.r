@@ -28,7 +28,7 @@ checkFormat <- function(GADSdat, type = "SPSS", changeFormat = TRUE) {
 checkFormat.GADSdat <- function(GADSdat, type = "SPSS", changeFormat = TRUE) {
   check_GADSdat(GADSdat)
   labels <- GADSdat$labels
-  unknownFormat <- FALSE
+  anyUnknownFormat <- FALSE
 
   naNam <- names(GADSdat$dat)[which(unlist(lapply(GADSdat$dat, function(x) all(is.na(x)))))]
   for(hh in naNam) {
@@ -42,7 +42,7 @@ checkFormat.GADSdat <- function(GADSdat, type = "SPSS", changeFormat = TRUE) {
     } else {
      message("Format and data for variable '", hh, "' are NA. Format cannot be derived from data and will be set to A1.")
       GADSdat$dat[,hh] <- as.character(GADSdat$dat[,hh])
-      unknownFormat <- TRUE
+      anyUnknownFormat <- TRUE
     }
     }
 
@@ -61,7 +61,7 @@ checkFormat.GADSdat <- function(GADSdat, type = "SPSS", changeFormat = TRUE) {
     }
   })
 
-  if(isTRUE(unknownFormat)) lengths[lengths == -Inf] <- 1
+  if(isTRUE(anyUnknownFormat)) lengths[lengths == -Inf] <- 1
 
   decimals <- sapply(names(GADSdat$dat), function(ll) { if(isTRUE(is.numeric(GADSdat$dat[,ll]) &
                                                                   all(is.numeric(utils::type.convert(labels$value[labels$varName==ll],as.is=TRUE))|
@@ -76,7 +76,7 @@ checkFormat.GADSdat <- function(GADSdat, type = "SPSS", changeFormat = TRUE) {
   }
   })
 
-  if(isTRUE(unknownFormat)) decimals[decimals == -Inf] <- 1
+  if(isTRUE(anyUnknownFormat)) decimals[decimals == -Inf] <- 1
 
   varsWithDecimals <-  names(which(lengths != decimals))
 
