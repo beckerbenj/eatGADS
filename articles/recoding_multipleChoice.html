@@ -11,7 +11,7 @@
 <link href="../deps/bootstrap-5.3.1/bootstrap.min.css" rel="stylesheet">
 <script src="../deps/bootstrap-5.3.1/bootstrap.bundle.min.js"></script><!-- Font Awesome icons --><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.1/css/all.min.css" integrity="sha256-mmgLkCYLUQbXn0B1SRqzHar6dCnv9oZFPEC1g1cwlkk=" crossorigin="anonymous">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.1/css/v4-shims.min.css" integrity="sha256-wZjR52fzng1pJHwx4aV2AO3yyTOXrcDW7jBpJtTwVxw=" crossorigin="anonymous">
-<!-- bootstrap-toc --><script src="https://cdn.jsdelivr.net/gh/afeld/bootstrap-toc@v1.0.1/dist/bootstrap-toc.min.js" integrity="sha256-4veVQbu7//Lk5TSmc7YV48MxtMy98e26cf5MrgZYnwo=" crossorigin="anonymous"></script><!-- headroom.js --><script src="https://cdnjs.cloudflare.com/ajax/libs/headroom/0.11.0/headroom.min.js" integrity="sha256-AsUX4SJE1+yuDu5+mAVzJbuYNPHj/WroHuZ8Ir/CkE0=" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/headroom/0.11.0/jQuery.headroom.min.js" integrity="sha256-ZX/yNShbjqsohH1k95liqY9Gd8uOiE1S4vZc+9KQ1K4=" crossorigin="anonymous"></script><!-- clipboard.js --><script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.6/clipboard.min.js" integrity="sha256-inc5kl9MA1hkeYUt+EC3BhlIgyp/2jDIyBLS6k3UxPI=" crossorigin="anonymous"></script><!-- search --><script src="https://cdnjs.cloudflare.com/ajax/libs/fuse.js/6.4.6/fuse.js" integrity="sha512-zv6Ywkjyktsohkbp9bb45V6tEMoWhzFzXis+LrMehmJZZSys19Yxf1dopHx7WzIKxr5tK2dVcYmaCk2uqdjF4A==" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/autocomplete.js/0.38.0/autocomplete.jquery.min.js" integrity="sha512-GU9ayf+66Xx2TmpxqJpliWbT5PiGYxpaG8rfnBEk1LL8l1KGkRShhngwdXK1UgqhAzWpZHSiYPc09/NwDQIGyg==" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/mark.js/8.11.1/mark.min.js" integrity="sha512-5CYOlHXGh6QpOFA/TeTylKLWfB3ftPsde7AnmhuitiTX4K5SqCLBeKro6sPS8ilsz1Q4NRx3v8Ko2IBiszzdww==" crossorigin="anonymous"></script><!-- pkgdown --><script src="../pkgdown.js"></script><meta property="og:title" content="Recoding a multiple choice item with a text field">
+<!-- bootstrap-toc --><script src="https://cdn.jsdelivr.net/gh/afeld/bootstrap-toc@v1.0.1/dist/bootstrap-toc.min.js" integrity="sha256-4veVQbu7//Lk5TSmc7YV48MxtMy98e26cf5MrgZYnwo=" crossorigin="anonymous"></script><!-- headroom.js --><script src="https://cdnjs.cloudflare.com/ajax/libs/headroom/0.11.0/headroom.min.js" integrity="sha256-AsUX4SJE1+yuDu5+mAVzJbuYNPHj/WroHuZ8Ir/CkE0=" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/headroom/0.11.0/jQuery.headroom.min.js" integrity="sha256-ZX/yNShbjqsohH1k95liqY9Gd8uOiE1S4vZc+9KQ1K4=" crossorigin="anonymous"></script><!-- clipboard.js --><script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.11/clipboard.min.js" integrity="sha512-7O5pXpc0oCRrxk8RUfDYFgn0nO1t+jLuIOQdOMRp4APB7uZ4vSjspzp5y6YDtDs4VzUSTbWzBFZ/LKJhnyFOKw==" crossorigin="anonymous" referrerpolicy="no-referrer"></script><!-- search --><script src="https://cdnjs.cloudflare.com/ajax/libs/fuse.js/6.4.6/fuse.js" integrity="sha512-zv6Ywkjyktsohkbp9bb45V6tEMoWhzFzXis+LrMehmJZZSys19Yxf1dopHx7WzIKxr5tK2dVcYmaCk2uqdjF4A==" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/autocomplete.js/0.38.0/autocomplete.jquery.min.js" integrity="sha512-GU9ayf+66Xx2TmpxqJpliWbT5PiGYxpaG8rfnBEk1LL8l1KGkRShhngwdXK1UgqhAzWpZHSiYPc09/NwDQIGyg==" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/mark.js/8.11.1/mark.min.js" integrity="sha512-5CYOlHXGh6QpOFA/TeTylKLWfB3ftPsde7AnmhuitiTX4K5SqCLBeKro6sPS8ilsz1Q4NRx3v8Ko2IBiszzdww==" crossorigin="anonymous"></script><!-- pkgdown --><script src="../pkgdown.js"></script><meta property="og:title" content="Recoding a multiple choice item with a text field">
 <meta property="og:description" content="eatGADS">
 <!-- mathjax --><script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js" integrity="sha256-nvJJv9wWKEm88qvoQl9ekL2J+k/RWIsaSScxxlsrv8k=" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/config/TeX-AMS-MML_HTMLorMML.js" integrity="sha256-84DKXVJXs0/F8OTMzX4UR909+jtl4G7SPypPavF+GfA=" crossorigin="anonymous"></script><!--[if lt IE 9]>
 <script src="https://oss.maxcdn.com/html5shiv/3.7.3/html5shiv.min.js"></script>
@@ -22,7 +22,7 @@
     <a href="#main" class="visually-hidden-focusable">Skip to contents</a>
     
 
-    <nav class="navbar fixed-top navbar-light navbar-expand-lg bg-light"><div class="container">
+    <nav class="navbar fixed-top navbar-light navbar-expand-lg bg-light" data-bs-theme="light"><div class="container">
     
     <a class="navbar-brand me-2" href="../index.html">eatGADS</a>
 
@@ -81,7 +81,7 @@
                         <h4 data-toc-skip class="author">Benjamin
 Becker, Johanna Busse</h4>
             
-            <h4 data-toc-skip class="date">2023-12-12</h4>
+            <h4 data-toc-skip class="date">2024-06-13</h4>
       
       <small class="dont-index">Source: <a href="https://github.com/beckerbenj/eatGADS/blob/HEAD/vignettes/recoding_multipleChoice.rmd" class="external-link"><code>vignettes/recoding_multipleChoice.rmd</code></a></small>
       <div class="d-none name"><code>recoding_multipleChoice.rmd</code></div>
@@ -284,8 +284,9 @@ names are generated automatically.</p>
 <span><span class="co">#&gt; No rows removed from meta data.</span></span>
 <span><span class="co">#&gt; Adding meta data for the following variables: stringvar_2</span></span>
 <span><span class="co">#&gt; No rows removed from meta data.</span></span>
-<span><span class="co">#&gt; Adding meta data for the following variables: stringvar_3</span></span>
-<span></span>
+<span><span class="co">#&gt; Adding meta data for the following variables: stringvar_3</span></span></code></pre></div>
+<div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span></span>
 <span><span class="va">gads_string</span><span class="op">$</span><span class="va">dat</span></span>
 <span><span class="co">#&gt;    ID mcvar1 mcother      stringvar stringvar_1 stringvar_2 stringvar_3</span></span>
 <span><span class="co">#&gt; 1   1      1     -94         German      German        &lt;NA&gt;        &lt;NA&gt;</span></span>
@@ -307,7 +308,7 @@ value labels that should be treated as missings. The function
 the function <code><a href="../reference/changeMissings.html">changeMissings()</a></code> attaches missing codes. The
 loop below performs the appropriate labeling and missing coding in a
 loop for all three new string variables.</p>
-<div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="kw">for</span><span class="op">(</span><span class="va">nam</span> <span class="kw">in</span> <span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste0</a></span><span class="op">(</span><span class="st">"stringvar_"</span>, <span class="fl">1</span><span class="op">:</span><span class="fl">3</span><span class="op">)</span><span class="op">)</span> <span class="op">{</span></span>
 <span>  <span class="va">gads_string</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/changeValLabels.html">changeValLabels</a></span><span class="op">(</span><span class="va">gads_string</span>, varName <span class="op">=</span> <span class="va">nam</span>, </span>
 <span>                                 value <span class="op">=</span> <span class="op">-</span><span class="fl">96</span>, valLabel <span class="op">=</span> <span class="st">"Missing: Not codeable"</span><span class="op">)</span></span>
@@ -367,7 +368,7 @@ is always the case for the variable representing the <code>other</code>
 response option but might be necessary for other response options as
 well. Alternatively, these values could be added to the
 <code>value_string</code> as well, to enable automatic matching.</p>
-<div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">value_string</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="va">lookup</span><span class="op">$</span><span class="va">language</span>, <span class="va">lookup</span><span class="op">$</span><span class="va">language2</span>, <span class="va">lookup</span><span class="op">$</span><span class="va">language3</span><span class="op">)</span></span>
 <span><span class="va">named_char_vec</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/matchValues_varLabels.html">matchValues_varLabels</a></span><span class="op">(</span>GADSdat <span class="op">=</span> <span class="va">gads_string</span>, </span>
 <span>                                        mc_vars <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"mcvar1"</span>, <span class="st">"mcother"</span><span class="op">)</span>, </span>
@@ -399,7 +400,7 @@ were no valid entries in <code>text_vars</code> to begin with,
 <code>mc_var_4text</code> is left as is. All empty entries in the
 <code>text_vars</code> are assigned missing codes
 (<code>notext_miss_code</code>).</p>
-<div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">gads_string2</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/collapseMultiMC_Text.html">collapseMultiMC_Text</a></span><span class="op">(</span>GADSdat <span class="op">=</span> <span class="va">gads_string</span>, mc_vars <span class="op">=</span> <span class="va">named_char_vec</span>, </span>
 <span>                                     text_vars <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"stringvar_1"</span>, <span class="st">"stringvar_2"</span>, <span class="st">"stringvar_3"</span><span class="op">)</span>, </span>
 <span>                                     mc_var_4text <span class="op">=</span> <span class="st">"mcother"</span>, var_suffix <span class="op">=</span> <span class="st">"_r"</span>, </span>
@@ -409,8 +410,9 @@ were no valid entries in <code>text_vars</code> to begin with,
 <span>                                     notext_miss_code <span class="op">=</span> <span class="op">-</span><span class="fl">99</span>, </span>
 <span>                                     notext_miss_label <span class="op">=</span> <span class="st">"Missing: By intention"</span><span class="op">)</span></span>
 <span><span class="co">#&gt; No rows removed from meta data.</span></span>
-<span><span class="co">#&gt; Adding meta data for the following variables: mcvar1_r, mcother_r, stringvar_1_r, stringvar_2_r, stringvar_3_r</span></span>
-<span></span>
+<span><span class="co">#&gt; Adding meta data for the following variables: mcvar1_r, mcother_r, stringvar_1_r, stringvar_2_r, stringvar_3_r</span></span></code></pre></div>
+<div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span></span>
 <span><span class="va">gads_string2</span><span class="op">$</span><span class="va">dat</span></span>
 <span><span class="co">#&gt;    ID mcvar1 mcother      stringvar stringvar_1 stringvar_2 stringvar_3</span></span>
 <span><span class="co">#&gt; 1   1      1     -94         German      German        &lt;NA&gt;        &lt;NA&gt;</span></span>
@@ -451,14 +453,15 @@ all text variables above this number are removed from the data set. If a
 row in the data set contains valid entries in on of the removed
 variables, a specific missing code (<code>na_value</code>) is inserted
 into this row on all remaining text variables.</p>
-<div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb13"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">gads_string3</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/remove2NAchar.html">remove2NAchar</a></span><span class="op">(</span>GADSdat <span class="op">=</span> <span class="va">gads_string2</span>, </span>
 <span>                              vars <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"stringvar_1_r"</span>, <span class="st">"stringvar_2_r"</span>, <span class="st">"stringvar_3_r"</span><span class="op">)</span>, </span>
 <span>                              max_num <span class="op">=</span> <span class="fl">2</span>, na_value <span class="op">=</span> <span class="op">-</span><span class="fl">97</span>, </span>
 <span>                              na_label <span class="op">=</span> <span class="st">"missing: excessive answers"</span><span class="op">)</span></span>
 <span><span class="co">#&gt; Removing the following rows from meta data: stringvar_3_r</span></span>
-<span><span class="co">#&gt; No rows added to meta data.</span></span>
-<span></span>
+<span><span class="co">#&gt; No rows added to meta data.</span></span></code></pre></div>
+<div class="sourceCode" id="cb14"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span></span>
 <span><span class="va">gads_string3</span><span class="op">$</span><span class="va">dat</span></span>
 <span><span class="co">#&gt;    ID mcvar1 mcother      stringvar stringvar_1 stringvar_2 stringvar_3</span></span>
 <span><span class="co">#&gt; 1   1      1     -94         German      German        &lt;NA&gt;        &lt;NA&gt;</span></span>
@@ -496,7 +499,7 @@ the character variables. <code><a href="../reference/multiChar2fac.html">multiCh
 remaining text variables to numeric, labeled variables. All resulting
 labeled variables share the exact same value labels, which are sorted
 alphabetically.</p>
-<div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb15"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">gads_numeric</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/multiChar2fac.html">multiChar2fac</a></span><span class="op">(</span>GADSdat <span class="op">=</span> <span class="va">gads_string3</span>, vars <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"stringvar_1_r"</span>, <span class="st">"stringvar_2_r"</span><span class="op">)</span>, </span>
 <span>                              var_suffix <span class="op">=</span> <span class="st">"_r"</span>, label_suffix <span class="op">=</span> <span class="st">"(recoded)"</span><span class="op">)</span></span>
 <span></span>
@@ -539,8 +542,9 @@ alphabetically.</p>
 <span><span class="co">#&gt; 9              -99</span></span>
 <span><span class="co">#&gt; 10               2</span></span>
 <span><span class="co">#&gt; 11             -99</span></span>
-<span><span class="co">#&gt; 12             -96</span></span>
-<span></span>
+<span><span class="co">#&gt; 12             -96</span></span></code></pre></div>
+<div class="sourceCode" id="cb16"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span></span>
 <span><span class="va">gads_final</span> <span class="op">&lt;-</span> <span class="va">gads_numeric</span></span>
 <span><span class="fu"><a href="../reference/extractMeta.html">extractMeta</a></span><span class="op">(</span><span class="va">gads_final</span><span class="op">)</span><span class="op">[</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"varName"</span>, <span class="st">"value"</span>, <span class="st">"valLabel"</span>, <span class="st">"missings"</span><span class="op">)</span><span class="op">]</span></span>
 <span><span class="co">#&gt;            varName value                   valLabel missings</span></span>
@@ -592,7 +596,7 @@ alphabetically.</p>
 </h2>
 <p>In a last step you can remove unnecessary variables from the
 <code>GADS</code> object by using <code><a href="../reference/extractVars.html">removeVars()</a></code>.</p>
-<div class="sourceCode" id="cb13"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb17"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">gads_final2</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/extractVars.html">removeVars</a></span><span class="op">(</span><span class="va">gads_final</span>, vars <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"stringvar_1"</span>, <span class="st">"stringvar_2"</span>, <span class="st">"stringvar_3"</span>,</span>
 <span>                                               <span class="st">"stringvar_1_r"</span>, <span class="st">"stringvar_2_r"</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="co">#&gt; Removing the following rows from meta data: stringvar_1, stringvar_2, stringvar_3, stringvar_1_r, stringvar_2_r</span></span>
@@ -605,13 +609,11 @@ alphabetically.</p>
 
 
     <footer><div class="pkgdown-footer-left">
-  <p></p>
-<p>Developed by Benjamin Becker.</p>
+  <p>Developed by Benjamin Becker.</p>
 </div>
 
 <div class="pkgdown-footer-right">
-  <p></p>
-<p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.7.</p>
+  <p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.9.</p>
 </div>
 
     </footer>
