@@ -7,6 +7,7 @@
 * `applyChangeMeta()` and `recodeGADS()` now correctly perform recodings (and throw errors) if multiple meta data conflicts occur (#57)
 * `removeEmptyValLabels()` for removing unused missing tags and value labels (#4)
 * `extractData()` and `extractData2()` now correctly apply value labels, even when value and value label conflicts exist
+* `write_spss2()` now also handles variables containing only NA values when `format` is also NA (#72)
 
 # eatGADS 1.1.0
 
