@@ -60,7 +60,7 @@ gads <- recode2NA(gads, value = "")
 ## Creating and editing a lookup table
 
 With `createLookup()`, you can create a lookup table which allows recoding one or multiple variables.  
-You can choose which string variables in a `GADS` object you would like to recode by using the `recodeVars` argument. The resulting look up table is a long format `data.frame` with rows being variable x value pairings. In case you want to sort the output to make recoding easier, the argument `sort_by` can be used. Extra columns can be added to the look up table by the argument `addCols` (but can also be added later manually e.g. in Excel). As test takers can insert multiple languages in the text field, you have to add multiple recode columns to the look up table. The respective column names are irrelevant and just for convenience purpose. 
+You can choose which string variables in a `GADSdat` object you would like to recode by using the `recodeVars` argument. The resulting lookup table is a long format `data.frame` with rows being variable x value pairings. In case you want to sort the output to make recoding easier, the argument `sort_by` can be used. Extra columns can be added to the lookup table by the argument `addCols` (but can also be added later manually e.g. in Excel). As test takers can insert multiple languages in the text field, you have to add multiple recode columns to the lookup table. The respective column names are irrelevant and just for convenience purpose. 
 
 ```{r lookup}
 lookup <- createLookup(GADSdat = gads, recodeVars = "stringvar", sort_by = 'value', 
@@ -71,10 +71,10 @@ lookup
 
 Now you have to add the desired values for recoding. You should use (a) unique parts of the existing variable labels of the corresponding dummy variables (see the next section for explanation) and (b) consistent new values that can serve as variable labels later. Spelling mistakes within the recoding will result in additional columns in the final data set! If there are less values than columns you can leave the remaining columns `NA`.    
 
-To fill in the columns you could use `R` directly to modify the columns. Alternatively, we recommend using `eatAnalysis::write_xlsx()` to create an excel file in which you can fill in the values. 
+To fill in the columns you could use `R` directly to modify the columns. Alternatively, we recommend using `eatAnalysis::write_xlsx()` to create an Excel file in which you can fill in the values. 
 
 ```{r lookup export, eval=FALSE}
-# write look up table to Excel
+# write lookup table to Excel
 eatAnalysis::write_xlsx(lookup, "lookup_forcedChoice.xlsx")
 ```
 
@@ -82,7 +82,7 @@ eatAnalysis::write_xlsx(lookup, "lookup_forcedChoice.xlsx")
 
 &nbsp;
 
-After filling out the excel sheet the look up table might look like this: 
+After filling out the Excel sheet the lookup table might look like this: 
 
 &nbsp;
 
@@ -90,16 +90,16 @@ After filling out the excel sheet the look up table might look like this:
 
 &nbsp;
 
-The excel file can be read back into `R` via `readxl::read_xlsx()`. 
-If you want to create specific missing codes, you have to insert the desired (numerical!) missing codes into all columns (e.g. `-96` in the look up table below). The corresponding value labels will be assigned in a later step.
+The Excel file can be read back into `R` via `readxl::read_xlsx()`. 
+If you want to create specific missing codes, you have to insert the desired (numerical!) missing codes into all columns (e.g. `-96` in the lookup table below). The corresponding value labels will be assigned in a later step.
 
 ```{r lookup import export, eval=FALSE}
-# write look up table to Excel
+# write lookup table to Excel
 eatAnalysis::write_xlsx(lookup, "lookup_multipleChoice.xlsx")
 
 ### perform recodes in Excel sheet!
 
-# read look up table back to R
+# read lookup table back to R
 lookup <- readxl::read_xlsx("lookup_multipleChoice.xlsx")
 lookup
 ```
@@ -114,19 +114,19 @@ lookup$language3 <- c(NA, NA, "Italian", NA, NA,
 lookup
 ```
 
-## Apply look up to `GADSdat`
+## Apply lookup to `GADSdat`
 
-You perform the actual data recoding using the `applyLookup_expandVar()` function. It applies the recodes defined in the look up table, thereby creating as many character variables as there are additional columns in the look up table. Variable names are generated automatically.
+You perform the actual data recoding using the `applyLookup_expandVar()` function. It applies the recodes defined in the lookup table, thereby creating as many character variables as there are additional columns in the lookup table. Variable names are generated automatically.
 
-```{r integrate the Lookup table}
+```{r integrate the lookup table}
 gads_string <- applyLookup_expandVar(GADSdat = gads, lookup = lookup)
 
 gads_string$dat
 ```
 
-In some cases you might have recoded some of the values to specific missing codes. These missing codes have to be now specified by hand as value labels that should be treated as missings. The function `changeValLabels()` is used to give specific value labels and the function `changeMissings()` attaches missing codes. The loop below performs the appropriate labeling and missing coding in a loop for all three new string variables.
+In some cases you might have recoded some of the values to specific missing codes. These missing codes have to be now specified by hand as value labels that should be treated as missings. The function `changeValLabels()` is used to give specific value labels and the function `changeMissings()` attaches missing codes. The loop below performs the appropriate labeling and missing coding for all three new string variables.
 
-```{r label missings from Lookup table}
+```{r label missings from lookup table}
 for(nam in paste0("stringvar_", 1:3)) {
   gads_string <- changeValLabels(gads_string, varName = nam, 
                                  value = -96, valLabel = "Missing: Not codeable")
@@ -139,7 +139,7 @@ gads_string$labels
 
 ## Match values to variable labels
 
-When integrating character variables into multiple dummy variables, there has to be a clear correspondence between values in the character variable and dummy variables. `eatGADS` requires this information as a named character vector with the dummy variable names as values and values of the text variable as names. Such a vector can be automatically generated by the  `matchValues_varLabels()` function. The function takes a character vector (`values`) as input and matches all values in this vector to the variable labels of the dummy variables (`mc_vars`). We provide the content of the character variables as input for the `values` argument as these are all possible new values.
+When integrating character variables into multiple dummy variables, there has to be a clear correspondence between values in the character variable and dummy variables. `eatGADS` requires this information as a named character vector with the dummy variable names as values and values of the text variable as names. Such a vector can be automatically generated by the `matchValues_varLabels()` function. The function takes a character vector (`values`) as input and matches all values in this vector to the variable labels of the dummy variables (`mc_vars`). We provide the content of the character variables as input for the `values` argument as these are all possible new values.
 
 In case that not every already existing variable label is part of the lookup table you can use the `label_by_hand` argument. This is always the case for the variable representing the `other` response option but might be necessary for other response options as well. Alternatively, these values could be added to the `value_string` as well, to enable automatic matching.
 
@@ -154,7 +154,7 @@ named_char_vec
 
 ## Integrate character and numeric variables
 
-By using the expanded `GADS` and the named character vector you can collapse the information of the strings with the already existing numeric variables. The following coding of the binary numeric variables is required: `1` = true and `0` = false (for recoding see `recodeGADS()`). The names of the text variables are specified under `text_vars`. 
+By using the expanded `GADSdat` object and the named character vector you can collapse the information of the strings with the already existing numeric variables. The following coding of the binary numeric variables is required: `1` = true and `0` = false (for recoding see `recodeGADS()`). The names of the text variables are specified under `text_vars`. 
 
 If there is an entry in the text variables that matches one of the binary numeric variables, this binary numeric variable will be set to `1`. The variable which indicates entries in the text variable (`mc_var_4text`) is recoded accordingly. If for a row all entries in the text variable can be recoded into the binary numeric variables, the `invalid_miss_code` is inserted into the text variables and `mc_var_4text` is changed to `0`. If there are valid entries beside the binary numeric variables `mc_var_4text` is set to `1`. If there were no valid entries in `text_vars` to begin with, `mc_var_4text` is left as is. All empty entries in the `text_vars` are assigned missing codes (`notext_miss_code`).
 
@@ -173,7 +173,7 @@ gads_string2$dat
 
 ## Trim down variables
 
-Sometimes the number of additional entries should be limited (as theoretically there can be infinite additional entries). This means that the number of character variables is 'trimmed'. `remove2NAchar()` performs this trimming. Via `max_num` the maximum number of text variables is defined and all text variables above this number are removed from the data set. If a row in the data set contains valid entries in on of the removed variables, a specific missing code (`na_value`) is inserted into this row on all remaining text variables.
+Sometimes the number of additional entries should be limited (as theoretically there can be infinite additional entries). This means that the number of character variables is 'trimmed'. `remove2NAchar()` performs this trimming. Via `max_num` the maximum number of text variables is defined and all text variables above this number are removed from the data set. If a row in the data set contains valid entries in one of the removed variables, a specific missing code (`na_value`) is inserted into this row on all remaining text variables.
 
 ```{r remove2NAchar}
 gads_string3 <- remove2NAchar(GADSdat = gads_string2, 
@@ -200,7 +200,7 @@ extractMeta(gads_final)[, c("varName", "value", "valLabel", "missings")]
 
 ## Clean data set
 
-In a last step you can remove unnecessary variables from the `GADS` object by using `removeVars()`.
+In a last step you can remove unnecessary variables from the `GADSdat` object by using `removeVars()`.
 ```{r remove vars}
 gads_final2 <- removeVars(gads_final, vars = c("stringvar_1", "stringvar_2", "stringvar_3",
                                                "stringvar_1_r", "stringvar_2_r"))

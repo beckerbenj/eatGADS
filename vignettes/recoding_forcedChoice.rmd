@@ -59,7 +59,7 @@ gads <- recode2NA(gads, value = "")
 ## Creating and editing a lookup table
 
 With `createLookup()`, you can create a lookup table which allows recoding one or multiple variables.  
-You can choose which string variables in a `GADS` object you would like to recode by using the `recodeVars` argument. The resulting look up table is a long format `data.frame` with rows being variable x value pairings. In case you want to sort the output to make recoding easier, the argument `sort_by` can be used. Extra columns can be added to the look up table by the argument `addCols` (but can also be added later manually e.g. in Excel). The respective column names are irrelevant and just for convenience purpose. 
+You can choose which string variables in a `GADSdat` object you would like to recode by using the `recodeVars` argument. The resulting lookup table is a long format `data.frame` with rows being variable x value pairings. In case you want to sort the output to make recoding easier, the argument `sort_by` can be used. Extra columns can be added to the lookup table by the argument `addCols` (but can also be added later manually e.g. in Excel). The respective column names are irrelevant and just for convenience purpose. 
 
 ```{r lookup}
 lookup <- createLookup(GADSdat = gads, recodeVars = "stringvar", sort_by = 'value', 
@@ -69,10 +69,10 @@ lookup
 ```
 
 Now you have to add the desired values for recoding. You should use (a) the existing value labels of the corresponding numerical, labeled variable and (b) consistent new values that can serve as value labels later. Spelling mistakes within the recoding will result in different values in the output!   
-To fill in the columns you could use `R` directly to modify the columns. Alternatively, we recommend using `eatAnalysis::write_xlsx()` to create an excel file in which you can fill in the values. 
+To fill in the columns you could use `R` directly to modify the columns. Alternatively, we recommend using `eatAnalysis::write_xlsx()` to create an Excel file in which you can fill in the values. 
 
 ```{r lookup export, eval=FALSE}
-# write look up table to Excel
+# write lookup table to Excel
 eatAnalysis::write_xlsx(lookup, "lookup_forcedChoice.xlsx")
 ```
 
@@ -80,7 +80,7 @@ eatAnalysis::write_xlsx(lookup, "lookup_forcedChoice.xlsx")
 
 &nbsp;
 
-After filling out the excel sheet the look up table might look like this: 
+After filling out the Excel sheet the lookup table might look like this: 
 
 &nbsp;
 
@@ -88,12 +88,12 @@ After filling out the excel sheet the look up table might look like this:
 
 &nbsp;
 
-The excel file can be read back into `R` via `readxl::read_xlsx()`. Detailed information on how missing values should be recoded is provided in the last section of this vignette.
+The Excel file can be read back into `R` via `readxl::read_xlsx()`. Detailed information on how missing values should be recoded is provided in the last section of this vignette.
 
 If you have more than one person working on the variable or if you want to use templates, you may have 2 different possible recode values (in our example: `new` and `new2`) . You can fill in both in the lookup table and then choose which one you want to prioritize later.
 
 ```{r lookup reimport, eval=FALSE}
-# read look up table back to R
+# read lookup table back to R
 lookup <- readxl::read_xlsx("lookup_forcedChoice.xlsx")
 lookup
 ```
@@ -104,7 +104,7 @@ lookup$new2 <- c("miss", "England", "England", NA, "Germany", "Italy", "Italy")
 lookup
 ```
 
-We use the `collapseColumns()` function to get the correct layout for the final look up table. The function merges both columns containing the new values. By using the `prioritize` argument you can decide which column will be preferred. Only if there is an `NA` in the prioritized column, the other column will be used instead.
+We use the `collapseColumns()` function to get the correct layout for the final lookup table. The function merges both columns containing the new values. By using the `prioritize` argument you can decide which column will be preferred. Only if there is an `NA` in the prioritized column, the other column will be used instead.
 
 ```{r collapse the columns}
 lookup_formatted <- collapseColumns(lookup = lookup, recodeVars = c("new", "new2"), 
@@ -113,9 +113,9 @@ lookup_formatted
 ```
 
 
-## Apply look up to `GADSdat`
+## Apply lookup to `GADSdat`
 
-You perform the actual data recoding using the `applyLookup()` function. It applies the recodes defined in the look up table. This means that if the look up table was created for multiple variables, `applyLookup()` performs recoding for all of these variables simultaneously. If you define a `suffix`, the old variable(s) will not be overwritten.
+You perform the actual data recoding using the `applyLookup()` function. It applies the recodes defined in the lookup table. This means that if the lookup table was created for multiple variables, `applyLookup()` performs recoding for all of these variables simultaneously. If you define a `suffix`, the old variable(s) will not be overwritten.
 
 ```{r integrate the Lookup table}
 gads_string <- applyLookup(GADSdat = gads, lookup = lookup_formatted, suffix = "_r")
@@ -139,7 +139,7 @@ gads_final$dat
 extractMeta(gads_final, "mcvar_r")
 ```
 
-`checkMissings()` is a function for automatically setting missing values in a `GADSdat`. If new values should receive missing codes, `checkMissings()` would be necessary. However, in our example no new values representing missings have been added, therefore the function does not change the `GADSdat`. 
+`checkMissings()` is a function for automatically setting missing values in a `GADSdat` object. If new values should receive missing codes, `checkMissings()` would be necessary. However, in our example no new values representing missings have been added, therefore the function does not change the `GADSdat` object. 
 
 ```{r checkMissings}
 gads_final <- checkMissings(GADSdat = gads_final, missingLabel = "missing", 
@@ -150,7 +150,7 @@ extractMeta(gads_final, "mcvar_r")
 
 ## Remove variables from `GADSdat`
 
-In a last step you can remove intermediate or superfluous variables from the `GADSdat` by using the function `removeVars()`.
+In a last step you can remove intermediate or superfluous variables from the `GADSdat` object by using the function `removeVars()`.
 
 ```{r removing unnecessary variables}
 gads_final <- removeVars(GADSdat = gads_final, vars = c("mcvar", "stringvar_r"))
