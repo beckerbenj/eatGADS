@@ -356,7 +356,7 @@ We start by extracting this change table via the `getChangeMeta()` function.
 meta_var <- getChangeMeta(GADSdat = pisa, level = "variable")
 ```
 
-While in principle one could modify the change table directly in R, it's more convenient to do this in Excel. The change table can be written to `.xlsx` via the `eatAnalysis::write_xlsx()` function. To perform changes, entries are made into the corresponding "_new"-columns.
+While in principle one could modify the change table directly in R, it is more convenient to do this in Excel. The change table can be written to `.xlsx` via the `eatAnalysis::write_xlsx()` function. To perform changes, entries are made into the corresponding "_new"-columns.
 
 ```{r write Excel var, eval = FALSE}
 # write to Excel

@@ -106,7 +106,7 @@ gads
 
 ### Saving `GADSdat` objects
 
-`GADSdat` objects for example can be saved as `RDS` files. This is also the preferred data format for distributing `GADSdat` objects to the `FDZ`.
+`GADSdat` objects, for example, can be saved as `RDS` files. This is also the preferred data format for distributing `GADSdat` objects to the `FDZ`.
 
 ```{r save gads, eval = FALSE}
 # Inpsect resulting object 
