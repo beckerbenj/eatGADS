@@ -96,7 +96,7 @@ head(dat3)
 
 ```
 
-In general, we recommend leaving labeled variables as numeric and converting values with missing codes to `NA`. If required, values labels can always be accessed via using `extractMeta()` on the `GADSdat` object or the data base.
+In general, we recommend leaving labeled variables as numeric and converting values with missing codes to `NA`. If required, value labels can always be accessed via using `extractMeta()` on the `GADSdat` object or the data base.
 
 ## Selecting different hierarchy levels
 
