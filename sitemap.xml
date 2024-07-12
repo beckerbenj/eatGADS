@@ -1,306 +1,104 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
-  <url>
-    <loc>https://beckerbenj.github.io/eatGADS/404.html</loc>
-  </url>
-  <url>
-    <loc>https://beckerbenj.github.io/eatGADS/articles/createGADS.html</loc>
-  </url>
-  <url>
-    <loc>https://beckerbenj.github.io/eatGADS/articles/data_cleaning.html</loc>
-  </url>
-  <url>
-    <loc>https://beckerbenj.github.io/eatGADS/articles/getGADS.html</loc>
-  </url>
-  <url>
-    <loc>https://beckerbenj.github.io/eatGADS/articles/import_raw.html</loc>
-  </url>
-  <url>
-    <loc>https://beckerbenj.github.io/eatGADS/articles/import_spss.html</loc>
-  </url>
-  <url>
-    <loc>https://beckerbenj.github.io/eatGADS/articles/index.html</loc>
-  </url>
-  <url>
-    <loc>https://beckerbenj.github.io/eatGADS/articles/recoding_forcedChoice.html</loc>
-  </url>
-  <url>
-    <loc>https://beckerbenj.github.io/eatGADS/articles/recoding_multipleChoice.html</loc>
-  </url>
-  <url>
-    <loc>https://beckerbenj.github.io/eatGADS/authors.html</loc>
-  </url>
-  <url>
-    <loc>https://beckerbenj.github.io/eatGADS/index.html</loc>
-  </url>
-  <url>
-    <loc>https://beckerbenj.github.io/eatGADS/news/index.html</loc>
-  </url>
-  <url>
-    <loc>https://beckerbenj.github.io/eatGADS/reference/applyChangeMeta.html</loc>
-  </url>
-  <url>
-    <loc>https://beckerbenj.github.io/eatGADS/reference/applyLookup.html</loc>
-  </url>
-  <url>
-    <loc>https://beckerbenj.github.io/eatGADS/reference/applyLookup_expandVar.html</loc>
-  </url>
-  <url>
-    <loc>https://beckerbenj.github.io/eatGADS/reference/applyNumCheck.html</loc>
-  </url>
-  <url>
-    <loc>https://beckerbenj.github.io/eatGADS/reference/assimilateValLabels.html</loc>
-  </url>
-  <url>
-    <loc>https://beckerbenj.github.io/eatGADS/reference/autoRecode.html</loc>
-  </url>
-  <url>
-    <loc>https://beckerbenj.github.io/eatGADS/reference/calculateScale.html</loc>
-  </url>
-  <url>
-    <loc>https://beckerbenj.github.io/eatGADS/reference/cbind.GADSdat.html</loc>
-  </url>
-  <url>
-    <loc>https://beckerbenj.github.io/eatGADS/reference/changeMissings.html</loc>
-  </url>
-  <url>
-    <loc>https://beckerbenj.github.io/eatGADS/reference/changeSPSSformat.html</loc>
-  </url>
-  <url>
-    <loc>https://beckerbenj.github.io/eatGADS/reference/changeValLabels.html</loc>
-  </url>
-  <url>
-    <loc>https://beckerbenj.github.io/eatGADS/reference/changeVarLabels.html</loc>
-  </url>
-  <url>
-    <loc>https://beckerbenj.github.io/eatGADS/reference/changeVarNames.html</loc>
-  </url>
-  <url>
-    <loc>https://beckerbenj.github.io/eatGADS/reference/check4SPSS.html</loc>
-  </url>
-  <url>
-    <loc>https://beckerbenj.github.io/eatGADS/reference/checkEmptyValLabels.html</loc>
-  </url>
-  <url>
-    <loc>https://beckerbenj.github.io/eatGADS/reference/checkFormat.html</loc>
-  </url>
-  <url>
-    <loc>https://beckerbenj.github.io/eatGADS/reference/checkMissings.html</loc>
-  </url>
-  <url>
-    <loc>https://beckerbenj.github.io/eatGADS/reference/checkTrendStructure.html</loc>
-  </url>
-  <url>
-    <loc>https://beckerbenj.github.io/eatGADS/reference/checkUniqueness.html</loc>
-  </url>
-  <url>
-    <loc>https://beckerbenj.github.io/eatGADS/reference/checkUniqueness2.html</loc>
-  </url>
-  <url>
-    <loc>https://beckerbenj.github.io/eatGADS/reference/checkValue.html</loc>
-  </url>
-  <url>
-    <loc>https://beckerbenj.github.io/eatGADS/reference/checkVarNames.html</loc>
-  </url>
-  <url>
-    <loc>https://beckerbenj.github.io/eatGADS/reference/clean_cache.html</loc>
-  </url>
-  <url>
-    <loc>https://beckerbenj.github.io/eatGADS/reference/cloneVariable.html</loc>
-  </url>
-  <url>
-    <loc>https://beckerbenj.github.io/eatGADS/reference/collapseColumns.html</loc>
-  </url>
-  <url>
-    <loc>https://beckerbenj.github.io/eatGADS/reference/collapseMC_Text.html</loc>
-  </url>
-  <url>
-    <loc>https://beckerbenj.github.io/eatGADS/reference/collapseMultiMC_Text.html</loc>
-  </url>
-  <url>
-    <loc>https://beckerbenj.github.io/eatGADS/reference/compareGADS.html</loc>
-  </url>
-  <url>
-    <loc>https://beckerbenj.github.io/eatGADS/reference/composeVar.html</loc>
-  </url>
-  <url>
-    <loc>https://beckerbenj.github.io/eatGADS/reference/convertCase.html</loc>
-  </url>
-  <url>
-    <loc>https://beckerbenj.github.io/eatGADS/reference/createGADS.html</loc>
-  </url>
-  <url>
-    <loc>https://beckerbenj.github.io/eatGADS/reference/createLookup.html</loc>
-  </url>
-  <url>
-    <loc>https://beckerbenj.github.io/eatGADS/reference/createNumCheck.html</loc>
-  </url>
-  <url>
-    <loc>https://beckerbenj.github.io/eatGADS/reference/createVariable.html</loc>
-  </url>
-  <url>
-    <loc>https://beckerbenj.github.io/eatGADS/reference/dummies2char.html</loc>
-  </url>
-  <url>
-    <loc>https://beckerbenj.github.io/eatGADS/reference/eatGADS-package.html</loc>
-  </url>
-  <url>
-    <loc>https://beckerbenj.github.io/eatGADS/reference/emptyTheseVariables.html</loc>
-  </url>
-  <url>
-    <loc>https://beckerbenj.github.io/eatGADS/reference/equalGADS.html</loc>
-  </url>
-  <url>
-    <loc>https://beckerbenj.github.io/eatGADS/reference/export_tibble.html</loc>
-  </url>
-  <url>
-    <loc>https://beckerbenj.github.io/eatGADS/reference/extractData.html</loc>
-  </url>
-  <url>
-    <loc>https://beckerbenj.github.io/eatGADS/reference/extractData2.html</loc>
-  </url>
-  <url>
-    <loc>https://beckerbenj.github.io/eatGADS/reference/extractDataOld.html</loc>
-  </url>
-  <url>
-    <loc>https://beckerbenj.github.io/eatGADS/reference/extractGADSdat.html</loc>
-  </url>
-  <url>
-    <loc>https://beckerbenj.github.io/eatGADS/reference/extractMeta.html</loc>
-  </url>
-  <url>
-    <loc>https://beckerbenj.github.io/eatGADS/reference/extractVars.html</loc>
-  </url>
-  <url>
-    <loc>https://beckerbenj.github.io/eatGADS/reference/fac2dummies.html</loc>
-  </url>
-  <url>
-    <loc>https://beckerbenj.github.io/eatGADS/reference/fac2dummies_complex.html</loc>
-  </url>
-  <url>
-    <loc>https://beckerbenj.github.io/eatGADS/reference/fillImputations.html</loc>
-  </url>
-  <url>
-    <loc>https://beckerbenj.github.io/eatGADS/reference/fixEncoding.html</loc>
-  </url>
-  <url>
-    <loc>https://beckerbenj.github.io/eatGADS/reference/getChangeMeta.html</loc>
-  </url>
-  <url>
-    <loc>https://beckerbenj.github.io/eatGADS/reference/getGADS.html</loc>
-  </url>
-  <url>
-    <loc>https://beckerbenj.github.io/eatGADS/reference/getGADS_fast.html</loc>
-  </url>
-  <url>
-    <loc>https://beckerbenj.github.io/eatGADS/reference/getTrendGADS.html</loc>
-  </url>
-  <url>
-    <loc>https://beckerbenj.github.io/eatGADS/reference/getTrendGADSOld.html</loc>
-  </url>
-  <url>
-    <loc>https://beckerbenj.github.io/eatGADS/reference/import_DF.html</loc>
-  </url>
-  <url>
-    <loc>https://beckerbenj.github.io/eatGADS/reference/import_RDS.html</loc>
-  </url>
-  <url>
-    <loc>https://beckerbenj.github.io/eatGADS/reference/import_convertLabel.html</loc>
-  </url>
-  <url>
-    <loc>https://beckerbenj.github.io/eatGADS/reference/import_raw.html</loc>
-  </url>
-  <url>
-    <loc>https://beckerbenj.github.io/eatGADS/reference/import_raw2.html</loc>
-  </url>
-  <url>
-    <loc>https://beckerbenj.github.io/eatGADS/reference/import_spss.html</loc>
-  </url>
-  <url>
-    <loc>https://beckerbenj.github.io/eatGADS/reference/import_stata.html</loc>
-  </url>
-  <url>
-    <loc>https://beckerbenj.github.io/eatGADS/reference/index.html</loc>
-  </url>
-  <url>
-    <loc>https://beckerbenj.github.io/eatGADS/reference/insertVariable.html</loc>
-  </url>
-  <url>
-    <loc>https://beckerbenj.github.io/eatGADS/reference/inspectDifferences.html</loc>
-  </url>
-  <url>
-    <loc>https://beckerbenj.github.io/eatGADS/reference/inspectMetaDifferences.html</loc>
-  </url>
-  <url>
-    <loc>https://beckerbenj.github.io/eatGADS/reference/labelsGADS.html</loc>
-  </url>
-  <url>
-    <loc>https://beckerbenj.github.io/eatGADS/reference/matchValues_varLabels.html</loc>
-  </url>
-  <url>
-    <loc>https://beckerbenj.github.io/eatGADS/reference/merge.GADSdat.html</loc>
-  </url>
-  <url>
-    <loc>https://beckerbenj.github.io/eatGADS/reference/mergeLabels.html</loc>
-  </url>
-  <url>
-    <loc>https://beckerbenj.github.io/eatGADS/reference/miss2NA.html</loc>
-  </url>
-  <url>
-    <loc>https://beckerbenj.github.io/eatGADS/reference/multiChar2fac.html</loc>
-  </url>
-  <url>
-    <loc>https://beckerbenj.github.io/eatGADS/reference/namesGADS.html</loc>
-  </url>
-  <url>
-    <loc>https://beckerbenj.github.io/eatGADS/reference/orderLike.html</loc>
-  </url>
-  <url>
-    <loc>https://beckerbenj.github.io/eatGADS/reference/pisa.html</loc>
-  </url>
-  <url>
-    <loc>https://beckerbenj.github.io/eatGADS/reference/recode2NA.html</loc>
-  </url>
-  <url>
-    <loc>https://beckerbenj.github.io/eatGADS/reference/recodeGADS.html</loc>
-  </url>
-  <url>
-    <loc>https://beckerbenj.github.io/eatGADS/reference/recodeNA2missing.html</loc>
-  </url>
-  <url>
-    <loc>https://beckerbenj.github.io/eatGADS/reference/recodeString2NA.html</loc>
-  </url>
-  <url>
-    <loc>https://beckerbenj.github.io/eatGADS/reference/relocateVariable.html</loc>
-  </url>
-  <url>
-    <loc>https://beckerbenj.github.io/eatGADS/reference/remove2NAchar.html</loc>
-  </url>
-  <url>
-    <loc>https://beckerbenj.github.io/eatGADS/reference/removeEmptyValLabels.html</loc>
-  </url>
-  <url>
-    <loc>https://beckerbenj.github.io/eatGADS/reference/removeValLabels.html</loc>
-  </url>
-  <url>
-    <loc>https://beckerbenj.github.io/eatGADS/reference/reuseMeta.html</loc>
-  </url>
-  <url>
-    <loc>https://beckerbenj.github.io/eatGADS/reference/splitGADS.html</loc>
-  </url>
-  <url>
-    <loc>https://beckerbenj.github.io/eatGADS/reference/stringAsNumeric.html</loc>
-  </url>
-  <url>
-    <loc>https://beckerbenj.github.io/eatGADS/reference/subImputations.html</loc>
-  </url>
-  <url>
-    <loc>https://beckerbenj.github.io/eatGADS/reference/updateMeta.html</loc>
-  </url>
-  <url>
-    <loc>https://beckerbenj.github.io/eatGADS/reference/write_spss.html</loc>
-  </url>
-  <url>
-    <loc>https://beckerbenj.github.io/eatGADS/reference/write_spss2.html</loc>
-  </url>
+<urlset xmlns = 'http://www.sitemaps.org/schemas/sitemap/0.9'>
+<url><loc>https://beckerbenj.github.io/eatGADS/404.html</loc></url>
+<url><loc>https://beckerbenj.github.io/eatGADS/articles/createGADS.html</loc></url>
+<url><loc>https://beckerbenj.github.io/eatGADS/articles/data_cleaning.html</loc></url>
+<url><loc>https://beckerbenj.github.io/eatGADS/articles/getGADS.html</loc></url>
+<url><loc>https://beckerbenj.github.io/eatGADS/articles/import_raw.html</loc></url>
+<url><loc>https://beckerbenj.github.io/eatGADS/articles/import_spss.html</loc></url>
+<url><loc>https://beckerbenj.github.io/eatGADS/articles/index.html</loc></url>
+<url><loc>https://beckerbenj.github.io/eatGADS/articles/recoding_forcedChoice.html</loc></url>
+<url><loc>https://beckerbenj.github.io/eatGADS/articles/recoding_multipleChoice.html</loc></url>
+<url><loc>https://beckerbenj.github.io/eatGADS/authors.html</loc></url>
+<url><loc>https://beckerbenj.github.io/eatGADS/index.html</loc></url>
+<url><loc>https://beckerbenj.github.io/eatGADS/news/index.html</loc></url>
+<url><loc>https://beckerbenj.github.io/eatGADS/reference/applyChangeMeta.html</loc></url>
+<url><loc>https://beckerbenj.github.io/eatGADS/reference/applyLookup.html</loc></url>
+<url><loc>https://beckerbenj.github.io/eatGADS/reference/applyLookup_expandVar.html</loc></url>
+<url><loc>https://beckerbenj.github.io/eatGADS/reference/applyNumCheck.html</loc></url>
+<url><loc>https://beckerbenj.github.io/eatGADS/reference/assimilateValLabels.html</loc></url>
+<url><loc>https://beckerbenj.github.io/eatGADS/reference/autoRecode.html</loc></url>
+<url><loc>https://beckerbenj.github.io/eatGADS/reference/calculateScale.html</loc></url>
+<url><loc>https://beckerbenj.github.io/eatGADS/reference/cbind.GADSdat.html</loc></url>
+<url><loc>https://beckerbenj.github.io/eatGADS/reference/changeMissings.html</loc></url>
+<url><loc>https://beckerbenj.github.io/eatGADS/reference/changeSPSSformat.html</loc></url>
+<url><loc>https://beckerbenj.github.io/eatGADS/reference/changeValLabels.html</loc></url>
+<url><loc>https://beckerbenj.github.io/eatGADS/reference/changeVarLabels.html</loc></url>
+<url><loc>https://beckerbenj.github.io/eatGADS/reference/changeVarNames.html</loc></url>
+<url><loc>https://beckerbenj.github.io/eatGADS/reference/check4SPSS.html</loc></url>
+<url><loc>https://beckerbenj.github.io/eatGADS/reference/checkEmptyValLabels.html</loc></url>
+<url><loc>https://beckerbenj.github.io/eatGADS/reference/checkFormat.html</loc></url>
+<url><loc>https://beckerbenj.github.io/eatGADS/reference/checkMissings.html</loc></url>
+<url><loc>https://beckerbenj.github.io/eatGADS/reference/checkTrendStructure.html</loc></url>
+<url><loc>https://beckerbenj.github.io/eatGADS/reference/checkUniqueness.html</loc></url>
+<url><loc>https://beckerbenj.github.io/eatGADS/reference/checkUniqueness2.html</loc></url>
+<url><loc>https://beckerbenj.github.io/eatGADS/reference/checkValue.html</loc></url>
+<url><loc>https://beckerbenj.github.io/eatGADS/reference/checkVarNames.html</loc></url>
+<url><loc>https://beckerbenj.github.io/eatGADS/reference/clean_cache.html</loc></url>
+<url><loc>https://beckerbenj.github.io/eatGADS/reference/cloneVariable.html</loc></url>
+<url><loc>https://beckerbenj.github.io/eatGADS/reference/collapseColumns.html</loc></url>
+<url><loc>https://beckerbenj.github.io/eatGADS/reference/collapseMC_Text.html</loc></url>
+<url><loc>https://beckerbenj.github.io/eatGADS/reference/collapseMultiMC_Text.html</loc></url>
+<url><loc>https://beckerbenj.github.io/eatGADS/reference/compareGADS.html</loc></url>
+<url><loc>https://beckerbenj.github.io/eatGADS/reference/composeVar.html</loc></url>
+<url><loc>https://beckerbenj.github.io/eatGADS/reference/convertCase.html</loc></url>
+<url><loc>https://beckerbenj.github.io/eatGADS/reference/createGADS.html</loc></url>
+<url><loc>https://beckerbenj.github.io/eatGADS/reference/createLookup.html</loc></url>
+<url><loc>https://beckerbenj.github.io/eatGADS/reference/createNumCheck.html</loc></url>
+<url><loc>https://beckerbenj.github.io/eatGADS/reference/createVariable.html</loc></url>
+<url><loc>https://beckerbenj.github.io/eatGADS/reference/dummies2char.html</loc></url>
+<url><loc>https://beckerbenj.github.io/eatGADS/reference/eatGADS-package.html</loc></url>
+<url><loc>https://beckerbenj.github.io/eatGADS/reference/emptyTheseVariables.html</loc></url>
+<url><loc>https://beckerbenj.github.io/eatGADS/reference/equalGADS.html</loc></url>
+<url><loc>https://beckerbenj.github.io/eatGADS/reference/export_tibble.html</loc></url>
+<url><loc>https://beckerbenj.github.io/eatGADS/reference/extractData.html</loc></url>
+<url><loc>https://beckerbenj.github.io/eatGADS/reference/extractData2.html</loc></url>
+<url><loc>https://beckerbenj.github.io/eatGADS/reference/extractDataOld.html</loc></url>
+<url><loc>https://beckerbenj.github.io/eatGADS/reference/extractGADSdat.html</loc></url>
+<url><loc>https://beckerbenj.github.io/eatGADS/reference/extractMeta.html</loc></url>
+<url><loc>https://beckerbenj.github.io/eatGADS/reference/extractVars.html</loc></url>
+<url><loc>https://beckerbenj.github.io/eatGADS/reference/fac2dummies.html</loc></url>
+<url><loc>https://beckerbenj.github.io/eatGADS/reference/fac2dummies_complex.html</loc></url>
+<url><loc>https://beckerbenj.github.io/eatGADS/reference/fillImputations.html</loc></url>
+<url><loc>https://beckerbenj.github.io/eatGADS/reference/fixEncoding.html</loc></url>
+<url><loc>https://beckerbenj.github.io/eatGADS/reference/getChangeMeta.html</loc></url>
+<url><loc>https://beckerbenj.github.io/eatGADS/reference/getGADS.html</loc></url>
+<url><loc>https://beckerbenj.github.io/eatGADS/reference/getGADS_fast.html</loc></url>
+<url><loc>https://beckerbenj.github.io/eatGADS/reference/getTrendGADS.html</loc></url>
+<url><loc>https://beckerbenj.github.io/eatGADS/reference/getTrendGADSOld.html</loc></url>
+<url><loc>https://beckerbenj.github.io/eatGADS/reference/import_DF.html</loc></url>
+<url><loc>https://beckerbenj.github.io/eatGADS/reference/import_RDS.html</loc></url>
+<url><loc>https://beckerbenj.github.io/eatGADS/reference/import_convertLabel.html</loc></url>
+<url><loc>https://beckerbenj.github.io/eatGADS/reference/import_raw.html</loc></url>
+<url><loc>https://beckerbenj.github.io/eatGADS/reference/import_raw2.html</loc></url>
+<url><loc>https://beckerbenj.github.io/eatGADS/reference/import_spss.html</loc></url>
+<url><loc>https://beckerbenj.github.io/eatGADS/reference/import_stata.html</loc></url>
+<url><loc>https://beckerbenj.github.io/eatGADS/reference/index.html</loc></url>
+<url><loc>https://beckerbenj.github.io/eatGADS/reference/insertVariable.html</loc></url>
+<url><loc>https://beckerbenj.github.io/eatGADS/reference/inspectDifferences.html</loc></url>
+<url><loc>https://beckerbenj.github.io/eatGADS/reference/inspectMetaDifferences.html</loc></url>
+<url><loc>https://beckerbenj.github.io/eatGADS/reference/labelsGADS.html</loc></url>
+<url><loc>https://beckerbenj.github.io/eatGADS/reference/matchValues_varLabels.html</loc></url>
+<url><loc>https://beckerbenj.github.io/eatGADS/reference/merge.GADSdat.html</loc></url>
+<url><loc>https://beckerbenj.github.io/eatGADS/reference/mergeLabels.html</loc></url>
+<url><loc>https://beckerbenj.github.io/eatGADS/reference/miss2NA.html</loc></url>
+<url><loc>https://beckerbenj.github.io/eatGADS/reference/multiChar2fac.html</loc></url>
+<url><loc>https://beckerbenj.github.io/eatGADS/reference/namesGADS.html</loc></url>
+<url><loc>https://beckerbenj.github.io/eatGADS/reference/orderLike.html</loc></url>
+<url><loc>https://beckerbenj.github.io/eatGADS/reference/pisa.html</loc></url>
+<url><loc>https://beckerbenj.github.io/eatGADS/reference/recode2NA.html</loc></url>
+<url><loc>https://beckerbenj.github.io/eatGADS/reference/recodeGADS.html</loc></url>
+<url><loc>https://beckerbenj.github.io/eatGADS/reference/recodeNA2missing.html</loc></url>
+<url><loc>https://beckerbenj.github.io/eatGADS/reference/recodeString2NA.html</loc></url>
+<url><loc>https://beckerbenj.github.io/eatGADS/reference/relocateVariable.html</loc></url>
+<url><loc>https://beckerbenj.github.io/eatGADS/reference/remove2NAchar.html</loc></url>
+<url><loc>https://beckerbenj.github.io/eatGADS/reference/removeEmptyValLabels.html</loc></url>
+<url><loc>https://beckerbenj.github.io/eatGADS/reference/removeValLabels.html</loc></url>
+<url><loc>https://beckerbenj.github.io/eatGADS/reference/reuseMeta.html</loc></url>
+<url><loc>https://beckerbenj.github.io/eatGADS/reference/splitGADS.html</loc></url>
+<url><loc>https://beckerbenj.github.io/eatGADS/reference/stringAsNumeric.html</loc></url>
+<url><loc>https://beckerbenj.github.io/eatGADS/reference/subImputations.html</loc></url>
+<url><loc>https://beckerbenj.github.io/eatGADS/reference/updateMeta.html</loc></url>
+<url><loc>https://beckerbenj.github.io/eatGADS/reference/write_spss.html</loc></url>
+<url><loc>https://beckerbenj.github.io/eatGADS/reference/write_spss2.html</loc></url>
 </urlset>
+
