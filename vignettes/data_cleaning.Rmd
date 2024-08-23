@@ -72,7 +72,7 @@ On value level, additional meta data can be stored, namely:
 * `valLabel`: value labels; labels describing, what a certain value on a certain variable represents
 * `missings`: missing tags (sometimes also referred to as missing codes) indicating whether a certain value represents a valid (`"valid"`) or a missing (`"miss"`) value
 
-Via the function `extractMeta()` the existing metadata of one, several or all variables in a `GADSdat` object can be inspected. This function is used frequently throughout the vignette to check whether changes to meta data have been performed successfully.
+Via the function `extractMeta()` the existing meta data of one, several or all variables in a `GADSdat` object can be inspected. This function is used frequently throughout the vignette to check whether changes to meta data have been performed successfully.
 
 ```{r overview}
 extractMeta(gads, vars = c("hisei", "schtype"))
@@ -218,7 +218,7 @@ gads_labeled <- cloneVariable(gads_labeled, varName = "sameteach", new_varName =
 ```
 
 #### Adding variables
-Adding variables to a `GADSdat` object is unfortunately not straight forward and requires utilizing the underlying object structure. For adding variables, the `dat` object needs to be abstracted and so that new variables ca be added to it. Afterwards, the meta data needs to be added using the `updateMeta()` function.
+Adding variables to a `GADSdat` object is unfortunately not straight forward and requires utilizing the underlying object structure. For adding variables, the `dat` object needs to be abstracted, so that new variables can be added to it. Afterwards, the meta data needs to be added using the `updateMeta()` function.
 
 ```{r add variables}
 # Extract the data
@@ -324,7 +324,7 @@ id_gads2$dat[, c("id", "id_new")]
 The sorting of variables in a `GADSdat` can be adjusted for individual variables and for the complete set of variables.
 
 #### Relocating a specific variable
-The function `relocateVariable()` allows the relocation of a single variable within a `GADSdat`.
+The function `relocateVariable()` allows the relocation of a single variable within a `GADSdat` object.
 
 ```{r relocate}
 namesGADS(gads_labeled)[1:5]
@@ -341,25 +341,25 @@ namesGADS(gads_labeled)[1:5]
 ```
 
 #### Ordering all variables
-The function `orderLike()` allows reordering all variables within a `GADSdat`.
+The function `orderLike()` allows reordering all variables within a `GADSdat` object.
 
 
 ## Changing meta data (and data) via an Excel sheet
-So far, the introduced functions work well for modifying the meta data of small data sets or for individual variables. However, frequently we are interested in modifying the meta data of a larger number of variables simultaneously. For this purpose `eatGADS` provides a workflow that works well with Excel spreadsheets. Thereby changes to meta data are divided into two levels: the variable and the value level.
+So far, the introduced functions work well for modifying the meta data of small data sets or for individual variables. However, we are frequently interested in modifying the meta data of a larger number of variables simultaneously. For this purpose `eatGADS` provides a workflow that works well with Excel spreadsheets. Thereby changes to meta data are divided into two levels: the variable and the value level.
 
 
 #### Variable level 
-We start by extracting this change table via the `getChangeMeta()` function
+We start by extracting this change table via the `getChangeMeta()` function.
 
 ```{r getChangeMeta}
 # variable level
 meta_var <- getChangeMeta(GADSdat = pisa, level = "variable")
 ```
 
-While in principle one could modify the change table directly in R, it more convenient to do this in Excel. The change table can be written to `.xlsx` via the `eatAnalysis::write_xlsx()` function. To perform changes, entries are made into the corresponding "_new"-columns.
+While in principle one could modify the change table directly in R, it is more convenient to do this in Excel. The change table can be written to `.xlsx` via the `eatAnalysis::write_xlsx()` function. To perform changes, entries are made into the corresponding "_new"-columns.
 
-```{r write excel var, eval = FALSE}
-# write to excel
+```{r write Excel var, eval = FALSE}
+# write to Excel
 eatAnalysis::write_xlsx(meta_var, row.names = FALSE, "variable_changes.xlsx")
 ```
 
@@ -370,10 +370,10 @@ eatAnalysis::write_xlsx(meta_var, row.names = FALSE, "variable_changes.xlsx")
 &nbsp;
 
 
-The excel file can be read back into `R` via `readxl::read_xlsx()`. 
+The Excel file can be read back into `R` via `readxl::read_xlsx()`. 
 
-```{r read excel var, eval = FALSE}
-# write to excel
+```{r read Excel var, eval = FALSE}
+# write to Excel
 meta_var_changed <- readxl::read_excel("variable_changes.xlsx", col_types = rep("text", 8))
 ```
 
@@ -392,15 +392,15 @@ extractMeta(gads2, vars = c("idstud", "idschool", "schoolType"))
 ```
 
 #### Value level 
-At value level, information on value, value labels or missings can be changed. The general workflow is identical
+At value level, information on value, value labels or missings can be changed. The general workflow is identical.
 
 ```{r valuelevel}
 # value level
 meta_val <- getChangeMeta(GADSdat = pisa, level = "value")
 ```
 
-```{r write excel val, eval = FALSE}
-# write to excel
+```{r write Excel val, eval = FALSE}
+# write to Excel
 eatAnalysis::write_xlsx(meta_val, row.names = FALSE, "value_changes.xlsx")
 ```
 
@@ -411,8 +411,8 @@ eatAnalysis::write_xlsx(meta_val, row.names = FALSE, "value_changes.xlsx")
 
 &nbsp;
 
-```{r read excel val, eval = FALSE}
-# write to excel
+```{r read Excel val, eval = FALSE}
+# write to Excel
 meta_val_changed <- readxl::read_excel("value_changes.xlsx", 
                                        col_types = c("text", rep(c("numeric", "text", "text"), 2)))
 ```

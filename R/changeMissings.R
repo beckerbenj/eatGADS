@@ -44,12 +44,13 @@ changeMissings.GADSdat <- function(GADSdat, varName, value, missings) {
   new_missings <- missings[!value %in% changeTable[changeTable$varName == varName, "value"]]
 
   for(i in seq_along(existing_values)) {
-    changeTable[changeTable$varName == varName & changeTable$value == value[i], "value_new"] <-
-      changeTable[changeTable$varName == varName & changeTable$value == value[i], "value"]
-    changeTable[changeTable$varName == varName & changeTable$value == value[i], "valLabel_new"] <-
-      changeTable[changeTable$varName == varName & changeTable$value == value[i], "valLabel"]
-    changeTable[changeTable$varName == varName & changeTable$value == value[i], "missings_new"] <- missings[i]
+    filterValue <- changeTable$varName == varName & changeTable$value == existing_values[i]
+
+    changeTable[filterValue, "value_new"] <- changeTable[filterValue, "value"]
+    changeTable[filterValue, "valLabel_new"] <- changeTable[filterValue, "valLabel"]
+    changeTable[filterValue, "missings_new"] <- existing_missings[i]
   }
+
   for(i in seq_along(new_values)) {
     change_row <- changeTable_ori[changeTable_ori$varName == varName, ][1, ]
 

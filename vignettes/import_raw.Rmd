@@ -23,7 +23,7 @@ When trying to understand data, most often not only the actual data is required,
 
 While the `data.frame` class in `R` supports value labels to a certain degree with the `factor` class, its functionality is limited. Other data formats like `.xlsx` or `.csv` support no meta data at all. Commercial software like `SPSS` provides such functionality but can not compete with the various tools for analyzing data that `R` provides.
 
-`eatGADS` is an `R` package that was developed to bridge this gap. Its main purpose is providing a data format in `R` specifically designed for storing meta data together with data in on place. Therefore it provides an `S3` class called `GADSdat`. The following vignette concentrates on how to import data into the `GADSdat` format and work with it in the `R` environment. In collaboration with the `IQB Forschungsdatenzentrum (FDZ)` the package can also be used to distribute data.
+`eatGADS` is an `R` package that was developed to bridge this gap. Its main purpose is providing a data format in `R` specifically designed for storing meta data together with data in one place. Therefore it provides an `S3` class called `GADSdat`. The following vignette concentrates on how to import data into the `GADSdat` format and work with it in the `R` environment. In collaboration with the `IQB Forschungsdatenzentrum (FDZ)` the package can also be used to distribute data.
 
 Note that `eatGADS` also allows the handling of large hierarchical data structures via relational data bases. This functionality is explained in more detail in an additional vignette. 
 
@@ -70,7 +70,7 @@ input_xlsx <- readxl::read_excel("path/example.xlsx")
 
 The `varLabels` object has to contain two variables: `varName`, which should exactly correspond to the variable names in `df` and `varLabels` which should contain the desired variable labels as strings. Note that this `data.frame` should contain as many rows as there are variables in `df`.
 
-The optional `valLabels` object has to contain 4 variables: `varName`, which should exactly correspond to the variable names in `df`; `values`, which should correspond to the respective values in `df` and has to be a numeric vector (labels for character vectors are currently not supported); `valLabels`, which should contain the value labels as strings and `missings`, a column indicating whether the value indicates a missing value. Valid values for `missings` are `"valid"` = no missing code and `"miss"` = missing code. Note that this `data.frame` can not contain any `varNames` that are not variables in `df`. However, not all variables in `df` have to occur in `valLabels`.
+The optional `valLabels` object has to contain four variables: `varName`, which should exactly correspond to the variable names in `df`; `values`, which should correspond to the respective values in `df` and has to be a numeric vector (labels for character vectors are currently not supported); `valLabels`, which should contain the value labels as strings; and `missings`, a column indicating whether the value indicates a missing value. Valid values for `missings` are `"valid"` = no missing code and `"miss"` = missing code. Note that this `data.frame` can not contain any `varNames` that are not variables in `df`. However, not all variables in `df` have to occur in `valLabels`.
 
 ```{r import_raw}
 # Example data set
@@ -106,7 +106,7 @@ gads
 
 ### Saving `GADSdat` objects
 
-`GADSdat` objects can for example be saved as `RDS` files. This is also the preferred data format for distributing `GADSdat` objects to the `FDZ`.
+`GADSdat` objects, for example, can be saved as `RDS` files. This is also the preferred data format for distributing `GADSdat` objects to the `FDZ`.
 
 ```{r save gads, eval = FALSE}
 # Inpsect resulting object 
@@ -138,7 +138,7 @@ dat2
 
 ## Modifying `GADSdat` objects
 
-`GADSdat` objects can also be modified even though only a certain amount of operations are supported. For smaller changes to the meta data and data a number of convenience functions exists. These functions allow modifying variable labels (`chagenVarLabels`), modifying variable names (`changeVarNames`) and recoding values (`recodeGADS`).
+`GADSdat` objects can also be modified even though only a certain amount of operations are supported. For smaller changes to the data and meta data a number of convenience functions exists. These functions allow modifying variable labels (`changeVarLabels`), modifying variable names (`changeVarNames`) and recoding values (`recodeGADS`).
 
 ```{r modify wrappers}
 ### wrapper functions
@@ -158,7 +158,7 @@ extractData(gads4, convertLabels = "numeric")
 
 ```
 
-For simultaneous changes to multiple variables a set of functions are implemented that extract a table for changes and apply the changes as written into this change table. To enable an easier work flow the change table could also be saved as an Excel file, modified via Excel and again imported into `R`. See the help pages of the respective functions for more details. 
+For simultaneous changes to multiple variables a set of functions is implemented that extract a table for changes and applies the changes as written into this change table. To enable an easier work flow the change table could also be saved as an Excel file, modified via Excel and again imported into `R`. See the help pages of the respective functions for more details. 
 
 
 ```{r modify changeTable}
@@ -173,13 +173,13 @@ extractMeta(gads5, vars = "ID")
 
 ## Writing SPSS files
 
-Objects of the class `GADSdat`can also be exported into the SPSS format, utilizing `haven`. Note that this function is slightly experimental and problems with specific character strings might occur.
+Objects of the class `GADSdat` can also be exported into the SPSS format, utilizing `haven`. Note that this function is slightly experimental and problems with specific character strings might occur.
 
 ```{r write spss, eval = FALSE}
 write_spss(gads, "path/example_out.sav")
 ```
 
-If the `haven` format is preferred for working in `R`, a `GADSdat` object can also be transformed to its equivalent `tibble` format as if the data was imported from SPSS via `haven`. 
+If the `haven` format is preferred for working in `R`, a `GADSdat` object can also be transformed to its equivalent `tibble` format, as if the data was imported from SPSS via `haven`. 
 
 ```{r export to haven, eval = TRUE}
 haven_dat <- export_tibble(gads)

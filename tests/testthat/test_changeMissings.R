@@ -68,3 +68,17 @@ test_that("Adding value label bug", {
   expect_equal(dat2$labels[2, "valLabel"], NA_character_)
 })
 
+test_that("sequence bug with labeled variables", {
+  dat1_seq <- data.frame(ID = 1:7,
+                         var1 = c(0, 1, 1, 1, -99, -98, -97))
+  dat1 <- import_DF(dat1_seq)
+
+  dat1_relabel <- changeValLabels(dat1, varName = "var1", value = c(0, 1, -99, -97), valLabel = c("true",
+                                                                                                  "false",
+                                                                                                  "don't know",
+                                                                                                  "no idea"))
+
+
+  dat1_changed <- changeMissings(dat1_relabel, varName = "var1", value = c(-99:-97), missings = rep("miss", 3))
+  expect_equal(dat1_changed$labels[2:4, "missings"], rep("miss", 3))
+})
