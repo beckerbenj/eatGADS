@@ -18,6 +18,9 @@
 #' integers and \code{R}'s \code{factor} format is very strict (no \code{0}, only integers increasing by \code{+ 1}),
 #' this procedure can lead to frequent problems.
 #'
+#' If multiple values of the same variable are assigned the same value label and the variable should be transformed to
+#' \code{character}, \code{factor}, or \code{ordered}, a warning is issued and the transformation is correctly performed.
+#'
 #'@param GADSdat A \code{GADSdat} object.
 #'@param convertMiss Should values tagged as missing values be recoded to \code{NA}?
 #'@param labels2character For which variables should values be recoded to their labels? The resulting variables
@@ -143,12 +146,33 @@ labels2values2 <- function(dat, labels, convertMiss, dropPartialLabels, labels2c
   change_labels <- labels[labels[, "varName"] %in% convertVariables, ]    # careful, from here use only change_labels!
   # check value labels, remove incomplete labels from insertion to protect variables
   if(identical(dropPartialLabels, TRUE)) {
-    drop_labels <- unlist(lapply(unique(labels$varName), check_labels, dat = dat, labels = labels,
+    drop_labels <- unlist(lapply(unique(labels$varName), FUN = check_labels, dat = dat, labels = labels,
                                  convertMiss = convertMiss))
     change_labels <- change_labels[!change_labels$varName %in% drop_labels, ]
   }
   # early return, if no values are to be recoded
   if(nrow(change_labels) == 0) return(dat)
+
+  # check for duplicate value labels (unfortunately possible in SPSS)
+  vars_with_duplicate_valLabels <- change_labels[duplicated(change_labels[, c("varName", "valLabel")]), "varName"]
+  if(length(vars_with_duplicate_valLabels) > 0) {
+    for(nam in unique(vars_with_duplicate_valLabels)) {
+      single_change_labels <- change_labels[change_labels$varName == nam, ]
+      dup_valLabels <- single_change_labels[duplicated(single_change_labels$valLabel), "valLabel"]
+      affected_values <- single_change_labels[single_change_labels$valLabel == dup_valLabels, ]
+      for(dup_valLabel in dup_valLabels) {
+        warning("Duplicate value label in variable ", nam, ": ", dup_valLabel, ". Information may be lost when extracting data.")
+
+        # recode actual data to prevent any potential issues with char2fac later
+        value_lookup <- data.frame(oldValues = affected_values[, "value"],
+                                   newValues = affected_values[1, "value"])
+        dat[, nam] <- eatTools::recodeLookup(dat[, nam], value_lookup)
+
+        # remove superfluous meta data
+        change_labels <- change_labels[!(change_labels$varName == nam &
+                                           change_labels$value %in% affected_values[-(1), "value"]), ]
+  }}}
+
 
   # convert labels into values (use recode function from applyChangeMeta)
   change_table <- change_labels[, c("varName", "value", "valLabel")]
@@ -165,11 +189,11 @@ labels2values2 <- function(dat, labels, convertMiss, dropPartialLabels, labels2c
   changed_variables_labels2factor <- intersect(labels2factor, changed_variables)
   changed_variables <- setdiff(changed_variables, changed_variables_labels2factor)
   if(length(changed_variables_labels2factor) > 0) {
-    dat2 <- char2fac(dat = dat2, labels = labels, vars = changed_variables_labels2factor, convertMiss = convertMiss, ordered = FALSE)
+    dat2 <- char2fac(dat = dat2, labels = change_labels, vars = changed_variables_labels2factor, convertMiss = convertMiss, ordered = FALSE)
   }
   changed_variables_labels2ordered <- intersect(labels2ordered, changed_variables)
   if(length(changed_variables_labels2ordered) > 0) {
-    dat2 <- char2fac(dat = dat2, labels = labels, vars = changed_variables_labels2ordered, convertMiss = convertMiss, ordered = TRUE)
+    dat2 <- char2fac(dat = dat2, labels = change_labels, vars = changed_variables_labels2ordered, convertMiss = convertMiss, ordered = TRUE)
   }
   dat2
 }
