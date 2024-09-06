@@ -14,6 +14,13 @@ test_that("auto recode a variable", {
   expect_equal(out$labels[3, 2], "(recoded)", fixed = TRUE)
 })
 
+test_that("auto recode a variable while overwriting it", {
+  out <- autoRecode(g, var = "id", var_suffix = "", label_suffix = "(recoded)")
+  expect_equal(namesGADS(out), c("id", "var1"))
+  expect_equal(out$dat$id, c(1, 3, 2, 1))
+  expect_equal(out$labels[1, 2], "(recoded)", fixed = TRUE)
+})
+
 
 test_that("save lookup", {
   f <- tempfile(fileext = ".csv")

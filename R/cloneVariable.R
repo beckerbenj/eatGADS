@@ -30,6 +30,10 @@ cloneVariable.GADSdat <- function(GADSdat, varName, new_varName, label_suffix = 
   if(new_varName %in% namesGADS(GADSdat)) {
     stop("'",  new_varName, "' is already an existing variable in the 'GADSdat'.")
   }
+  ## alternativley, cloneVariable() could be extended to accept new_varName == varName. The only action
+  ## performed would be to append label_suffix. This would allow using the function more straightforward
+  ## in functions such as autoRecode(). As of now, only autoRecode() is using cloneVariable(), therefore
+  ## such an extension is postponed.
 
   dat_only <- GADSdat$dat
   dat_only[[new_varName]] <- dat_only[[varName]]
