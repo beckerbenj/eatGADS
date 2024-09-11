@@ -54,7 +54,9 @@ test_that("Extract data into factor with duplicate value labels", {
   testM3$dat$VAR1 <- testM3$dat$VAR1
   outW <- capture_warnings(out <- extractData2(testM3, labels2factor = "VAR1", convertMiss = TRUE))
 
-  expect_equal(outW[2], "Duplicate value label in variable VAR1: One. Information may be lost when extracting data.")
+  expect_equal(outW[2],
+               paste0("Duplicate value label in variable VAR1. The following values (see value column) will be recoded into the same value label (see valLabel column):\n",
+                      eatTools::print_and_capture(testM3$labels[testM3$labels$varName == "VAR1" & testM3$labels$valLabel == "One", ])))
   expect_equal(class(out$VAR1), "factor")
   out_factor <- factor(c("One", NA, NA, "One"))
   attr(out_factor, "label") <- "Variable 1"

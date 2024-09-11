@@ -161,7 +161,8 @@ labels2values2 <- function(dat, labels, convertMiss, dropPartialLabels, labels2c
       dup_valLabels <- single_change_labels[duplicated(single_change_labels$valLabel), "valLabel"]
       affected_values <- single_change_labels[single_change_labels$valLabel == dup_valLabels, ]
       for(dup_valLabel in dup_valLabels) {
-        warning("Duplicate value label in variable ", nam, ": ", dup_valLabel, ". Information may be lost when extracting data.")
+        warning("Duplicate value label in variable ", nam, ". The following values (see value column) will be recoded into the same value label (see valLabel column):\n",
+                eatTools::print_and_capture(affected_values))
 
         # recode actual data to prevent any potential issues with char2fac later
         value_lookup <- data.frame(oldValues = affected_values[, "value"],
