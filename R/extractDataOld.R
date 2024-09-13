@@ -23,17 +23,24 @@ extractDataOld <- function(GADSdat, convertMiss = TRUE, convertLabels = "charact
 
 #'@export
 extractDataOld.GADSdat <- function(GADSdat, convertMiss = TRUE, convertLabels = "character", dropPartialLabels = TRUE, convertVariables = NULL) {
-  stop("extractDataOld() is only implemented for backwards compatability of 'trend_GADSdat' objects. Please use extractData() for 'GADSdat' objects.")
+  stop("extractDataOld() is only implemented for backwards compatability of 'trend_GADSdat' objects. Please use extractData2() or extractData() for 'GADSdat' objects.")
 }
 
 #'@export
 extractDataOld.trend_GADSdat <- function(GADSdat, convertMiss = TRUE, convertLabels = "character", dropPartialLabels = TRUE, convertVariables = NULL) {
   names_no_LEs <- names(GADSdat$datList)[names(GADSdat$datList) != "LEs"]
-  if(length(names_no_LEs) > 2) stop("extractDataOld() is only implemented for backwards compatability of 'trend_GADSdat' with data from two data bases. For 'trend_GADSdat' objects with data from more than two data bases use extractData() instead.")
+  if(length(names_no_LEs) > 2) {
+    stop("extractDataOld() is only implemented for backwards compatability of 'trend_GADSdat' with data from two data bases. For 'trend_GADSdat' objects with data from more than two data bases use extractData2() or extractData() instead.")
+  }
   check_trend_GADSdat(GADSdat)
 
-  all_dat <- extract_data_only(GADSdat = GADSdat, convertMiss = convertMiss, convertLabels = convertLabels,
-                               dropPartialLabels = dropPartialLabels, convertVariables = convertVariables)
+  GADSdat_noLEs <- GADSdat
+  GADSdat_noLEs$datList <- GADSdat_noLEs$datList[names(GADSdat_noLEs$datList) != "LEs"]
+  class(GADSdat) <- class(GADSdat)
+
+  all_dat <-   transform_call_extractData2(GADSdat = GADSdat_noLEs, convertMiss = convertMiss,
+                                           convertLabels = convertLabels, dropPartialLabels = dropPartialLabels,
+                                           convertVariables = convertVariables)
 
   ## if available, merge also linking errors; merge picks by automatically, keep variable order as in original data frames
   if(!is.null(GADSdat$datList[["LEs"]])) {

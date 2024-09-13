@@ -1,10 +1,7 @@
 
 # load data with missings
-# testM <- import_spss(file = "tests/testthat/helper_spss_missings.sav")
-# load(file = "tests/testthat/helper_data.rda")
-# testM <- import_spss("tests/testthat/helper_spss_missings.sav")
-testM <- import_spss("helper_spss_missings.sav")
-load(file = "helper_data.rda")
+testM <- import_spss(test_path("helper_spss_missings.sav"))
+load(file = test_path("helper_data.rda"))
 
 control_caching <- FALSE
 
@@ -21,7 +18,7 @@ test_that("Warnings and errors for Extract Data",  {
   w <- capture_warnings(extractData(testM))
   expect_equal(w[[1]], "Variable VAR1 is partially labeled. Value labels will be dropped for this variable.\nLabeled values are: 1")
   expect_equal(w[[2]], "Variable VAR2 is partially labeled. Value labels will be dropped for this variable.\nLabeled values are: -96")
-  expect_error(extractData(testM, convertLabels = "integer"), "Argument convertLabels incorrectly specified.")
+  expect_error(extractData(testM, convertLabels = "integer"))
 })
 
 test_that("Extract data", {
@@ -186,8 +183,8 @@ test_that("ExtractData with some variables labels applied to (convertVariables a
 })
 
 test_that("Extract data trend GADS", {
-  # trend_gads <- getTrendGADS(filePaths = c("tests/testthat/helper_dataBase.db", "tests/testthat/helper_dataBase_uniqueVar.db"), years = c(2012, 2018), fast = FALSE)
-  trend_gads <- suppressWarnings(getTrendGADS(filePaths = c("helper_dataBase.db", "helper_dataBase_uniqueVar.db"),
+  trend_gads <- suppressWarnings(getTrendGADS(filePaths =
+                                                test_path(c("helper_dataBase.db", "helper_dataBase_uniqueVar.db")),
                                               years = c(2012, 2018), fast = FALSE, verbose = FALSE))
   out <- extractData(trend_gads)
   expect_equal(dim(out), c(6, 5))
@@ -198,6 +195,7 @@ test_that("Extract data trend GADS", {
 
   ## convertVariables if some variables are not in both GADS
   out2 <- extractData(trend_gads, convertVariables = "V3")
+  out2 <- extractData2(trend_gads, labels2character = "V3")
   expect_equal(out, out2)
 })
 
@@ -217,9 +215,11 @@ test_that("Extract data trend GADS 3 MPs", {
 
 ### with linking errors
 test_that("with linking errors present", {
-  # out <- getTrendGADSOld(filePath1 = "tests/testthat/helper_comp.db", filePath2 = "tests/testthat/helper_comp2.db", years = c(2012, 2018), lePath = "tests/testthat/helper_le.db", fast = FALSE, vSelect = c("ID", "PV"))
-  out <- getTrendGADSOld(filePath1 = "helper_comp.db", filePath2 = "helper_comp2.db", years = c(2012, 2018),
-                         lePath = "helper_le.db", fast = control_caching, vSelect = c("ID", "PV"))
+  out <- getTrendGADSOld(filePath1 = test_path("helper_comp.db"),
+                         filePath2 = test_path("helper_comp2.db"),
+                         years = c(2012, 2018),
+                         lePath = test_path("helper_le.db"),
+                         fast = control_caching, vSelect = c("ID", "PV"))
   expect_error(dat <- extractData(out),
                "Linking errors are no longer supported by extractData. Use extractDataOld() instead.", fixed = TRUE)
 })
