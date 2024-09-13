@@ -1,8 +1,6 @@
 
-# load(file = "tests/testthat/helper_data.rda")
-# testM <- import_spss("tests/testthat/helper_spss_missings.sav")
-testM <- import_spss("helper_spss_missings.sav")
-load(file = "helper_data.rda")
+testM <- import_spss(test_path("helper_spss_missings.sav"))
+load(file = test_path("helper_data.rda"))
 
 control_caching <- FALSE
 
@@ -12,7 +10,7 @@ testM2 <- testM
 testM2$dat[, "Var_char"] <- c("a", "b", "c", "d")
 testM2$dat[, "Var_char2"] <- c(1, 1, 1, 1)
 testM2$labels[8, ] <- c("Var_char", NA, NA, NA, NA, NA, NA, NA)
-testM2$labels[9, ] <- c("Var_char2", NA, NA, NA, "labeled", 1, "b_value", NA)
+testM2$labels[9, ] <- c("Var_char2", NA, NA, NA, "yes", 1, "b_value", NA)
 testM2$labels$value <- as.numeric(testM2$labels$value)
 
 test_that("Warnings and errors for Extract Data",  {
@@ -49,6 +47,27 @@ test_that("Extract data for strings into factors", {
   expect_equal(class(out$Var_char), "character")
   expect_equal(class(out$Var_char2), "factor")
   expect_equal(out$Var_char2, as.factor(c("b_value", "b_value", "b_value", "b_value")))
+})
+
+test_that("Extract data into factor with duplicate value labels", {
+  testM3 <- changeValLabels(testM2, varName = "VAR1", value = "2", valLabel = "One")
+  testM3$dat$VAR1 <- testM3$dat$VAR1
+  outW <- capture_warnings(out <- extractData2(testM3, labels2factor = "VAR1", convertMiss = TRUE))
+
+  expect_equal(outW[2],
+               paste0("Duplicate value label in variable VAR1. The following values (see value column) will be recoded into the same value label (see valLabel column):\n",
+                      eatTools::print_and_capture(testM3$labels[testM3$labels$varName == "VAR1" & testM3$labels$valLabel == "One", ])))
+  expect_equal(class(out$VAR1), "factor")
+  out_factor <- factor(c("One", NA, NA, "One"))
+  attr(out_factor, "label") <- "Variable 1"
+  expect_equal(out$VAR1, out_factor)
+
+  suppressWarnings(out2 <- extractData2(testM3, labels2factor = "VAR1", convertMiss = FALSE))
+
+  expect_equal(class(out2$VAR1), "factor")
+  out_factor2 <- factor(c("One", "By design", "Omission", "One"))
+  attr(out_factor2, "label") <- "Variable 1"
+  expect_equal(out2$VAR1, out_factor2)
 })
 
 test_that("Extract data for strings into factors and ordered", {
