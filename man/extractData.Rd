@@ -7,7 +7,7 @@
 extractData(
   GADSdat,
   convertMiss = TRUE,
-  convertLabels = "character",
+  convertLabels = c("character", "factor", "numeric"),
   convertVariables = NULL,
   dropPartialLabels = TRUE
 )
