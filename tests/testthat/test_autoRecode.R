@@ -1,8 +1,6 @@
 # load test data (df1, df2, pkList, fkList)
-# load(file = "tests/testthat/helper_data.rda")
-load(file = "helper_data.rda")
-# dfSAV <- import_spss(file = "tests/testthat/helper_spss_missings.sav")
-dfSAV <- import_spss(file = "helper_spss_missings.sav")
+load(file = test_path("helper_data.rda"))
+dfSAV <- import_spss(file = test_path("helper_spss_missings.sav"))
 
 df <- data.frame(id = c(110, 115, 112, 110), var1 = c(1, 1, 3, 1))
 g <- import_DF(df)
