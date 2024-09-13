@@ -1,8 +1,6 @@
 # load test data (df1, df2, pkList, fkList)
-# load(file = "tests/testthat/helper_data.rda")
-load(file = "helper_data.rda")
-# dfSAV <- import_spss(file = "tests/testthat/helper_spss_missings.sav")
-dfSAV <- import_spss(file = "helper_spss_missings.sav")
+load(file = test_path("helper_data.rda"))
+dfSAV <- import_spss(file = test_path("helper_spss_missings.sav"))
 
 df <- data.frame(id = c(110, 115, 112, 110), var1 = c(1, 1, 3, 1))
 g <- import_DF(df)
@@ -12,6 +10,13 @@ test_that("auto recode a variable", {
   expect_equal(namesGADS(out), c("id", "var1", "id_new"))
   expect_equal(out$dat$id_new, c(1, 3, 2, 1))
   expect_equal(out$labels[3, 2], "(recoded)", fixed = TRUE)
+})
+
+test_that("auto recode a variable while overwriting it", {
+  out <- autoRecode(g, var = "id", var_suffix = "", label_suffix = "(recoded)")
+  expect_equal(namesGADS(out), c("id", "var1"))
+  expect_equal(out$dat$id, c(1, 3, 2, 1))
+  expect_equal(out$labels[1, 2], "(recoded)", fixed = TRUE)
 })
 
 

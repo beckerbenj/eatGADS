@@ -9,6 +9,7 @@
 * `extractData()` and `extractData2()` now correctly apply value labels, even when value and value label conflicts exist
 * `write_spss2()` now also handles variables containing only NA values when `format` is also NA (#72)
 * `changeMissings()` now correctly changes missing labels for values of variables with partially non-existent `value`s and/or `valLabel`s (#73)
+* `autoRecode()` now correctly overwrites the existing variable if `var_suffix = ""` (#84)
 * `extractData2()` now correctly transforms variables with duplicate value labels (#77)
 
 # eatGADS 1.1.0

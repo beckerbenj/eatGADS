@@ -39,14 +39,18 @@ autoRecode.GADSdat <- function(GADSdat, var, var_suffix = "", label_suffix = "",
 
   # duplicate
   new_var <- paste0(var, var_suffix)
-  GADSdat_out <- cloneVariable(GADSdat = GADSdat, varName = var, new_varName = new_var, label_suffix = label_suffix)
+  if(!identical(new_var, var)) {
+    GADSdat_out <- cloneVariable(GADSdat = GADSdat, varName = var, new_varName = new_var, label_suffix = label_suffix)
+  } else {
+    GADSdat_out <- append_varLabel(GADSdat, varName = var, label_suffix = label_suffix)
+  }
 
   if(is.null(template)) {
-    # to character
+    # new variable to character
     GADSdat_out[["dat"]][[new_var]] <- as.character(GADSdat_out[["dat"]][[new_var]])
     GADSdat_out <- changeSPSSformat(GADSdat_out, varName = new_var, format = "A10")
 
-    # to factor
+    # new variable to factor
     GADSdat_out <- multiChar2fac(GADSdat_out, vars = new_var, var_suffix = "", label_suffix = "")
 
     # look up table
@@ -58,6 +62,7 @@ autoRecode.GADSdat <- function(GADSdat, var, var_suffix = "", label_suffix = "",
       stop()
     }
 
+    # recoding the actual data via a lookup table
     new_oldValues <- GADSdat$dat[[var]][!GADSdat$dat[[var]] %in% template$oldValue]
     new_newValues <- seq(from = max(template$newValue) + 1, length.out = length(new_oldValues))
     lookup <- rbind(template, data.frame(oldValue = new_oldValues, newValue = new_newValues))
