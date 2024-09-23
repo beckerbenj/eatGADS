@@ -198,3 +198,60 @@ labels2values2 <- function(dat, labels, convertMiss, dropPartialLabels, labels2c
   }
   dat2
 }
+
+# check if variable is correctly labeled, issues warning
+check_labels <- function(varName, dat, labels, convertMiss) {
+  # if(varName == "VAR3") browser()
+  real_values <- stats::na.omit(unique(dat[[varName]]))
+  labeled_values <- stats::na.omit(labels[labels$varName == varName, "value"])
+  ## either all labeled
+  if(all(real_values %in% labeled_values)) return()
+  ## or no labels except missings (if missings are recoded, else this is irrelevant)
+  if(identical(convertMiss, TRUE)) {
+    labeled_values <- stats::na.omit(labels[labels$varName == varName & labels$missings == "valid", "value"])
+    if(length(labeled_values) == 0) return(varName)
+  }
+  warning("Variable ", varName, " is partially labeled. Value labels will be dropped for this variable.\n",
+          "Labeled values are: ", paste(labeled_values, collapse = ", "), call. = FALSE)
+
+  varName
+  #warning("Variable ", varName, " is partially labeled. Value labels will be dropped for this variable variable.\nExisting values are: ",
+  #        paste(real_values, collapse = ", "), "\n", "Labeled values are: ", paste(labeled_values_noMiss, collapse = ", "), call. = FALSE)
+}
+
+# convert characters to factor if specified (keep ordering if possible)
+char2fac <- function(dat, labels, vars, convertMiss, ordered = FALSE) {
+  partially_labeled <- unordered_facs <- vars
+  for(i in vars) {
+    fac_meta <- labels[labels$varName == i & (is.na(labels$missings) | labels$missings != "miss")  , c("value", "valLabel")]
+    ## additionalcolumns relevant, if missings are not converted
+    if(convertMiss == FALSE) fac_meta <- labels[labels$varName == i, c("value", "valLabel")]
+    fac_meta <- fac_meta[order(fac_meta$value), ]
+
+    ## 3 scenarios: a) ordering possible, b) ordering impossible because no strictly integers from 1 rising,
+    # c) Ordering impossible because partially labelled
+    if(nrow(fac_meta) < length(unique(dat[!is.na(dat[, i]), i]))) {
+      dat[, i] <- factor(dat[, i])
+      unordered_facs <- unordered_facs[unordered_facs != i]
+    } else{
+      partially_labeled <- partially_labeled[partially_labeled != i]
+      if(all(fac_meta$value == seq(nrow(fac_meta)))) unordered_facs <- unordered_facs[unordered_facs != i]
+
+      dat[, i] <- factor(dat[, i], levels = fac_meta$valLabel, ordered = ordered)
+    }
+  }
+
+  if(length(partially_labeled) > 0) warning("For the following factor variables only incomplete value labels are available, rendering the underlying integers meaningless: ",
+                                            paste(partially_labeled, collapse = ", "))
+  if(length(unordered_facs) > 0) warning("For the following factor variables the underlying integers can not be preserved due to R-incompatible ordering of numeric values: ",
+                                         paste(unordered_facs, collapse = ", "))
+  dat
+}
+
+varLabels_as_labels <- function(dat, labels) {
+  for(i in names(dat)) {
+    varLabel <- labels[match(i, labels$varName), "varLabel"]
+    if(!is.na(varLabel)) attr(dat[[i]], "label") <- varLabel
+  }
+  dat
+}

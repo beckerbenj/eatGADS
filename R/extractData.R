@@ -48,154 +48,65 @@
 #'table(dat$gender)
 #'
 #'@export
-extractData <- function(GADSdat, convertMiss = TRUE, convertLabels = "character", convertVariables = NULL, dropPartialLabels = TRUE) {
+extractData <- function(GADSdat,
+                        convertMiss = TRUE,
+                        convertLabels = c("character", "factor", "numeric"),
+                        convertVariables = NULL,
+                        dropPartialLabels = TRUE) {
   UseMethod("extractData")
 }
 
 #'@export
-extractData.GADSdat <- function(GADSdat, convertMiss = TRUE, convertLabels = "character", convertVariables = NULL, dropPartialLabels = TRUE) {
+extractData.GADSdat <- function(GADSdat,
+                                convertMiss = TRUE,
+                                convertLabels = c("character", "factor", "numeric"),
+                                convertVariables = NULL,
+                                dropPartialLabels = TRUE) {
   check_GADSdat(GADSdat)
-  if(length(convertLabels) != 1 || !convertLabels %in% c("character", "factor", "numeric")) stop("Argument convertLabels incorrectly specified.")
-  dat <- GADSdat$dat
-  labels <- GADSdat$labels
-  ## missings
-  if(identical(convertMiss, TRUE)) dat <- miss2NA(GADSdat)
-  ## labels
-  dat <- labels2values(dat = dat, labels = labels, convertLabels = convertLabels, convertMiss = convertMiss,
-                       dropPartialLabels = dropPartialLabels, convertVariables = convertVariables)
-  ## varLabels
-  dat <- varLabels_as_labels(dat = dat, labels = labels)
-  dat
+  convertLabels <- match.arg(convertLabels)
+
+  transform_call_extractData2(GADSdat = GADSdat, convertMiss = convertMiss,
+                              convertLabels = convertLabels, dropPartialLabels = dropPartialLabels,
+                              convertVariables = convertVariables)
 }
 
 #'@export
-extractData.trend_GADSdat <- function(GADSdat, convertMiss = TRUE, convertLabels = "character", convertVariables = NULL, dropPartialLabels = TRUE) {
+extractData.trend_GADSdat <- function(GADSdat,
+                                      convertMiss = TRUE,
+                                      convertLabels = c("character", "factor", "numeric"),
+                                      convertVariables = NULL,
+                                      dropPartialLabels = TRUE) {
   check_trend_GADSdat(GADSdat)
-  if("LEs" %in% names(GADSdat$datList)) stop("Linking errors are no longer supported by extractData. Use extractDataOld() instead.")
-
-  all_dat <- extract_data_only(GADSdat = GADSdat, convertMiss = convertMiss, convertLabels = convertLabels,
-                               dropPartialLabels = dropPartialLabels, convertVariables = convertVariables)
-
-  all_dat <- all_dat[, c(names(all_dat)[names(all_dat) != "year"], "year")]
-  all_dat
-}
-
-# function for extracting the data and rbinding it (extra function for prevention of memory allocation problems)
-extract_data_only <- function(GADSdat, convertMiss, convertLabels, dropPartialLabels, convertVariables) {
-  #browser()
-  old_class <- class(GADSdat)
-  GADSdat$datList <- GADSdat$datList[names(GADSdat$datList) != "LEs"]
-  class(GADSdat) <- old_class
-
-  dat_list <- lapply(names(GADSdat$datList), function(nam) {
-    gads <- extractGADSdat(all_GADSdat = GADSdat, name = nam)
-    dat <- extractData(gads, convertMiss = convertMiss, convertLabels = convertLabels,
-                        dropPartialLabels = dropPartialLabels, convertVariables = convertVariables)
-    dat
-  })
-
-  do.call(plyr::rbind.fill, dat_list)
-  # gads1 <- extractGADSdat(all_GADSdat = GADSdat, name = names(GADSdat$datList)[1])
-  # dat1 <- extractData(gads1, convertMiss = convertMiss, convertLabels = convertLabels,
-  #                     dropPartialLabels = dropPartialLabels, convertVariables)
-  # gads2 <- extractGADSdat(all_GADSdat = GADSdat, name = names(GADSdat$datList)[2])
-  # dat2 <- extractData(gads2, convertMiss = convertMiss, convertLabels = convertLabels,
-  #                     dropPartialLabels = dropPartialLabels, convertVariables)
-  # test_names <- compare_and_order(set1 = names(dat1), set2 = names(dat2), name1 = "GADS 1", name2 = "GADS 2")
-  # oder year mit reinnehmen?
-  #plyr::rbind.fill(dat1, dat2)
-}
-
-# converts labels to values
-labels2values <- function(dat, labels, convertLabels, convertMiss, dropPartialLabels, convertVariables) {
-  if(identical(convertLabels, "numeric")) return(dat)
-  # Which variables should their value labels be applied to?
-  if(is.null(convertVariables)) convertVariables <- names(dat)
-  stopifnot(is.character(convertVariables) && length(convertVariables) > 0)
-  change_labels <- labels[labels[, "varName"] %in% convertVariables, ]    # careful, from here use only change_labels!
-  # check value labels, remove incomplete labels from insertion to protect variables
-  if(identical(dropPartialLabels, TRUE)) {
-    drop_labels <- unlist(lapply(unique(labels$varName), check_labels, dat = dat, labels = labels,
-                                 convertMiss = convertMiss))
-    change_labels <- change_labels[!change_labels$varName %in% drop_labels, ]
+  if("LEs" %in% names(GADSdat$datList)) {
+    stop("Linking errors are no longer supported by extractData. Use extractDataOld() instead.")
   }
-  # early return, if no values are to be recoded
-  if(nrow(change_labels) == 0) return(dat)
+  convertLabels <- match.arg(convertLabels)
 
-  # convert labels into values (use recode function from applyChangeMeta)
-  change_table <- change_labels[, c("varName", "value", "valLabel")]
-  names(change_table) <- c("varName", "value", "value_new")
-  dat2 <- recode_dat(dat, changeTable = change_table)
-
-  # identify modified variables
-  is_character_old <- unlist(lapply(dat, function(var) is.character(var)))
-  is_character_new <- unlist(lapply(dat2, function(var) is.character(var)))
-  changed_variables <- names(dat2)[is_character_new & !is_character_old]
-
-  # convert characters to factor if specified (keep ordering if possible)
-  if(identical(convertLabels, "factor")) {
-    dat2 <- char2fac(dat = dat2, labels = labels, vars = changed_variables, convertMiss = convertMiss)
-  }
-  dat2
+  transform_call_extractData2(GADSdat = GADSdat, convertMiss = convertMiss,
+                              convertLabels = convertLabels, dropPartialLabels = dropPartialLabels,
+                              convertVariables = convertVariables)
 }
 
-# check if variable is correctly labeled, issues warning
-check_labels <- function(varName, dat, labels, convertMiss) {
-  # if(varName == "VAR3") browser()
-  real_values <- na_omit(unique(dat[[varName]]))
-  labeled_values <- na_omit(labels[labels$varName == varName, "value"])
-  ## either all labeled
-  if(all(real_values %in% labeled_values)) return()
-  ## or no labels except missings (if missings are recoded, else this is irrelevant)
-  if(identical(convertMiss, TRUE)) {
-    labeled_values <- na_omit(labels[labels$varName == varName & labels$missings == "valid", "value"])
-    if(length(labeled_values) == 0) return(varName)
-  }
-  warning("Variable ", varName, " is partially labeled. Value labels will be dropped for this variable.\n",
-          "Labeled values are: ", paste(labeled_values, collapse = ", "), call. = FALSE)
-
-  varName
-  #warning("Variable ", varName, " is partially labeled. Value labels will be dropped for this variable variable.\nExisting values are: ",
-  #        paste(real_values, collapse = ", "), "\n", "Labeled values are: ", paste(labeled_values_noMiss, collapse = ", "), call. = FALSE)
-}
-
-na_omit <- function(vec) {
-  vec[!is.na(vec)]
-}
-
-# convert characters to factor if specified (keep ordering if possible)
-char2fac <- function(dat, labels, vars, convertMiss, ordered = FALSE) {
-  partially_labeled <- unordered_facs <- vars
-  for(i in vars) {
-    fac_meta <- labels[labels$varName == i & (is.na(labels$missings) | labels$missings != "miss")  , c("value", "valLabel")]
-    ## additionalcolumns relevant, if missings are not converted
-    if(convertMiss == FALSE) fac_meta <- labels[labels$varName == i, c("value", "valLabel")]
-    fac_meta <- fac_meta[order(fac_meta$value), ]
-
-    ## 3 scenarios: a) ordering possible, b) ordering impossible because no strictly integers from 1 rising,
-    # c) Ordering impossible because partially labelled
-    if(nrow(fac_meta) < length(unique(dat[!is.na(dat[, i]), i]))) {
-      dat[, i] <- factor(dat[, i])
-      unordered_facs <- unordered_facs[unordered_facs != i]
-    } else{
-      partially_labeled <- partially_labeled[partially_labeled != i]
-      if(all(fac_meta$value == seq(nrow(fac_meta)))) unordered_facs <- unordered_facs[unordered_facs != i]
-
-      dat[, i] <- factor(dat[, i], levels = fac_meta$valLabel, ordered = ordered)
-    }
+transform_call_extractData2 <- function(GADSdat, convertMiss, convertLabels, dropPartialLabels, convertVariables) {
+  # defautlt value of convertVariables is NULL and should transform all variables
+  # (see extractData() documentation)
+  if(is.null(convertVariables)) {
+    convertVariables <- unique(unlist(namesGADS(GADSdat)))
   }
 
-  if(length(partially_labeled) > 0) warning("For the following factor variables only incomplete value labels are available, rendering the underlying integers meaningless: ",
-                                            paste(partially_labeled, collapse = ", "))
-  if(length(unordered_facs) > 0) warning("For the following factor variables the underlying integers can not be preserved due to R-incompatible ordering of numeric values: ",
-                                         paste(unordered_facs, collapse = ", "))
-  dat
+  if(identical(convertLabels, "character")) {
+    GADSdat_out <- extractData2(GADSdat = GADSdat, convertMiss = convertMiss,
+                                labels2character = convertVariables, dropPartialLabels = dropPartialLabels)
+  } else if(identical(convertLabels, "factor")) {
+    GADSdat_out <- extractData2(GADSdat = GADSdat, convertMiss = convertMiss,
+                                labels2factor = convertVariables, dropPartialLabels = dropPartialLabels)
+  } else if(identical(convertLabels, "numeric")) {
+    GADSdat_out <- extractData2(GADSdat = GADSdat, convertMiss = convertMiss,
+                                labels2factor = NULL, labels2character = NULL, labels2ordered = NULL,
+                                dropPartialLabels = dropPartialLabels)
+  }
+  GADSdat_out
 }
 
-varLabels_as_labels <- function(dat, labels) {
-  for(i in names(dat)) {
-    varLabel <- labels[match(i, labels$varName), "varLabel"]
-    if(!is.na(varLabel)) attr(dat[[i]], "label") <- varLabel
-  }
-  dat
-}
+
+

@@ -1,28 +1,27 @@
 
-# load(file = "tests/testthat/helper_data.rda")
-# testM <- import_spss("tests/testthat/helper_spss_missings.sav")
-testM <- import_spss("helper_spss_missings.sav")
-load(file = "helper_data.rda")
+testM <- import_spss(test_path("helper_spss_missings.sav"))
+load(file = test_path("helper_data.rda"))
 
 control_caching <- FALSE
 
 
 test_that("Warnings and errors",  {
   expect_error(extractDataOld(testM),
-               "extractDataOld() is only implemented for backwards compatability of 'trend_GADSdat' objects. Please use extractData() for 'GADSdat' objects.", fixed = TRUE)
+               "extractDataOld() is only implemented for backwards compatability of 'trend_GADSdat' objects. Please use extractData2() or extractData() for 'GADSdat' objects.", fixed = TRUE)
 
   fp1 <- system.file("extdata", "trend_gads_2020.db", package = "eatGADS")
   fp2 <- system.file("extdata", "trend_gads_2015.db", package = "eatGADS")
   fp3 <- system.file("extdata", "trend_gads_2010.db", package = "eatGADS")
   s <- capture_output(gads_3mp <- getTrendGADS(filePaths = c(fp1, fp2, fp3), years = c(2020, 2015, 2010), fast = FALSE))
   expect_error(extractDataOld(gads_3mp),
-               "extractDataOld() is only implemented for backwards compatability of 'trend_GADSdat' with data from two data bases. For 'trend_GADSdat' objects with data from more than two data bases use extractData() instead.", fixed = TRUE)
+               "extractDataOld() is only implemented for backwards compatability of 'trend_GADSdat' with data from two data bases. For 'trend_GADSdat' objects with data from more than two data bases use extractData2() or extractData() instead.", fixed = TRUE)
 })
 
 
 test_that("Extract data trend GADS", {
-  # trend_gads <- getTrendGADS(filePath1 = "tests/testthat/helper_dataBase.db", filePath2 = "tests/testthat/helper_dataBase_uniqueVar.db", years = c(2012, 2018), fast = FALSE)
-  trend_gads <- suppressWarnings(getTrendGADSOld(filePath1 = "helper_dataBase.db", filePath2 = "helper_dataBase_uniqueVar.db", years = c(2012, 2018), fast = FALSE))
+  trend_gads <- suppressWarnings(getTrendGADSOld(filePath1 = test_path("helper_dataBase.db"),
+                                                 filePath2 = test_path("helper_dataBase_uniqueVar.db"),
+                                                 years = c(2012, 2018), fast = FALSE))
   out <- extractDataOld(trend_gads)
   expect_equal(dim(out), c(6, 5))
   expect_equal(names(out), c("ID1", "V1", "V2", "V3", "year"))
@@ -36,8 +35,10 @@ test_that("Extract data trend GADS", {
 
 ### with linking errors
 test_that("With linking errors", {
-  # out <- getTrendGADS(filePath1 = "tests/testthat/helper_comp.db", filePath2 = "tests/testthat/helper_comp2.db", years = c(2012, 2018), lePath = "tests/testthat/helper_le.db", fast = FALSE, vSelect = c("ID", "level", "PV"))
-  out <- getTrendGADSOld(filePath1 = "helper_comp.db", filePath2 = "helper_comp2.db", years = c(2012, 2018), lePath = "helper_le.db", fast = control_caching, vSelect = c("ID", "PV"))
+  out <- getTrendGADSOld(filePath1 = test_path("helper_comp.db"),
+                         filePath2 = test_path("helper_comp2.db"),
+                         years = c(2012, 2018), lePath = test_path("helper_le.db"),
+                         fast = control_caching, vSelect = c("ID", "PV"))
   dat <- extractDataOld(out)
   expect_equal(dim(dat), c(8, 5))
   expect_equal(dat$LE_PV, c(rep(0.3, 4), rep(0.2, 4)))
