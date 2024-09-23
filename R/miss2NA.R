@@ -31,7 +31,7 @@ miss2NA.GADSdat <- function(GADSdat) {
 recodeVar <- function(var, labs){
   # extract missing labels
   mLabs <- labs[labs$miss == "miss", ]
-  mCodes <- na_omit(mLabs[, "value", drop = TRUE])
+  mCodes <- stats::na.omit(mLabs[, "value", drop = TRUE])
   # recode
   var[var %in% mCodes] <- NA
   var

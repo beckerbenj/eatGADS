@@ -174,8 +174,7 @@ remove_values <- function(dat, vars = names(dat), values) {
 left_fill <- function(dat, vars = names(dat)) {
   len_vars <- length(vars)
   for(i in seq(nrow(dat))) {
-    #browser()
-    entries <- na_omit(dat[i, vars])
+    entries <- stats::na.omit(as.character(dat[i, vars]))
     dat[i, vars] <- c(entries, rep(NA, len_vars - length(entries)))
   }
   dat

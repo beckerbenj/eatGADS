@@ -202,13 +202,13 @@ labels2values2 <- function(dat, labels, convertMiss, dropPartialLabels, labels2c
 # check if variable is correctly labeled, issues warning
 check_labels <- function(varName, dat, labels, convertMiss) {
   # if(varName == "VAR3") browser()
-  real_values <- na_omit(unique(dat[[varName]]))
-  labeled_values <- na_omit(labels[labels$varName == varName, "value"])
+  real_values <- stats::na.omit(unique(dat[[varName]]))
+  labeled_values <- stats::na.omit(labels[labels$varName == varName, "value"])
   ## either all labeled
   if(all(real_values %in% labeled_values)) return()
   ## or no labels except missings (if missings are recoded, else this is irrelevant)
   if(identical(convertMiss, TRUE)) {
-    labeled_values <- na_omit(labels[labels$varName == varName & labels$missings == "valid", "value"])
+    labeled_values <- stats::na.omit(labels[labels$varName == varName & labels$missings == "valid", "value"])
     if(length(labeled_values) == 0) return(varName)
   }
   warning("Variable ", varName, " is partially labeled. Value labels will be dropped for this variable.\n",
@@ -217,10 +217,6 @@ check_labels <- function(varName, dat, labels, convertMiss) {
   varName
   #warning("Variable ", varName, " is partially labeled. Value labels will be dropped for this variable variable.\nExisting values are: ",
   #        paste(real_values, collapse = ", "), "\n", "Labeled values are: ", paste(labeled_values_noMiss, collapse = ", "), call. = FALSE)
-}
-
-na_omit <- function(vec) {
-  vec[!is.na(vec)]
 }
 
 # convert characters to factor if specified (keep ordering if possible)
