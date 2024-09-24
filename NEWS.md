@@ -11,6 +11,7 @@
 * `changeMissings()` now correctly changes missing labels for values of variables with partially non-existent `value`s and/or `valLabel`s (#73)
 * `autoRecode()` now correctly overwrites the existing variable if `var_suffix = ""` (#84)
 * `extractData2()` now correctly transforms variables with duplicate value labels (#77)
+* The output of `inspectMetaDifferences()` is no correctly named even if differences in variable labels and `SPSS` format occur (#81)
 
 # eatGADS 1.1.0
 

@@ -60,7 +60,7 @@ inspectMetaDifferences <- function(GADSdat, varName, other_GADSdat = GADSdat, ot
       names(varDiff) <- paste(nam_col, "varLabel", sep = "_")
       if(!identical(metaVar1$format, metaVar2$format)) {
         varDiff2 <- data.frame(metaVar1$format, metaVar2$format)
-        names(varDiff) <- paste(nam_col, "format", sep = "_")
+        names(varDiff2) <- paste(nam_col, "format", sep = "_")
 
         varDiff <- cbind(varDiff, varDiff2)[, c(1, 3, 2, 4)]
       }

@@ -1,6 +1,5 @@
 # load test data (df1, df2, pkList, fkList)
-# load(file = "tests/testthat/helper_data.rda")
-load(file = "helper_data.rda")
+load(file = test_path("helper_data.rda"))
 
 test_that("Errors",{
   df1_5 <- df1_4 <- df1_2 <- df1_3 <- df1
@@ -78,4 +77,12 @@ test_that("Differences after recoding",{
   expect_equal(out$valDiff[, "value"], 0:2)
   expect_equal(out$valDiff[, "GADSdat_valLabel"], c(NA, "No", "Yes"))
   expect_equal(out$valDiff[, "other_GADSdat_valLabel"], c("No", "Yes", NA))
+})
+
+test_that("Multiple differences",{
+  df1_2 <- changeSPSSformat(df1, "V1", "F4")
+  df1_2 <- changeVarLabels(df1_2, "V1", "some label")
+  out <- inspectMetaDifferences(df1, varName = "V1", other_GADSdat = df1_2)
+  expect_equal(names(out$varDiff),
+               c("GADSdat_varLabel", "GADSdat_format", "other_GADSdat_varLabel", "other_GADSdat_format"))
 })
