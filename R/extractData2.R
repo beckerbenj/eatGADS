@@ -9,7 +9,7 @@
 #'
 #' A \code{GADSdat} object includes actual data (\code{GADSdat$dat}) and the corresponding meta data information
 #' (\code{GADSdat$labels}). \code{extractData2} extracts the data and applies relevant meta data on value level
-#' (missing conversion, value labels),
+#' (missing tags, value labels),
 #' so the data can be used for analyses in \code{R}. Variable labels are retained as \code{label} attributes on column level.
 #'
 #' If \code{factor} are extracted via \code{labels2factor} or \code{labels2ordered}, an attempt is made to preserve the underlying integers.
