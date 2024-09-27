@@ -18,7 +18,7 @@ knitr::opts_chunk$set(
 
 `import_spss()` allows importing data from `SPSS` (`.sav` and `.zsav` files) into `R` by using the `R` package `haven`. 
 
-This vignette illustrates a typical workflow of importing a `SPSS` file using `import_spss()` and `extractData()`. For illustrative purposes we use a small example data set from the campus files of the German PISA Plus assessment. The complete campus files and the original data set can be accessed [here](https://www.iqb.hu-berlin.de/fdz/Datenzugang/CF-Antrag/AntragsformularCF) and [here](https://www.iqb.hu-berlin.de/fdz/Datenzugang/SUF-Antrag). 
+This vignette illustrates a typical workflow of importing a `SPSS` file using `import_spss()` and `extractData2()`. For illustrative purposes we use a small example data set from the campus files of the German PISA Plus assessment. The complete campus files and the original data set can be accessed [here](https://www.iqb.hu-berlin.de/fdz/Datenzugang/CF-Antrag/AntragsformularCF) and [here](https://www.iqb.hu-berlin.de/fdz/Datenzugang/SUF-Antrag). 
 
 ## Importing
 
@@ -49,27 +49,36 @@ namesGADS(gads_obj)
 extractMeta(gads_obj, vars = c("schtype", "idschool"))
 ```
 
-Commonly the most informative columns are `varLabel` (containing variable labels), `value` (referencing labeled values), `valLabel` (containing value labels) and `missings` (is a labeled value a missing value (`"miss"`) or not (`"valid"`)).  
+Commonly, the most informative columns are `varLabel` (containing variable labels), `value` (referencing labeled values), `valLabel` (containing value labels) and `missings` (missing tag: is a labeled value a missing value (`"miss"`) or not (`"valid"`)).  
 
 
 ## Extracting data from `GADSdat`
 
-If we want to use the data for analyses in `R` we have to extract it from the `GADSdat` object via the function `extractData()`. In doing so, we have to make two important decisions: (a) how should values marked as missing values be treated (`convertMiss`)? And (b) how should labeled values in general be treated (`convertLabels`, `dropPartialLabels`, `convertVariables`)? See `?extractData` for more details.
+If we want to use the data for analyses in `R` we have to extract it from the `GADSdat` object via the function `extractData2()`. 
+In doing so, we have to make two important decisions: (a) how should values marked as missing values be treated (`convertMiss`)? 
+And (b) how should labeled values in general be treated (`labels2character`, `labels2factor`, `labels2ordered`, `dropPartialLabels`)? 
+
+If a variable name is not provided under any of `labels2character`, `labels2factor`, `labels2ordered`, all value labels of the corresponding variable are simply dropped.
+If a variable name is provided under `labels2character`, the value labels of the corresponding variable are applied and the resulting variable is a character variable. `labels2factor` converts variables to factor and `labels2ordered` converts variables to ordered factors.
+
+See `?extractData2` for more details.
 
 ```{r extractdata}
-## convert labeled variables to characters
-dat1 <- extractData(gads_obj, convertLabels = "character")
+## convert all labeled variables to character
+dat1 <- extractData2(gads_obj, labels2character = namesGADS(gads_obj))
 dat1[1:5, 1:10]
 
 ## leave labeled variables as numeric
-dat2 <- extractData(gads_obj, convertLabels = "numeric")
+dat2 <- extractData2(gads_obj)
 dat2[1:5, 1:10]
 
-## leave labeled variables as numeric but convert some variables to character
-dat3 <- extractData(gads_obj, convertLabels = "character", 
-                    convertVariables = c("gender", "language"))
+## leave labeled variables as numeric but convert some variables to character and some to factor
+dat3 <- extractData2(gads_obj, labels2character = c("gender", "language"),
+                     labels2factor = c("schtype", "sameteach"))
 dat3[1:5, 1:10]
 ```
 
-In general, we recommend leaving labeled variables as numeric and converting values with missing codes to `NA`. The latter is the default behavior for the argument `checkMissings`. If required, value labels can always be accessed via using `extractMeta()` on the `GADSdat` object or the data base.
+In general, we recommend leaving labeled variables as numeric and converting values with missing codes to `NA`. 
+Both are the default behavior for `extractData2()`.
+If required, value labels can always be accessed via using `extractMeta()` on the `GADSdat` object or the data base.
 
