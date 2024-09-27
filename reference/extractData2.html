@@ -108,7 +108,7 @@ to the class specified in <code>labels2character</code>, <code>labels2factor</co
     <h2 id="details">Details<a class="anchor" aria-label="anchor" href="#details"></a></h2>
     <p>A <code>GADSdat</code> object includes actual data (<code>GADSdat$dat</code>) and the corresponding meta data information
 (<code>GADSdat$labels</code>). <code>extractData2</code> extracts the data and applies relevant meta data on value level
-(missing conversion, value labels),
+(missing tags, value labels),
 so the data can be used for analyses in <code>R</code>. Variable labels are retained as <code>label</code> attributes on column level.</p>
 <p>If <code>factor</code> are extracted via <code>labels2factor</code> or <code>labels2ordered</code>, an attempt is made to preserve the underlying integers.
 If this is not possible, a warning is issued.
