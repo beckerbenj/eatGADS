@@ -21,9 +21,13 @@
 #'
 #'@export
 import_tibble <- function(tibble, checkVarNames = TRUE, labeledStrings = c("drop", "keep", "transform")) {
+  if(!tibble::is_tibble(tibble)){
+    stop("tibble must be a tibble.")
+  }
   labeledStrings <- match.arg(labeledStrings)
 
-  out <- prepare_labels(rawDat = tibble, checkVarNames = checkVarNames, labeledStrings = labeledStrings)
+  tibble_savDat <- new_savDat(tibble)
+  out <- prepare_labels(rawDat = tibble_savDat, checkVarNames = checkVarNames, labeledStrings = labeledStrings)
   out
 }
 

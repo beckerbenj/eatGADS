@@ -1,5 +1,4 @@
-# rawDat <- load_spss(file = "tests/testthat/helper_spss.sav")
-rawDat <- load_spss("helper_spss.sav")
+rawDat <- load_spss(test_path("helper_spss.sav"))
 
 label_out1 <- data.frame(varName = c("VAR1", "VAR2", "VAR3"),
                          varLabel = c("Variable 1", "Variable 2", "Variable 3"),
@@ -36,8 +35,7 @@ test_that("Columns are added if not used for data for label df", {
 
 ### haven bug warning
 test_that("Haven bug for value labels of long string variables does no longer exist", {
-  out <- import_spss("helper_spss_havenbug.sav")
-  # out <- import_spss("tests/testthat/helper_spss_havenbug.sav")
+  out <- import_spss(test_path("helper_spss_havenbug.sav"))
   expect_equal(out$labels[["format"]], c("F8.2", "F8.2", "A8", "A8", "A9", "A9", "A10", "A10", "A200", "A200"))
   expect_equal(extractMeta(out, "v5")[["missings"]], c("valid", "miss"))
   expect_equal(extractMeta(out, "v5")[["valLabel"]], c("one", "missing"))
