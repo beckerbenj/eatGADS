@@ -1,6 +1,7 @@
 # eatGADS 1.1.0.9000
 ## new features
 * `inspectDifferences()` and `inspectMetaDifferences()` now allow comparisons of variables within the same `GADSdat` object (#62)
+* new function `import_tibble()` allows importing `tibbles` as `GADSdat` objects (#88)
 
 ## bug fixes
 * `applyLookup()` now works for multiple variables that contain `NAs` (#68)
