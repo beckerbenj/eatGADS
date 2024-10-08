@@ -1,4 +1,4 @@
-# eatGADS 1.1.0.9000
+# eatGADS 1.1.1
 ## new features
 * `inspectDifferences()` and `inspectMetaDifferences()` now allow comparisons of variables within the same `GADSdat` object (#62)
 * new function `import_tibble()` allows importing `tibbles` as `GADSdat` objects (#88)
@@ -18,7 +18,7 @@
 * `import_spss` vignette updated to use `extractData2()` instead of `extractData()`
 
 ## internal
-* refactored `extractData()` to use `extractData2()` internally
+* refactored `extractData()` to use `extractData2()` internally (#82)
 
 # eatGADS 1.1.0
 

@@ -12,7 +12,7 @@
 
 `eatGADS` (educational assessment tools: Greatest Assumable Data Set) is the data management and data handling tool used by the Institute for Educational Quality Improvement in Germany ([IQB](https://www.iqb.hu-berlin.de/)). It has a strong focus on (automated) handling and processing of meta data. 
 
-`eatGADS` uses [SQLite3](https://www.sqlite.org/index.html) as a back end and is especially suited for importing data stored as `SPSS` files. [eatDB](https://github.com/beckerbenj/eatDB) is used for data base creation and use, [haven](https://github.com/tidyverse/haven) is used for importing SPSS files.
+`eatGADS` uses [`SQLite3`](https://www.sqlite.org/index.html) as a back end and is especially suited for importing data stored as `SPSS` files. [`eatDB`](https://github.com/beckerbenj/eatDB) is used for data base creation and use, [`haven`](https://github.com/tidyverse/haven) is used for importing `SPSS` files.
 
 ## Installation
 
@@ -40,5 +40,5 @@ namesGADS(gads_obj)
 extractMeta(gads_obj, vars = c("schtype", "idschool"))
 
 # extract data for data analysis while applying missing tags and value labels
-dat1 <- extractData(gads_obj, convertLabels = "character")
+dat1 <- extractData2(gads_obj)
 ```

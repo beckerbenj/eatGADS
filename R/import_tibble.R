@@ -1,10 +1,10 @@
 #### Import SPSS data
 #############################################################################
-#' Import tibble
+#' Import \code{tibble}
 #'
-#' Function to import a tibble while extracting meta information, e.g. variable and value labels.
+#' Function to import a \code{tibble} while extracting meta information, e.g. variable and value labels.
 #'
-#' Tibbles may store variable and value labels as well as missing tags via the \code{labelled} class. \code{import_tibble}
+#' \code{Tibbles} may store variable and value labels as well as missing tags via the \code{labelled} class. \code{import_tibble}
 #' restructures this meta information separately in a long format \code{data.frame}. Value labels and missing tags are used
 #' to identify missing tags (see \code{\link{checkMissings}}). Time and date variables are converted to character.
 #'

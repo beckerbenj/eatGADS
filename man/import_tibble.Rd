@@ -2,7 +2,7 @@
 % Please edit documentation in R/import_tibble.R
 \name{import_tibble}
 \alias{import_tibble}
-\title{Import tibble}
+\title{Import \code{tibble}}
 \usage{
 import_tibble(
   tibble,
@@ -21,10 +21,10 @@ import_tibble(
 Returns a list with the actual data \code{dat} and a data frame with all meta information in long format \code{labels}.
 }
 \description{
-Function to import a tibble while extracting meta information, e.g. variable and value labels.
+Function to import a \code{tibble} while extracting meta information, e.g. variable and value labels.
 }
 \details{
-Tibbles may store variable and value labels as well as missing tags via the \code{labelled} class. \code{import_tibble}
+\code{Tibbles} may store variable and value labels as well as missing tags via the \code{labelled} class. \code{import_tibble}
 restructures this meta information separately in a long format \code{data.frame}. Value labels and missing tags are used
 to identify missing tags (see \code{\link{checkMissings}}). Time and date variables are converted to character.
 }
