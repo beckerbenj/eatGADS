@@ -23,7 +23,7 @@
 
     <a class="navbar-brand me-2" href="index.html">eatGADS</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.1.0.9000</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.1.1</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -72,7 +72,7 @@
 <h2 id="overview">Overview<a class="anchor" aria-label="anchor" href="#overview"></a>
 </h2>
 <p><code>eatGADS</code> (educational assessment tools: Greatest Assumable Data Set) is the data management and data handling tool used by the Institute for Educational Quality Improvement in Germany (<a href="https://www.iqb.hu-berlin.de/" class="external-link">IQB</a>). It has a strong focus on (automated) handling and processing of meta data.</p>
-<p><code>eatGADS</code> uses <a href="https://www.sqlite.org/index.html" class="external-link">SQLite3</a> as a back end and is especially suited for importing data stored as <code>SPSS</code> files. <a href="https://github.com/beckerbenj/eatDB" class="external-link">eatDB</a> is used for data base creation and use, <a href="https://github.com/tidyverse/haven" class="external-link">haven</a> is used for importing SPSS files.</p>
+<p><code>eatGADS</code> uses <a href="https://www.sqlite.org/index.html" class="external-link"><code>SQLite3</code></a> as a back end and is especially suited for importing data stored as <code>SPSS</code> files. <a href="https://github.com/beckerbenj/eatDB" class="external-link"><code>eatDB</code></a> is used for data base creation and use, <a href="https://github.com/tidyverse/haven" class="external-link"><code>haven</code></a> is used for importing <code>SPSS</code> files.</p>
 </div>
 <div class="section level2">
 <h2 id="installation">Installation<a class="anchor" aria-label="anchor" href="#installation"></a>
@@ -100,7 +100,7 @@
 <span><span class="fu"><a href="reference/extractMeta.html">extractMeta</a></span><span class="op">(</span><span class="va">gads_obj</span>, vars <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"schtype"</span>, <span class="st">"idschool"</span><span class="op">)</span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># extract data for data analysis while applying missing tags and value labels</span></span>
-<span><span class="va">dat1</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/extractData.html">extractData</a></span><span class="op">(</span><span class="va">gads_obj</span>, convertLabels <span class="op">=</span> <span class="st">"character"</span><span class="op">)</span></span></code></pre></div>
+<span><span class="va">dat1</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/extractData2.html">extractData2</a></span><span class="op">(</span><span class="va">gads_obj</span><span class="op">)</span></span></code></pre></div>
 </div>
 </div>
   </main><aside class="col-md-3"><div class="links">
