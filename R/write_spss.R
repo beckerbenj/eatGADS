@@ -12,22 +12,22 @@
 #'
 #' Currently known limitations for \code{write_spss} are:
 #' \itemize{
-#' \item{a) } {value labels for long character variables (> \code{A10}) are dropped,}
-#' \item{b) } {under specific conditions very long character variables (> \code{A254}) are incorrectly
-#' displayed as multiple character variables in \code{SPSS},}
-#' \item{c) } {exporting date or time variables is currently not supported,}
-#' \item{d) } {missing tags are slightly incompatible between \code{SPSS} and \code{eatGADS}
+#' \item a) value labels for long character variables (> \code{A10}) are dropped,
+#' \item b) under specific conditions very long character variables (> \code{A254}) are incorrectly
+#' displayed as multiple character variables in \code{SPSS},
+#' \item c) exporting date or time variables is currently not supported,
+#' \item d) missing tags are slightly incompatible between \code{SPSS} and \code{eatGADS}
 #' as \code{eatGADS} supports unlimited discrete missing tags (but no range of missing tags) and
 #' \code{SPSS} only supports up to three discrete missing tags or ranges of missing tags. For this purpose, if a variable
 #' is assigned more than three discrete missing tags, \code{write_spss()} (more precisely \code{\link{export_tibble}})
 #' performs a silent conversion of the discrete missing tags into a missing range.
-#' If this conversion affects other value labels or values in the data not tagged as missing, an error is issued.}
+#' If this conversion affects other value labels or values in the data not tagged as missing, an error is issued.
 #'}
 #'
 #' Currently known limitations for \code{write_stata} are:
 #' \itemize{
-#' \item{a) }{Variable format is dropped,}
-#' \item{b) }{missing codes are dropped.}
+#' \item a) Variable format is dropped,
+#' \item b) missing codes are dropped.
 #' }
 #'
 #'@param GADSdat A \code{GADSdat} object.
