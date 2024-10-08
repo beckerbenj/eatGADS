@@ -1,4 +1,4 @@
-# eatGADS <a href="https://beckerbenj.github.io/eatGADS/"><img src="man/figures/logo.svg" align="right" height="139" alt="eatGADS website" /></a>
+# eatGADS <a href="https://beckerbenj.github.io/eatGADS/"><img src="man/figures/logo.png" align="right" height="120" alt="eatGADS website" /></a>
 
 <!-- badges: start -->
 [![CRAN status](https://www.r-pkg.org/badges/version/eatGADS)](https://CRAN.R-project.org/package=eatGADS)
