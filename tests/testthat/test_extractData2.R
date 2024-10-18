@@ -70,6 +70,19 @@ test_that("Extract data into factor with duplicate value labels", {
   expect_equal(out2$VAR1, out_factor2)
 })
 
+test_that("Extract data into factor with multiple value labels being NA", {
+  testM3 <- changeValLabels(testM2, varName = "VAR1", value = 2, valLabel = NA)
+  testM3$labels$valLabel[3] <- NA
+
+  suppressWarnings(out <- extractData2(testM3, labels2character = "VAR1", convertMiss = TRUE))
+  expect_equal(as.character(out$VAR1), c(1, NA_character_, NA, 2))
+
+  suppressWarnings(outF <- extractData2(testM3, labels2factor = "VAR1", convertMiss = TRUE))
+  empty_fac <- as.factor(rep(NA, 4))
+  attr(empty_fac, "label") <- "Variable 1"
+  expect_equal(outF$VAR1, empty_fac)
+})
+
 test_that("Extract data for strings into factors and ordered", {
   testM3 <- cloneVariable(testM2, varName = "Var_char2", new_varName = "Var_char3")
 
