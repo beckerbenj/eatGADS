@@ -146,7 +146,7 @@ labels2values2 <- function(dat, labels, convertMiss, dropPartialLabels, labels2c
   change_labels <- labels[labels[, "varName"] %in% convertVariables, ]    # careful, from here use only change_labels!
   # check value labels, remove incomplete labels from insertion to protect variables
   if(identical(dropPartialLabels, TRUE)) {
-    drop_labels <- unlist(lapply(unique(labels$varName), FUN = check_labels, dat = dat, labels = labels,
+    drop_labels <- unlist(lapply(unique(change_labels$varName), FUN = check_labels, dat = dat, labels = labels,
                                  convertMiss = convertMiss))
     change_labels <- change_labels[!change_labels$varName %in% drop_labels, ]
   }
