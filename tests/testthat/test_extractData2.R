@@ -74,6 +74,7 @@ test_that("Extract data into factor with multiple value labels being NA", {
   testM3 <- changeValLabels(testM2, varName = "VAR1", value = 2, valLabel = NA)
   testM3$labels$valLabel[3] <- NA
 
+  # values tagges as missing converted to NA and both valid values have NA as value label
   suppressWarnings(out <- extractData2(testM3, labels2character = "VAR1", convertMiss = TRUE))
   expect_equal(as.character(out$VAR1), c(1, NA_character_, NA, 2))
 
