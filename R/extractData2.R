@@ -150,6 +150,11 @@ labels2values2 <- function(dat, labels, convertMiss, dropPartialLabels, labels2c
                                  convertMiss = convertMiss))
     change_labels <- change_labels[!change_labels$varName %in% drop_labels, ]
   }
+  # if values tagged as missing are converted to NA anyway, there is no need to recode them
+  if(identical(convertMiss, TRUE)) {
+    change_labels <- change_labels[is.na(change_labels$missings) | change_labels$missings == "valid", ]
+  }
+
   # early return, if no values are to be recoded
   if(nrow(change_labels) == 0) return(dat)
 
