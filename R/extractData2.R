@@ -146,7 +146,7 @@ labels2values2 <- function(dat, labels, convertMiss, dropPartialLabels, labels2c
   change_labels <- labels[labels[, "varName"] %in% convertVariables, ]    # careful, from here use only change_labels!
   # check value labels, remove incomplete labels from insertion to protect variables
   if(identical(dropPartialLabels, TRUE)) {
-    drop_labels <- unlist(lapply(unique(labels$varName), FUN = check_labels, dat = dat, labels = labels,
+    drop_labels <- unlist(lapply(unique(change_labels$varName), FUN = check_labels, dat = dat, labels = labels,
                                  convertMiss = convertMiss))
     change_labels <- change_labels[!change_labels$varName %in% drop_labels, ]
   }
@@ -154,24 +154,30 @@ labels2values2 <- function(dat, labels, convertMiss, dropPartialLabels, labels2c
   if(nrow(change_labels) == 0) return(dat)
 
   # check for duplicate value labels (unfortunately possible in SPSS)
-  vars_with_duplicate_valLabels <- change_labels[duplicated(change_labels[, c("varName", "valLabel")]), "varName"]
+  vars_with_duplicate_valLabels <- unique(change_labels[duplicated(change_labels[, c("varName", "valLabel")]), "varName"])
   if(length(vars_with_duplicate_valLabels) > 0) {
-    for(nam in unique(vars_with_duplicate_valLabels)) {
+    for(nam in vars_with_duplicate_valLabels) {
       single_change_labels <- change_labels[change_labels$varName == nam, ]
       dup_valLabels <- single_change_labels[duplicated(single_change_labels$valLabel), "valLabel"]
-      affected_values <- single_change_labels[single_change_labels$valLabel == dup_valLabels, ]
+      # exclude NAs. If valLables are NA, no label is applied anyway
+      dup_valLabels <- dup_valLabels[!is.na(dup_valLabels)]
+      affected_values <- single_change_labels[single_change_labels$valLabel %in% dup_valLabels, ]
+
+      warning("Duplicate value label in variable ", nam
+              , ". The following values (see value column) will be recoded into the same value label (see valLabel column):\n",
+              eatTools::print_and_capture(affected_values))
+
       for(dup_valLabel in dup_valLabels) {
-        warning("Duplicate value label in variable ", nam, ". The following values (see value column) will be recoded into the same value label (see valLabel column):\n",
-                eatTools::print_and_capture(affected_values))
+        single_affected_values <- affected_values[affected_values$valLabel == dup_valLabel, ]
 
         # recode actual data to prevent any potential issues with char2fac later
-        value_lookup <- data.frame(oldValues = affected_values[, "value"],
-                                   newValues = affected_values[1, "value"])
+        value_lookup <- data.frame(oldValues = single_affected_values[, "value"],
+                                   newValues = single_affected_values[1, "value"])
         dat[, nam] <- eatTools::recodeLookup(dat[, nam], value_lookup)
 
         # remove superfluous meta data
         change_labels <- change_labels[!(change_labels$varName == nam &
-                                           change_labels$value %in% affected_values[-(1), "value"]), ]
+                                           change_labels$value %in% single_affected_values[-(1), "value"]), ]
   }}}
 
 
