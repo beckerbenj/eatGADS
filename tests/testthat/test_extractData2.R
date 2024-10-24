@@ -4,8 +4,6 @@ load(file = test_path("helper_data.rda"))
 
 control_caching <- FALSE
 
-
-######## extractData2
 testM2 <- testM
 testM2$dat[, "Var_char"] <- c("a", "b", "c", "d")
 testM2$dat[, "Var_char2"] <- c(1, 1, 1, 1)
@@ -51,12 +49,12 @@ test_that("Extract data for strings into factors", {
 
 test_that("Extract data into factor with duplicate value labels", {
   testM3 <- changeValLabels(testM2, varName = "VAR1", value = "2", valLabel = "One")
-  testM3$dat$VAR1 <- testM3$dat$VAR1
+  testM3 <- changeValLabels(testM3, varName = "VAR1", value = "-99", valLabel = "Omission")
   outW <- capture_warnings(out <- extractData2(testM3, labels2factor = "VAR1", convertMiss = TRUE))
 
-  expect_equal(outW,
+  expect_equal(outW[1],
                paste0("Duplicate value label in variable VAR1. The following values (see value column) will be recoded into the same value label (see valLabel column):\n",
-                      eatTools::print_and_capture(testM3$labels[testM3$labels$varName == "VAR1" & testM3$labels$valLabel == "One", ])))
+                      eatTools::print_and_capture(testM3$labels[testM3$labels$varName == "VAR1", ])))
   expect_equal(class(out$VAR1), "factor")
   out_factor <- factor(c("One", NA, NA, "One"))
   attr(out_factor, "label") <- "Variable 1"
@@ -65,7 +63,7 @@ test_that("Extract data into factor with duplicate value labels", {
   suppressWarnings(out2 <- extractData2(testM3, labels2factor = "VAR1", convertMiss = FALSE))
 
   expect_equal(class(out2$VAR1), "factor")
-  out_factor2 <- factor(c("One", "By design", "Omission", "One"))
+  out_factor2 <- factor(c("One", "Omission", "Omission", "One"))
   attr(out_factor2, "label") <- "Variable 1"
   expect_equal(out2$VAR1, out_factor2)
 })

@@ -1,6 +1,7 @@
 # eatGADS 1.1.1.9000
 ## bug fixes
 * `extractData2()` and `extractData()` no longer throw an error if multiple values of the same variable are labelled `NA` (#96)
+* `extractData2()` and `extractData()` no longer produce an error if there are multiple duplicate value labels in a variable 
 
 # eatGADS 1.1.1
 ## new features
