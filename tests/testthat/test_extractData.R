@@ -70,19 +70,6 @@ test_that("Extract data into factor with duplicate value labels", {
   expect_equal(out2$VAR1, out_factor2)
 })
 
-
-test_that("char2fac", {
-  df <- data.frame(v1 = factor(c("z", "a", "b"), levels = c("z", "a", "b")),
-                   stringsAsFactors = TRUE)
-  gads <- import_DF(df)
-  dat <- extractData(gads, convertLabels = "character")
-
-  out <- char2fac(dat, labels = gads$labels, vars = "v1", convertMiss = TRUE)
-  expect_true(is.factor(out$v1))
-  expect_false(is.ordered(out$v1))
-  expect_equal(as.numeric(out$v1), c(1:3))
-})
-
 test_that("varlabels_as_labels", {
   df <- varLabels_as_labels(testM$dat, labels = testM$labels)
 

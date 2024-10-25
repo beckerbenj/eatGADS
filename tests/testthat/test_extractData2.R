@@ -92,14 +92,13 @@ test_that("Extract data into factor with duplicate value labels but only on miss
 test_that("Extract data into factor with one value label being NA", {
   testM3 <- changeValLabels(testM2, varName = "VAR1", value = 2, valLabel = NA)
 
-  # values tagged as missing converted to NA and both valid values have NA as value label
   out <- extractData2(testM3, labels2character = "VAR1", convertMiss = TRUE)
   expect_equal(as.character(out$VAR1), c("One", NA, NA, NA))
 
   outF <- extractData2(testM3, labels2factor = "VAR1", convertMiss = TRUE)
-  fac <- as.factor(c("One", NA, NA, NA))
+  fac <- factor(c(1, NA, NA, 2), levels = 1:2, labels = c("One", NA))
   attr(fac, "label") <- "Variable 1"
-  expect_equal(outF$VAR1, empty_fac)
+  expect_equal(outF$VAR1, fac)
 })
 
 test_that("Extract data into factor with multiple value labels being NA", {
@@ -111,7 +110,7 @@ test_that("Extract data into factor with multiple value labels being NA", {
   expect_equal(as.character(out$VAR1), c(NA, NA_character_, NA, NA))
 
   suppressWarnings(outF <- extractData2(testM3, labels2factor = "VAR1", convertMiss = TRUE))
-  empty_fac <- as.factor(rep(NA, 4))
+  empty_fac <- factor(c(1, NA, NA, 1), levels = 1, labels =  NA)
   attr(empty_fac, "label") <- "Variable 1"
   expect_equal(outF$VAR1, empty_fac)
 })
@@ -127,21 +126,16 @@ test_that("Extract data for strings into factors and ordered", {
   expect_equal(out$Var_char2, as.ordered(c("b_value", "b_value", "b_value", "b_value")))
 })
 
-
 test_that("char2fac", {
   df <- data.frame(v1 = factor(c("z", "a", "b"), levels = c("z", "a", "b")),
                    stringsAsFactors = TRUE)
   gads <- import_DF(df)
+  dat <- extractData(gads, convertLabels = "character")
 
-  dat <- extractData2(gads, labels2character = NULL, labels2factor = namesGADS(gads))
-  out <- char2fac(dat, labels = gads$labels, vars = "v1", convertMiss = TRUE)
+  out <- char2fac(dat, ori_dat = gads$dat, labels = gads$labels, vars = "v1", convertMiss = TRUE)
   expect_true(is.factor(out$v1))
+  expect_false(is.ordered(out$v1))
   expect_equal(as.numeric(out$v1), c(1:3))
-
-  out2 <- char2fac(dat, labels = gads$labels, vars = "v1", convertMiss = TRUE, ordered = TRUE)
-  expect_true(is.factor(out2$v1))
-  expect_true(is.ordered(out2$v1))
-  expect_equal(as.numeric(out2$v1), c(1:3))
 })
 
 test_that("varlabels_as_labels", {

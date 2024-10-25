@@ -145,8 +145,12 @@ check_changeTable <- function(GADSdat, changeTable) {
   return()
 }
 
-recode_dat <- function(dat, changeTable) {
-  value_df <- changeTable[!is.na(changeTable$value_new), c("varName", "value", "value_new")]
+recode_dat <- function(dat, changeTable, removeNAs = TRUE) {
+  value_df <- changeTable
+  if(removeNAs) {
+    value_df <- value_df[!is.na(value_df$value_new), c("varName", "value", "value_new")]
+  }
+
   for(nam in unique(value_df[, "varName"])) {
     single_value_df <- value_df[value_df[, "varName"] == nam, ]
     # initialize new vector
