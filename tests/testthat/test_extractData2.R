@@ -71,8 +71,8 @@ test_that("Extract data into factor with duplicate value labels", {
 
 test_that("Extract data into factor with duplicate value labels but only on missings", {
   testM3 <- changeValLabels(testM2, varName = "VAR1", value = "-99", valLabel = "Omission")
-  outW <- capture_warnings(out <- extractData2(testM3, labels2factor = "VAR1", convertMiss = TRUE, dropPartialLabels = FALSE))
-
+  outW <- capture_warnings(out <- extractData2(testM3, labels2factor = "VAR1",
+                                               convertMiss = TRUE, dropPartialLabels = FALSE))
   expect_equal(length(outW), 1)
   expect_equal(class(out$VAR1), "factor")
   out_factor <- factor(c("One", NA, NA, "2"))
@@ -82,7 +82,6 @@ test_that("Extract data into factor with duplicate value labels but only on miss
   testM4 <- changeValLabels(testM2, varName = "VAR1", value = "-99", valLabel = "Omission")
   testM4 <- changeValLabels(testM4, varName = "VAR1", value = "2", valLabel = "Two")
   out2 <- extractData2(testM4, labels2factor = "VAR1", convertMiss = TRUE)
-
   expect_equal(class(out2$VAR1), "factor")
   out_factor2 <- factor(c("One", NA, NA, "Two"))
   attr(out_factor2, "label") <- "Variable 1"
@@ -101,7 +100,7 @@ test_that("Extract data into factor with one value label being NA", {
   expect_equal(outF$VAR1, fac)
 })
 
-test_that("Extract data into factor with multiple value labels being NA", {
+test_that("Extract data into factor with all valid value labels being NA", {
   testM3 <- changeValLabels(testM2, varName = "VAR1", value = 2, valLabel = NA)
   testM3$labels$valLabel[3] <- NA
 
