@@ -25,6 +25,7 @@ test_that("Compare two identical GADSdat objects",{
   expect_equal(out2$valDiff, "all.equal")
 })
 
+
 test_that("Differences on variable level",{
   df1_2 <- changeVarLabels(df1, "V1", "some label")
   out <- inspectMetaDifferences(df1, varName = "V1", other_GADSdat = df1_2)
@@ -66,6 +67,19 @@ test_that("Differences on value level",{
   expect_equal(out3$valDiff[, "value"], 1)
   expect_equal(out3$valDiff[, "GADSdat_missings"], c("miss"))
   expect_equal(out3$valDiff[, "other_GADSdat_missings"], c("valid"))
+})
+
+# inspectMetaDifferences should ignore differences in row.names
+test_that("Differences on value level which lead to differences in row.names",{
+  gads1 <- import_DF(data.frame(var1 = 1:4))
+  gads1 <- changeValLabels(gads1, varName = "var1", value = 1:4, valLabel = paste0("Value ", 1:4))
+  gads1 <- changeMissings(gads1, varName = "var1", value = 99, missings = "miss")
+  gads2 <- changeValLabels(gads1, varName = "var1", value = 2, valLabel = "Value 2b")
+  gads2 <- changeMissings(gads2, varName = "var1", value = -99, missings = "miss")
+
+  out <- inspectMetaDifferences(gads1, varName = "var1", other_GADSdat = gads2)
+  expect_equal(nrow(out$valDiff), 2)
+  expect_equal(out$valDiff$value, c(-99, 2))
 })
 
 test_that("Differences after recoding",{

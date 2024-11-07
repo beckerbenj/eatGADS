@@ -92,7 +92,7 @@ inspectMetaDifferences <- function(GADSdat, varName, other_GADSdat = GADSdat, ot
       if(nrow(meta_row1) == 0) meta_row1[1, ] <- NA
       if(nrow(meta_row2) == 0) meta_row2[1, ] <- NA
       valDiff_new <- data.frame(value = val, meta_row1[, 3:4], meta_row2[, 3:4])
-      #row.names(meta_row1) <- row.names(meta_row2) <- NULL
+      row.names(meta_row1) <- row.names(meta_row2) <- NULL
       if(!identical(meta_row1, meta_row2)) valDiff <- rbind(valDiff, valDiff_new)
     }
     valDiff <- valDiff[order(valDiff$value), ]

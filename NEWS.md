@@ -2,9 +2,9 @@
 ## bug fixes
 * `extractData2()` and `extractData()` no longer throw an error if multiple values of the same variable are labelled `NA` (#96)
 * `extractData2()` and `extractData()` no longer produce an error if there are multiple duplicate value labels in a variable 
-* `extractData2()` and `extractData()` no longer produce a warning if multiple duplicate value labels occur which are tagged
-and transformed to `NA` anyway (#98)
+* `extractData2()` and `extractData()` no longer produce a warning if multiple duplicate value labels occur which are tagged and transformed to `NA` anyway (#98)
 * `extractData2()` and `extractData()` now provide consistent output for values which have `NA` as value label (#100)
+* `inspectMetaDifferences()` now correctly reports differences for meta data with differing row names (#102)
 
 # eatGADS 1.1.1
 ## new features
