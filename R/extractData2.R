@@ -150,6 +150,11 @@ labels2values2 <- function(dat, labels, convertMiss, dropPartialLabels, labels2c
                                  convertMiss = convertMiss))
     change_labels <- change_labels[!change_labels$varName %in% drop_labels, ]
   }
+  # if values tagged as missing are converted to NA anyway, there is no need to recode them
+  if(identical(convertMiss, TRUE)) {
+    change_labels <- change_labels[is.na(change_labels$missings) | change_labels$missings == "valid", ]
+  }
+
   # early return, if no values are to be recoded
   if(nrow(change_labels) == 0) return(dat)
 
@@ -184,7 +189,7 @@ labels2values2 <- function(dat, labels, convertMiss, dropPartialLabels, labels2c
   # convert labels into values (use recode function from applyChangeMeta)
   change_table <- change_labels[, c("varName", "value", "valLabel")]
   names(change_table) <- c("varName", "value", "value_new")
-  dat2 <- recode_dat(dat, changeTable = change_table)
+  dat2 <- recode_dat(dat, changeTable = change_table, removeNAs = FALSE)
 
   # identify modified variables
   is_character_old <- unlist(lapply(dat, function(var) is.character(var)))
@@ -196,11 +201,13 @@ labels2values2 <- function(dat, labels, convertMiss, dropPartialLabels, labels2c
   changed_variables_labels2factor <- intersect(labels2factor, changed_variables)
   changed_variables <- setdiff(changed_variables, changed_variables_labels2factor)
   if(length(changed_variables_labels2factor) > 0) {
-    dat2 <- char2fac(dat = dat2, labels = change_labels, vars = changed_variables_labels2factor, convertMiss = convertMiss, ordered = FALSE)
+    dat2 <- char2fac(dat = dat2, ori_dat = dat,
+                     labels = change_labels, vars = changed_variables_labels2factor, convertMiss = convertMiss, ordered = FALSE)
   }
   changed_variables_labels2ordered <- intersect(labels2ordered, changed_variables)
   if(length(changed_variables_labels2ordered) > 0) {
-    dat2 <- char2fac(dat = dat2, labels = change_labels, vars = changed_variables_labels2ordered, convertMiss = convertMiss, ordered = TRUE)
+    dat2 <- char2fac(dat = dat2, ori_dat = dat,
+                     labels = change_labels, vars = changed_variables_labels2ordered, convertMiss = convertMiss, ordered = TRUE)
   }
   dat2
 }
@@ -226,7 +233,7 @@ check_labels <- function(varName, dat, labels, convertMiss) {
 }
 
 # convert characters to factor if specified (keep ordering if possible)
-char2fac <- function(dat, labels, vars, convertMiss, ordered = FALSE) {
+char2fac <- function(dat, ori_dat, labels, vars, convertMiss, ordered = FALSE) {
   partially_labeled <- unordered_facs <- vars
   for(i in vars) {
     fac_meta <- labels[labels$varName == i & (is.na(labels$missings) | labels$missings != "miss")  , c("value", "valLabel")]
@@ -243,7 +250,7 @@ char2fac <- function(dat, labels, vars, convertMiss, ordered = FALSE) {
       partially_labeled <- partially_labeled[partially_labeled != i]
       if(all(fac_meta$value == seq(nrow(fac_meta)))) unordered_facs <- unordered_facs[unordered_facs != i]
 
-      dat[, i] <- factor(dat[, i], levels = fac_meta$valLabel, ordered = ordered)
+      dat[, i] <- factor(ori_dat[, i], levels = fac_meta$value, labels = fac_meta$valLabel, ordered = ordered)
     }
   }
 
