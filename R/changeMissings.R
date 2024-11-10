@@ -2,10 +2,12 @@
 #############################################################################
 #' Change missing code.
 #'
-#' Change or add missing codes of a variable as part of a \code{GADSdat} or \code{all_GADSdat} object.
+#' Change or add missing codes of one or multiple variables as part of a \code{GADSdat} object.
 #'
-#' Applied to a \code{GADSdat} or \code{all_GADSdat} object, this function is a wrapper of \code{\link{getChangeMeta}} and
-#' \code{\link{applyChangeMeta}}.
+#' Applied to a \code{GADSdat} or \code{all_GADSdat} object, this function is a wrapper of
+#'  \code{\link{getChangeMeta}} and \code{\link{applyChangeMeta}}.
+#' The function supports changing multiple missing tags (\code{missings}) as well as missing tags of
+#' multiple variables (\code{varName}) at once.
 #'
 #'@param GADSdat \code{GADSdat} object imported via \code{eatGADS}.
 #'@param varName Character string of a variable name.
@@ -28,43 +30,56 @@
 #' pisa4 <- changeMissings(pisa2, varName = "computer_age",
 #'                         value = 5, missings = "valid")
 #'
+#'# Add missing tags to multiple variables
+#' pisa5 <- changeMissings(pisa, varName = c("g8g9", "computer_age"),
+#'                         value = c(-99, -98), missings = c("miss", "miss"))
+#'
 #'@export
 changeMissings <- function(GADSdat, varName, value, missings) {
   UseMethod("changeMissings")
 }
 #'@export
 changeMissings.GADSdat <- function(GADSdat, varName, value, missings) {
-  checkMissingsInput(varName = varName, value = value, missings = missings, labels = GADSdat$labels)
+  check_GADSdat(GADSdat)
+  check_vars_in_GADSdat(GADSdat, vars = varName, argName = "varName")
+  if(length(value) != length(missings)) {
+    stop("'value' and 'missings' are not of identical length.", call. = FALSE)
+  }
+  if(!all(missings %in% c("miss", "valid"))) {
+    stop("All values in 'missings' need to be 'miss' or 'valid'.")
+  }
+
   changeTable_ori <- getChangeMeta(GADSdat, level = "value")
   changeTable <- changeTable_ori
 
-  existing_values <- value[value %in% changeTable[changeTable$varName == varName, "value"]]
-  existing_missings <- missings[value %in% changeTable[changeTable$varName == varName, "value"]]
-  new_values <- value[!value %in% changeTable[changeTable$varName == varName, "value"]]
-  new_missings <- missings[!value %in% changeTable[changeTable$varName == varName, "value"]]
+  for(single_varName in varName) {
+    existing_values <- value[value %in% changeTable[changeTable$varName == single_varName, "value"]]
+    existing_missings <- missings[value %in% changeTable[changeTable$varName == single_varName, "value"]]
+    new_values <- value[!value %in% changeTable[changeTable$varName == single_varName, "value"]]
+    new_missings <- missings[!value %in% changeTable[changeTable$varName == single_varName, "value"]]
 
-  for(i in seq_along(existing_values)) {
-    filterValue <- changeTable$varName == varName & changeTable$value == existing_values[i]
+    for(i in seq_along(existing_values)) {
+      filterValue <- changeTable$varName == single_varName & changeTable$value == existing_values[i]
 
-    changeTable[filterValue, "value_new"] <- changeTable[filterValue, "value"]
-    changeTable[filterValue, "valLabel_new"] <- changeTable[filterValue, "valLabel"]
-    changeTable[filterValue, "missings_new"] <- existing_missings[i]
-  }
-
-  for(i in seq_along(new_values)) {
-    change_row <- changeTable_ori[changeTable_ori$varName == varName, ][1, ]
-
-    # if no other value labels exist in the first place, omit original row
-    if(i == 1 && nrow(changeTable[changeTable$varName == varName, ]) == 1) {
-      changeTable <- changeTable[changeTable$varName != varName, ]
+      changeTable[filterValue, "value_new"] <- changeTable[filterValue, "value"]
+      changeTable[filterValue, "valLabel_new"] <- changeTable[filterValue, "valLabel"]
+      changeTable[filterValue, "missings_new"] <- existing_missings[i]
     }
 
-    change_row[, "value"] <- NA
-    change_row[, "value_new"] <- new_values[i]
-    change_row[, "missings_new"] <- new_missings[i]
-    changeTable <- rbind(changeTable, change_row)
-  }
+    for(i in seq_along(new_values)) {
+      change_row <- changeTable_ori[changeTable_ori$varName == single_varName, ][1, ]
 
+      # if no other value labels exist in the first place, omit original row
+      if(i == 1 && nrow(changeTable[changeTable$varName == single_varName, ]) == 1) {
+        changeTable <- changeTable[changeTable$varName != single_varName, ]
+      }
+
+      change_row[, "value"] <- NA
+      change_row[, "value_new"] <- new_values[i]
+      change_row[, "missings_new"] <- new_missings[i]
+      changeTable <- rbind(changeTable, change_row)
+    }
+  }
   applyChangeMeta(GADSdat, changeTable = changeTable)
 }
 
@@ -73,11 +88,4 @@ changeMissings.all_GADSdat <- function(GADSdat, varName, value, missings) {
   stop("This method has not been implemented yet")
 }
 
-checkMissingsInput <- function(varName, value, missings, labels) {
-  if(!is.character(varName) || !length(varName) == 1) stop("'varName' is not a character vector of length 1.")
-  if(!varName %in% labels$varName) stop("'varName' is not a variable name in the GADSdat.")
-  if(length(value) != length(missings)) stop("'value' and 'missings' are not of identical length.", call. = FALSE)
-  if(!all(missings %in% c("miss", "valid"))) stop("All values in 'missings' need to be 'miss' or 'valid'.")
-  return()
-}
 

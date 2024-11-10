@@ -1,7 +1,15 @@
 
-# dfSAV <- import_spss(file = "tests/testthat/helper_spss_missings.sav")
-dfSAV <- import_spss(file = "helper_spss_missings.sav")
+dfSAV <- import_spss(file = test_path("helper_spss_missings.sav"))
 dfUn <- import_DF(data.frame(v1 = 1, v2 = 2))
+
+test_that("changeMissings input validation",{
+  expect_error(changeMissings(dfSAV, varName = "VAR1", value = 1:2, missings = "miss"),
+               "'value' and 'missings' are not of identical length.")
+  expect_error(changeMissings(dfSAV, varName = c("VAR4"), value = 1, missings = "miss"),
+               "The following 'varName' are not variables in the GADSdat: VAR4")
+  expect_error(changeMissings(dfSAV, varName = "VAR1", value = 1, missings = "miss2"),
+               "All values in 'missings' need to be 'miss' or 'valid'.")
+})
 
 test_that("changemissings wrapper", {
   out <- changeMissings(dfSAV, varName = "VAR1", value = 1, missings = "miss")
@@ -12,13 +20,6 @@ test_that("changemissings wrapper", {
   expect_equal(out2$labels[c(4, 5), "value"], c(-99, -96))
   expect_equal(out2$labels[c(4, 5), "missings"], c("valid", "miss"))
   expect_equal(out2$dat, dfSAV$dat)
-
-  expect_error(changeMissings(dfSAV, varName = c("VAR1", "VAR2"), value = 1, missings = "miss"),
-               "'varName' is not a character vector of length 1.")
-  expect_error(changeMissings(dfSAV, varName = c("VAR4"), value = 1, missings = "miss"),
-               "'varName' is not a variable name in the GADSdat.")
-  expect_error(changeMissings(dfSAV, varName = "VAR1", value = 1, missings = "miss2"),
-               "All values in 'missings' need to be 'miss' or 'valid'.")
 })
 
 test_that("changemissings for adding value labels", {
@@ -63,8 +64,10 @@ test_that("Adding value label bug", {
                         fac1 = factor(c("engl", "ger", "ger", "ita", "fr")))
   dat <- import_DF(dat_ori)
 
-  dat <- changeValLabels(dat, varName = "var1", value = c(1, 2), valLabel = c("Value label 1", "Value label 2"))
-  dat2 <- changeMissings(dat, varName = "var1", value = c(1, -99), missings = c("valid", "miss"))
+  dat <- changeValLabels(dat, varName = "var1", value = c(1, 2),
+                         valLabel = c("Value label 1", "Value label 2"))
+  dat2 <- changeMissings(dat, varName = "var1", value = c(1, -99),
+                         missings = c("valid", "miss"))
   expect_equal(dat2$labels[2, "valLabel"], NA_character_)
 })
 
@@ -73,12 +76,28 @@ test_that("sequence bug with labeled variables", {
                          var1 = c(0, 1, 1, 1, -99, -98, -97))
   dat1 <- import_DF(dat1_seq)
 
-  dat1_relabel <- changeValLabels(dat1, varName = "var1", value = c(0, 1, -99, -97), valLabel = c("true",
-                                                                                                  "false",
-                                                                                                  "don't know",
-                                                                                                  "no idea"))
+  dat1_relabel <- changeValLabels(dat1, varName = "var1", value = c(0, 1, -99, -97),
+                                  valLabel = c("true", "false", "don't know", "no idea"))
 
 
-  dat1_changed <- changeMissings(dat1_relabel, varName = "var1", value = c(-99:-97), missings = rep("miss", 3))
+  dat1_changed <- changeMissings(dat1_relabel, varName = "var1", value = c(-99:-97),
+                                 missings = rep("miss", 3))
   expect_equal(dat1_changed$labels[2:4, "missings"], rep("miss", 3))
+})
+
+test_that("changeMissings for multiple variables at once",{
+  out <- changeMissings(dfSAV, varName = c("VAR1", "VAR2"), value = c(1, 2),
+                        missings = c("miss", "valid"))
+
+  expect_equal(nrow(out$labels[out$labels$varName == "VAR1", ]), 4)
+  expect_equal(out$labels[3, "missings"], "miss")
+  expect_equal(out$labels[4, "missings"], "valid")
+  expect_equal(out$labels[3, "value"], 1)
+  expect_equal(out$labels[4, "value"], 2)
+
+  expect_equal(nrow(out$labels[out$labels$varName == "VAR2", ]), 4)
+  expect_equal(out$labels[7, "missings"], "miss")
+  expect_equal(out$labels[8, "missings"], "valid")
+  expect_equal(out$labels[7, "value"], 1)
+  expect_equal(out$labels[8, "value"], 2)
 })

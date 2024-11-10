@@ -20,8 +20,7 @@ Labels are applied in the same ordering as \code{value}.}
 Returns the \code{GADSdat} object with changed meta data.
 }
 \description{
-Change or add value labels of one or multiple variables as part of a \code{GADSdat}
- or \code{all_GADSdat} object.
+Change or add value labels of one or multiple variables as part of a \code{GADSdat} object.
 }
 \details{
 Applied to a \code{GADSdat} or \code{all_GADSdat} object, this function is a wrapper

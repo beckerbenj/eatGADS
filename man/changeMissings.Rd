@@ -19,11 +19,13 @@ changeMissings(GADSdat, varName, value, missings)
 Returns the \code{GADSdat} object with changed meta data.
 }
 \description{
-Change or add missing codes of a variable as part of a \code{GADSdat} or \code{all_GADSdat} object.
+Change or add missing codes of one or multiple variables as part of a \code{GADSdat} object.
 }
 \details{
-Applied to a \code{GADSdat} or \code{all_GADSdat} object, this function is a wrapper of \code{\link{getChangeMeta}} and
-\code{\link{applyChangeMeta}}.
+Applied to a \code{GADSdat} or \code{all_GADSdat} object, this function is a wrapper of
+ \code{\link{getChangeMeta}} and \code{\link{applyChangeMeta}}.
+The function supports changing multiple missing tags (\code{missings}) as well as missing tags of
+multiple variables (\code{varName}) at once.
 }
 \examples{
 # Set a specific value to missing
@@ -38,5 +40,9 @@ pisa3 <- changeMissings(pisa, varName = "computer_age",
 # Set a specific value to not missing
 pisa4 <- changeMissings(pisa2, varName = "computer_age",
                         value = 5, missings = "valid")
+
+# Add missing tags to multiple variables
+pisa5 <- changeMissings(pisa, varName = c("g8g9", "computer_age"),
+                        value = c(-99, -98), missings = c("miss", "miss"))
 
 }
