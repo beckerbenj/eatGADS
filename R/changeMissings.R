@@ -10,9 +10,10 @@
 #' multiple variables (\code{varName}) at once.
 #'
 #'@param GADSdat \code{GADSdat} object imported via \code{eatGADS}.
-#'@param varName Character string of a variable name.
+#'@param varName Character vector containing variable names.
 #'@param value Numeric values.
-#'@param missings Character string of the new missing codes, either \code{"miss"} or \code{"valid"}.
+#'@param missings Character vector of the new missing codes, either \code{"miss"} or \code{"valid"}.
+#'Missings tags are applied in the same ordering as \code{value}.
 #'
 #'@return Returns the \code{GADSdat} object with changed meta data.
 #'

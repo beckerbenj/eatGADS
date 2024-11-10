@@ -9,11 +9,12 @@ changeMissings(GADSdat, varName, value, missings)
 \arguments{
 \item{GADSdat}{\code{GADSdat} object imported via \code{eatGADS}.}
 
-\item{varName}{Character string of a variable name.}
+\item{varName}{Character vector containing variable names.}
 
 \item{value}{Numeric values.}
 
-\item{missings}{Character string of the new missing codes, either \code{"miss"} or \code{"valid"}.}
+\item{missings}{Character vector of the new missing codes, either \code{"miss"} or \code{"valid"}.
+Missings tags are applied in the same ordering as \code{value}.}
 }
 \value{
 Returns the \code{GADSdat} object with changed meta data.
