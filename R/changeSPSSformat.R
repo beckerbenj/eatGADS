@@ -1,7 +1,7 @@
 
 #' Change SPSS format.
 #'
-#' Change the SPSS format of onr or multiple variables as part of a \code{GADSdat} object.
+#' Change the SPSS format of one or multiple variables as part of a \code{GADSdat} object.
 #'
 #' Applied to a \code{GADSdat} or \code{all_GADSdat} object, this function is a wrapper
 #' of \code{\link{getChangeMeta}} and \code{\link{applyChangeMeta}}.

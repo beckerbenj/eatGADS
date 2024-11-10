@@ -17,7 +17,7 @@ changeSPSSformat(GADSdat, varName, format)
 Returns the \code{GADSdat} object with changed meta data..
 }
 \description{
-Change the SPSS format of onr or multiple variables as part of a \code{GADSdat} object.
+Change the SPSS format of one or multiple variables as part of a \code{GADSdat} object.
 }
 \details{
 Applied to a \code{GADSdat} or \code{all_GADSdat} object, this function is a wrapper
