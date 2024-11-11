@@ -23,7 +23,7 @@ Drop rows with duplicate IDs in a \code{GADSdat} object based on numbers of miss
 }
 \details{
 If duplicate IDs occur, it is often desirable to keep the row with the least missing information.
-Therefore, \code{dropDuplicateIDs} dops rows based on number of missing values
+Therefore, \code{dropDuplicateIDs} drops rows based on number of missing values
 on the specified variables (\code{varNames}).
 
 If multiple rows have the same number of missing values, a warning is issued
