@@ -236,11 +236,12 @@ recode_labels <- function(labels, changeTable, existingMeta) {
     }
 
     # meta data conflicts with old values (and optionally new values)
-    #if(any(existing_value_not_recoded_into_logical)){
-    if(any(existing_value_logical)){
+    if(any(existing_value_not_recoded_into_logical)){
+    #if(any(existing_value_logical)){  ##
       ## One could argue that this should be existing_value_logical instead. However, this breaks a lot if existing
       ## code, for instance changeMissings(). When recode_labels() is refactored, this should be reconsidered!
-      if(identical(existingMeta, "stop") && any(existing_value_not_recoded_into_logical)) {
+      if(identical(existingMeta, "stop")) {
+      #if(identical(existingMeta, "stop") && any(existing_value_not_recoded_into_logical)) {
         all_values <- existing_value_not_recoded_into_vec
         stop("Values in 'value_new' with existing meta data in variable ", var_name, ": ",
                                                paste(all_values, collapse = ", "))
