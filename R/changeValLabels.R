@@ -50,10 +50,12 @@ changeValLabels.GADSdat <- function(GADSdat, varName, value, valLabel) {
   changeTable <- getChangeMeta(GADSdat, level = "value")
 
   for(single_varName in varName) {
-    existing_values <- value[value %in% changeTable[changeTable$varName == single_varName, "value"]]
-    existing_valLabels <- valLabel[value %in% changeTable[changeTable$varName == single_varName, "value"]]
-    new_values <- value[!value %in% changeTable[changeTable$varName == single_varName, "value"]]
-    new_valLabels <- valLabel[!value %in% changeTable[changeTable$varName == single_varName, "value"]]
+    is_existing <- value %in% changeTable[changeTable$varName == single_varName, "value"]
+
+    existing_values <- value[is_existing]
+    existing_valLabels <- valLabel[is_existing]
+    new_values <- value[!is_existing]
+    new_valLabels <- valLabel[!is_existing]
 
     # edit change table
     for(i in seq_along(existing_values)) {

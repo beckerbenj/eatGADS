@@ -26,11 +26,11 @@ of \code{\link{getChangeMeta}} and \code{\link{applyChangeMeta}}.
 \examples{
 # Change one variable label
 pisa2 <- changeVarLabels(pisa, varName = "repeated",
-                        varLabel = c("Has a grade been repeated?"))
+                         varLabel = c("Has a grade been repeated?"))
 
 # Change multiple variable labels
 pisa2 <- changeVarLabels(pisa, varName = c("repeated", "gender"),
-                        varLabel = c("Has a grade been repeated?",
-                                    "Student gender"))
+                         varLabel = c("Has a grade been repeated?",
+                                      "Student gender"))
 
 }

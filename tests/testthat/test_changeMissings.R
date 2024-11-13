@@ -89,15 +89,17 @@ test_that("changeMissings for multiple variables at once",{
   out <- changeMissings(dfSAV, varName = c("VAR1", "VAR2"), value = c(1, 2),
                         missings = c("miss", "valid"))
 
-  expect_equal(nrow(out$labels[out$labels$varName == "VAR1", ]), 4)
-  expect_equal(out$labels[3, "missings"], "miss")
-  expect_equal(out$labels[4, "missings"], "valid")
+  out_labels_var1 <- out$labels[out$labels$varName == "VAR1", ]
+  expect_equal(nrow(out_labels_var1), 4)
+  expect_equal(out_labels_var1[out_labels_var1$value == 1, "missings"], "miss")
+  expect_equal(out_labels_var1[out_labels_var1$value == 2, "missings"], "valid")
   expect_equal(out$labels[3, "value"], 1)
   expect_equal(out$labels[4, "value"], 2)
 
-  expect_equal(nrow(out$labels[out$labels$varName == "VAR2", ]), 4)
-  expect_equal(out$labels[7, "missings"], "miss")
-  expect_equal(out$labels[8, "missings"], "valid")
-  expect_equal(out$labels[7, "value"], 1)
-  expect_equal(out$labels[8, "value"], 2)
+  out_labels_var2 <- out$labels[out$labels$varName == "VAR2", ]
+  expect_equal(nrow(out_labels_var1), 4)
+  expect_equal(out_labels_var2[out_labels_var2$value == 1, "missings"], "miss")
+  expect_equal(out_labels_var2[out_labels_var2$value == 2, "missings"], "valid")
+  expect_equal(out$labels[3, "value"], 1)
+  expect_equal(out$labels[4, "value"], 2)
 })

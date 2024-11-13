@@ -1,12 +1,12 @@
 
 dfSAV <- import_spss(file = test_path("helper_spss_missings.sav"))
-
 dfUn <- import_DF(data.frame(v1 = 1, v2 = 2))
 
 test_that("changeValLabel input validation", {
   expect_error(changeValLabels(dfSAV, varName = c("VAR1"), value = 1:2, valLabel = "test label"),
                "value and valLabel are not of identical length.")
-  expect_error(changeValLabels(dfSAV, varName = c("VAR4"), value = 1, valLabel = "test label"))
+  expect_error(changeValLabels(dfSAV, varName = c("VAR4"), value = 1, valLabel = "test label"),
+               "The following 'varName' are not variables in the GADSdat: VAR4")
 })
 
 test_that("changevallabel wrapper", {

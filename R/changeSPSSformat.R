@@ -6,7 +6,7 @@
 #' Applied to a \code{GADSdat} or \code{all_GADSdat} object, this function is a wrapper
 #' of \code{\link{getChangeMeta}} and \code{\link{applyChangeMeta}}.
 #'
-#' SPSS format is supplied following SPSS logik. \code{'A'} represents character variables,
+#' SPSS format is supplied following SPSS logic. \code{'A'} represents character variables,
 #' \code{'F'} represents numeric variables. The number following this letter represents the maximum width.
 #' Optionally, another number can be added after a dot, representing the number of decimals
 #' in case of a numeric variable. For instance, \code{'F8.2'} is used for a numeric variable with
@@ -21,11 +21,11 @@
 #'@examples
 #' # change SPSS format for a single variable (numeric variable with no decimals)
 #' pisa2 <- changeSPSSformat(pisa, varName = "idstud",
-#'                         format = "F10.0")
+#'                           format = "F10.0")
 #'
 #' # change SPSS format for multiple variables (numeric variable with no decimals)
 #' pisa2 <- changeSPSSformat(pisa, varName = c("idstud", "idschool"),
-#'                         format = "F10.0")
+#'                           format = "F10.0")
 #'
 #'@export
 changeSPSSformat <- function(GADSdat, varName, format) {
