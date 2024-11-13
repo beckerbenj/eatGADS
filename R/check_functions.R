@@ -1,6 +1,7 @@
 check_single_varName <- function(var, argumentName = "varName") {
   if(!is.character(var)) stop("'", argumentName, "' is not a character vector.")
   if(!length(var) == 1) stop("'", argumentName, "' must be of length 1.")
+  return()
 }
 
 
