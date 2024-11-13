@@ -1,21 +1,31 @@
-#### Change spss format
-#############################################################################
+
 #' Change SPSS format.
 #'
-#' Change the SPSS format of a variable as part of a \code{GADSdat} or \code{all_GADSdat} object.
+#' Change the SPSS format of one or multiple variables as part of a \code{GADSdat} object.
 #'
-#' Applied to a \code{GADSdat} or \code{all_GADSdat} object, this function is a wrapper of \code{\link{getChangeMeta}} and \code{\link{applyChangeMeta}}.
+#' Applied to a \code{GADSdat} or \code{all_GADSdat} object, this function is a wrapper
+#' of \code{\link{getChangeMeta}} and \code{\link{applyChangeMeta}}.
+#'
+#' SPSS format is supplied following SPSS logic. \code{'A'} represents character variables,
+#' \code{'F'} represents numeric variables. The number following this letter represents the maximum width.
+#' Optionally, another number can be added after a dot, representing the number of decimals
+#' in case of a numeric variable. For instance, \code{'F8.2'} is used for a numeric variable with
+#' a maximum width of 8 with 2 decimal numbers.
 #'
 #'@param GADSdat \code{GADSdat} object imported via \code{eatGADS}.
-#'@param varName Character string of variable names.
+#'@param varName Character vector of variable names.
 #'@param format A single string containing the new SPSS format, for example 'A25' or 'F10'.
 #'
 #'@return Returns the \code{GADSdat} object with changed meta data..
 #'
 #'@examples
+#' # change SPSS format for a single variable (numeric variable with no decimals)
 #' pisa2 <- changeSPSSformat(pisa, varName = "idstud",
-#'                         format = "F10.0")
+#'                           format = "F10.0")
 #'
+#' # change SPSS format for multiple variables (numeric variable with no decimals)
+#' pisa2 <- changeSPSSformat(pisa, varName = c("idstud", "idschool"),
+#'                           format = "F10.0")
 #'
 #'@export
 changeSPSSformat <- function(GADSdat, varName, format) {
@@ -24,7 +34,7 @@ changeSPSSformat <- function(GADSdat, varName, format) {
 #'@export
 changeSPSSformat.GADSdat <- function(GADSdat, varName, format) {
   check_GADSdat(GADSdat)
-  if(!all(varName %in% namesGADS(GADSdat))) stop("varName are not all variables in the GADSdat.")
+  check_vars_in_GADSdat(GADSdat, vars = varName, argName = "varName")
   if(!is.character(format) || length(format) != 1) stop("format has to be a single character value.")
   #other format checks performed in applyChangeMeta
 
@@ -42,7 +52,7 @@ changeVarLabels.all_GADSdat <- function(GADSdat, varName, varLabel) {
   stop("This method has not been implemented yet")
 }
 
-
+# used in applyChangeMeta
 check_format_vector <- function(format) {
   format <- format[!is.na(format)]
   if(length(format) == 0) return()

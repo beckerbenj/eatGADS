@@ -9,21 +9,24 @@ changeValLabels(GADSdat, varName, value, valLabel)
 \arguments{
 \item{GADSdat}{\code{GADSdat} object imported via \code{eatGADS}.}
 
-\item{varName}{Character string of a variable name.}
+\item{varName}{Character vector containing variable names.}
 
-\item{value}{Numeric values.}
+\item{value}{Numeric values which are being labeled.}
 
-\item{valLabel}{Character string of the new value labels.}
+\item{valLabel}{Character vector of the new value labels.
+Labels are applied in the same ordering as \code{value}.}
 }
 \value{
 Returns the \code{GADSdat} object with changed meta data.
 }
 \description{
-Change or add value labels of a variable as part of a \code{GADSdat} or \code{all_GADSdat} object.
+Change or add value labels of one or multiple variables as part of a \code{GADSdat} object.
 }
 \details{
-Applied to a \code{GADSdat} or \code{all_GADSdat} object, this function is a wrapper of \code{\link{getChangeMeta}} and
-\code{\link{applyChangeMeta}}.
+Applied to a \code{GADSdat} or \code{all_GADSdat} object, this function is a wrapper
+of \code{\link{getChangeMeta}} and \code{\link{applyChangeMeta}}.
+The function supports changing multiple value labels (\code{valLabel}) as well as value labels of
+multiple variables (\code{varName}) at once.
 }
 \examples{
 # Change existing value labels
@@ -36,5 +39,11 @@ mtcars_g <- import_DF(mtcars)
 mtcars_g2 <- changeValLabels(mtcars_g, varName = "cyl",
                              value = c(4, 6, 8),
                              valLabel = c("four", "six", "eight"))
+
+# Add value labels to multiple variables at once
+mtcars_g3 <- changeValLabels(mtcars_g, varName = c("mpg", "cyl", "disp"),
+                             value = c(-99, -98),
+                             valLabel = c("missing", "not applicable"))
+
 
 }

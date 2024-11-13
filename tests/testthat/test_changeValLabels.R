@@ -1,21 +1,24 @@
 
-# dfSAV <- import_spss(file = "tests/testthat/helper_spss_missings.sav")
-dfSAV <- import_spss(file = "helper_spss_missings.sav")
-
+dfSAV <- import_spss(file = test_path("helper_spss_missings.sav"))
 dfUn <- import_DF(data.frame(v1 = 1, v2 = 2))
+
+test_that("changeValLabel input validation", {
+  expect_error(changeValLabels(dfSAV, varName = c("VAR1"), value = 1:2, valLabel = "test label"),
+               "value and valLabel are not of identical length.")
+  expect_error(changeValLabels(dfSAV, varName = c("VAR4"), value = 1, valLabel = "test label"),
+               "The following 'varName' are not variables in the GADSdat: VAR4")
+})
 
 test_that("changevallabel wrapper", {
   out <- changeValLabels(dfSAV, varName = "VAR1", value = 1, valLabel = "test label")
   expect_equal(out$labels[3, "valLabel"], "test label")
   expect_equal(out$dat, dfSAV$dat)
 
-  out2 <- changeValLabels(dfSAV, varName = "VAR2", value = c(-99, -96), valLabel = c("label 3", "label 2"))
+  out2 <- changeValLabels(dfSAV, varName = "VAR2", value = c(-99, -96),
+                          valLabel = c("label 3", "label 2"))
   expect_equal(out2$labels[c(4, 5), "value"], c(-99, -96))
   expect_equal(out2$labels[c(4, 5), "valLabel"], c("label 3", "label 2"))
   expect_equal(out2$dat, dfSAV$dat)
-
-  expect_error(changeValLabels(dfSAV, varName = c("VAR1", "VAR2"), value = 1, valLabel = "test label"))
-  expect_error(changeValLabels(dfSAV, varName = c("VAR4"), value = 1, valLabel = "test label"))
 })
 
 
@@ -67,3 +70,13 @@ test_that("add value label to a variable with multiple existing and multiple new
   expect_equal(out$labels$valLabel[1:5], paste0("miss", 1:5))
 })
 
+test_that("changeValLabels for multiple variables at once", {
+  out <- changeValLabels(dfSAV, varName = c("VAR1", "VAR2"),
+                         value = c(-99, -98, -97, -96, -95),
+                         valLabel = c("miss1", "miss2", "miss3", "miss4", "miss5"))
+  expect_equal(out$labels$value[1:5], -99:-95)
+  expect_equal(out$labels$value[7:11], -99:-95)
+  expect_equal(out$labels$valLabel[1:5], paste0("miss", 1:5))
+  expect_equal(out$labels$valLabel[7:11], paste0("miss", 1:5))
+
+})

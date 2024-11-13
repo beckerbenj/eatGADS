@@ -2,15 +2,18 @@
 #############################################################################
 #' Change value labels.
 #'
-#' Change or add value labels of a variable as part of a \code{GADSdat} or \code{all_GADSdat} object.
+#' Change or add value labels of one or multiple variables as part of a \code{GADSdat} object.
 #'
-#' Applied to a \code{GADSdat} or \code{all_GADSdat} object, this function is a wrapper of \code{\link{getChangeMeta}} and
-#' \code{\link{applyChangeMeta}}.
+#' Applied to a \code{GADSdat} or \code{all_GADSdat} object, this function is a wrapper
+#' of \code{\link{getChangeMeta}} and \code{\link{applyChangeMeta}}.
+#' The function supports changing multiple value labels (\code{valLabel}) as well as value labels of
+#' multiple variables (\code{varName}) at once.
 #'
 #'@param GADSdat \code{GADSdat} object imported via \code{eatGADS}.
-#'@param varName Character string of a variable name.
-#'@param value Numeric values.
-#'@param valLabel Character string of the new value labels.
+#'@param varName Character vector containing variable names.
+#'@param value Numeric values which are being labeled.
+#'@param valLabel Character vector of the new value labels.
+#'Labels are applied in the same ordering as \code{value}.
 #'
 #'@return Returns the \code{GADSdat} object with changed meta data.
 #'
@@ -26,38 +29,55 @@
 #'                              value = c(4, 6, 8),
 #'                              valLabel = c("four", "six", "eight"))
 #'
+#'# Add value labels to multiple variables at once
+#' mtcars_g3 <- changeValLabels(mtcars_g, varName = c("mpg", "cyl", "disp"),
+#'                              value = c(-99, -98),
+#'                              valLabel = c("missing", "not applicable"))
+#'
+#'
 #'@export
 changeValLabels <- function(GADSdat, varName, value, valLabel) {
   UseMethod("changeValLabels")
 }
 #'@export
 changeValLabels.GADSdat <- function(GADSdat, varName, value, valLabel) {
-  checkValLabelInput(varName = varName, value = value, valLabel = valLabel, labels = GADSdat$labels)
+  check_GADSdat(GADSdat)
+  check_vars_in_GADSdat(GADSdat, vars = varName, argName = "varName")
+  if(length(value) != length(valLabel)) {
+    stop("value and valLabel are not of identical length.", call. = FALSE)
+  }
+
   changeTable <- getChangeMeta(GADSdat, level = "value")
 
-  existing_values <- value[value %in% changeTable[changeTable$varName == varName, "value"]]
-  existing_valLabels <- valLabel[value %in% changeTable[changeTable$varName == varName, "value"]]
-  new_values <- value[!value %in% changeTable[changeTable$varName == varName, "value"]]
-  new_valLabels <- valLabel[!value %in% changeTable[changeTable$varName == varName, "value"]]
+  for(single_varName in varName) {
+    is_existing <- value %in% changeTable[changeTable$varName == single_varName, "value"]
 
-  # edit change table
-  for(i in seq_along(existing_values)) {
-    changeTable[changeTable$varName == varName & changeTable$value == existing_values[i],
-                "valLabel_new"] <- existing_valLabels[i]
-  }
-  for(i in seq_along(new_values)) {
-    change_row <- changeTable[changeTable$varName == varName, ][1, ]
+    existing_values <- value[is_existing]
+    existing_valLabels <- valLabel[is_existing]
+    new_values <- value[!is_existing]
+    new_valLabels <- valLabel[!is_existing]
 
-    # if no other value labels exist in the first place, omit original row
-    if(i == 1 && nrow(changeTable[changeTable$varName == varName, ]) == 1 && is.na(change_row$value)) {
-      changeTable <- changeTable[changeTable$varName != varName, ]
+    # edit change table
+    for(i in seq_along(existing_values)) {
+      changeTable[changeTable$varName == single_varName & changeTable$value == existing_values[i],
+                  "valLabel_new"] <- existing_valLabels[i]
     }
+    for(i in seq_along(new_values)) {
+      change_row <- changeTable[changeTable$varName == single_varName, ][1, ]
 
-    change_row[, "value"] <- NA
-    change_row[, "value_new"] <- new_values[i]
-    change_row[, "valLabel_new"] <- new_valLabels[i]
-    changeTable <- rbind(changeTable, change_row)
+      # if no other value labels exist in the first place, omit original row
+      if(i == 1 && nrow(changeTable[changeTable$varName == single_varName, ]) == 1 &&
+         is.na(change_row$value)) {
+        changeTable <- changeTable[changeTable$varName != single_varName, ]
+      }
+
+      change_row[, "value"] <- NA
+      change_row[, "value_new"] <- new_values[i]
+      change_row[, "valLabel_new"] <- new_valLabels[i]
+      changeTable <- rbind(changeTable, change_row)
+    }
   }
+
   applyChangeMeta(GADSdat, changeTable = changeTable)
 }
 
@@ -66,12 +86,5 @@ changeValLabels.all_GADSdat <- function(GADSdat, varName, value, valLabel) {
   stop("This method has not been implemented yet")
 }
 
-checkValLabelInput <- function(varName, value, valLabel, labels) {
-  check_single_varName(varName)
-  if(!is.character(varName) || !length(varName) == 1) stop("'varName' is not a character vector of length 1.")
-  if(!varName %in% labels$varName) stop("varName is not a variable name in the GADSdat.")
-  if(length(value) != length(valLabel)) stop("value and valLabel are not of identical length.", call. = FALSE)
-  return()
-}
 
 

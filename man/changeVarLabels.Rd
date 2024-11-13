@@ -2,30 +2,35 @@
 % Please edit documentation in R/changeVarLabels.R
 \name{changeVarLabels}
 \alias{changeVarLabels}
-\title{Change the variable label.}
+\title{Change variable labels.}
 \usage{
 changeVarLabels(GADSdat, varName, varLabel)
 }
 \arguments{
 \item{GADSdat}{\code{GADSdat} object imported via \code{eatGADS}.}
 
-\item{varName}{Character string of variable names.}
+\item{varName}{Character vector of variable names.}
 
-\item{varLabel}{Character string of the new variable labels.}
+\item{varLabel}{Character vector of the new variable labels.}
 }
 \value{
 Returns the \code{GADSdat} object with changed meta data.
 }
 \description{
-Change the variable label of a variable as part of a \code{GADSdat} or \code{all_GADSdat} object.
+Change variable labels of one or multiple variables as part of a \code{GADSdat} object.
 }
 \details{
-Applied to a \code{GADSdat} or \code{all_GADSdat} object, this function is a wrapper of \code{\link{getChangeMeta}} and
-\code{\link{applyChangeMeta}}.
+Applied to a \code{GADSdat} or \code{all_GADSdat} object, this function is a wrapper
+of \code{\link{getChangeMeta}} and \code{\link{applyChangeMeta}}.
 }
 \examples{
 # Change one variable label
 pisa2 <- changeVarLabels(pisa, varName = "repeated",
-                        varLabel = c("Has a grade been repeated?"))
+                         varLabel = c("Has a grade been repeated?"))
+
+# Change multiple variable labels
+pisa2 <- changeVarLabels(pisa, varName = c("repeated", "gender"),
+                         varLabel = c("Has a grade been repeated?",
+                                      "Student gender"))
 
 }
