@@ -1,8 +1,6 @@
 
-# load(file = "tests/testthat/helper_data.rda")
-load(file = "helper_data.rda")
-# dfSAV <- import_spss(file = "tests/testthat/helper_spss_missings.sav")
-dfSAV <- import_spss(file = "helper_spss_missings.sav")
+load(file = test_path("helper_data.rda"))
+dfSAV <- import_spss(file = test_path("helper_spss_missings.sav"))
 
 ### Meta changes
 changes_var <- getChangeMeta(dfSAV)
@@ -78,6 +76,7 @@ test_that("Recoding with value meta data conflicts", {
   changes_val2[1, "value_new"] <- 1
   expect_error(recode_labels(dfSAV$labels, changes_val2, existingMeta = "stop"),
                "Values in 'value_new' with existing meta data in variable VAR1: 1")
+
   out <- recode_labels(dfSAV$labels, changes_val2, existingMeta = "value")
   comp1 <- dfSAV$labels[-3, ]
   comp1[1, "value"] <- 1
@@ -93,6 +92,36 @@ test_that("Recoding with value meta data conflicts", {
   comp2 <- comp2[c(2, 1, 3:6),]
   rownames(comp2) <- NULL
   expect_equal(comp2, out2)
+
+  out3 <- recode_labels(dfSAV$labels, changes_val2, existingMeta = "ignore")
+  expect_equal(dfSAV$labels, out3)
+})
+
+test_that("Recoding values into each other (with value meta data conflicts)", {
+  changes_val2 <- changes_val
+  changes_val2[1, "value_new"] <- 1
+  changes_val2[3, "value_new"] <- -99
+  #changes_val2[3, "value_new"] <- -96      ## maybe this would be a better test as complete functionality is covered?
+
+  ## see source code, one could argue that this should throw an error!
+  #expect_error(recode_labels(dfSAV$labels, changes_val2, existingMeta = "stop"),
+  #             "Values in 'value_new' with existing meta data in variable VAR1: 1")
+
+  out <- recode_labels(dfSAV$labels, changes_val2, existingMeta = "value")
+  comp1 <- dfSAV$labels
+  comp1[1, "value"] <- 1
+  comp1[3, "value"] <- -99
+  comp1 <- comp1[c(3, 2, 1, 4:7),]
+  rownames(comp1) <- NULL
+  expect_equal(comp1, out)
+
+  ## hotfix (11.11.2024) allows this to work with 'ignore', but still does not work for 'value_new'
+  ## should be fixed when refactoring recode_labels()
+  #out2 <- recode_labels(dfSAV$labels, changes_val2, existingMeta = "value_new")
+  #expect_equal(dfSAV$labels, out2)
+
+  out3 <- recode_labels(dfSAV$labels, changes_val2, existingMeta = "ignore")
+  expect_equal(dfSAV$labels, out3)
 })
 
 test_that("Recoding multiple value into the same value (without meta data conflicts)", {
