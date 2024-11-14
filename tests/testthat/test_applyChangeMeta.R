@@ -101,6 +101,7 @@ test_that("Recoding values into each other (with value meta data conflicts)", {
   changes_val2 <- changes_val
   changes_val2[1, "value_new"] <- 1
   changes_val2[3, "value_new"] <- -99
+  #changes_val2[3, "value_new"] <- -96      ## maybe this would be a better test as complete functionality is covered?
 
   ## see source code, one could argue that this should throw an error!
   #expect_error(recode_labels(dfSAV$labels, changes_val2, existingMeta = "stop"),
