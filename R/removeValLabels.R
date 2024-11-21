@@ -1,10 +1,11 @@
 #### Remove value label
 #############################################################################
-#' Remove value labels.
+#' Remove value labels and missing tags.
 #'
-#' Remove value labels of a variable as part of a \code{GADSdat} or \code{all_GADSdat} object.
+#' Remove meta data for specific values (\code{value}) of a single variable (\code{varName}).
+#' This includes value labels and missings tags.
 #'
-#' If the argument \code{valLabel} is provided the function checks for \code{value} and \code{valLabel} pairs in the
+#' If the argument \code{valLabel} is provided, the function checks for \code{value} and \code{valLabel} pairs in the
 #' meta data that match both arguments.
 #'
 #'@param GADSdat \code{GADSdat} object imported via \code{eatGADS}.
@@ -37,7 +38,10 @@ removeValLabels <- function(GADSdat, varName, value, valLabel = NULL) {
 }
 #'@export
 removeValLabels.GADSdat <- function(GADSdat, varName, value, valLabel = NULL) {
-  checkValRemoveInput(varName = varName, value = value, labels = GADSdat$labels)
+  if(!is.character(varName) || !length(varName) == 1) {
+    stop("'varName' is not a character vector of length 1.")
+  }
+  check_vars_in_GADSdat(GADSdat, vars = varName, argName = "varName")
 
   all_rows <- which(GADSdat$labels$varName == varName)
   remove_rows <- which(GADSdat$labels$varName == varName & GADSdat$labels$value %in% value)
@@ -75,10 +79,5 @@ removeValLabels.all_GADSdat <- function(GADSdat, varName, value, valLabel = NULL
   stop("This method has not been implemented yet")
 }
 
-checkValRemoveInput <- function(varName, value, labels) {
-  if(!is.character(varName) || !length(varName) == 1) stop("'varName' is not a character vector of length 1.")
-  if(!varName %in% labels$varName) stop("'varName' is not a variable name in the GADSdat.")
-  return()
-}
 
 
