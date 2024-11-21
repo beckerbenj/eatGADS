@@ -41,6 +41,9 @@ checkLabeledFractionals <- function(GADSdat) {
   for (misstag in c("valid", "miss")) {
     subset <- GADSdat$labels[is_labeled_fractional & GADSdat$labels$missings == misstag,
                              c("varName", "value")]
+    # reset rownames carried over from metadata
+    rownames(subset) <- NULL
+    if (nrow(subset) == 0) next
     varlist <- unique(subset$varName)
     emptyvals <- checkEmptyValLabels(GADSdat = GADSdat,
                                      vars = varlist)
