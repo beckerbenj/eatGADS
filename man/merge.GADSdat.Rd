@@ -4,7 +4,17 @@
 \alias{merge.GADSdat}
 \title{Merge two \code{GADSdat} objects into a single \code{GADSdat} object.}
 \usage{
-\method{merge}{GADSdat}(x, y, by, all = TRUE, all.x = all, all.y = all, ...)
+\method{merge}{GADSdat}(
+  x,
+  y,
+  by,
+  all = TRUE,
+  all.x = all,
+  all.y = all,
+  missingValue = NULL,
+  missingValLabel = NULL,
+  ...
+)
 }
 \arguments{
 \item{x}{\code{GADSdat} object imported via \code{eatGADS}.}
@@ -19,15 +29,23 @@
 
 \item{all.y}{See merge.}
 
+\item{missingValue}{A numeric value that is used to replace missing values introduced through the merge.}
+
+\item{missingValLabel}{The value label that is assigned to all variables into which \code{missingValue} is inserted.}
+
 \item{...}{Further arguments are currently not supported but have to be included for \code{R CMD} checks.}
 }
 \value{
 Returns a \code{GADSdat} object.
 }
 \description{
-Is a secure way to merge the data and the meta data of two \code{GADSdat} objects. Currently, only limited merging options are supported.
+Is a secure way to merge the data and the meta data of two \code{GADSdat} objects.
+Currently, only limited merging options are supported.
 }
 \details{
 If there are duplicate variables (except the variables specified in the \code{by} argument), these variables are removed from y.
 The meta data is joined for the remaining variables via \code{rbind}.
+
+The function supports automatically recoding missing values created through merging with a designated missing code
+(\code{missingValue}) and a value label (\code{missingValLabel}).
 }
