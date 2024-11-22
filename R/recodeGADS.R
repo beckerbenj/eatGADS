@@ -88,6 +88,7 @@ recodeGADS.GADSdat <- function(GADSdat, varName, oldValues, newValues,
 #'@export
 recodeGADS.all_GADSdat <- function(GADSdat, varName, oldValues, newValues, existingMeta = c("stop", "value", "value_new", "drop", "ignore")) {
   check_all_GADSdat(GADSdat)
+  check_vars_in_GADSdat(GADSdat, vars = varName, argName = "varName")
 
   singleGADS_list <- lapply(names(GADSdat$datList), function(nam ) {
     singleGADS <- extractGADSdat(GADSdat, name = nam)
