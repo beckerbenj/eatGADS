@@ -6,7 +6,7 @@ dfUn <- import_DF(data.frame(v1 = 1, v2 = 2))
 
 test_that("Errors", {
   expect_error(removeValLabels(dfSAV, varName = "VAR5", value = 2),
-               "'varName' is not a variable name in the GADSdat.")
+               "The following 'varName' are not variables in the GADSdat: VAR5")
   expect_error(removeValLabels(dfSAV, varName = c("VAR1", "VAR3"), value = 2),
                "'varName' is not a character vector of length 1.")
 

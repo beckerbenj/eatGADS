@@ -2,7 +2,7 @@
 % Please edit documentation in R/removeValLabels.R
 \name{removeValLabels}
 \alias{removeValLabels}
-\title{Remove value labels.}
+\title{Remove value labels and missing tags.}
 \usage{
 removeValLabels(GADSdat, varName, value, valLabel = NULL)
 }
@@ -19,7 +19,8 @@ removeValLabels(GADSdat, varName, value, valLabel = NULL)
 Returns the \code{GADSdat} object with changed meta data.
 }
 \description{
-Remove value labels of a variable as part of a \code{GADSdat} or \code{all_GADSdat} object.
+Remove meta data for specific values (\code{value}) of a single variable (\code{varName}).
+This includes value labels and missings tags.
 }
 \details{
 If the argument \code{valLabel} is provided the function checks for \code{value} and \code{valLabel} pairs in the
