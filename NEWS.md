@@ -2,6 +2,7 @@
 ## new features
 * `dropDuplicateIDs()` allows dropping duplicate IDs based on number of missings on selected variables (#67)
 * `changeValLabels()` and `changeMissings()` allow changing value labels and missing tags for multiple variables at once (#33)
+* `recodeGADS()` allows recoding multiple variables at once (#107)
 
 ## bug fixes
 * `extractData2()` and `extractData()` no longer throw an error if multiple values of the same variable are labeled `NA` (#96)

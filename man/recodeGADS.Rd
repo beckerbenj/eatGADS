@@ -2,7 +2,7 @@
 % Please edit documentation in R/recodeGADS.R
 \name{recodeGADS}
 \alias{recodeGADS}
-\title{Recode a variable.}
+\title{Recode variables.}
 \usage{
 recodeGADS(
   GADSdat,
@@ -27,15 +27,15 @@ recodeGADS(
 Returns a \code{GADSdat}.
 }
 \description{
-Recode a variable as part of a \code{GADSdat} or \code{all_GADSdat} object.
+Recode one or multiple variables as part of a \code{GADSdat} or \code{all_GADSdat} object.
 }
 \details{
 Applied to a \code{GADSdat} or \code{all_GADSdat} object, this function is a wrapper of \code{\link{getChangeMeta}}
 and \code{\link{applyChangeMeta}}. Beyond that, unlabeled variables and values are recoded as well.
 \code{oldValues} and \code{newValues} are matched by ordering in the function call.
 
-If changes are performed on value levels, recoding into
-existing values can occur. In these cases, \code{existingMeta} determines how the resulting meta data conflicts are handled,
+If changes are performed on value levels, recoding into existing values can occur.
+In these cases, \code{existingMeta} determines how the resulting meta data conflicts are handled,
 either raising an error if any occur (\code{"stop"}),
 keeping the original meta data for the value (\code{"value"}),
 using the meta data in the \code{changeTable} and, if incomplete, from the recoded value (\code{"value_new"}),
