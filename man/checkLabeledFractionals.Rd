@@ -15,11 +15,11 @@ fractional \code{value}s, their \code{missings} tag according to the metadata,
 and whether they actually occur in the data.
 }
 \description{
-Check the a \code{GADSdat} object for any occurrences of fractional values
+Check a \code{GADSdat} object for any occurrences of fractional values
 in its meta data which could cause problems esp. when exporting into \code{.dta} format.
 }
 \details{
-This functions checks values that are tagged as being labeled in the corresponding
+This functions checks values that are tagged as labeled in the corresponding
 metadata column (\code{GADSdat$labels$labeled}). It therefore covers both
 "truely" labeled values (that have been assigned a \code{valLabel}) and
 values tagged as \code{missings} (with or without a \code{valLabel}).
