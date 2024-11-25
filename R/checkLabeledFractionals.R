@@ -4,14 +4,15 @@
 #' in its meta data which could cause problems esp. when exporting into \code{.dta} format.
 #'
 #' This functions checks values that are tagged as being labeled in the corresponding
-#' meta data column (\code{GADSdat$labels$labeled}). It therefore covers both
+#' metadata column (\code{GADSdat$labels$labeled}). It therefore covers both
 #' "truely" labeled values (that have been assigned a \code{valLabel}) and
 #' values tagged as \code{missings} (with or without a \code{valLabel}).
 #'
 #'@param GADSdat A \code{GADSdat} object.
 #'
-#'@return Returns a list of two \code{data.frames}, respectively listing the
-#' \code{varName}s and fractional \code{value}s tagged as \code{valid} or \code{miss}.
+#'@return Returns a \code{data.frame}, listing the \code{varName}s,
+#' fractional \code{value}s, their \code{missings} tag according to the metadata,
+#' and whether they actually occur in the data.
 #'
 #'@examples
 #' # Introduce a fractional value into meta data
@@ -24,38 +25,35 @@
 #'@export
 checkLabeledFractionals <- function(GADSdat) {
   check_GADSdat(GADSdat)
+  labels <- GADSdat$labels
 
   # initialize the return list
-  out <- lapply(1:2, function(x) x = data.frame(varName = "<none found>",
-                                                value = NA_real_,
-                                                empty = NA))
-  names(out) <- c("valid", "miss")
+  out <- data.frame(varName = "<none found>",
+                    value = NA_real_,
+                    missings = NA_character_,
+                    empty = NA)
 
-  # perform check
-  is_labeled_fractional <- (GADSdat$labels$labeled == "yes") & (GADSdat$labels$value %% 1 != 0)
+  labeled_fractional_row <- which((labels$labeled == "yes") & (labels$value %% 1 != 0))
 
   # exit if none of the labeled values is fractional
-  if (!any(is_labeled_fractional)) return(out)
+  if (length(labeled_fractional_row) == 0) return(out)
 
-  # look for empty labeled fractionals and fill return list
-  for (misstag in c("valid", "miss")) {
-    subset <- GADSdat$labels[is_labeled_fractional & GADSdat$labels$missings == misstag,
-                             c("varName", "value")]
-    # reset rownames carried over from metadata
-    rownames(subset) <- NULL
-    if (nrow(subset) == 0) next
-    varlist <- unique(subset$varName)
-    emptyvals <- checkEmptyValLabels(GADSdat = GADSdat,
-                                     vars = varlist)
-    subset$empty <- unlist(lapply(varlist, function(var) {
-      vallist <- subset[subset$varName == var, "value"]
-      is_empty <- match(x = vallist,
-                        table = emptyvals[[var]]$value,
-                        nomatch = 0) > 0
-      return(is_empty)
-    }))
-    out[[misstag]][1:nrow(subset),] <- subset
-  }
+  # fill list
+  out[1:length(labeled_fractional_row), 1:3] <- labels[labeled_fractional_row, c("varName",
+                                                                                 "value",
+                                                                                 "missings")]
+  # check if values exist in data
+  varlist <- unique(out$varName)
+  emptyvals <- checkEmptyValLabels(GADSdat = GADSdat,
+                                   vars = varlist)
+  out$empty <- unlist(lapply(varlist, function(var) {
+    vallist <- out[out$varName == var, "value"]
+    is_empty <- match(x = vallist,
+                      table = emptyvals[[var]]$value,
+                      nomatch = 0) > 0
+    return(is_empty)
+  }))
 
+  rownames(out) <- NULL
   return(out)
 }

@@ -10,8 +10,9 @@ checkLabeledFractionals(GADSdat)
 \item{GADSdat}{A \code{GADSdat} object.}
 }
 \value{
-Returns a list of two \code{data.frames}, respectively listing the
-\code{varName}s and fractional \code{value}s tagged as \code{valid} or \code{miss}.
+Returns a \code{data.frame}, listing the \code{varName}s,
+fractional \code{value}s, their \code{missings} tag according to the metadata,
+and whether they actually occur in the data.
 }
 \description{
 Check the a \code{GADSdat} object for any occurrences of fractional values
@@ -19,7 +20,7 @@ in its meta data which could cause problems esp. when exporting into \code{.dta}
 }
 \details{
 This functions checks values that are tagged as being labeled in the corresponding
-meta data column (\code{GADSdat$labels$labeled}). It therefore covers both
+metadata column (\code{GADSdat$labels$labeled}). It therefore covers both
 "truely" labeled values (that have been assigned a \code{valLabel}) and
 values tagged as \code{missings} (with or without a \code{valLabel}).
 }
