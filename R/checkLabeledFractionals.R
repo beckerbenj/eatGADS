@@ -1,9 +1,9 @@
 #' Check meta data for fractional values.
 #'
-#' Check the a \code{GADSdat} object for any occurrences of fractional values
+#' Check a \code{GADSdat} object for any occurrences of fractional values
 #' in its meta data which could cause problems esp. when exporting into \code{.dta} format.
 #'
-#' This functions checks values that are tagged as being labeled in the corresponding
+#' This functions checks values that are tagged as labeled in the corresponding
 #' metadata column (\code{GADSdat$labels$labeled}). It therefore covers both
 #' "truely" labeled values (that have been assigned a \code{valLabel}) and
 #' values tagged as \code{missings} (with or without a \code{valLabel}).
