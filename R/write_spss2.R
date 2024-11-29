@@ -40,9 +40,9 @@ write_spss2.GADSdat <- function(GADSdat, txtPath, spsPath = NULL, savPath = NULL
   checkz <- check4SPSS(GADSdat)
 
   if(length(checkz$varNames_special) > 0) stop("Please remove special characters in variable names: ", paste(checkz$varNames_special, collapse=" "))
-  if(length(checkz$varNames_length) > 0) stop("Please shorten variable names to < 64 byte: ", paste(checkz$varNames_length, collapse=" "))
-  if(length(checkz$varLabels) > 0) stop("Please shorten variable labels to < 256 byte: ", paste(checkz$varLabels, collapse=" "))
-  if(length(checkz$valLabels) > 0) stop("Please shorten value labels to < 120 byte: ", paste(names(checkz$valLabels), collapse=" "))
+  if(length(checkz$varNames_length) > 0) stop("Please shorten variable names to < 65 byte: ", paste(checkz$varNames_length, collapse=" "))
+  if(length(checkz$varLabels) > 0) stop("Please shorten variable labels to < 257 byte: ", paste(checkz$varLabels, collapse=" "))
+  if(length(checkz$valLabels) > 0) stop("Please shorten value labels to < 121 byte: ", paste(names(checkz$valLabels), collapse=" "))
   if(length(checkz$missings) > 0) message("Too many missing values for character variables: ", paste(checkz$missings, collapse= " "),". SPSS allows only three missing values for character variables. I will take the first 3.")
 
   # GADSdat <- checkMissings(GADSdat)
