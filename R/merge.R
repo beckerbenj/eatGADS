@@ -38,19 +38,21 @@ merge.GADSdat <- function(x, y, by, all = TRUE, all.x = all, all.y = all,
   # drop duplicate variables from y
   y_vars <- c(by, names(y$dat)[!names(y$dat) %in% names(x$dat)])
   if(!length(y_vars) > length(by)) {
-    stop("y does not contain unique variables.")
+    stop("y does not contain variables distinct from x.")
   }
 
   # replace NAs in original data sets to be able to recode them after merging
   if(!is.null(missingValue)) {
     check_numericArgument(missingValue, argName = "missingValue")
 
-    intermediate_code <- -99.9989
-    if(any(!is.na(x$dat) & x$dat == intermediate_code) || any(!is.na(y$dat) & y$dat == intermediate_code)) {
-      stop("Intermediate code is already in the data.")
+    if(any(!is.na(x$dat)) || any(!is.na(y$dat))) {
+      intermediate_code <- -99.9989 ## default value
+      while (any(!is.na(x$dat) & x$dat == intermediate_code) || any(!is.na(y$dat) & y$dat == intermediate_code)) {
+        intermediate_code <- runif(1, -1e4, -1e2)  # Generate a random value in a wide range
+      }
+      x$dat[is.na(x$dat)] <- intermediate_code
+      y$dat[is.na(y$dat)] <- intermediate_code
     }
-    x$dat[is.na(x$dat)] <- intermediate_code
-    y$dat[is.na(y$dat)] <- intermediate_code
   }
 
   newDat <- merge(x$dat, y$dat[, y_vars], by = by, all = all, all.x = all.x, all.y = all.y, ...)
