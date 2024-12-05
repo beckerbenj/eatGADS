@@ -30,10 +30,8 @@
 #'@export
 checkIntOverflow <- function(GADSdat) {
   check_GADSdat(GADSdat)
-
   labels <- GADSdat$labels
 
-  # initialize the return list
   out <- data.frame(varName = "<none found>",
                     value = NA_real_,
                     missings = NA_character_,
@@ -41,31 +39,30 @@ checkIntOverflow <- function(GADSdat) {
                     rownum = NA_integer_)
 
   # option 1
-  # huge_number_row <- which((labels$labeled == "yes") &
+  # huge_number_rows <- which((labels$labeled == "yes") &
   #                            (labels$value > 2147483647 | labels$value < -2147483647))
 
   # option 2
-  huge_number_row <- suppressWarnings(which((labels$labeled == "yes") &
-                                              !is.na(as.numeric(labels$value)) &
-                                              is.na(as.integer(labels$value))))
+  huge_number_rows <- suppressWarnings(which((labels$labeled == "yes") &
+                                               !is.na(as.numeric(labels$value)) &
+                                               is.na(as.integer(labels$value))))
 
-  # exit if none of the labeled values is fractional
-  if (length(huge_number_row) == 0) return(out)
+  if (length(huge_number_rows) == 0) {
+    return(out)
+  }
 
-  # fill list
-  out[1:length(huge_number_row), 1:3] <- labels[huge_number_row, c("varName",
-                                                                   "value",
-                                                                   "missings")]
-  out$rownum <- huge_number_row
+  out[1:length(huge_number_rows), 1:3] <- labels[huge_number_rows, c("varName",
+                                                                     "value",
+                                                                     "missings")]
+  out$rownum <- huge_number_rows
 
-  # check if values exist in data
   varlist <- unique(out$varName)
-  emptyvals <- checkEmptyValLabels(GADSdat = GADSdat,
-                                   vars = varlist)
-  out$empty <- unlist(lapply(varlist, function(var) {
-    vallist <- out[out$varName == var, "value"]
+  empty_values <- checkEmptyValLabels(GADSdat = GADSdat,
+                                      vars = varlist)
+  out$empty <- unlist(lapply(varlist, function(varname) {
+    vallist <- out[out$varName == varname, "value"]
     is_empty <- match(x = vallist,
-                      table = emptyvals[[var]]$value,
+                      table = empty_values[[varname]]$value,
                       nomatch = 0) > 0
     return(is_empty)
   }))

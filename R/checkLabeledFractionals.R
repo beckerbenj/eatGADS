@@ -27,29 +27,28 @@ checkLabeledFractionals <- function(GADSdat) {
   check_GADSdat(GADSdat)
   labels <- GADSdat$labels
 
-  # initialize the return list
   out <- data.frame(varName = "<none found>",
                     value = NA_real_,
                     missings = NA_character_,
                     empty = NA)
 
-  labeled_fractional_row <- which((labels$labeled == "yes") & (labels$value %% 1 != 0))
+  labeled_fractional_rows <- which((labels$labeled == "yes") & (labels$value %% 1 != 0))
 
-  # exit if none of the labeled values is fractional
-  if (length(labeled_fractional_row) == 0) return(out)
+  if (length(labeled_fractional_rows) == 0) {
+    return(out)
+  }
 
-  # fill list
-  out[1:length(labeled_fractional_row), 1:3] <- labels[labeled_fractional_row, c("varName",
-                                                                                 "value",
-                                                                                 "missings")]
-  # check if values exist in data
+  out[1:length(labeled_fractional_rows), 1:3] <- labels[labeled_fractional_rows, c("varName",
+                                                                                   "value",
+                                                                                   "missings")]
+
   varlist <- unique(out$varName)
-  emptyvals <- checkEmptyValLabels(GADSdat = GADSdat,
-                                   vars = varlist)
-  out$empty <- unlist(lapply(varlist, function(var) {
-    vallist <- out[out$varName == var, "value"]
+  empty_values <- checkEmptyValLabels(GADSdat = GADSdat,
+                                      vars = varlist)
+  out$empty <- unlist(lapply(varlist, function(varname) {
+    vallist <- out[out$varName == varname, "value"]
     is_empty <- match(x = vallist,
-                      table = emptyvals[[var]]$value,
+                      table = empty_values[[varname]]$value,
                       nomatch = 0) > 0
     return(is_empty)
   }))
