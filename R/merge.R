@@ -48,7 +48,7 @@ merge.GADSdat <- function(x, y, by, all = TRUE, all.x = all, all.y = all,
     if(any(!is.na(x$dat)) || any(!is.na(y$dat))) {
       intermediate_code <- -99.9989 ## default value
       while (any(!is.na(x$dat) & x$dat == intermediate_code) || any(!is.na(y$dat) & y$dat == intermediate_code)) {
-        intermediate_code <- runif(1, -1e4, -1e2)  # Generate a random value in a wide range
+        intermediate_code <- stats::runif(1, -1e4, -1e2)  # Generate a random value in a wide range
       }
       x$dat[is.na(x$dat)] <- intermediate_code
       y$dat[is.na(y$dat)] <- intermediate_code
