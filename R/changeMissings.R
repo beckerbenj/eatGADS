@@ -72,8 +72,10 @@ changeMissings.GADSdat <- function(GADSdat, varName, value, missings) {
     for(i in seq_along(new_values)) {
       change_row <- changeTable_ori[changeTable_ori$varName == single_varName, ][1, ]
 
-      # if no other value labels exist in the first place, omit original row
-      if(i == 1 && nrow(changeTable[changeTable$varName == single_varName, ]) == 1) {
+      # if no other value labels or missing tags exist in the first place, omit original row
+      if(i == 1 &&
+         is.na(changeTable[changeTable$varName == single_varName, "value"][1]) &&
+         nrow(changeTable[changeTable$varName == single_varName, ]) == 1) {
         changeTable <- changeTable[changeTable$varName != single_varName, ]
       }
 
