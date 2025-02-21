@@ -56,6 +56,16 @@ test_that("changemissings for adding value labels to unlabeled variable", {
   expect_equal(out$dat, dfUn$dat)
 })
 
+test_that("changemissings for adding value labels to unlabeled values but with exactly one existing value label for the variable", {
+  dfUn1 <- changeValLabels(dfUn, varName = "v1", value = 2, valLabel = "a label")
+  out <- changeMissings(dfUn1, varName = "v1", value = 1, missings = "miss")
+
+  expect_equal(out$labels[1:2, "missings"], c("miss", "valid"))
+  expect_equal(out$labels[1:2, "value"], 1:2)
+  expect_equal(out$labels[1:2, "valLabel"], c(NA, "a label"))
+  expect_equal(out$dat, dfUn$dat)
+})
+
 test_that("Adding value label bug", {
   dat_ori <- data.frame(ID = 1:5,
                         var1 = c(1, 3, 4, 1, -99),
