@@ -137,8 +137,22 @@ checkMissingValLabels.GADSdat <- function(GADSdat, vars = namesGADS(GADSdat), cl
 
 give_GADSdat_classes <- function(GADSdat, vars = namesGADS(GADSdat)) {
   out_list <- lapply(GADSdat$dat[, vars, drop = FALSE], function(single_var) {
-    if(is.character(single_var)) return("character")
-    if(identical(single_var, as.double(as.integer(single_var)))) return("integer")
+    if(is.character(single_var)) {
+      return("character")
+    }
+    tryCatch({
+      single_var_retransformed <- as.double(as.integer(single_var))
+    }, warning = {
+      ## edge case for cases in which any(single_var > .Machine$integer.max)
+      if(identical(single_var, round(single_var))) {
+        return("integer")
+      } else {
+        return("double")
+      }
+    })
+    if(identical(single_var, single_var_retransformed)) {
+      return("integer")
+    }
     return("double")
   })
   out <- unlist(out_list)

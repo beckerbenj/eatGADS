@@ -1,8 +1,6 @@
 
-# dfSAV <- import_spss(file = "tests/testthat/helper_spss_missings.sav")
-dfSAV <- import_spss(file = "helper_spss_missings.sav")
-# load(file = "tests/testthat/helper_data.rda")
-load(file = "helper_data.rda")
+dfSAV <- import_spss(file = test_path("helper_spss_missings.sav"))
+load(file = test_path("helper_data.rda"))
 
 df3 <- df2
 df3$dat[1, 1:2] <- 8
@@ -42,6 +40,25 @@ test_that("give_GADSdat_classes", {
 
   out4 <- give_GADSdat_classes(pisa, vars = c("g8g9", "age"))
   expect_equal(out4, c(g8g9 = "integer", age = "double"))
+})
+
+test_that("give_GADSdat_classes and long integers", {
+  long_int <- import_DF(data.frame(ID = c(5401239857, 5401239858, 5401239850)))
+  long_int2 <- import_DF(data.frame(ID = c(NA, 5401239858, 5401239850)))
+  long_int3 <- import_DF(data.frame(ID = c(1, 5401239858, 5401239850)))
+  long_int4 <- import_DF(data.frame(ID = c(5401239858, 5401239850, 5401239850.4)))
+
+  out <- give_GADSdat_classes(long_int)
+  expect_equal(out, c(ID = "integer"))
+
+  out2 <- give_GADSdat_classes(long_int2)
+  expect_equal(out2, c(ID = "integer"))
+
+  out3 <- give_GADSdat_classes(long_int3)
+  expect_equal(out3, c(ID = "integer"))
+
+  out4 <- give_GADSdat_classes(long_int4)
+  expect_equal(out4, c(ID = "double"))
 })
 
 test_that("checkEmptyValLabels", {
