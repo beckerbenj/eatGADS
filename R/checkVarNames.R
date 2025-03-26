@@ -19,7 +19,8 @@
 #' }
 #'
 #'Note that avoiding \code{"."} in variable names is beneficial for multiple reasons, such as
-#'avoiding confusion with \code{S3} methods in \code{R} and issues when importing from \code{Stata}.
+#'avoiding confusion with \code{S3} methods in \code{R} and issues when importing from or
+#'exporting to \code{Stata}.
 #'
 #'@param GADSdat \code{GADSdat} or \code{all_GADSdat} object.
 #'@param checkKeywords Logical. Should \code{SQLite} keywords be checked and modified?
