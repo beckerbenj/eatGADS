@@ -104,9 +104,13 @@ extract_attribute_vector <- function(var, attr_type) {
 
 can_be_numeric <- function(x) {
   stopifnot(is.atomic(x) || is.list(x)) # check if x is a vector
-  numNAs <- sum(is.na(x))
-  numNAs_new <- suppressWarnings(sum(is.na(as.numeric(x))))
-  return(numNAs_new == numNAs)
+  sumNAs <- sum(is.na(x))
+  num_x <- suppressWarnings(as.numeric(x))
+  sumNAs_new <- sum(is.na(num_x))
+  same_nas <- sumNAs == sumNAs_new
+  all_equals <- all(x == as.character(num_x))
+  #browser()
+  same_nas
 }
 
 seq_but_skip <- function(to, skip) {

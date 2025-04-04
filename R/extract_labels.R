@@ -93,17 +93,22 @@ extract_value_level.factor <- function(var, varName) {
 extract_value_level.haven_labelled <- function(var, varName) {
   # check if there are value labels or missing tags
   if(is.null(attributes(var)$labels) && is.null(attributes(var)$na_value) && is.null(attributes(var)$na_range)) return(NULL)
-  values <- attr(var, "labels")
+  original_values <- attr(var, "labels")
   valLabels <- attr(attr(var, "labels"), "names")
   # proper initialization if no value labels and just missing tags are present
-  if(is.null(values)) {
-    values <- numeric()
+  if(is.null(original_values)) {
+    original_values <- numeric()
     valLabels <- character()
   }
 
+  #browser()
   # transform values to numeric if possible, leave characters as is (rest has been taken care of in char_valLabels2numeric.R)
-  values <- suppressWarnings(eatTools::asNumericIfPossible(x = values, maintain.factor.scores = TRUE,
+  values <- suppressWarnings(eatTools::asNumericIfPossible(x = original_values, maintain.factor.scores = TRUE,
                                                            force.string = FALSE, transform.factors = TRUE))
+  # this avoids that values such as "01" are silently converted to 1
+  if(!identical(as.character(values), original_values)) {
+    values <- original_values
+  }
 
   # extract value labels and return as long format df
   df <- data.frame(varName = rep(varName, length(values)),
