@@ -121,8 +121,10 @@ For data-level differences for a specific variable, see <code><a href="inspectDi
 <span class="r-in"><span><span class="co"># inspect via inspectMetaDifferences()</span></span></span>
 <span class="r-in"><span><span class="fu">inspectMetaDifferences</span><span class="op">(</span>GADSdat <span class="op">=</span> <span class="va">pisa</span>, varName <span class="op">=</span> <span class="st">"sameteach"</span>, other_GADSdat <span class="op">=</span> <span class="va">pisa2</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> $varDiff</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>                         GADSdat_varLabel other_GADSdat_varLabel</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 1 Same math teacher in both school years      Same math teacher</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>                         GADSdat_varLabel GADSdat_format other_GADSdat_varLabel</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 1 Same math teacher in both school years           F8.0      Same math teacher</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   other_GADSdat_format</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 1                 F8.0</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> $valDiff</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   value GADSdat_valLabel GADSdat_missings other_GADSdat_valLabel</span>
@@ -146,7 +148,7 @@ For data-level differences for a specific variable, see <code><a href="inspectDi
 </div>
 
 <div class="pkgdown-footer-right">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.1.1.</p>
+  <p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.1.2.</p>
 </div>
 
     </footer></div>
