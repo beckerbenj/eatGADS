@@ -30,13 +30,14 @@ test_that("Differences on variable level",{
   df1_2 <- changeVarLabels(df1, "V1", "some label")
   out <- inspectMetaDifferences(df1, varName = "V1", other_GADSdat = df1_2)
   expect_equal(names(out), c("varDiff", "valDiff"))
-  expect_equal(names(out$varDiff), c("GADSdat_varLabel", "other_GADSdat_varLabel"))
-  expect_equal(as.character(out$varDiff[1, ]), c(NA, "some label"))
+  expect_equal(names(out$varDiff), c("GADSdat_varLabel", "GADSdat_format",
+                                     "other_GADSdat_varLabel", "other_GADSdat_format"))
+  expect_equal(as.character(out$varDiff[1, ]), c(NA, "F8.2", "some label", "F8.2"))
   expect_equal(out$valDiff, "all.equal")
 
   out2 <- inspectMetaDifferences(df1_2, varName = "ID1", other_varName = "V1")
-  expect_equal(names(out2$varDiff), c("ID1_varLabel", "V1_varLabel"))
-  expect_equal(as.character(out2$varDiff[1, ]), c(NA, "some label"))
+  expect_equal(names(out2$varDiff), c("ID1_varLabel", "ID1_format", "V1_varLabel", "V1_format"))
+  expect_equal(as.character(out2$varDiff[1, ]), c(NA, "F8.2", "some label", "F8.2"))
 })
 
 

@@ -5,6 +5,9 @@
 * `recodeGADS()` allows recoding multiple variables at once (#107)
 * `merge.GADSdat()` allows automatically assigning NAs created through merging a missing code and a value label (#1)
 
+## changes
+* `inspectMetaDifferences()` now provides consistent output for variable label differences
+
 ## bug fixes
 * `extractData2()` and `extractData()` no longer throw an error if multiple values of the same variable are labeled `NA` (#96)
 * `extractData2()` and `extractData()` no longer produce an error if there are multiple duplicate value labels in a variable 
