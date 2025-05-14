@@ -23,7 +23,7 @@ Remove meta data for specific values (\code{value}) of a single variable (\code{
 This includes value labels and missings tags.
 }
 \details{
-If the argument \code{valLabel} is provided the function checks for \code{value} and \code{valLabel} pairs in the
+If the argument \code{valLabel} is provided, the function checks for \code{value} and \code{valLabel} pairs in the
 meta data that match both arguments.
 }
 \examples{
