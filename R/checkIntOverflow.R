@@ -5,11 +5,12 @@
 #' in its meta data which could cause problems esp. when exporting into \code{.dta} format.
 #'
 #' According to its documentation, R can only handle \code{\link[base:integer]{integers}}
-#' of up to \emph{roughly} \eqn{\pm 2 \times 10^9} (2,147,483,647 to be exact).
-#' Right now, this restriction appears to only be of interfering relevance when
-#' exporting a data set to \code{.dta} and only when the very large value is also
-#' labeled (or tagged as missing). This is due to Stata only accepting integers
-#' as being labeled - otherwise the value will stay a generic numeric.
+#' of up to (roughly) \eqn{\pm 2 \times 10^9} (2,147,483,647 to be exact;
+#' c.f. \code{\link[base:.Machine]{.Machine}$integer.max}).
+#' This restriction appears to be relevant only when exporting a \code{GADSdat} to \code{.dta}
+#' and only when the very large value is also labeled (or tagged as missing).
+#' This is due to Stata only accepting labeled \emph{integer} values, not labeled \emph{double}
+#' values. Unlabeled values will stay a generic numeric.
 #'
 #'@param GADSdat A \code{GADSdat} object.
 #'
