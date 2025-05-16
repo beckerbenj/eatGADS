@@ -51,7 +51,12 @@ applies appropriate variable name changes to <code>GADSdat</code> or <code>all_G
 
     <div class="section level2">
     <h2 id="ref-usage">Usage<a class="anchor" aria-label="anchor" href="#ref-usage"></a></h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">checkVarNames</span><span class="op">(</span><span class="va">GADSdat</span>, checkKeywords <span class="op">=</span> <span class="cn">TRUE</span>, checkDots <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></code></pre></div>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">checkVarNames</span><span class="op">(</span></span>
+<span>  <span class="va">GADSdat</span>,</span>
+<span>  checkKeywords <span class="op">=</span> <span class="cn">TRUE</span>,</span>
+<span>  checkDots <span class="op">=</span> <span class="cn">TRUE</span>,</span>
+<span>  checkDuplicates <span class="op">=</span> <span class="cn">TRUE</span></span>
+<span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div class="section level2">
@@ -69,6 +74,10 @@ applies appropriate variable name changes to <code>GADSdat</code> or <code>all_G
 <dt id="arg-checkdots">checkDots<a class="anchor" aria-label="anchor" href="#arg-checkdots"></a></dt>
 <dd><p>Logical. Should occurrences of <code>"."</code> be checked and modified?</p></dd>
 
+
+<dt id="arg-checkduplicates">checkDuplicates<a class="anchor" aria-label="anchor" href="#arg-checkduplicates"></a></dt>
+<dd><p>Logical. Should case insensitive duplicate variable names be checked and modified?</p></dd>
+
 </dl></div>
     <div class="section level2">
     <h2 id="value">Value<a class="anchor" aria-label="anchor" href="#value"></a></h2>
@@ -76,10 +85,12 @@ applies appropriate variable name changes to <code>GADSdat</code> or <code>all_G
     </div>
     <div class="section level2">
     <h2 id="details">Details<a class="anchor" aria-label="anchor" href="#details"></a></h2>
-    <p>Invalid column names in a <code>SQLite</code> data base include</p><ul><li><p><code>SQLite</code> keywords (see <code><a href="https://rdrr.io/pkg/eatDB/man/sqlite_keywords.html" class="external-link">sqlite_keywords</a></code>) and</p></li>
-<li><p>column names with a <code>"."</code> in it.</p></li>
-</ul><p>The corresponding variable name changes are</p><ul><li><p>appending the suffix <code>"Var"</code> to all <code>SQLite</code> keywords and</p></li>
-<li><p>changing all <code>"."</code> in variable names to <code>"_"</code>.</p></li>
+    <p>Invalid column names in a <code>SQLite</code> data base include</p><ul><li><p><code>SQLite</code> keywords (see <code><a href="https://rdrr.io/pkg/eatDB/man/sqlite_keywords.html" class="external-link">sqlite_keywords</a></code>),</p></li>
+<li><p>column names with a <code>"."</code> in it and</p></li>
+<li><p>duplicate variable names which arise from <code>SQLite</code> being case insensitive.</p></li>
+</ul><p>The corresponding variable name changes are</p><ul><li><p>appending the suffix <code>"Var"</code> to all <code>SQLite</code> keywords,</p></li>
+<li><p>changing all <code>"."</code> in variable names to <code>"_"</code> and</p></li>
+<li><p>appending <code>"_2"</code> to case insensitive duplicated variable names.</p></li>
 </ul><p>Note that avoiding <code>"."</code> in variable names is beneficial for multiple reasons, such as
 avoiding confusion with <code>S3</code> methods in <code>R</code> and issues when importing from <code>Stata</code>.</p>
     </div>
