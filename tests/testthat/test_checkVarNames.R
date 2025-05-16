@@ -1,10 +1,8 @@
 ### Name transformation
-# rawDat_names <- haven::read_spss("tests/testthat/helper_spss_names.sav", user_na = TRUE)
-rawDat_names <- haven::read_spss("helper_spss_names.sav", user_na = TRUE)
+rawDat_names <- haven::read_spss(test_path("helper_spss_names.sav"), user_na = TRUE)
 
 # load test data (df1, df2, pkList, fkList)
-# load(file = "tests/testthat/helper_data.rda")
-load(file = "helper_data.rda")
+load(file = test_path("helper_data.rda"))
 
 ### check missings
 df4 <- df3 <- df1
@@ -21,12 +19,17 @@ df4$labels[2:3, "labeled"] <- "yes"
 test_that("Variable name are transformed correctly for character vectors", {
   expect_error(checkVarNames(c("group", "var.1", "Select", NA)),
                "Column names can not be NA.")
-  all_messages <- capture_messages(out <- checkVarNames(c("group", "var.1", "Select")))
+  all_messages <- capture_messages(out <- checkVarNames(c("group", "var.1", "Select", "test", "Test")))
 
   expect_equal(all_messages[1], "group has been renamed to groupVar\n")
   expect_equal(all_messages[2], "var.1 has been renamed to var_1\n")
   expect_equal(all_messages[3], "Select has been renamed to SelectVar\n")
-  expect_identical(out, c("groupVar", "var_1", "SelectVar"))
+  expect_equal(all_messages[4], "Test has been renamed to Test_2\n")
+  expect_identical(out, c("groupVar", "var_1", "SelectVar", "test", "Test_2"))
+
+  input <- c("group", "var.1", "Select", "test", "Test")
+  out2 <- checkVarNames(input, checkDuplicates = FALSE, checkDots = FALSE, checkKeywords = FALSE)
+  expect_equal(out2, input)
 })
 
 test_that("Variable name are transformed correctly for data.frames", {
@@ -53,7 +56,7 @@ test_that("Check varNames", {
 test_that("Unduplicate", {
   out <- unduplicate(c("v1", "V1", "v2"))
   expect_equal(out, c("v1", "V1_2", "v2"))
-  expect_message(out <- unduplicate(c("v1", "V1", "v2")), "V1 has been renamed to V1_2")
+  out <- unduplicate(c("v1", "V1", "v2"))
 
   df <- data.frame("var1" = 1, "Var1" = 1, "vAr1" = 1)
   out2 <- prepare_labels(df, TRUE, TRUE)

@@ -2,7 +2,6 @@
 # 02) Prepare and extract data ---------------------------------------------------------
 prepare_labels <- function(rawDat, checkVarNames, labeledStrings) {
   # 1) check and prepare variable names
-  if(anyDuplicated(tolower(names(rawDat)))) names(rawDat) <- unduplicate(names(rawDat))
   if(identical(checkVarNames, TRUE)) rawDat <- checkVarNames(rawDat)
 
   # 2a) dates and times to character
@@ -27,20 +26,6 @@ prepare_labels <- function(rawDat, checkVarNames, labeledStrings) {
   new_GADSdat(dat = plainDat, labels = label_df)
 }
 
-
-# 02.1) Modify duplicate variable names ---------------------------------------------------------
-# sqlite3 not case sensitive!
-unduplicate <- function(x) {
-  out <- x
-  allower <- tolower(x)
-  out[duplicated(allower)] <- paste(out[duplicated(allower)], 2, sep = "_")
-  if(anyDuplicated(tolower(out))) out <- unduplicate(out)
-
-  Map(function(vec_name, NewName) {
-    if(!identical(NewName, vec_name)) message(paste(vec_name, "has been renamed to", NewName))
-  }, vec_name = x, NewName = out)
-  out
-}
 
 # 02.3) extract labels ---------------------------------------------------------
 extract_labels <- function(rawDat) {

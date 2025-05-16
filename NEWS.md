@@ -18,6 +18,7 @@
 * fix unclear documentation in `removeValLabels()` (#111)
 * fix `changeMissings()` bug which dropped a single, existing value label and threw an error (#121)
 * `checkMissingValLabels()` now correctly recognizes large integers (#124)
+* Checks for case insensitive duplicate variable names are now run by `checkVarNames()` and not outside of it
 
 # eatGADS 1.1.1
 ## new features
