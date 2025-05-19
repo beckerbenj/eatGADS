@@ -2,23 +2,22 @@
 #'
 #' Check a \code{GADSdat} object for any occurrences of integer values, esp.
 #' in the metadata, that are too large for R to handle.
-#' in its meta data which could cause problems esp. when exporting into \code{.dta} format.
 #'
 #' According to its documentation, R can only handle \code{\link[base:integer]{integers}}
 #' of up to (roughly) \eqn{\pm 2 \times 10^9} (2,147,483,647 to be exact;
 #' c.f. \code{\link[base:.Machine]{.Machine}$integer.max}).
-#' This restriction appears to be relevant only when exporting a \code{GADSdat} to \code{.dta}
+#' This restriction appears relevant only when exporting a \code{GADSdat} to \code{.dta}
 #' and only when the very large value is also labeled (or tagged as missing).
-#' This is due to Stata only accepting labeled \emph{integer} values, not labeled \emph{double}
+#' This is because Stata only accepts labeled \emph{integer} values, not labeled \emph{double}
 #' values. Unlabeled values will stay a generic numeric.
 #'
 #'@param GADSdat A \code{GADSdat} object.
 #'
 #'@return Returns a \code{data.frame}, listing the affected \code{varName}s,
-#' the large \code{value}s, and their respective \code{missings} tag
-#' according to the metadata, as well as whether they actually occur in the data  (\code{empty}).
-#' The \code{rownum}s of the affected rows in \code{GADSdat$labels} are provided
-#' in a separate column as a fail safe, too.
+#' the large \code{value}s, their respective \code{missings} tag
+#' according to the metadata, and whether they actually occur in the data (\code{empty}).
+#' The \code{rownum}s of the affected rows in \code{GADSdat$labels} are also
+#' provided in a separate column as a fail safe.
 #'
 #'@examples
 #' # Introduce a fractional value into meta data
