@@ -6,11 +6,11 @@ df1 <- changeValLabels(GADSdat = dfSAV,
                        valLabel = "Apple")
 
 # general output structure to be changed for each test
-outlist <- data.frame(varName = "<none found>",
+outlist <- data.frame(varName = NA_character_,
                       value = NA_real_,
                       missings = NA_character_,
                       empty = NA,
-                      rownum = NA_integer_)
+                      rownum = NA_integer_)[0,]
 
 test_that("Correctly identify metadata without very large labeled values", {
   check_result <- checkIntOverflow(GADSdat = df1)

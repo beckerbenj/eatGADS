@@ -33,11 +33,11 @@ checkIntOverflow <- function(GADSdat) {
   check_GADSdat(GADSdat)
   labels <- GADSdat$labels
 
-  out <- data.frame(varName = "<none found>",
+  out <- data.frame(varName = NA_character_,
                     value = NA_real_,
                     missings = NA_character_,
                     empty = NA,
-                    rownum = NA_integer_)
+                    rownum = NA_integer_)[0,]
 
   # option 1
   # huge_number_rows <- which((labels$labeled == "yes") &
