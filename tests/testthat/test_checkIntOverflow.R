@@ -46,20 +46,15 @@ test_that("Only empty very large labeled values", {
   expect_equal(check_result, outlist2)
 })
 
-# remove this last one?
-test_that("Two very large labeled values in the same variable where one value is empty", {
+test_that("Detect only very large whole-number values but not fractional values", {
+  # Fractional values would be detected by checkLabeledFractionals
   df2 <- recodeGADS(GADSdat = df1,
                     varName = "VAR1",
-                    oldValues = 2,
-                    newValues = 9999999999,
+                    oldValues = c(1,-99),
+                    newValues = c(2147483648, -9999999999.99),
                     existingMeta = "ignore")
-  df2 <- changeValLabels(GADSdat = df2,
-                         varName = "VAR1",
-                         value = 20000000000,
-                         valLabel = "nothing")
   check_result <- checkIntOverflow(GADSdat = df2)
   outlist2 <- outlist
-  outlist2[1,] <- list("VAR1", 9999999999, "valid", FALSE, 4)
-  outlist2[2,] <- list("VAR1", 20000000000, "valid", TRUE, 5)
+  outlist2[1,] <- list("VAR1", 2147483648, "valid", FALSE, 4)
   expect_equal(check_result, outlist2)
 })

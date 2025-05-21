@@ -40,23 +40,17 @@ checkIntOverflow <- function(GADSdat) {
                     empty = NA,
                     rownum = NA_integer_)[0,]
 
-  # option 1
-  # huge_number_rows <- which((labels$labeled == "yes") &
-  #                            (labels$value > 2147483647 | labels$value < -2147483647))
+  huge_labeled_number_rows <- which(abs(labels$value) > .Machine$integer.max &
+                                      labels$value %% 1 == 0)
 
-  # option 2
-  huge_number_rows <- suppressWarnings(which((labels$labeled == "yes") &
-                                               !is.na(as.numeric(labels$value)) &
-                                               is.na(as.integer(labels$value))))
-
-  if (length(huge_number_rows) == 0) {
+  if (length(huge_labeled_number_rows) == 0) {
     return(out)
   }
 
-  out[1:length(huge_number_rows), 1:3] <- labels[huge_number_rows, c("varName",
-                                                                     "value",
-                                                                     "missings")]
-  out$rownum <- huge_number_rows
+  out[1:length(huge_labeled_number_rows), 1:3] <- labels[huge_labeled_number_rows, c("varName",
+                                                                                     "value",
+                                                                                     "missings")]
+  out$rownum <- huge_labeled_number_rows
 
   varlist <- unique(out$varName)
   empty_values <- checkEmptyValLabels(GADSdat = GADSdat,
