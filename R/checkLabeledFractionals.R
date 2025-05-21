@@ -34,26 +34,26 @@ checkLabeledFractionals <- function(GADSdat) {
                     missings = NA_character_,
                     empty = NA)[0,]
 
-  labeled_fractional_rows <- which((labels$labeled == "yes") & (labels$value %% 1 != 0))
+  labeled_fractional_rows <- which(labels$value %% 1 != 0)
 
   if (length(labeled_fractional_rows) == 0) {
     return(out)
   }
 
-  out[1:length(labeled_fractional_rows), 1:3] <- labels[labeled_fractional_rows, c("varName",
-                                                                                   "value",
-                                                                                   "missings")]
+  out[1:length(labeled_fractional_rows), c("varName",
+                                           "value",
+                                           "missings")] <-
+    labels[labeled_fractional_rows, c("varName",
+                                      "value",
+                                      "missings")]
 
   varlist <- unique(out$varName)
   empty_values <- checkEmptyValLabels(GADSdat = GADSdat,
                                       vars = varlist)
-  out$empty <- unlist(lapply(varlist, function(varname) {
+  for(varname in varlist) {
     vallist <- out[out$varName == varname, "value"]
-    is_empty <- match(x = vallist,
-                      table = empty_values[[varname]]$value,
-                      nomatch = 0) > 0
-    return(is_empty)
-  }))
+    out[out$varName == varname, "empty"] <- vallist %in% empty_values[[varname]]$value
+  }
 
   rownames(out) <- NULL
   return(out)
