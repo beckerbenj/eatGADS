@@ -1,18 +1,20 @@
-#' Check meta data for fractional values.
+#' Check a \code{GADSdat} for labeled fractional values.
 #'
-#' Check a \code{GADSdat} object for any occurrences of fractional values
-#' in its metadata which could cause problems, esp. when exporting into \code{.dta} format.
+#' Check a \code{GADSdat} object for any occurrences of fractional values in its metadata,
+#' including both "truly" labeled values and values tagged as \code{missings}.
 #'
-#' This function checks values tagged as labeled in the corresponding
-#' metadata column (\code{GADSdat$labels$labeled}). It therefore covers both
-#' "truly" labeled values (that have been assigned a \code{valLabel}) and
-#' values tagged as \code{missings} (with or without a \code{valLabel}).
+#' This function is mainly useful to ensure a data set can be saved as a \code{.dta} file.
+#' Unlike, for example, SPSS, Stata only allows for integer values
+#' (and so-called extended missing values) to be labeled
+#' (\href{https://www.stata.com/manuals/u12.pdf#u12.6.3Valuelabels}{Stata manual: 12.6.3}).
+#' Trying to export (meta) data with labeled fractional values would therefore cause problems
+#' and run into an error from \code{haven}'s \code{\link[haven:write_dta]{write_dta}} function.
 #'
 #'@param GADSdat A \code{GADSdat} object.
 #'
 #'@return Returns a \code{data.frame}, listing the affected \code{varName}s,
-#' the labeled fractional \code{value}s, their respective \code{missings} tag
-#' according to the metadata, and whether they actually occur in the data (\code{empty}).
+#' the labeled fractional \code{value}s, their respective \code{missings} tags,
+#' and whether they actually occur in the data (\code{empty}).
 #'
 #'@examples
 #' # Introduce a fractional value into meta data

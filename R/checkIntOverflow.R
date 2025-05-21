@@ -8,16 +8,17 @@
 #' c.f. \code{\link[base:.Machine]{.Machine}$integer.max}).
 #' This restriction is only relevant when exporting a \code{GADSdat} to \code{.dta}
 #' and only when any value exceeding the limit is also labeled (or tagged as missing).
-#' This is because Stata only accepts labeled \emph{integer} (not labeled \emph{floating-point})
-#' values. \link[haven:write_dta]{\code{haven}'s \code{write_dta}} function will therefore
+#' This is because Stata only accepts labeled \emph{integer} (not labeled \emph{floating-point};
+#' c.f. \code{\link[checkLabeledFractionals()]{checkLabeledFractionals}} in this package)
+#' values. \code{haven}'s \code{\link[haven:write_dta]{write_dta}} function will therefore
 #' coerce any labeled values \code{as.integer()}. Unlabeled values, however, will stay
 #' generic \code{numeric} values that have a higher limit.
 #'
 #'@param GADSdat A \code{GADSdat} object.
 #'
 #'@return Returns a \code{data.frame}, listing the affected \code{varName}s,
-#' the large \code{value}s, their respective \code{missings} tag
-#' according to the metadata, and whether they actually occur in the data (\code{empty}).
+#' the large whole-number \code{value}s, their respective \code{missings} tags,
+#' and whether they actually occur in the data (\code{empty}).
 #' The \code{rownum}s of the affected rows in \code{GADSdat$labels} are also
 #' provided in a separate column as a fail safe.
 #'
