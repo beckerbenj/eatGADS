@@ -2,6 +2,8 @@
 % Please edit documentation in R/equalGADS.R
 \name{equalGADS}
 \alias{equalGADS}
+\alias{equalData}
+\alias{equalMeta}
 \title{Test if two \code{GADSdat} objects are (nearly) equal}
 \usage{
 equalGADS(
@@ -11,14 +13,18 @@ equalGADS(
   metaExceptions = c("display_width", "labeled"),
   tolerance = sqrt(.Machine$double.eps)
 )
+
+equalData(target, current, id = NULL, tolerance = sqrt(.Machine$double.eps))
+
+equalMeta(target, current, metaExceptions = c("display_width", "labeled"))
 }
 \arguments{
 \item{target}{A \code{GADSdat} object.}
 
 \item{current}{A \code{GADSdat} object.}
 
-\item{id}{A character vector of length 1 containing the unique identifier column of both \code{GADSdat}.
-If specified, both \code{GADSdat} are ordered according to \code{ID} before comparing their data.}
+\item{id}{A character vector containing the unique identifier columns of both \code{GADSdat}.
+If specified, both \code{GADSdat} are ordered according to \code{id} before comparing their data.}
 
 \item{metaExceptions}{Should certain meta data columns be excluded from the comparison?}
 
@@ -26,11 +32,18 @@ If specified, both \code{GADSdat} are ordered according to \code{ID} before comp
 The default value is close to \code{1.5e-8}.}
 }
 \value{
-Returns a list.
+Returns a list with the following entries:
+\item{names_not_in_1}{Which variables are included in \code{current} but not in \code{target}?}
+\item{names_not_in_2}{Which variables are included in \code{target} but not in \code{current}?}
+\item{data_nrow}{Do the actual data sets have the same number of rows?}
+\item{data_differences}{For which variables are the data different?}
+\item{meta_data_differences}{For which variables are the meta data different?}
 }
 \description{
-Run tests to check whether two \code{GADSdat} objects are (nearly) equal. Variable names, number of rows in the data,
-meta data and data differences are checked and reported as a list output.
+Run tests to check whether two \code{GADSdat} objects are (nearly) equal.
+\code{equalData} compares variable names, number of rows in the data, and data differences.
+\code{equalMeta} compares variable names and meta data differences.
+\code{equalGADS} combines both functions. All functions produce a test report in list format.
 }
 \details{
 More detailed checks for individual variables can be performed via \code{\link{inspectDifferences}}

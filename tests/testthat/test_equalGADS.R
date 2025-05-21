@@ -1,9 +1,16 @@
 
 # load test data (df1, df2, pkList, fkList)
-# load(file = "tests/testthat/helper_data.rda")
-load(file = "helper_data.rda")
-# dfSAV <- import_spss(file = "tests/testthat/helper_spss_missings.sav")
-dfSAV <- import_spss(file = "helper_spss_missings.sav")
+load(file = test_path("helper_data.rda"))
+dfSAV <- import_spss(file = test_path("helper_spss_missings.sav"))
+
+test_that("Output structure of different equal functions",{
+  out_gads <- equalGADS(df1, df2)
+  expect_equal(names(out_gads), c("names_not_in_1", "names_not_in_2", "data_differences", "data_nrow", "meta_data_differences"))
+  out_data <- equalData(df1, df2)
+  expect_equal(names(out_data), c("names_not_in_1", "names_not_in_2", "data_differences", "data_nrow"))
+  out_meta <- equalMeta(df1, df2)
+  expect_equal(names(out_meta), c("names_not_in_1", "names_not_in_2", "meta_data_differences"))
+})
 
 test_that("Compare two different GADSdat objects",{
   out <- equalGADS(df1, df2)
@@ -88,3 +95,28 @@ test_that("Compare two GADSdat objects with metaExceptions",{
   out2 <- equalGADS(df1, df1_2, metaExceptions = c("display_width"))
   expect_equal(out2$meta_data_differences, c("ID1", "V1"))
 })
+
+test_that("Compare while ignoring order differences for data with multiple id variables",{
+  g1 <- import_DF(data.frame(ID = c(1, 1, 2, 2, 3, 3), imp = c(1, 2, 1, 2, 1, 2),
+                             v1 = c(2, 3, 4, 5, 6, 7)))
+  g3 <- g2 <- g1
+  g2$dat <- g2$dat[sample(nrow(g1$dat)), ]
+
+  out <- equalData(g1, g2, id = c("ID", "imp"))
+  expect_equal(out$data_differences, character())
+
+  g3$dat <- g3$dat[-1, ]
+  out <- equalData(g1, g3, id = c("ID", "imp"))
+  expect_equal(out$data_differences, c("ID", "imp", "v1"))
+  expect_equal(out$data_nrow, "nrow 1: 6; nrow 2: 5")
+})
+
+test_that("Compare a GADSdat with only an ID variable",{
+  gads <- import_DF(data.frame(ID = 1))
+
+  out <- equalData(gads, gads, id = "ID")
+  expect_equal(out$data_differences, character())
+})
+
+
+

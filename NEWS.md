@@ -4,6 +4,8 @@
 * `changeValLabels()` and `changeMissings()` allow changing value labels and missing tags for multiple variables at once (#33)
 * `recodeGADS()` allows recoding multiple variables at once (#107)
 * `merge.GADSdat()` allows automatically assigning NAs created through merging a missing code and a value label (#1)
+* `equalData()` and `equalMeta()` now split the functionality of `equalGADS()`
+* `equalData()` and `equalGADS()` now support multiple id variables (`id`)
 
 ## changes
 * `inspectMetaDifferences()` now provides consistent output for variable label differences
@@ -19,6 +21,7 @@
 * fix `changeMissings()` bug which dropped a single, existing value label and threw an error (#121)
 * `checkMissingValLabels()` now correctly recognizes large integers (#124)
 * Checks for case insensitive duplicate variable names are now run by `checkVarNames()` and not outside of it
+* `equalData()` and `equalGADS()` now work with `GADSdat` objects of length one (#127)
 
 # eatGADS 1.1.1
 ## new features
