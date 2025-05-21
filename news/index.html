@@ -53,6 +53,11 @@
 <code><a href="../reference/recodeGADS.html">recodeGADS()</a></code> allows recoding multiple variables at once (<a href="https://github.com/beckerbenj/eatGADS/issues/107" class="external-link">#107</a>)</li>
 <li>
 <code><a href="../reference/merge.GADSdat.html">merge.GADSdat()</a></code> allows automatically assigning NAs created through merging a missing code and a value label (<a href="https://github.com/beckerbenj/eatGADS/issues/1" class="external-link">#1</a>)</li>
+<li>
+<code><a href="../reference/equalGADS.html">equalData()</a></code> and <code><a href="../reference/equalGADS.html">equalMeta()</a></code> now split the functionality of <code><a href="../reference/equalGADS.html">equalGADS()</a></code>
+</li>
+<li>
+<code><a href="../reference/equalGADS.html">equalData()</a></code> and <code><a href="../reference/equalGADS.html">equalGADS()</a></code> now support multiple id variables (<code>id</code>)</li>
 </ul></div>
 <div class="section level3">
 <h3 id="changes-1-1-1-9000">changes<a class="anchor" aria-label="anchor" href="#changes-1-1-1-9000"></a></h3>
@@ -77,6 +82,8 @@
 <li>
 <code><a href="../reference/checkEmptyValLabels.html">checkMissingValLabels()</a></code> now correctly recognizes large integers (<a href="https://github.com/beckerbenj/eatGADS/issues/124" class="external-link">#124</a>)</li>
 <li>Checks for case insensitive duplicate variable names are now run by <code><a href="../reference/checkVarNames.html">checkVarNames()</a></code> and not outside of it</li>
+<li>
+<code><a href="../reference/equalGADS.html">equalData()</a></code> and <code><a href="../reference/equalGADS.html">equalGADS()</a></code> now work with <code>GADSdat</code> objects of length one (<a href="https://github.com/beckerbenj/eatGADS/issues/127" class="external-link">#127</a>)</li>
 </ul></div>
 </div>
     <div class="section level2">
