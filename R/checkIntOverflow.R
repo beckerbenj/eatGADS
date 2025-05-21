@@ -11,8 +11,8 @@
 #' This is because Stata only accepts labeled \emph{integer} (not labeled \emph{floating-point};
 #' c.f. \code{\link[checkLabeledFractionals()]{checkLabeledFractionals}} in this package)
 #' values. \code{haven}'s \code{\link[haven:write_dta]{write_dta}} function will therefore
-#' coerce any labeled values \code{as.integer()}. Unlabeled values, however, will stay
-#' generic \code{numeric} values that have a higher limit.
+#' try to coerce any labeled values \code{as.integer()}. Unlabeled values, however, will
+#' stay generic \code{numeric} values that have a higher limit.
 #'
 #'@param GADSdat A \code{GADSdat} object.
 #'

@@ -2,7 +2,7 @@
 % Please edit documentation in R/checkLabeledFractionals.R
 \name{checkLabeledFractionals}
 \alias{checkLabeledFractionals}
-\title{Check meta data for fractional values.}
+\title{Check a \code{GADSdat} for labeled fractional values.}
 \usage{
 checkLabeledFractionals(GADSdat)
 }
@@ -11,18 +11,20 @@ checkLabeledFractionals(GADSdat)
 }
 \value{
 Returns a \code{data.frame}, listing the affected \code{varName}s,
-the labeled fractional \code{value}s, and their respective \code{missings} tag
-according to the metadata, as well as whether they actually occur in the data (\code{empty}).
+the labeled fractional \code{value}s, their respective \code{missings} tags,
+and whether they actually occur in the data (\code{empty}).
 }
 \description{
-Check a \code{GADSdat} object for any occurrences of fractional values
-in its meta data which could cause problems esp. when exporting into \code{.dta} format.
+Check a \code{GADSdat} object for any occurrences of fractional values in its metadata,
+including both "truly" labeled values and values tagged as \code{missings}.
 }
 \details{
-This functions checks values that are tagged as labeled in the corresponding
-metadata column (\code{GADSdat$labels$labeled}). It therefore covers both
-"truely" labeled values (that have been assigned a \code{valLabel}) and
-values tagged as \code{missings} (with or without a \code{valLabel}).
+This function is mainly useful to ensure a data set can be saved as a \code{.dta} file.
+Unlike, for example, SPSS, Stata only allows for integer values
+(and so-called extended missing values) to be labeled
+(\href{https://www.stata.com/manuals/u12.pdf#u12.6.3Valuelabels}{Stata manual: 12.6.3}).
+Trying to export (meta) data with labeled fractional values would therefore cause problems
+and run into an error from \code{haven}'s \code{\link[haven:write_dta]{write_dta}} function.
 }
 \examples{
 # Introduce a fractional value into meta data
