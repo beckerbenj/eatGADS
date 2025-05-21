@@ -15,7 +15,7 @@ recodeGADS(
 \arguments{
 \item{GADSdat}{\code{GADSdat} object imported via \code{eatGADS}.}
 
-\item{varName}{Name of the variable to be recoded.}
+\item{varName}{Character vector containing variable names.}
 
 \item{oldValues}{Vector containing the old values.}
 

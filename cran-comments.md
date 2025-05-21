@@ -1,5 +1,5 @@
 ## Test environments
-* local windows x86_64-w64-mingw32, R 4.3.0 
+* local windows x86_64-w64-mingw32, R 4.4.2 
 * OS X (on Github Action), release 
 * ubuntu 16.04 (on Github Action), oldrel, release, devel, R 4.0.0 
 * windows (on Github Action), release  

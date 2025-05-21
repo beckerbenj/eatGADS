@@ -1,4 +1,4 @@
-# eatGADS 1.1.1.9000
+# eatGADS 1.2.0
 ## new features
 * `dropDuplicateIDs()` allows dropping duplicate IDs based on number of missings on selected variables (#67)
 * `changeValLabels()` and `changeMissings()` allow changing value labels and missing tags for multiple variables at once (#33)
