@@ -1,15 +1,17 @@
-#' Check a \code{GADSdat} for large integers.
+#' Check a \code{GADSdat} for large labeled whole-number values.
 #'
-#' Check a \code{GADSdat} object for any occurrences of integer values, esp.
-#' in the metadata, that are too large for R to handle.
+#' Check a \code{GADSdat} object for any occurrences of labeled whole-number values
+#'  that would be too large for R to handle if they were coerced \code{as.integer()}.
 #'
-#' According to its documentation, R can only handle \code{\link[base:integer]{integers}}
-#' of up to (roughly) \eqn{\pm 2 \times 10^9} (2,147,483,647 to be exact;
+#' According to its documentation, R can only handle \code{\link[base:integer]{integer}}
+#' values of up to (roughly) \eqn{\pm 2 \times 10^9} (2,147,483,647 to be exact;
 #' c.f. \code{\link[base:.Machine]{.Machine}$integer.max}).
-#' This restriction appears relevant only when exporting a \code{GADSdat} to \code{.dta}
-#' and only when the very large value is also labeled (or tagged as missing).
-#' This is because Stata only accepts labeled \emph{integer} values, not labeled \emph{double}
-#' values. Unlabeled values will stay a generic numeric.
+#' This restriction is only relevant when exporting a \code{GADSdat} to \code{.dta}
+#' and only when any value exceeding the limit is also labeled (or tagged as missing).
+#' This is because Stata only accepts labeled \emph{integer} (not labeled \emph{floating-point})
+#' values. \link[haven:write_dta]{\code{haven}'s \code{write_dta}} function will therefore
+#' coerce any labeled values \code{as.integer()}. Unlabeled values, however, will stay
+#' generic \code{numeric} values that have a higher limit.
 #'
 #'@param GADSdat A \code{GADSdat} object.
 #'
