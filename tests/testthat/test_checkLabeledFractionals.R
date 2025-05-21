@@ -17,7 +17,9 @@ test_that("Correctly identify metadata without labeled fractional values", {
 })
 
 test_that("One existing labeled fractional in one variable", {
-  df2 <- recodeGADS(GADSdat = df1,
+  df2 <- suppressMessages(removeVars(GADSdat = df1,
+                                     vars = c("VAR2", "VAR3")))
+  df2 <- recodeGADS(GADSdat = df2,
                     varName = "VAR1",
                     oldValues = 1,
                     newValues = .5,

@@ -17,6 +17,19 @@ test_that("Correctly identify metadata without very large labeled values", {
   expect_equal(check_result, outlist)
 })
 
+test_that("One very large value without any empty labels in the data set", {
+  df2 <- suppressMessages(removeVars(GADSdat = df1,
+                                     vars = c("VAR2", "VAR3")))
+  df2 <- recodeGADS(GADSdat = df2,
+                    varName = "VAR1",
+                    oldValues = 1,
+                    newValues = (2*10^15))
+  check_result <- checkIntOverflow(GADSdat = df2)
+  outlist2 <- outlist
+  outlist2[1,] <- list("VAR1", (2*10^15), "valid", FALSE, 4)
+  expect_equal(check_result, outlist2)
+})
+
 test_that("Two existing labeled value exactly 1 above/below the limit in one variable", {
   df2 <- recodeGADS(GADSdat = df1,
                     varName = "VAR1",
