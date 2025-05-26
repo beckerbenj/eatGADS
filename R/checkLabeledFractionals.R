@@ -29,10 +29,10 @@ checkLabeledFractionals <- function(GADSdat) {
   check_GADSdat(GADSdat)
   labels <- GADSdat$labels
 
-  out <- data.frame(varName = NA_character_,
-                    value = NA_real_,
-                    missings = NA_character_,
-                    empty = NA)[0,]
+  out <- data.frame(varName = character(),
+                    value = numeric(),
+                    missings = character(),
+                    empty = logical())
 
   labeled_fractional_rows <- which(labels$value %% 1 != 0)
 

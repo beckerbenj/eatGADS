@@ -6,10 +6,10 @@ df1 <- changeValLabels(GADSdat = dfSAV,
                        valLabel = "Apple")
 
 # general output structure to be changed for each test
-outlist <- data.frame(varName = NA_character_,
-                      value = NA_real_,
-                      missings = NA_character_,
-                      empty = NA)[0,]
+outlist <- data.frame(varName = character(),
+                      value = numeric(),
+                      missings = character(),
+                      empty = logical())
 
 test_that("Correctly identify metadata without labeled fractional values", {
   check_result <- checkLabeledFractionals(GADSdat = df1)
