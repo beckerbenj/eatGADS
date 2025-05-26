@@ -6,7 +6,7 @@
 #' According to its documentation, R can only handle \code{\link[base:integer]{integer}}
 #' values of up to (roughly) \eqn{\pm 2 \times 10^9} (2,147,483,647 to be exact;
 #' c.f. \code{\link[base:.Machine]{.Machine}$integer.max}).
-#' This restriction is only relevant when exporting a \code{GADSdat} to \code{.dta}
+#' This restriction is relevant when exporting a \code{GADSdat} to \code{.dta}
 #' and only when any value exceeding the limit is also labeled (or tagged as missing).
 #' This is because Stata only accepts labeled \emph{integer} (not labeled \emph{floating-point};
 #' c.f. \code{\link[checkLabeledFractionals()]{checkLabeledFractionals}} in this package)
@@ -35,11 +35,11 @@ checkIntOverflow <- function(GADSdat) {
   check_GADSdat(GADSdat)
   labels <- GADSdat$labels
 
-  out <- data.frame(varName = NA_character_,
-                    value = NA_real_,
-                    missings = NA_character_,
-                    empty = NA,
-                    rownum = NA_integer_)[0,]
+  out <- data.frame(varName = character(),
+                    value = numeric(),
+                    missings = character(),
+                    empty = logical(),
+                    rownum = integer())
 
   huge_labeled_number_rows <- which(abs(labels$value) > .Machine$integer.max &
                                       labels$value %% 1 == 0)
