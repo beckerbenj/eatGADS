@@ -47,4 +47,8 @@ gads2 <- autoRecode(gads, var = "v1", var_suffix = "_num")
 # auto recode with saving look up table
 f <- tempfile(fileext = ".csv")
 gads2 <- autoRecode(gads, var = "v1", var_suffix = "_num", csv_path = f)
+
+# auto recode with applying and expanding a look up table
+gads3 <- import_DF(data.frame(v2 = c(letters[1:3], "aa")))
+gads3 <- autoRecode(gads3, var = "v2", csv_path = f, template = read.csv(f))
 }

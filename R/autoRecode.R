@@ -27,6 +27,10 @@
 #' # auto recode with saving look up table
 #' f <- tempfile(fileext = ".csv")
 #' gads2 <- autoRecode(gads, var = "v1", var_suffix = "_num", csv_path = f)
+#'
+#' # auto recode with applying and expanding a look up table
+#' gads3 <- import_DF(data.frame(v2 = c(letters[1:3], "aa")))
+#' gads3 <- autoRecode(gads3, var = "v2", csv_path = f, template = read.csv(f))
 #'@export
 autoRecode <- function(GADSdat, var, var_suffix = "", label_suffix = "", csv_path = NULL, template = NULL) {
   UseMethod("autoRecode")
@@ -63,7 +67,7 @@ autoRecode.GADSdat <- function(GADSdat, var, var_suffix = "", label_suffix = "",
     }
 
     # recoding the actual data via a lookup table
-    new_oldValues <- GADSdat$dat[[var]][!GADSdat$dat[[var]] %in% template$oldValue]
+    new_oldValues <- unique(GADSdat$dat[[var]][!GADSdat$dat[[var]] %in% template$oldValue])
     new_newValues <- seq(from = max(template$newValue) + 1, length.out = length(new_oldValues))
     lookup <- rbind(template, data.frame(oldValue = new_oldValues, newValue = new_newValues))
     lookup_table <- data.frame(variable = new_var, lookup)
