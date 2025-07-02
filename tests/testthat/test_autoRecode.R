@@ -67,3 +67,14 @@ test_that("existing lookup, no new cases", {
   expect_equal(lookup$newValue, 1:6)
 })
 
+test_that("existing lookup, duplicate new cases", {
+  existing_lookup <- data.frame(oldValue = c(112, 115), newValue = c(3, 6))
+
+  f <- tempfile(fileext = ".csv")
+  out <- autoRecode(g, var = "id", var_suffix = "_new", template = existing_lookup, csv_path = f)
+  expect_equal(out$dat$id_new, c(7, 6, 3, 7))
+
+  lookup <- read.csv(f)
+  expect_equal(lookup$oldValue, c(112, 115, 110))
+  expect_equal(lookup$newValue, c(3, 6, 7))
+})
