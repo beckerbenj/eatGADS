@@ -73,12 +73,15 @@ recodeGADS.GADSdat <- function(GADSdat, varName, oldValues, newValues,
     }
     # recode values without labels (not the best solution but better usability)
     other_recodes <- which(!oldValues %in% changeTable[changeTable$varName == single_varName, "value"] & !is.na(oldValues))
-    for(i in other_recodes) {
-      if(!oldValues[i] %in% GADSdat$dat[, single_varName]) {
-        warning("The following value in 'oldValues' is neither a labeled value in the meta data nor an actual value in ",
-                single_varName, ": ", oldValues[i])
-      }
-      GADSdat$dat[which(GADSdat$dat[, single_varName] == oldValues[i]), single_varName] <- newValues[i]
+
+    if(length(other_recodes) > 0) {
+      data_recode_lookup <- data.frame(oldValues = oldValues[other_recodes], newValues = newValues[other_recodes])
+      not_in_data_aswell <- oldValues[!oldValues %in% GADSdat$dat[, single_varName]]
+      if(length(not_in_data_aswell) > 0) {
+          warning("The following values in 'oldValues' are neither a labeled value in the meta data nor an actual value in ",
+                  single_varName, ": ", not_in_data_aswell)
+        }
+      GADSdat$dat[, single_varName] <- eatTools::recodeLookup(GADSdat$dat[, single_varName], lookup = data_recode_lookup)
     }
   }
 

@@ -18,7 +18,7 @@ test_that("Recode wrapper errors", {
   expect_error(recodeGADS(dfSAV, varName = "VAR1", oldValues = c(-99), newValues = c(1)),
                "Values in 'value_new' with existing meta data in variable VAR1: 1")
   expect_warning(out <- recodeGADS(dfSAV, varName = "VAR1", oldValues = c(3), newValues = c(10)),
-                 "The following value in 'oldValues' is neither a labeled value in the meta data nor an actual value in VAR1: 3")
+                 "The following values in 'oldValues' are neither a labeled value in the meta data nor an actual value in VAR1: 3")
   expect_equal(out, dfSAV)
 })
 
@@ -41,6 +41,14 @@ test_that("Recode wrapper for unlabeled values", {
 
   out2 <- recodeGADS(allG, varName = "VAR1", oldValues = c(2), newValues = c(10))
   expect_equal(out2$datList$dfSAV$VAR1, c(1, -99, -96, 10))
+})
+
+test_that("Recode wrapper avoids sequential recoding bug", {
+  gads <- import_DF(data.frame(x = 1:6, y = 1:6))
+  out <- recodeGADS(GADSdat = gads, var = "x", oldValues = 3:5,
+                         newValues = c(5, 14, 15))
+
+  expect_equal(out$dat$x, c(1, 2, 5, 14, 15, 6))
 })
 
 test_that("Recode wrapper for unlabeled variables", {

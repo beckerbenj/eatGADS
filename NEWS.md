@@ -1,3 +1,7 @@
+# eatGADS 1.2.0.9000
+## bug fixes
+* `recodeGADS()` now correctly performs potentially sequential recodes for unlabeled values (#134)
+
 # eatGADS 1.2.0
 ## new features
 * `dropDuplicateIDs()` allows dropping duplicate IDs based on number of missings on selected variables (#67)
