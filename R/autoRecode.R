@@ -30,7 +30,8 @@
 #'
 #' # auto recode with applying and expanding a look up table
 #' gads3 <- import_DF(data.frame(v2 = c(letters[1:3], "aa")))
-#' gads3 <- autoRecode(gads3, var = "v2", csv_path = f, template = read.csv(f))
+#' gads3 <- autoRecode(gads3, var = "v2", csv_path = f,
+#'                     template = read.csv(f))
 #'@export
 autoRecode <- function(GADSdat, var, var_suffix = "", label_suffix = "", csv_path = NULL, template = NULL) {
   UseMethod("autoRecode")

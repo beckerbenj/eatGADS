@@ -1,3 +1,7 @@
+# eatGADS 1.2.0.9000
+## bug fixes
+* `autoRecode()` no longer fails while applying a template that does not yet cover a value which occurs in the data more than once (#131)
+
 # eatGADS 1.2.0
 ## new features
 * `dropDuplicateIDs()` allows dropping duplicate IDs based on number of missings on selected variables (#67)
