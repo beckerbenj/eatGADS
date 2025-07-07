@@ -1,5 +1,6 @@
 # eatGADS 1.2.0.9000
 ## bug fixes
+* `autoRecode()` no longer fails while applying a template that does not yet cover a value which occurs in the data more than once (#131)
 * `recodeGADS()` now correctly performs potentially sequential recodes for unlabeled values (#134)
 
 # eatGADS 1.2.0
