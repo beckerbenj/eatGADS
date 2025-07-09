@@ -64,8 +64,6 @@ changeMissings.GADSdat <- function(GADSdat, varName, value, missings) {
     for(i in seq_along(existing_values)) {
       filterValue <- changeTable$varName == single_varName & changeTable$value == existing_values[i]
 
-      changeTable[filterValue, "value_new"] <- changeTable[filterValue, "value"]
-      changeTable[filterValue, "valLabel_new"] <- changeTable[filterValue, "valLabel"]
       changeTable[filterValue, "missings_new"] <- existing_missings[i]
     }
 
