@@ -22,33 +22,42 @@ autoRecode(
 
 \item{label_suffix}{Suffix added to variable label for the newly created variable in the \code{GADSdat}.}
 
-\item{csv_path}{Path for the \code{.csv} file for the look up table.}
+\item{csv_path}{Path for the \code{.csv} file for the lookup table.}
 
-\item{template}{Existing look up table.}
+\item{template}{Existing lookup table.}
 }
 \value{
 Returns a \code{GADSdat} object.
 }
 \description{
-Auto recode a variable in a \code{GADSdat}. A look up table is created containing the respective recode pairs.
-An existing look up table can be utilized via \code{template}. This function somewhat mirrors the functionality provided
-by the \code{SPSS} function \code{autorecode}.
+Auto recode a variable in a \code{GADSdat}, mirroring the core functionality provided by
+ \code{AUTORECODE} in \code{SPSS}. A lookup table containing the respective recode pairs can be
+ applied and/or saved.
 }
 \details{
-If an existing \code{template} is used and a look up table is saved as a \code{.csv} file, the resulting look up
-table will contain the existing recodes plus additional recode pairs required for the data.
+Existing values are replaced with sequential numbers, and all existing value-level metadata
+ (\code{valLabel} and \code{missings}) are dropped. This can be useful to remove confidential
+ information from ID variables. If the original (\code{character}) values are to be preserved as
+ \code{valLabel}s, \link{multiChar2fac} should be used instead.
+
+An existing \code{template} may be used to ensure that identical original values are recoded as
+ the same new values. The lookup table used to recode \code{var} may also be saved as a
+ \code{.csv} file, e.g. to be used as a \code{template} later. If both an existing \code{template}
+ is used and the lookup table is saved, the resulting lookup table will contain the existing
+ recodes and additional recode pairs required for the data, if any were needed.
 }
 \examples{
 gads <- import_DF(data.frame(v1 = letters))
 
-# auto recode without saving look up table
+# auto recode without saving lookup table
 gads2 <- autoRecode(gads, var = "v1", var_suffix = "_num")
 
-# auto recode with saving look up table
+# auto recode with saving lookup table
 f <- tempfile(fileext = ".csv")
 gads2 <- autoRecode(gads, var = "v1", var_suffix = "_num", csv_path = f)
 
-# auto recode with applying and expanding a look up table
+# auto recode with applying and expanding a lookup table
 gads3 <- import_DF(data.frame(v2 = c(letters[1:3], "aa")))
-gads3 <- autoRecode(gads3, var = "v2", csv_path = f, template = read.csv(f))
+gads3 <- autoRecode(gads3, var = "v2", csv_path = f,
+                    template = read.csv(f))
 }
