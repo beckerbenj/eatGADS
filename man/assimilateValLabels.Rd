@@ -11,7 +11,7 @@ assimilateValLabels(GADSdat, varNames, lookup = NULL)
 
 \item{varNames}{Character string of a variable name.}
 
-\item{lookup}{Lookup \code{data.frame}.}
+\item{lookup}{Look up \code{data.frame}.}
 }
 \value{
 Returns the \code{GADSdat} object with changed meta data and recoded values.
@@ -20,7 +20,7 @@ Returns the \code{GADSdat} object with changed meta data and recoded values.
 Assimilate all value labels of multiple variables as part of a \code{GADSdat} or \code{all_GADSdat} object.
 }
 \details{
-Assimilation can be performed using all existing value labels or a lookup table containing at least all existing value labels.
+Assimilation can be performed using all existing value labels or a look up table containing at least all existing value labels.
 Missing codes are reused based on the meta data of the first variable in \code{varNames}.
 }
 \examples{
