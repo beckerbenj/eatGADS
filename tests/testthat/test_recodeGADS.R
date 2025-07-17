@@ -12,12 +12,11 @@ test_that("Recode wrapper errors", {
   expect_error(recodeGADS(allG, varName = c("VAR4", "VAR5"), oldValues = c(1), newValues = c(10)),
                "The following 'varName' are not variables in the GADSdat: VAR4, VAR5")
 
-
   expect_error(recodeGADS(dfSAV, varName = "VAR1", oldValues = c(1), newValues = c(NA)),
                "Missing value(s) in 'newValues'. Recode to NA using recodeString2NA() if required.", fixed = TRUE)
   expect_error(recodeGADS(dfSAV, varName = "VAR1", oldValues = c(-99), newValues = c(1)),
                "Values in 'value_new' with existing meta data in variable VAR1: 1")
-  expect_error(recodeGADS(gads, "v1", oldValues = c(1, 2, 1, 2), newValues = c(6, 6, 5, 5)),
+  expect_error(recodeGADS(dfSAV, "VAR1", oldValues = c(1, 2, 1, 2), newValues = c(6, 6, 5, 5)),
                "The are duplicate values in 'oldValues': 1, 2")
   expect_warning(out <- recodeGADS(dfSAV, varName = "VAR1", oldValues = c(3), newValues = c(10)),
                  "The following values in 'oldValues' are neither a labeled value in the meta data nor an actual value in VAR1: 3")
