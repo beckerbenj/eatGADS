@@ -1,7 +1,12 @@
 # eatGADS 1.2.0.9000
 ## bug fixes
 * `autoRecode()` no longer fails while applying a template that does not yet cover a value which occurs in the data more than once (#131)
+* `changeMissings()` no longer throws an existing value error in edge cases with multiple existing value labels
 * `recodeGADS()` now correctly performs potentially sequential recodes for unlabeled values (#134)
+
+## documentation
+* The behavior of `autoRecode()` is further clarified, emphasizing the dropping of value labels and pointing to `multiChar2fac()` (#136).
+
 
 # eatGADS 1.2.0
 ## new features
