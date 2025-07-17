@@ -344,22 +344,24 @@ test_that("sort value labels", {
 test_that("Multiple meta data conflicts during value recoding", {
   dat <- data.frame(v1 = factor(c("a", "b", "c", "d", "e")))
   gads <- import_DF(dat)
+  changeTable1 <- changeTable2 <- changeTable3 <- changeTable4 <- getChangeMeta(gads, level = "value")
+  changeTable1[changeTable1$value %in% c(1, 2), "value_new"] <- c(6, 6)
+  changeTable2[changeTable2$value %in% c(1, 2, 4), "value_new"] <- c(6, 6, 5)
 
-  expect_error(recodeGADS(gads, "v1", oldValues = c(1, 2), newValues = c(6, 6), existingMeta = "value_new"),
+  expect_error(applyChangeMeta(changeTable1, GADSdat = gads, existingMeta = "value_new"),
                "Duplicated values in 'value_new' causing conflicting meta data in variable v1: 6. Use existingMeta = 'drop' or 'ignore' to drop all related meta data.")
-  expect_error(recodeGADS(gads, "v1", oldValues = c(1, 2, 4), newValues = c(6, 6, 5), existingMeta = "value_new"),
+  expect_error(applyChangeMeta(changeTable1, GADSdat = gads, existingMeta = "value"),
+               "Duplicated values in 'value_new' causing conflicting meta data in variable v1: 6. Use existingMeta = 'drop' or 'ignore' to drop all related meta data.")
+  expect_error(applyChangeMeta(changeTable2, GADSdat = gads, existingMeta = "value_new"),
+               "Duplicated values in 'value_new' causing conflicting meta data in variable v1: 6. Use existingMeta = 'drop' or 'ignore' to drop all related meta data.")
+  expect_error(applyChangeMeta(changeTable2, GADSdat = gads, existingMeta = "value"),
                "Duplicated values in 'value_new' causing conflicting meta data in variable v1: 6. Use existingMeta = 'drop' or 'ignore' to drop all related meta data.")
 
-  expect_error(recodeGADS(gads, "v1", oldValues = c(1, 2), newValues = c(6, 6), existingMeta = "value"),
-               "Duplicated values in 'value_new' causing conflicting meta data in variable v1: 6. Use existingMeta = 'drop' or 'ignore' to drop all related meta data.")
-  expect_error(recodeGADS(gads, "v1", oldValues = c(1, 2, 4), newValues = c(6, 6, 5), existingMeta = "value"),
-               "Duplicated values in 'value_new' causing conflicting meta data in variable v1: 6. Use existingMeta = 'drop' or 'ignore' to drop all related meta data.")
-
-  out <- recodeGADS(gads, "v1", oldValues = c(1, 2), newValues = c(6, 6), existingMeta = "drop")
-  out2 <- recodeGADS(gads, "v1", oldValues = c(1, 2, 4), newValues = c(6, 6, 5), existingMeta = "drop")
+  out <- applyChangeMeta(changeTable1, GADSdat = gads, existingMeta = "drop")
+  out2 <- applyChangeMeta(changeTable2, GADSdat = gads, existingMeta = "drop")
   expect_equal(sum(out2$labels$value == 6), 1)
 
-  out3 <- recodeGADS(gads, "v1", oldValues = c(1, 2), newValues = c(6, 6), existingMeta = "ignore")
-  out4 <- recodeGADS(gads, "v1", oldValues = c(1, 2, 4), newValues = c(6, 6, 5), existingMeta = "ignore")
+  out3 <- applyChangeMeta(changeTable1, GADSdat = gads, existingMeta = "ignore")
+  out4 <- applyChangeMeta(changeTable2, GADSdat = gads, existingMeta = "ignore")
   expect_equal(out3$labels, out4$labels)
 })
