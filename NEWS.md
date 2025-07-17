@@ -4,7 +4,7 @@
 * `changeMissings()` no longer throws an existing value error in edge cases with multiple existing value labels
 
 ## documentation
-* The behavior `autoRecode()` is further clarified, emphasizing the dropping of value labels and pointing to `multiChar2fac()` (#136).
+* The behavior of `autoRecode()` is further clarified, emphasizing the dropping of value labels and pointing to `multiChar2fac()` (#136).
 
 # eatGADS 1.2.0
 ## new features
