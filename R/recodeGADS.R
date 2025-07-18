@@ -74,6 +74,13 @@ recodeGADS.GADSdat <- function(GADSdat, varName, oldValues, newValues,
     other_recodes <- which(!oldValues %in% changeTable[changeTable$varName == single_varName, "value"] | is.na(oldValues))
 
     if(length(other_recodes) > 0) {
+      values_with_sequential_recode_issue <- newValues[other_recodes][newValues[other_recodes] %in% oldValues[-other_recodes]]
+      if(length(values_with_sequential_recode_issue) > 0) {
+        stop("'recodeGADS()' currently does not support unlabeled and labeled values being recoded into each other. ",
+             "Problematic variable: ", single_varName,
+             ". Problematic values: ", paste(values_with_sequential_recode_issue, collapse = ", "))
+      }
+
       data_recode_lookup <- data.frame(oldValues = oldValues[other_recodes], newValues = newValues[other_recodes])
       not_in_data_aswell <- oldValues[!oldValues %in% GADSdat$dat[, single_varName]]
       if(length(not_in_data_aswell) > 0) {

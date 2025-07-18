@@ -23,6 +23,14 @@ test_that("Recode wrapper errors", {
   expect_equal(out, dfSAV)
 })
 
+# This will hopefully be possible in eatGADS 2.0.0
+test_that("Recode wrapper error: Sequential", {
+  df <- data.frame(x = 1:5)
+  gads <- import_DF(df)
+  gads <- changeValLabels(gads, "x", 2, "two")
+  expect_error(recodeGADS(gads, "x", oldValues = 1:3, newValues = c(2, 3, 13)),
+               "'recodeGADS()' currently does not support unlabeled and labeled values being recoded into each other. Problematic variable: x. Problematic values: 2", fixed = TRUE)
+})
 
 test_that("Recode wrapper", {
   out <- recodeGADS(dfSAV, varName = "VAR1", oldValues = c(1), newValues = c(10))
