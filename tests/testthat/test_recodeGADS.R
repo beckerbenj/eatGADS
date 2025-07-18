@@ -12,16 +12,25 @@ test_that("Recode wrapper errors", {
   expect_error(recodeGADS(allG, varName = c("VAR4", "VAR5"), oldValues = c(1), newValues = c(10)),
                "The following 'varName' are not variables in the GADSdat: VAR4, VAR5")
 
-
   expect_error(recodeGADS(dfSAV, varName = "VAR1", oldValues = c(1), newValues = c(NA)),
                "Missing value(s) in 'newValues'. Recode to NA using recodeString2NA() if required.", fixed = TRUE)
   expect_error(recodeGADS(dfSAV, varName = "VAR1", oldValues = c(-99), newValues = c(1)),
                "Values in 'value_new' with existing meta data in variable VAR1: 1")
+  expect_error(recodeGADS(dfSAV, "VAR1", oldValues = c(1, 2, 1, 2), newValues = c(6, 6, 5, 5)),
+               "The are duplicate values in 'oldValues': 1, 2")
   expect_warning(out <- recodeGADS(dfSAV, varName = "VAR1", oldValues = c(3), newValues = c(10)),
-                 "The following value in 'oldValues' is neither a labeled value in the meta data nor an actual value in VAR1: 3")
+                 "The following values in 'oldValues' are neither a labeled value in the meta data nor an actual value in VAR1: 3")
   expect_equal(out, dfSAV)
 })
 
+# This will hopefully be possible in eatGADS 2.0.0
+test_that("Recode wrapper error: Sequential", {
+  df <- data.frame(x = 1:5)
+  gads <- import_DF(df)
+  gads <- changeValLabels(gads, "x", 2, "two")
+  expect_error(recodeGADS(gads, "x", oldValues = 1:3, newValues = c(2, 3, 13)),
+               "'recodeGADS()' currently does not support unlabeled and labeled values being recoded into each other. Problematic variable: x. Problematic values: 2", fixed = TRUE)
+})
 
 test_that("Recode wrapper", {
   out <- recodeGADS(dfSAV, varName = "VAR1", oldValues = c(1), newValues = c(10))
@@ -46,6 +55,24 @@ test_that("Recode wrapper for unlabeled values", {
 test_that("Recode wrapper for unlabeled variables", {
   out <- recodeGADS(df1, varName = "V1", oldValues = c(3, 5), newValues = c(30, 50))
   expect_equal(out$dat$V1, c(30, 50))
+})
+
+test_that("Recode wrapper for unlabeled variables avoids sequential recoding bug", {
+  gads <- import_DF(data.frame(x = 1:6, y = 1:6))
+  out <- recodeGADS(GADSdat = gads, var = "x", oldValues = 3:5,
+                    newValues = c(5, 14, 15))
+
+  expect_equal(out$dat$x, c(1, 2, 5, 14, 15, 6))
+})
+
+test_that("Recode wrapper for unlabeled variables including NAs avoids sequential recoding bug", {
+  df <- data.frame(x = c(NA, 1:5))
+  gads <- import_DF(df)
+  gads_re <- recodeGADS(gads, "x",
+                        oldValues = c(NA, 2, 3),
+                        newValues = c(3, 12, 13))
+
+  expect_equal(gads_re$dat$x, c(3, 1, 12, 13, 4, 5))
 })
 
 test_that("Recode wrapper with NA in oldValues", {
