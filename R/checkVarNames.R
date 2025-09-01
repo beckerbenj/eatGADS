@@ -1,10 +1,11 @@
 
 #### Check Names
 #############################################################################
-#' Check names for \code{SQLite} column name conventions.
+#' Check names for \code{SQLite} column name conventions and length limits.
 #'
-#' Checks names for \code{SQLite} column name conventions and
-#' applies appropriate variable name changes to \code{GADSdat} or \code{all_GADSdat} objects.
+#' Checks names for \code{SQLite} column name conventions and \code{SPSS}/\code{Stata}
+#' variable name limits, and applies appropriate variable name changes to
+#' \code{GADSdat} or \code{all_GADSdat} objects.
 #'
 #' Invalid column names in a \code{SQLite} data base include
 #' \itemize{
@@ -13,20 +14,26 @@
 #' \item duplicate variable names which arise from \code{SQLite} being case insensitive.
 #' }
 #'
+#' Additionally, \code{SPSS} and \code{Stata} restrict the length of variable names to
+#' 64 bytes (\code{SPSS}) or 32 characters (\code{Stata}).
+#'
 #' The corresponding variable name changes are
 #' \itemize{
 #' \item appending the suffix \code{"Var"} to all \code{SQLite} keywords,
-#' \item changing all \code{"."} in variable names to \code{"_"} and
-#' \item appending \code{"_2"} to case insensitive duplicated variable names.
+#' \item changing all \code{"."} in variable names to \code{"_"},
+#' \item appending \code{"_2"} to case insensitive duplicated variable names, and
+#' \item appending \code{"_tr"} to variable names exceeding the limits of the chosen program.
 #' }
 #'
 #'Note that avoiding \code{"."} in variable names is beneficial for multiple reasons, such as
-#'avoiding confusion with \code{S3} methods in \code{R} and issues when importing from \code{Stata}.
+#'avoiding confusion with \code{S3} methods in \code{R} and issues when exporting to \code{Stata}.
 #'
 #'@param GADSdat \code{GADSdat} or \code{all_GADSdat} object.
 #'@param checkKeywords Logical. Should \code{SQLite} keywords be checked and modified?
 #'@param checkDots Logical. Should occurrences of \code{"."} be checked and modified?
 #'@param checkDuplicates Logical. Should case insensitive duplicate variable names be checked and modified?
+#'@param limits Optional. Either \code{NULL} to disable the length check, or the program
+#' (\code{SPSS} or \code{Stata}) against whose limits the names should be checked.
 #'
 #'@return Returns the original object with updated variable names.
 #'
@@ -38,43 +45,64 @@
 #' pisa3 <- checkVarNames(pisa2)
 #'
 #'@export
-checkVarNames <- function(GADSdat, checkKeywords = TRUE, checkDots = TRUE, checkDuplicates = TRUE) {
+checkVarNames <- function(GADSdat, checkKeywords = TRUE, checkDots = TRUE, checkDuplicates = TRUE,
+                          limits = c("SPSS", "Stata")) {
   UseMethod("checkVarNames")
 }
 #'@export
-checkVarNames.GADSdat <- function(GADSdat, checkKeywords = TRUE, checkDots = TRUE, checkDuplicates = TRUE) {
+checkVarNames.GADSdat <- function(GADSdat, checkKeywords = TRUE, checkDots = TRUE, checkDuplicates = TRUE,
+                                  limits = c("SPSS", "Stata")) {
   check_GADSdat(GADSdat)
+  if (missing(limits)) {
+    # Don't interrupt existing user code written when 'limits' was not yet implemented
+    limits <- NULL
+  }
   GADSdat[["labels"]][, "varName"] <- sapply(GADSdat[["labels"]][, "varName"], checkVarNames,
-                                             checkKeywords, checkDots, checkDuplicates)
+                                             checkKeywords, checkDots, checkDuplicates, limits)
   names(GADSdat[["dat"]]) <- sapply(names(GADSdat[["dat"]]), checkVarNames,
-                                    checkKeywords, checkDots, checkDuplicates)
+                                    checkKeywords, checkDots, checkDuplicates, limits)
   GADSdat
 }
 #'@export
-checkVarNames.all_GADSdat <- function(GADSdat, checkKeywords = TRUE, checkDots = TRUE, checkDuplicates = TRUE) {
+checkVarNames.all_GADSdat <- function(GADSdat, checkKeywords = TRUE, checkDots = TRUE, checkDuplicates = TRUE,
+                                      limits = c("SPSS", "Stata")) {
   check_all_GADSdat(GADSdat)
+  if (missing(limits)) {
+    # Don't interrupt existing user code written when 'limits' was not yet implemented
+    limits <- NULL
+  }
   GADSdat[["allLabels"]][, "varName"] <- sapply(GADSdat[["allLabels"]][, "varName"], checkVarNames,
-                                                checkKeywords, checkDots, checkDuplicates)
+                                                checkKeywords, checkDots, checkDuplicates, limits)
   GADSdat[["datList"]] <- lapply(GADSdat[["datList"]], function(df) {
     names(df) <- sapply(names(df), checkVarNames,
-                        checkKeywords, checkDots, checkDuplicates)
+                        checkKeywords, checkDots, checkDuplicates, limits)
     df
   })
   GADSdat
 }
 #'@export
-checkVarNames.data.frame <- function(GADSdat, checkKeywords = TRUE, checkDots = TRUE, checkDuplicates = TRUE) {
+checkVarNames.data.frame <- function(GADSdat, checkKeywords = TRUE, checkDots = TRUE, checkDuplicates = TRUE,
+                                     limits = c("SPSS", "Stata")) {
+  if (missing(limits)) {
+    # Don't interrupt existing user code written when 'limits' was not yet implemented
+    limits <- NULL
+  }
   names(GADSdat) <- checkVarNames(names(GADSdat),
-                                  checkKeywords, checkDots, checkDuplicates)
+                                  checkKeywords, checkDots, checkDuplicates, limits)
   GADSdat
 }
 #'@export
-checkVarNames.character <- function(GADSdat, checkKeywords = TRUE, checkDots = TRUE, checkDuplicates = TRUE) {
+checkVarNames.character <- function(GADSdat, checkKeywords = TRUE, checkDots = TRUE, checkDuplicates = TRUE,
+                                    limits = c("SPSS", "Stata")) {
   NewName <- GADSdat
   check_logicalArgument(checkKeywords)
   check_logicalArgument(checkDots)
   if(any(is.na(GADSdat))) {
     stop("Column names can not be NA.")
+  }
+  if (missing(limits)) {
+    # Don't interrupt existing user code written when 'limits' was not yet implemented
+    limits <- NULL
   }
 
   ## SQLite Keywords
@@ -91,6 +119,25 @@ checkVarNames.character <- function(GADSdat, checkKeywords = TRUE, checkDots = T
   if(checkDuplicates) {
     if(anyDuplicated(tolower(NewName))) {
       NewName <- unduplicate(NewName)
+    }
+  }
+  ## Variable name-length limits
+  if (!is.null(limits)) {
+    limits <- match.arg(limits, several.ok = TRUE)
+    name_lengths_char <- nchar(NewName, type = "char")
+    name_lengths_byte <- nchar(NewName, type = "byte")
+    long_names <- NULL
+    if ("SPSS" %in% limits && any(name_lengths_byte > 64)) {
+      long_names <- which(name_lengths_byte > 64)
+      string_limit <- list(unit = "byte", x = 64)
+    }
+    if ("Stata" %in% limits && any(name_lengths_char > 32)) {
+      long_names <- unique(c(long_names,
+                             which(name_lengths_char > 32)))
+      string_limit <- list(unit = "char", x = 32)
+    }
+    for (i in long_names) {
+      NewName[i] <- truncate_string(string = NewName[i], limit = string_limit)
     }
   }
 
@@ -112,4 +159,51 @@ unduplicate <- function(x) {
   if(anyDuplicated(tolower(out))) out <- unduplicate(out)
 
   out
+}
+
+truncate_string <- function(string, limit) {
+  if (!(is.list(limit) && length(limit) == 2 && identical(names(limit), c("unit", "x")))) {
+    stop("Invalid input! 'limit' must be a list with two elements: 'unit' and 'x'")
+  }
+
+  if (is.character(string)) {
+    if (limit$unit == "char") {
+      out <- substr(string, start = 0, stop = limit$x - 3)
+      out <- paste0(out, "_tr")
+      return(out)
+    }
+
+    # limit is byte length
+    byte_char_diff <- nchar(string, type = "byte") - nchar(string, type = "chars")
+    if (byte_char_diff == 0) {
+      out <- truncate_string(string = string, limit = list(unit = "char", x = limit$x))
+      return(out)
+    }
+
+    # n_bytes != n_chars
+    splited_string <- strsplit(string, split = "")
+    out <- truncate_string(string = splited_string, limit = limit)
+    return(out)
+  }
+
+  if (is.list(string)) {
+    if (length(string) != 1) {
+      stop("Invalid input! 'string' is a list but its length is != 1")
+    }
+    string_vec <- unlist(string)
+    if (!(is.character(string_vec) && all(nchar(string_vec, type = "chars") == 1))) {
+      stop("Invalid input! If 'string' is a list, each of its elements needs to be a single character.")
+    }
+    string_table <- data.frame(string = string_vec,
+                               bytes = NA_integer_,
+                               cumulative = NA_integer_,
+                               below_limit = FALSE)
+    string_table$bytes <- nchar(string_table$string, type = "byte")
+    string_table$cumulative <- cumsum(string_table$bytes)
+    string_table$below_limit <- string_table$cumulative <= (limit$x - 3)
+    last_allowed_char <- max(which(string_table$below_limit))
+    out <- paste0(string_table$string[1:last_allowed_char], collapse = "")
+    out <- paste0(out, "_tr")
+    return(out)
+  }
 }
