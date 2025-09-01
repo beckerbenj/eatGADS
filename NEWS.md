@@ -1,3 +1,11 @@
+# eatGADS 1.2.0.9000
+## new features
+* `checkIntOverflow()` and `checkLabeledFractionals()` check if a `GADSdat` complies with Stata's requirements for data sets (#110)
+* `checkVarNames()` can now also check the lengths of variable names against program-specific restrictions (#110)
+
+## bug fixes
+* arguments in `checkVarNames()` now turn on/off different checks correctly (#138)
+
 # eatGADS 1.2.0
 ## new features
 * `dropDuplicateIDs()` allows dropping duplicate IDs based on number of missings on selected variables (#67)
