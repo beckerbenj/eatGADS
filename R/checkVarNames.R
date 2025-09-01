@@ -44,23 +44,28 @@ checkVarNames <- function(GADSdat, checkKeywords = TRUE, checkDots = TRUE, check
 #'@export
 checkVarNames.GADSdat <- function(GADSdat, checkKeywords = TRUE, checkDots = TRUE, checkDuplicates = TRUE) {
   check_GADSdat(GADSdat)
-  GADSdat[["labels"]][, "varName"] <- sapply(GADSdat[["labels"]][, "varName"], checkVarNames)
-  names(GADSdat[["dat"]]) <- sapply(names(GADSdat[["dat"]]), checkVarNames)
+  GADSdat[["labels"]][, "varName"] <- sapply(GADSdat[["labels"]][, "varName"], checkVarNames,
+                                             checkKeywords, checkDots, checkDuplicates)
+  names(GADSdat[["dat"]]) <- sapply(names(GADSdat[["dat"]]), checkVarNames,
+                                    checkKeywords, checkDots, checkDuplicates)
   GADSdat
 }
 #'@export
 checkVarNames.all_GADSdat <- function(GADSdat, checkKeywords = TRUE, checkDots = TRUE, checkDuplicates = TRUE) {
   check_all_GADSdat(GADSdat)
-  GADSdat[["allLabels"]][, "varName"] <- sapply(GADSdat[["allLabels"]][, "varName"], checkVarNames)
+  GADSdat[["allLabels"]][, "varName"] <- sapply(GADSdat[["allLabels"]][, "varName"], checkVarNames,
+                                                checkKeywords, checkDots, checkDuplicates)
   GADSdat[["datList"]] <- lapply(GADSdat[["datList"]], function(df) {
-    names(df) <- sapply(names(df), checkVarNames)
+    names(df) <- sapply(names(df), checkVarNames,
+                        checkKeywords, checkDots, checkDuplicates)
     df
   })
   GADSdat
 }
 #'@export
 checkVarNames.data.frame <- function(GADSdat, checkKeywords = TRUE, checkDots = TRUE, checkDuplicates = TRUE) {
-  names(GADSdat) <- checkVarNames(names(GADSdat))
+  names(GADSdat) <- checkVarNames(names(GADSdat),
+                                  checkKeywords, checkDots, checkDuplicates)
   GADSdat
 }
 #'@export
@@ -72,7 +77,6 @@ checkVarNames.character <- function(GADSdat, checkKeywords = TRUE, checkDots = T
     stop("Column names can not be NA.")
   }
 
-  #browser()
   ## SQLite Keywords
   if(checkKeywords) {
     keyword_matches <- tolower(GADSdat) %in%  tolower(eatDB::sqlite_keywords)
