@@ -16,6 +16,8 @@
 #' the labeled fractional \code{value}s, their respective \code{missings} tags,
 #' and whether they actually occur in the data (\code{empty}).
 #'
+#'@family dataset compliance checks
+#'
 #'@examples
 #' # Introduce a fractional value into meta data
 #' pisa2 <- recodeGADS(GADSdat = pisa,

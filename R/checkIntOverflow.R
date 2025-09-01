@@ -22,6 +22,8 @@
 #' The \code{rownum}s of the affected rows in \code{GADSdat$labels} are also
 #' provided in a separate column as a fail safe.
 #'
+#'@family dataset compliance checks
+#'
 #'@examples
 #' # Introduce a fractional value into meta data
 #' pisa2 <- changeMissings(GADSdat = pisa,

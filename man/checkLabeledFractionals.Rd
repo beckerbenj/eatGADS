@@ -35,3 +35,8 @@ pisa2 <- recodeGADS(GADSdat = pisa,
 checkLabeledFractionals(pisa2)
 
 }
+\seealso{
+Other dataset compliance checks: 
+\code{\link{checkIntOverflow}()}
+}
+\concept{dataset compliance checks}
