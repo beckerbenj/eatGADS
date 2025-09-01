@@ -15,6 +15,23 @@ df4$labels[3, "valLabel"] <- "missing by design"
 df4$labels[3, "missings"] <- "valid"
 df4$labels[2:3, "labeled"] <- "yes"
 
+df5a <- data.frame(good.name = 1:3,
+                   group = letters[1:3])
+df5b <- data.frame(good_name = 1:3,
+                   groupVar = letters[1:3])
+
+GADS5a <- import_DF(df5a, checkVarNames = FALSE)
+GADS5b <- import_DF(df5b, checkVarNames = FALSE)
+rownames(GADS5b$labels) <- rownames(GADS5a$labels) <- NULL
+
+allGADS5b <- allGADS5a <- expected_bigList
+allGADS5a$datList$df2 <- allGADS5a$datList$df1 <- df5a
+allGADS5a$allLabels <- rbind(GADS5a$labels, GADS5a$labels)
+allGADS5b$datList$df2 <- allGADS5b$datList$df1 <- df5b
+allGADS5b$allLabels <- rbind(GADS5b$labels, GADS5b$labels)
+allGADS5b$datList$df2[2,] <- allGADS5a$datList$df2[2,] <- c(10, "x")
+allGADS5b$allLabels$data_table <- allGADS5a$allLabels$data_table <- c(rep("df1", 2), rep("df2", 2))
+
 
 test_that("Variable name are transformed correctly for character vectors", {
   expect_error(checkVarNames(c("group", "var.1", "Select", NA)),
@@ -75,4 +92,45 @@ test_that("Check varNames all_GADSdat", {
   #changed_df <- suppressMessages(checkVarNames(expected_bigList))
   #imported_df <- suppressMessages(import_DF(iris))
   #expect_equal(changed_df, imported_df)
+})
+
+test_that("Checks are only performed selectively, if requested", {
+  # only keywords
+  df_keywords_T <- checkVarNames(df5a, checkKeywords = TRUE, checkDots = FALSE)
+  expect_equal(names(df_keywords_T)[2], names(df5b)[2])
+  expect_equal(names(df_keywords_T)[1], names(df5a)[1])
+
+  GADS_keywords_T <- checkVarNames(GADS5a, checkKeywords = TRUE, checkDots = FALSE)
+  expect_equal(names(GADS_keywords_T$dat)[2], names(GADS5b$dat)[2])
+  expect_equal(names(GADS_keywords_T$dat)[1], names(GADS5a$dat)[1])
+  expect_equal(GADS_keywords_T$labels$varName[2], GADS5b$labels$varName[2])
+  expect_equal(GADS_keywords_T$labels$varName[1], GADS5a$labels$varName[1])
+
+  allGADS_keywords_T <- checkVarNames(allGADS5a, checkKeywords = TRUE, checkDots = FALSE)
+  expect_equal(names(allGADS_keywords_T$datList$df1)[2], names(allGADS5b$datList$df1)[2])
+  expect_equal(names(allGADS_keywords_T$datList$df2)[2], names(allGADS5b$datList$df2)[2])
+  expect_equal(names(allGADS_keywords_T$datList$df1)[1], names(allGADS5a$datList$df1)[1])
+  expect_equal(names(allGADS_keywords_T$datList$df2)[1], names(allGADS5a$datList$df2)[1])
+  expect_equal(unique(allGADS_keywords_T$allLabels$varName)[2], unique(allGADS5b$allLabels$varName)[2])
+  expect_equal(unique(allGADS_keywords_T$allLabels$varName)[1], unique(allGADS5a$allLabels$varName)[1])
+
+
+  # only dots
+  df_dots_T <- checkVarNames(df5a, checkKeywords = FALSE, checkDots = TRUE)
+  expect_equal(names(df_dots_T)[1], names(df5b)[1])
+  expect_equal(names(df_dots_T)[2], names(df5a)[2])
+
+  GADS_dots_T <- checkVarNames(GADS5a, checkKeywords = FALSE, checkDots = TRUE)
+  expect_equal(names(GADS_dots_T$dat)[1], names(GADS5b$dat)[1])
+  expect_equal(names(GADS_dots_T$dat)[2], names(GADS5a$dat)[2])
+  expect_equal(GADS_dots_T$labels$varName[1], GADS5b$labels$varName[1])
+  expect_equal(GADS_dots_T$labels$varName[2], GADS5a$labels$varName[2])
+
+  allGADS_dots_T <- checkVarNames(allGADS5a, checkKeywords = FALSE, checkDots = TRUE)
+  expect_equal(names(allGADS_dots_T$datList$df1)[1], names(allGADS5b$datList$df1)[1])
+  expect_equal(names(allGADS_dots_T$datList$df2)[1], names(allGADS5b$datList$df2)[1])
+  expect_equal(names(allGADS_dots_T$datList$df1)[2], names(allGADS5a$datList$df1)[2])
+  expect_equal(names(allGADS_dots_T$datList$df2)[2], names(allGADS5a$datList$df2)[2])
+  expect_equal(unique(allGADS_dots_T$allLabels$varName)[1], unique(allGADS5b$allLabels$varName)[1])
+  expect_equal(unique(allGADS_dots_T$allLabels$varName)[2], unique(allGADS5a$allLabels$varName)[2])
 })
