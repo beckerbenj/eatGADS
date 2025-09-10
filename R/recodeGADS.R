@@ -59,26 +59,35 @@ recodeGADS.GADSdat <- function(GADSdat, varName, oldValues, newValues,
   if(any(is.na(newValues))) {
     stop("Missing value(s) in 'newValues'. Recode to NA using recodeString2NA() if required.", call. = FALSE)
   }
+  duplicated_oldValues <- unique(oldValues[duplicated(oldValues)])
+  if(length(duplicated_oldValues) > 0) {
+    stop("The are duplicate values in 'oldValues': ", paste(duplicated_oldValues, collapse = ", "), call. = FALSE)
+  }
 
   changeTable <- getChangeMeta(GADSdat, level = "value")
 
   for(single_varName in varName) {
-    for(i in seq_along(oldValues)) {
-      if(is.na(oldValues[i])) {
-        GADSdat$dat[is.na(GADSdat$dat[, single_varName]), single_varName] <- newValues[i]
-      } else {
-        changeTable[changeTable$varName == single_varName &
-                      !is.na(changeTable$value) & changeTable$value == oldValues[i], "value_new"] <- newValues[i]
-      }
-    }
+    changeTable <- write_recodes_to_changeTable(changeTable, varName = single_varName,
+                                                oldValues = oldValues, newValues = newValues)
+
     # recode values without labels (not the best solution but better usability)
-    other_recodes <- which(!oldValues %in% changeTable[changeTable$varName == single_varName, "value"] & !is.na(oldValues))
-    for(i in other_recodes) {
-      if(!oldValues[i] %in% GADSdat$dat[, single_varName]) {
-        warning("The following value in 'oldValues' is neither a labeled value in the meta data nor an actual value in ",
-                single_varName, ": ", oldValues[i])
+    other_recodes <- which(!oldValues %in% changeTable[changeTable$varName == single_varName, "value"] | is.na(oldValues))
+
+    if(length(other_recodes) > 0) {
+      values_with_sequential_recode_issue <- newValues[other_recodes][newValues[other_recodes] %in% oldValues[-other_recodes]]
+      if(length(values_with_sequential_recode_issue) > 0) {
+        stop("'recodeGADS()' currently does not support unlabeled and labeled values being recoded into each other. ",
+             "Problematic variable: ", single_varName,
+             ". Problematic values: ", paste(values_with_sequential_recode_issue, collapse = ", "))
       }
-      GADSdat$dat[which(GADSdat$dat[, single_varName] == oldValues[i]), single_varName] <- newValues[i]
+
+      data_recode_lookup <- data.frame(oldValues = oldValues[other_recodes], newValues = newValues[other_recodes])
+      not_in_data_aswell <- oldValues[!oldValues %in% GADSdat$dat[, single_varName]]
+      if(length(not_in_data_aswell) > 0) {
+          warning("The following values in 'oldValues' are neither a labeled value in the meta data nor an actual value in ",
+                  single_varName, ": ", not_in_data_aswell)
+        }
+      GADSdat$dat[, single_varName] <- eatTools::recodeLookup(GADSdat$dat[, single_varName], lookup = data_recode_lookup)
     }
   }
 
@@ -103,10 +112,13 @@ recodeGADS.all_GADSdat <- function(GADSdat, varName, oldValues, newValues, exist
   do.call(mergeLabels, singleGADS_list)
 }
 
+write_recodes_to_changeTable <- function(changeTable, varName, oldValues, newValues) {
+  oldValues_without_na <- oldValues[!is.na(oldValues)]
+  newValues_without_na <- newValues[!is.na(oldValues)]
 
-checkNewValueLabels <- function(newValueLabels, newValues) {
-  if(!is.character(newValueLabels)) stop("'newValueLabels' is not a character.")
-  if(any(duplicated(names(newValueLabels)))) stop("Duplicated values in 'newValueLabels'.")
-  if(length(names(newValueLabels)) == 0) stop("'newValueLabels' needs to be named.")
-  compare_and_order(set1 = names(newValueLabels), set2 = unique(newValues), FUN = stop)
+  for(i in seq_along(oldValues_without_na)) {
+    changeTable[changeTable$varName == varName &
+                  !is.na(changeTable$value) & changeTable$value == oldValues_without_na[i], "value_new"] <- newValues_without_na[i]
+  }
+  changeTable
 }
