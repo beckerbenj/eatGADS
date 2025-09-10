@@ -164,47 +164,35 @@ unduplicate <- function(x) {
 }
 
 truncate_string <- function(string, n, unit) {
+  check_characterArgument(string)
   check_numericArgument(n)
   check_characterArgument(unit)
 
-  if (is.character(string)) {
-    if (unit == "char") {
-      out <- substr(string, start = 0, stop = n - 3)
-      out <- paste0(out, "_tr")
-      return(out)
-    }
-
-    # limit is byte length
-    byte_char_diff <- nchar(string, type = "byte") - nchar(string, type = "chars")
-    if (byte_char_diff == 0) {
-      out <- truncate_string(string = string, n = n, unit = "char")
-      return(out)
-    }
-
-    # n_bytes != n_chars
-    splited_string <- strsplit(string, split = "")
-    out <- truncate_string(string = splited_string, n = n, unit = unit)
-    return(out)
-  }
-
-  if (is.list(string)) {
-    if (length(string) != 1) {
-      stop("Invalid input! 'string' is a list but its length is != 1")
-    }
-    string_vec <- unlist(string)
-    if (!(is.character(string_vec) && all(nchar(string_vec, type = "chars") == 1))) {
-      stop("Invalid input! If 'string' is a list, each of its elements needs to be a single character.")
-    }
-    string_table <- data.frame(string = string_vec,
-                               bytes = NA_integer_,
-                               cumulative = NA_integer_,
-                               below_limit = FALSE)
-    string_table$bytes <- nchar(string_table$string, type = "byte")
-    string_table$cumulative <- cumsum(string_table$bytes)
-    string_table$below_limit <- string_table$cumulative <= (n - 3)
-    last_allowed_char <- max(which(string_table$below_limit))
-    out <- paste0(string_table$string[1:last_allowed_char], collapse = "")
+  # limit is character length
+  if (unit == "char") {
+    out <- substr(string, start = 0, stop = n - 3)
     out <- paste0(out, "_tr")
     return(out)
   }
+
+  # limit is byte length
+  byte_char_diff <- nchar(string, type = "byte") - nchar(string, type = "chars")
+  if (byte_char_diff == 0) {
+    out <- truncate_string(string = string, n = n, unit = "char")
+    return(out)
+  }
+
+  # n_bytes != n_chars
+  splited_string <- unlist(strsplit(string, split = ""))
+  string_table <- data.frame(string = splited_string,
+                             bytes = NA_integer_,
+                             cumulative = NA_integer_,
+                             below_limit = FALSE)
+  string_table$bytes <- nchar(string_table$string, type = "byte")
+  string_table$cumulative <- cumsum(string_table$bytes)
+  string_table$below_limit <- string_table$cumulative <= (n - 3)
+  last_allowed_char <- max(which(string_table$below_limit))
+  out <- paste0(string_table$string[1:last_allowed_char], collapse = "")
+  out <- paste0(out, "_tr")
+  return(out)
 }
