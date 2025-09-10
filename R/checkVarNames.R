@@ -137,7 +137,9 @@ checkVarNames.character <- function(GADSdat, checkKeywords = TRUE, checkDots = T
       string_limit <- list(unit = "char", x = 32)
     }
     for (i in long_names) {
-      NewName[i] <- truncate_string(string = NewName[i], limit = string_limit)
+      NewName[i] <- truncate_string(string = NewName[i],
+                                    n = string_limit$x,
+                                    unit = string_limit$unit)
     }
   }
 
@@ -161,14 +163,13 @@ unduplicate <- function(x) {
   out
 }
 
-truncate_string <- function(string, limit) {
-  if (!(is.list(limit) && length(limit) == 2 && identical(names(limit), c("unit", "x")))) {
-    stop("Invalid input! 'limit' must be a list with two elements: 'unit' and 'x'")
-  }
+truncate_string <- function(string, n, unit) {
+  check_numericArgument(n)
+  check_characterArgument(unit)
 
   if (is.character(string)) {
-    if (limit$unit == "char") {
-      out <- substr(string, start = 0, stop = limit$x - 3)
+    if (unit == "char") {
+      out <- substr(string, start = 0, stop = n - 3)
       out <- paste0(out, "_tr")
       return(out)
     }
@@ -176,13 +177,13 @@ truncate_string <- function(string, limit) {
     # limit is byte length
     byte_char_diff <- nchar(string, type = "byte") - nchar(string, type = "chars")
     if (byte_char_diff == 0) {
-      out <- truncate_string(string = string, limit = list(unit = "char", x = limit$x))
+      out <- truncate_string(string = string, n = n, unit = "char")
       return(out)
     }
 
     # n_bytes != n_chars
     splited_string <- strsplit(string, split = "")
-    out <- truncate_string(string = splited_string, limit = limit)
+    out <- truncate_string(string = splited_string, n = n, unit = unit)
     return(out)
   }
 
@@ -200,7 +201,7 @@ truncate_string <- function(string, limit) {
                                below_limit = FALSE)
     string_table$bytes <- nchar(string_table$string, type = "byte")
     string_table$cumulative <- cumsum(string_table$bytes)
-    string_table$below_limit <- string_table$cumulative <= (limit$x - 3)
+    string_table$below_limit <- string_table$cumulative <= (n - 3)
     last_allowed_char <- max(which(string_table$below_limit))
     out <- paste0(string_table$string[1:last_allowed_char], collapse = "")
     out <- paste0(out, "_tr")
