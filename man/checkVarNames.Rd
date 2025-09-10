@@ -9,7 +9,7 @@ checkVarNames(
   checkKeywords = TRUE,
   checkDots = TRUE,
   checkDuplicates = TRUE,
-  limits = c("SPSS", "Stata")
+  charLimits = c("SPSS", "Stata")
 )
 }
 \arguments{
@@ -21,7 +21,7 @@ checkVarNames(
 
 \item{checkDuplicates}{Logical. Should case insensitive duplicate variable names be checked and modified?}
 
-\item{limits}{Optional. Either \code{NULL} to disable the length check, or the program
+\item{charLimits}{Optional. Either \code{NULL} to disable the length check, or the program
 (\code{SPSS} or \code{Stata}) against whose limits the names should be checked.}
 }
 \value{
