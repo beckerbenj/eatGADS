@@ -109,23 +109,23 @@ test_that("Check and truncate long variable names", {
                                       replacement = name32char,
                                       x = allGADS5c$allLabels$varName)
 
-  df_SPSS <- checkVarNames(df5a, limits = "SPSS")
-  df_Stata <- checkVarNames(df5a, limits = "Stata")
-  df_min <- checkVarNames(df5a, limits = c("Stata", "SPSS"))
+  df_SPSS <- checkVarNames(df5a, charLimits = "SPSS")
+  df_Stata <- checkVarNames(df5a, charLimits = "Stata")
+  df_min <- checkVarNames(df5a, charLimits = c("Stata", "SPSS"))
   expect_equal(df_SPSS, df5b)
   expect_equal(df_Stata, df5c)
   expect_equal(df_min, df5c)
 
-  GADS_SPSS <- checkVarNames(GADS5a, limits = "SPSS")
-  GADS_Stata <- checkVarNames(GADS5a, limits = "Stata")
-  GADS_min <- checkVarNames(GADS5a, limits = c("Stata", "SPSS"))
+  GADS_SPSS <- checkVarNames(GADS5a, charLimits = "SPSS")
+  GADS_Stata <- checkVarNames(GADS5a, charLimits = "Stata")
+  GADS_min <- checkVarNames(GADS5a, charLimits = c("Stata", "SPSS"))
   expect_equal(GADS_SPSS, GADS5b)
   expect_equal(GADS_Stata, GADS5c)
   expect_equal(GADS_min, GADS5c)
 
-  allGADS_SPSS <- checkVarNames(allGADS5a, limits = "SPSS")
-  allGADS_Stata <- checkVarNames(allGADS5a, limits = "Stata")
-  allGADS_min <- checkVarNames(allGADS5a, limits = c("Stata", "SPSS"))
+  allGADS_SPSS <- checkVarNames(allGADS5a, charLimits = "SPSS")
+  allGADS_Stata <- checkVarNames(allGADS5a, charLimits = "Stata")
+  allGADS_min <- checkVarNames(allGADS5a, charLimits = c("Stata", "SPSS"))
   expect_equal(allGADS_SPSS, allGADS5b)
   expect_equal(allGADS_Stata, allGADS5c)
   expect_equal(allGADS_min, allGADS5c)
@@ -173,17 +173,17 @@ test_that("Checks are only performed selectively, if requested", {
 
 
   # only length
-  df_limits_T <- checkVarNames(df5a, checkKeywords = FALSE, checkDots = FALSE, limits = "SPSS")
+  df_limits_T <- checkVarNames(df5a, checkKeywords = FALSE, checkDots = FALSE, charLimits = "SPSS")
   expect_equal(names(df_limits_T)[3], names(df5b)[3])
   expect_equal(names(df_limits_T)[1:2], names(df5a)[1:2])
 
-  GADS_limits_T <- checkVarNames(GADS5a, checkKeywords = FALSE, checkDots = FALSE, limits = "SPSS")
+  GADS_limits_T <- checkVarNames(GADS5a, checkKeywords = FALSE, checkDots = FALSE, charLimits = "SPSS")
   expect_equal(names(GADS_limits_T$dat)[3], names(GADS5b$dat)[3])
   expect_equal(names(GADS_limits_T$dat)[1:2], names(GADS5a$dat)[1:2])
   expect_equal(GADS_limits_T$labels$varName[3], GADS5b$labels$varName[3])
   expect_equal(GADS_limits_T$labels$varName[1:2], GADS5a$labels$varName[1:2])
 
-  allGADS_limits_T <- checkVarNames(allGADS5a, checkKeywords = FALSE, checkDots = FALSE, limits = "SPSS")
+  allGADS_limits_T <- checkVarNames(allGADS5a, checkKeywords = FALSE, checkDots = FALSE, charLimits = "SPSS")
   expect_equal(names(allGADS_limits_T$datList$df1)[3], names(allGADS5b$datList$df1)[3])
   expect_equal(names(allGADS_limits_T$datList$df2)[3], names(allGADS5b$datList$df2)[3])
   expect_equal(names(allGADS_limits_T$datList$df1)[1:2], names(allGADS5a$datList$df1)[1:2])

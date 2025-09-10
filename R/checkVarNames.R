@@ -32,7 +32,7 @@
 #'@param checkKeywords Logical. Should \code{SQLite} keywords be checked and modified?
 #'@param checkDots Logical. Should occurrences of \code{"."} be checked and modified?
 #'@param checkDuplicates Logical. Should case insensitive duplicate variable names be checked and modified?
-#'@param limits Optional. Either \code{NULL} to disable the length check, or the program
+#'@param charLimits Optional. Either \code{NULL} to disable the length check, or the program
 #' (\code{SPSS} or \code{Stata}) against whose limits the names should be checked.
 #'
 #'@return Returns the original object with updated variable names.
@@ -46,63 +46,63 @@
 #'
 #'@export
 checkVarNames <- function(GADSdat, checkKeywords = TRUE, checkDots = TRUE, checkDuplicates = TRUE,
-                          limits = c("SPSS", "Stata")) {
+                          charLimits = c("SPSS", "Stata")) {
   UseMethod("checkVarNames")
 }
 #'@export
 checkVarNames.GADSdat <- function(GADSdat, checkKeywords = TRUE, checkDots = TRUE, checkDuplicates = TRUE,
-                                  limits = c("SPSS", "Stata")) {
+                                  charLimits = c("SPSS", "Stata")) {
   check_GADSdat(GADSdat)
-  if (missing(limits)) {
-    # Don't interrupt existing user code written when 'limits' was not yet implemented
-    limits <- NULL
+  if (missing(charLimits)) {
+    # Don't interrupt existing user code written when 'charLimits' was not yet implemented
+    charLimits <- NULL
   }
   GADSdat[["labels"]][, "varName"] <- sapply(GADSdat[["labels"]][, "varName"], checkVarNames,
-                                             checkKeywords, checkDots, checkDuplicates, limits)
+                                             checkKeywords, checkDots, checkDuplicates, charLimits)
   names(GADSdat[["dat"]]) <- sapply(names(GADSdat[["dat"]]), checkVarNames,
-                                    checkKeywords, checkDots, checkDuplicates, limits)
+                                    checkKeywords, checkDots, checkDuplicates, charLimits)
   GADSdat
 }
 #'@export
 checkVarNames.all_GADSdat <- function(GADSdat, checkKeywords = TRUE, checkDots = TRUE, checkDuplicates = TRUE,
-                                      limits = c("SPSS", "Stata")) {
+                                      charLimits = c("SPSS", "Stata")) {
   check_all_GADSdat(GADSdat)
-  if (missing(limits)) {
-    # Don't interrupt existing user code written when 'limits' was not yet implemented
-    limits <- NULL
+  if (missing(charLimits)) {
+    # Don't interrupt existing user code written when 'charLimits' was not yet implemented
+    charLimits <- NULL
   }
   GADSdat[["allLabels"]][, "varName"] <- sapply(GADSdat[["allLabels"]][, "varName"], checkVarNames,
-                                                checkKeywords, checkDots, checkDuplicates, limits)
+                                                checkKeywords, checkDots, checkDuplicates, charLimits)
   GADSdat[["datList"]] <- lapply(GADSdat[["datList"]], function(df) {
     names(df) <- sapply(names(df), checkVarNames,
-                        checkKeywords, checkDots, checkDuplicates, limits)
+                        checkKeywords, checkDots, checkDuplicates, charLimits)
     df
   })
   GADSdat
 }
 #'@export
 checkVarNames.data.frame <- function(GADSdat, checkKeywords = TRUE, checkDots = TRUE, checkDuplicates = TRUE,
-                                     limits = c("SPSS", "Stata")) {
-  if (missing(limits)) {
-    # Don't interrupt existing user code written when 'limits' was not yet implemented
-    limits <- NULL
+                                     charLimits = c("SPSS", "Stata")) {
+  if (missing(charLimits)) {
+    # Don't interrupt existing user code written when 'charLimits' was not yet implemented
+    charLimits <- NULL
   }
   names(GADSdat) <- checkVarNames(names(GADSdat),
-                                  checkKeywords, checkDots, checkDuplicates, limits)
+                                  checkKeywords, checkDots, checkDuplicates, charLimits)
   GADSdat
 }
 #'@export
 checkVarNames.character <- function(GADSdat, checkKeywords = TRUE, checkDots = TRUE, checkDuplicates = TRUE,
-                                    limits = c("SPSS", "Stata")) {
+                                    charLimits = c("SPSS", "Stata")) {
   NewName <- GADSdat
   check_logicalArgument(checkKeywords)
   check_logicalArgument(checkDots)
   if(any(is.na(GADSdat))) {
     stop("Column names can not be NA.")
   }
-  if (missing(limits)) {
-    # Don't interrupt existing user code written when 'limits' was not yet implemented
-    limits <- NULL
+  if (missing(charLimits)) {
+    # Don't interrupt existing user code written when 'charLimits' was not yet implemented
+    charLimits <- NULL
   }
 
   ## SQLite Keywords
@@ -122,16 +122,16 @@ checkVarNames.character <- function(GADSdat, checkKeywords = TRUE, checkDots = T
     }
   }
   ## Variable name-length limits
-  if (!is.null(limits)) {
-    limits <- match.arg(limits, several.ok = TRUE)
+  if (!is.null(charLimits)) {
+    charLimits <- match.arg(charLimits, several.ok = TRUE)
     name_lengths_char <- nchar(NewName, type = "char")
     name_lengths_byte <- nchar(NewName, type = "byte")
     long_names <- NULL
-    if ("SPSS" %in% limits && any(name_lengths_byte > 64)) {
+    if ("SPSS" %in% charLimits && any(name_lengths_byte > 64)) {
       long_names <- which(name_lengths_byte > 64)
       string_limit <- list(unit = "byte", x = 64)
     }
-    if ("Stata" %in% limits && any(name_lengths_char > 32)) {
+    if ("Stata" %in% charLimits && any(name_lengths_char > 32)) {
       long_names <- unique(c(long_names,
                              which(name_lengths_char > 32)))
       string_limit <- list(unit = "char", x = 32)
