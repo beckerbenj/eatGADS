@@ -7,6 +7,7 @@
 #' variable name limits, and applies appropriate variable name changes to
 #' \code{GADSdat} or \code{all_GADSdat} objects.
 #'
+#' @details
 #' Invalid column names in a \code{SQLite} data base include
 #' \itemize{
 #' \item \code{SQLite} keywords (see \code{\link[eatDB]{sqlite_keywords}}),
@@ -14,27 +15,30 @@
 #' \item duplicate variable names which arise from \code{SQLite} being case insensitive.
 #' }
 #'
-#' Additionally, \code{SPSS} and \code{Stata} restrict the length of variable names to
-#' 64 bytes (\code{SPSS}) or 32 characters (\code{Stata}).
-#'
 #' The corresponding variable name changes are
 #' \itemize{
 #' \item appending the suffix \code{"Var"} to all \code{SQLite} keywords,
-#' \item changing all \code{"."} in variable names to \code{"_"},
-#' \item appending \code{"_2"} to case insensitive duplicated variable names, and
-#' \item appending \code{"_tr"} to variable names exceeding the limits of the chosen program.
+#' \item changing all \code{"."} in variable names to \code{"_"}, and
+#' \item appending \code{"_2"} to case insensitive duplicated variable names.
 #' }
 #'
 #'Note that avoiding \code{"."} in variable names is beneficial for multiple reasons, such as
 #'avoiding confusion with \code{S3} methods in \code{R} and issues when exporting to \code{Stata}.
 #'
+#' \subsection{Variable name length limits}{
+#' The length of variable names is limited to 64 \emph{bytes} in \code{SPSS} and to 32
+#'  \emph{characters} in \code{Stata}. If more than one program name is provided in
+#'  \code{charLimits}, the most restrictive among the chosen limits will be applied. Variable names
+#'  exceeding that limit will be truncated and marked with the suffix \code{"_tr"}.
+#'}
+#'
 #'@param GADSdat \code{GADSdat} or \code{all_GADSdat} object.
 #'@param checkKeywords Logical. Should \code{SQLite} keywords be checked and modified?
 #'@param checkDots Logical. Should occurrences of \code{"."} be checked and modified?
 #'@param checkDuplicates Logical. Should case insensitive duplicate variable names be checked and modified?
-#'@param charLimits Optional. Either \code{NULL} to disable the length check, or the program
-#' (\code{SPSS} or \code{Stata}) against whose limits the names should be checked.
-#'
+#'@param charLimits Optional character vector of one or more name(s) of the program(s) against whose
+#' length limits the names should be checked (see details).
+#' Currently supported: \code{c("SPSS", "Stata")}
 #'@return Returns the original object with updated variable names.
 #'
 #'@examples
@@ -46,17 +50,13 @@
 #'
 #'@export
 checkVarNames <- function(GADSdat, checkKeywords = TRUE, checkDots = TRUE, checkDuplicates = TRUE,
-                          charLimits = c("SPSS", "Stata")) {
+                          charLimits = NULL) {
   UseMethod("checkVarNames")
 }
 #'@export
 checkVarNames.GADSdat <- function(GADSdat, checkKeywords = TRUE, checkDots = TRUE, checkDuplicates = TRUE,
-                                  charLimits = c("SPSS", "Stata")) {
+                                  charLimits = NULL) {
   check_GADSdat(GADSdat)
-  if (missing(charLimits)) {
-    # Don't interrupt existing user code written when 'charLimits' was not yet implemented
-    charLimits <- NULL
-  }
   GADSdat[["labels"]][, "varName"] <- sapply(GADSdat[["labels"]][, "varName"], checkVarNames,
                                              checkKeywords, checkDots, checkDuplicates, charLimits)
   names(GADSdat[["dat"]]) <- sapply(names(GADSdat[["dat"]]), checkVarNames,
@@ -65,12 +65,8 @@ checkVarNames.GADSdat <- function(GADSdat, checkKeywords = TRUE, checkDots = TRU
 }
 #'@export
 checkVarNames.all_GADSdat <- function(GADSdat, checkKeywords = TRUE, checkDots = TRUE, checkDuplicates = TRUE,
-                                      charLimits = c("SPSS", "Stata")) {
+                                      charLimits = NULL) {
   check_all_GADSdat(GADSdat)
-  if (missing(charLimits)) {
-    # Don't interrupt existing user code written when 'charLimits' was not yet implemented
-    charLimits <- NULL
-  }
   GADSdat[["allLabels"]][, "varName"] <- sapply(GADSdat[["allLabels"]][, "varName"], checkVarNames,
                                                 checkKeywords, checkDots, checkDuplicates, charLimits)
   GADSdat[["datList"]] <- lapply(GADSdat[["datList"]], function(df) {
@@ -82,27 +78,19 @@ checkVarNames.all_GADSdat <- function(GADSdat, checkKeywords = TRUE, checkDots =
 }
 #'@export
 checkVarNames.data.frame <- function(GADSdat, checkKeywords = TRUE, checkDots = TRUE, checkDuplicates = TRUE,
-                                     charLimits = c("SPSS", "Stata")) {
-  if (missing(charLimits)) {
-    # Don't interrupt existing user code written when 'charLimits' was not yet implemented
-    charLimits <- NULL
-  }
+                                     charLimits = NULL) {
   names(GADSdat) <- checkVarNames(names(GADSdat),
                                   checkKeywords, checkDots, checkDuplicates, charLimits)
   GADSdat
 }
 #'@export
 checkVarNames.character <- function(GADSdat, checkKeywords = TRUE, checkDots = TRUE, checkDuplicates = TRUE,
-                                    charLimits = c("SPSS", "Stata")) {
+                                    charLimits = NULL) {
   NewName <- GADSdat
   check_logicalArgument(checkKeywords)
   check_logicalArgument(checkDots)
   if(any(is.na(GADSdat))) {
     stop("Column names can not be NA.")
-  }
-  if (missing(charLimits)) {
-    # Don't interrupt existing user code written when 'charLimits' was not yet implemented
-    charLimits <- NULL
   }
 
   ## SQLite Keywords
@@ -123,7 +111,9 @@ checkVarNames.character <- function(GADSdat, checkKeywords = TRUE, checkDots = T
   }
   ## Variable name-length limits
   if (!is.null(charLimits)) {
-    charLimits <- match.arg(charLimits, several.ok = TRUE)
+    charLimits <- match.arg(arg = charLimits,
+                            choices = c("SPSS", "Stata"),
+                            several.ok = TRUE)
     name_lengths_char <- nchar(NewName, type = "char")
     name_lengths_byte <- nchar(NewName, type = "byte")
     long_names <- NULL

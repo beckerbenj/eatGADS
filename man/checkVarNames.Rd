@@ -9,7 +9,7 @@ checkVarNames(
   checkKeywords = TRUE,
   checkDots = TRUE,
   checkDuplicates = TRUE,
-  charLimits = c("SPSS", "Stata")
+  charLimits = NULL
 )
 }
 \arguments{
@@ -21,8 +21,9 @@ checkVarNames(
 
 \item{checkDuplicates}{Logical. Should case insensitive duplicate variable names be checked and modified?}
 
-\item{charLimits}{Optional. Either \code{NULL} to disable the length check, or the program
-(\code{SPSS} or \code{Stata}) against whose limits the names should be checked.}
+\item{charLimits}{Optional character vector of one or more name(s) of the program(s) against whose
+length limits the names should be checked (see details).
+Currently supported: \code{c("SPSS", "Stata")}}
 }
 \value{
 Returns the original object with updated variable names.
@@ -40,19 +41,22 @@ Invalid column names in a \code{SQLite} data base include
 \item duplicate variable names which arise from \code{SQLite} being case insensitive.
 }
 
-Additionally, \code{SPSS} and \code{Stata} restrict the length of variable names to
-64 bytes (\code{SPSS}) or 32 characters (\code{Stata}).
-
 The corresponding variable name changes are
 \itemize{
 \item appending the suffix \code{"Var"} to all \code{SQLite} keywords,
-\item changing all \code{"."} in variable names to \code{"_"},
-\item appending \code{"_2"} to case insensitive duplicated variable names, and
-\item appending \code{"_tr"} to variable names exceeding the limits of the chosen program.
+\item changing all \code{"."} in variable names to \code{"_"}, and
+\item appending \code{"_2"} to case insensitive duplicated variable names.
 }
 
 Note that avoiding \code{"."} in variable names is beneficial for multiple reasons, such as
 avoiding confusion with \code{S3} methods in \code{R} and issues when exporting to \code{Stata}.
+
+\subsection{Variable name length limits}{
+The length of variable names is limited to 64 \emph{bytes} in \code{SPSS} and to 32
+ \emph{characters} in \code{Stata}. If more than one program name is provided in
+ \code{charLimits}, the most restrictive among the chosen limits will be applied. Variable names
+ exceeding that limit will be truncated and marked with the suffix \code{"_tr"}.
+}
 }
 \examples{
 # Change example data set (create an invalid variable name)
