@@ -17,12 +17,23 @@
 #' }
 #' Run \code{get_program_limit()} to see all limits that are collected in this function.
 #'
-#' @references \href{https://www.stata.com/products/comparison-of-limits/}{Stata: Comparison of limits}
+#' \subsection{Software versions}{
+#' Different versions of the software can entail different limits. With \code{SPSS}, there only
+#'  differences are between older and newer versions. With \code{Stata}, however, limits differ
+#'  between product versions [1]. By default, limits of \code{SPSS 30} and \code{Stata 19/SE}
+#'  are used.
 #'
-#' @param version Optional. Overwrites \code{program} with a specific version of a program (see details).
+#'  Limits of different versions can be requested with the \code{version} argument.
+#'  This overwrites \code{program}, but allows only for a single program and version. Currently,
+#'  the following program versions are implemented: \code{c("Stata 19/BE", "Stata 19/MP")}
+#' }
+#'
+#' @references [1] \href{https://www.stata.com/products/comparison-of-limits/}{Stata: Comparison of limits}
+#'
 #' @param program Character vector. Name(s) of the program(s) whose limits should be returned.
 #' @param component Optional single string. Which limits should be returned? If this is "all" or
 #'  not specified, all limits for the chosen \code{program}(s) are returned.
+#' @param version Optional. Use a specific version of a program (see details).
 #'
 #' @returns A list of two elements: \code{x} (numeric size of the limit) and
 #'  \code{unit} ("char", "byte", or "generic"). If more than one \code{program} is specified and
@@ -47,20 +58,29 @@ get_program_limit <- function(program = c("SPSS", "Stata"),
   } else {
     component <- match.arg(component, several.ok = FALSE)
   }
-  if (!is.null(version)) check_characterArgument(version)
+  if (!is.null(version)) {
+    check_characterArgument(version)
+    if (!version %in% c("Stata 19/BE", "Stata 19/MP")) {
+      stop("Unknown version '", version, "' requested.")
+    }
+  }
 
   program_limits <- list(x = matrix(c(64, 256, 120, 32767, 2^31-1, 2^31-1,
-                                      32, 80, 32, 2*10^6, 2^31-29, 32767),
-                                    ncol = 2, nrow = 6,
-                                                    c("SPSS", "Stata"))),
+                                      32, 80, 30000, 2*10^6, 2^31-29, 32767,
+                                      32, 80, 30000, 2*10^6, 2^31-29, 2048,
+                                      32, 80, 30000, 2*10^6, 2^40-1, 120000),
+                                    ncol = 4, nrow = 6,
                                     dimnames = list(c("varNames", "varLabels", "valLabels", "stringvars",
                                                       "nrows", "ncols"),
+                                                    c("SPSS", "Stata", "Stata 19/BE", "Stata 19/MP"))),
                          unit = matrix(c("byte", "char", "char", "byte", "generic", "generic",
+                                         "char", "char", "char", "byte", "generic", "generic",
+                                         "char", "char", "char", "byte", "generic", "generic",
                                          "char", "char", "char", "byte", "generic", "generic"),
-                                       ncol = 2, nrow = 6,
-                                                       c("SPSS", "Stata"))))
+                                       ncol = 4, nrow = 6,
                                        dimnames = list(c("varNames", "varLabels", "valLabels", "stringvars",
                                                          "nrows", "ncols"),
+                                                       c("SPSS", "Stata", "Stata 19/BE", "Stata 19/MP"))))
   if (component == "all") {
     filtered_x <- program_limits$x[, program]
     filtered_unit <- program_limits$unit[, program]

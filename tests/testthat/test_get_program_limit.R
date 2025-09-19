@@ -1,3 +1,9 @@
+test_that("Inputs are correctly validated", {
+  expect_error(get_program_limit("Stata 17", "varNames"))
+  expect_error(get_program_limit("Stata", "varNames", version = "Stata 19/SE"))
+  expect_error(get_program_limit("Stata", c("varNames", "ncols")))
+})
+
 test_that("Returns a list of 1 numeric and 1 character", {
   output <- get_program_limit("Stata", "varNames")
   # list level
@@ -27,4 +33,10 @@ test_that("Complete output of all limits", {
   output <- get_program_limit()
   expect_equal(dim(output$x), c(6, 2))
   expect_equal(dim(output$x), dim(output$unit))
+})
+
+test_that("Return limits of specific version", {
+  stata_default <- get_program_limit("Stata", "ncols")
+  stata_mp <- get_program_limit("Stata", "ncols", version = "Stata 19/MP")
+  expect_lt(stata_default$x, stata_mp$x)
 })
