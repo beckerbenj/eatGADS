@@ -36,9 +36,8 @@
 #'@param checkKeywords Logical. Should \code{SQLite} keywords be checked and modified?
 #'@param checkDots Logical. Should occurrences of \code{"."} be checked and modified?
 #'@param checkDuplicates Logical. Should case insensitive duplicate variable names be checked and modified?
-#'@param charLimits Optional character vector of one or more name(s) of the program(s) against whose
-#' length limits the names should be checked (see details).
-#' Currently supported: \code{c("SPSS", "Stata")}
+#'@param charLimits Optional character vector of one or more program names(s) for the
+#' limit check (see details). Currently, these are implemented: \code{c("SPSS", "Stata")}
 #'@return Returns the original object with updated variable names.
 #'
 #'@examples
@@ -114,22 +113,17 @@ checkVarNames.character <- function(GADSdat, checkKeywords = TRUE, checkDots = T
     charLimits <- match.arg(arg = charLimits,
                             choices = c("SPSS", "Stata"),
                             several.ok = TRUE)
-    name_lengths_char <- nchar(NewName, type = "char")
-    name_lengths_byte <- nchar(NewName, type = "byte")
-    long_names <- NULL
-    if ("SPSS" %in% charLimits && any(name_lengths_byte > 64)) {
-      long_names <- which(name_lengths_byte > 64)
-      string_limit <- list(unit = "byte", x = 64)
-    }
-    if ("Stata" %in% charLimits && any(name_lengths_char > 32)) {
-      long_names <- unique(c(long_names,
-                             which(name_lengths_char > 32)))
-      string_limit <- list(unit = "char", x = 32)
-    }
+    # get most restrictive limit incl. unit to be applied in nchar()
+    limit_list <- get_program_limit(program = charLimits,
+                                    component = "varNames")
+
+    name_lengths <- nchar(NewName, type = limit_list$unit)
+    long_names <- which(name_lengths > limit_list$x)
+
     for (i in long_names) {
       NewName[i] <- truncate_string(string = NewName[i],
-                                    n = string_limit$x,
-                                    unit = string_limit$unit)
+                                    n = limit_list$x,
+                                    unit = limit_list$unit)
     }
   }
 

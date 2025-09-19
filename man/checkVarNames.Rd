@@ -21,9 +21,8 @@ checkVarNames(
 
 \item{checkDuplicates}{Logical. Should case insensitive duplicate variable names be checked and modified?}
 
-\item{charLimits}{Optional character vector of one or more name(s) of the program(s) against whose
-length limits the names should be checked (see details).
-Currently supported: \code{c("SPSS", "Stata")}}
+\item{charLimits}{Optional character vector of one or more program names(s) for the
+limit check (see details). Currently, these are implemented: \code{c("SPSS", "Stata")}}
 }
 \value{
 Returns the original object with updated variable names.
