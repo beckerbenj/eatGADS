@@ -53,10 +53,10 @@ Different versions of the software can entail different limits. With \code{SPSS}
 }
 \examples{
 # Get all limits that Stata imposes on its datasets
-eatGADS::get_program_limit("Stata", "all")
+eatGADS:::get_program_limit("Stata", "all")
 
 # Get the specific limit on variable name lengths under SPSS
-eatGADS::get_program_limit("SPSS", "varNames")
+eatGADS:::get_program_limit("SPSS", "varNames")
 }
 \references{
 [1] \href{https://www.stata.com/products/comparison-of-limits/}{Stata: Comparison of limits}

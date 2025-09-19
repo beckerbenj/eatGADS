@@ -43,10 +43,10 @@
 #'
 #' @examples
 #' # Get all limits that Stata imposes on its datasets
-#' eatGADS::get_program_limit("Stata", "all")
+#' eatGADS:::get_program_limit("Stata", "all")
 #'
 #' # Get the specific limit on variable name lengths under SPSS
-#' eatGADS::get_program_limit("SPSS", "varNames")
+#' eatGADS:::get_program_limit("SPSS", "varNames")
 get_program_limit <- function(program = c("SPSS", "Stata"),
                               component = c("all",
                                             "varNames", "varLabels", "valLabels", "stringvars",
@@ -63,6 +63,7 @@ get_program_limit <- function(program = c("SPSS", "Stata"),
     if (!version %in% c("Stata 19/BE", "Stata 19/MP")) {
       stop("Unknown version '", version, "' requested.")
     }
+    program <- version
   }
 
   program_limits <- list(x = matrix(c(64, 256, 120, 32767, 2^31-1, 2^31-1,
