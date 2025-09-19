@@ -9,3 +9,16 @@ test_that("Returns a list of 1 numeric and 1 character", {
   expect_equal(length(output$x), 1)
   expect_equal(length(output$unit), 1)
 })
+
+test_that("Return most restrictive limit", {
+  expect_spss <- list(x = 64, unit = "byte")
+  expect_stata <- list(x = 32, unit = "char")
+
+  result_spss <- get_program_limit("SPSS", "varname")
+  result_stata <- get_program_limit("Stata", "varname")
+  result_joint <- get_program_limit(c("SPSS", "Stata"), "varname")
+
+  expect_equal(result_spss, expect_spss)
+  expect_equal(result_stata, expect_stata)
+  expect_equal(result_joint, expect_stata)
+})
