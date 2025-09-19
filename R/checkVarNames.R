@@ -167,11 +167,12 @@ truncate_string <- function(string, n, unit) {
   check_characterArgument(string)
   check_numericArgument(n)
   check_characterArgument(unit)
+  trunc_suffix <- "_tr"
 
   # limit is character length
   if (unit == "char") {
-    out <- substr(string, start = 0, stop = n - 3)
-    out <- paste0(out, "_tr")
+    out <- substr(string, start = 0, stop = n - nchar(trunc_suffix))
+    out <- paste0(out, trunc_suffix)
     return(out)
   }
 
@@ -190,9 +191,9 @@ truncate_string <- function(string, n, unit) {
                              below_limit = FALSE)
   string_table$bytes <- nchar(string_table$string, type = "byte")
   string_table$cumulative <- cumsum(string_table$bytes)
-  string_table$below_limit <- string_table$cumulative <= (n - 3)
+  string_table$below_limit <- string_table$cumulative <= (n - nchar(trunc_suffix))
   last_allowed_char <- max(which(string_table$below_limit))
   out <- paste0(string_table$string[1:last_allowed_char], collapse = "")
-  out <- paste0(out, "_tr")
+  out <- paste0(out, trunc_suffix)
   return(out)
 }
