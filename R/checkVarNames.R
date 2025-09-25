@@ -114,8 +114,8 @@ checkVarNames.character <- function(GADSdat, checkKeywords = TRUE, checkDots = T
                             choices = c("SPSS", "Stata"),
                             several.ok = TRUE)
     # get most restrictive limit incl. unit to be applied in nchar()
-    limit_list <- get_program_limit(program = charLimits,
-                                    component = "varNames")
+    limit_list <- getProgramLimit(program = charLimits,
+                                  component = "varNames")
 
     name_lengths <- nchar(NewName, type = limit_list$unit)
     long_names <- which(name_lengths > limit_list$x)
@@ -168,16 +168,22 @@ truncate_string <- function(string, n, unit) {
   }
 
   # n_bytes != n_chars
-  splited_string <- unlist(strsplit(string, split = ""))
-  string_table <- data.frame(string = splited_string,
-                             bytes = NA_integer_,
-                             cumulative = NA_integer_,
-                             below_limit = FALSE)
-  string_table$bytes <- nchar(string_table$string, type = "byte")
-  string_table$cumulative <- cumsum(string_table$bytes)
-  string_table$below_limit <- string_table$cumulative <= (n - nchar(trunc_suffix))
-  last_allowed_char <- max(which(string_table$below_limit))
-  out <- paste0(string_table$string[1:last_allowed_char], collapse = "")
+  last_char_below_limit <- find_byte_length(string = string,
+                                            n = n - nchar(trunc_suffix))
+  out <- substr(string, start = 0, stop = last_char_below_limit)
   out <- paste0(out, trunc_suffix)
   return(out)
+}
+
+
+find_byte_length <- function(string, n) {
+  # return the position at which a string has to be cut to have a byte-length of <= n
+  check_characterArgument(string)
+  check_numericArgument(n)
+
+  single_chars <- unlist(strsplit(string, split = ""))
+  single_bytes <- nchar(single_chars, type = "byte")
+  cumulated_bytes <- cumsum(single_bytes)
+  char_below_limit <- cumulated_bytes <= n
+  last_below_limit <- max(which(char_below_limit))
 }
