@@ -43,6 +43,7 @@ checkIntOverflow(pisa2)
 }
 \seealso{
 Other dataset compliance checks: 
-\code{\link{checkLabeledFractionals}()}
+\code{\link{checkLabeledFractionals}()},
+\code{\link{getProgramLimit}()}
 }
 \concept{dataset compliance checks}
