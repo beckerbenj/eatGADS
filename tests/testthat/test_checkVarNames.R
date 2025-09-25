@@ -131,6 +131,22 @@ test_that("Check and truncate long variable names", {
   expect_equal(allGADS_min, allGADS5c)
 })
 
+test_that("Check of byte length work irrespective of whether byte length == character length", {
+  df6a <- data.frame(x = 1:5,
+                     aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaueaaa = letters[1:5])
+  df6b <- data.frame(x = 1:5,
+                     aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaüaaa = letters[1:5])
+  expect_equal(checkVarNames(df6a, charLimits = "SPSS"),
+               checkVarNames(df6b, charLimits = "SPSS"))
+
+  GADS6a <- import_DF(df6a, checkVarNames = FALSE)
+  rownames(GADS6a$labels) <- NULL
+  GADS6b <- import_DF(df6b, checkVarNames = FALSE)
+  rownames(GADS6b$labels) <- NULL
+  expect_equal(checkVarNames(GADS6a, charLimits = "SPSS"),
+               checkVarNames(GADS6b, charLimits = "SPSS"))
+})
+
 test_that("Checks are only performed selectively, if requested", {
   # only keywords
   df_keywords_T <- checkVarNames(df5a, checkKeywords = TRUE, checkDots = FALSE)
