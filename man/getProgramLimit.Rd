@@ -6,8 +6,7 @@
 \usage{
 getProgramLimit(
   program = c("SPSS", "Stata", "Stata 19/BE", "Stata 19/MP"),
-  component = c("varNames", "varLabels", "valLabels", "stringvars", "nrows", "ncols"),
-  version = NULL
+  component = c("varNames", "varLabels", "valLabels", "stringvars", "nrows", "ncols")
 )
 }
 \arguments{
@@ -17,8 +16,7 @@ getProgramLimit(
 }
 \value{
 A list of two elements: \code{x} (numeric size of the limit) and
- \code{unit} ("char", "byte", or "generic"). If more than one \code{program} is specified and
- \code{component} is not "all", the most restrictive limit will be returned.
+ \code{unit} ("char", "byte", or "generic").
 }
 \description{
 Get the (most restrictive) limit that \code{SPSS} and/or \code{Stata} imposes on a specific
@@ -31,16 +29,20 @@ Get the (most restrictive) limit that \code{SPSS} and/or \code{Stata} imposes on
  product tiers, but also for (very) old \code{SPSS} version.
 
 For \code{program}, \code{"SPSS"} and \code{"Stata"} imply \code{SPSS 30} and \code{Stata 19/SE},
- respectively, as these are the most relevant version among the implemented ones.
+ respectively, as these are the most relevant version among the ones implemented here.
 
-If more than one
+If more than one program/version name is given in \code{program}, the most restrictive limit will
+ be returned.
 }
 \examples{
-# Get all limits that Stata imposes on its datasets
-eatGADS:::get_program_limit("Stata", "all")
+# Show all implemented limits
+program_limits
 
 # Get the specific limit on variable name lengths under SPSS
-eatGADS:::get_program_limit("SPSS", "varNames")
+getProgramLimit("SPSS", "varNames")
+
+# Get the variable name length limit a data set has to adhere to to be compatible with both SPSS and Stata 19/SE
+getProgramLimit(c("Stata", "SPSS"), "varNames")
 }
 \seealso{
 Other dataset compliance checks: 
