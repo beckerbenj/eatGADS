@@ -7,9 +7,10 @@
 #'
 #' @details
 #' \code{SPSS} and \code{Stata} impose different limits to different components of their data sets,
-#'  e.g., on the length of variable names. For details and a list of relevant limits, see \link{program_limits}.
-#'  Additionally, limits may vary between software versions. This primarily applies to \code{Stata}'s
-#'  product tiers, but also for (very) old \code{SPSS} version.
+#'  e.g., on the length of variable names. For details and a list of relevant limits, see
+#'  \code{\link{program_limits}}. Additionally, limits may vary between software versions.
+#'  This primarily applies to \code{Stata}'s product tiers, but also for (very) old \code{SPSS}
+#'  versions.
 #'
 #' For \code{program}, \code{"SPSS"} and \code{"Stata"} imply \code{SPSS 30} and \code{Stata 19/SE},
 #'  respectively, as these are the most relevant version among the ones implemented here.
@@ -32,7 +33,8 @@
 #' # Get the specific limit on variable name lengths under SPSS
 #' getProgramLimit("SPSS", "varNames")
 #'
-#' # Get the variable name length limit a data set has to adhere to to be compatible with both SPSS and Stata 19/SE
+#' # Get the variable name length limit a data set has to adhere to to be compatible with
+#' #  both SPSS and Stata 19/SE
 #' getProgramLimit(c("Stata", "SPSS"), "varNames")
 #' @export
 getProgramLimit <- function(program = c("SPSS", "Stata", "Stata 19/BE", "Stata 19/MP"),

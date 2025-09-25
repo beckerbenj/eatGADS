@@ -29,7 +29,7 @@ A list of two matrices, detailing different limits for data sets specific to \co
 While \code{SPSS} has only one set of limits (disregarding legacy limits for older versions),
  \code{Stata}, employs different limits for different product versions [1]. Here, \code{SPSS}
  implies \code{SPSS 30}, and \code{Stata} implies \code{Stata 19/SE}. Limits of
- \code{Stata 19/BE} and \code{Stata 19/MP} are implemented as additional options for \link{getProgramLimit()}.
+ \code{Stata 19/BE} and \code{Stata 19/MP} are implemented as additional options for \link{getProgramLimit}.
 }
 \references{
 [1] \href{https://www.stata.com/products/comparison-of-limits/}{Stata: Comparison of limits}
