@@ -2,11 +2,11 @@
 #' @title List of program specific limits
 #'
 #' @description
-#' A list of two matrices, detailing different limits for data sets specific to \code{SPSS} and
+#' A list of two matrices, detailing different limits for datasets specific to \code{SPSS} and
 #'  \code{Stata}.
 #'
 #' @details
-#' \code{SPSS} and \code{Stata} impose different limits to different aspects of their data sets:
+#' \code{SPSS} and \code{Stata} impose different limits to different aspects of their datasets:
 #' \itemize{
 #'  \item \code{varNames}: length of variable names
 #'  \item \code{varLabels}: length of variable labels
@@ -23,6 +23,16 @@
 #'
 #' @references [1] \href{https://www.stata.com/products/comparison-of-limits/}{Stata: Comparison of limits}
 #'
-#' @format A list of two matrices: \code{x} (numeric size of the limit) and
-#'  \code{unit} ("char", "byte", or "generic") of each limit under each program (version).
+#' @format A data.frame.
 "program_limits"
+
+#' @export
+print.program_limits_df <- function(df, ...) {
+  df_formatted <- df
+  df_formatted$value <- formatC(df_formatted$value,
+                                digits = 10,
+                                format = "fg",
+                                big.mark = "")
+  print.data.frame(df_formatted, ...)
+  invisible(df)
+}

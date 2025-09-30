@@ -5,18 +5,17 @@
 \alias{program_limits}
 \title{List of program specific limits}
 \format{
-A list of two matrices: \code{x} (numeric size of the limit) and
- \code{unit} ("char", "byte", or "generic") of each limit under each program (version).
+A data.frame.
 }
 \usage{
 program_limits
 }
 \description{
-A list of two matrices, detailing different limits for data sets specific to \code{SPSS} and
+A list of two matrices, detailing different limits for datasets specific to \code{SPSS} and
  \code{Stata}.
 }
 \details{
-\code{SPSS} and \code{Stata} impose different limits to different aspects of their data sets:
+\code{SPSS} and \code{Stata} impose different limits to different aspects of their datasets:
 \itemize{
  \item \code{varNames}: length of variable names
  \item \code{varLabels}: length of variable labels
