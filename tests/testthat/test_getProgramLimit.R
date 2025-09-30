@@ -10,15 +10,15 @@ test_that("Returns a list of 1 numeric and 1 character", {
   expect_true(is.list(output))
   expect_equal(length(output), 2)
   # component level
-  expect_true(is.numeric(output$x))
+  expect_true(is.numeric(output$value))
   expect_true(is.character(output$unit))
-  expect_equal(length(output$x), 1)
+  expect_equal(length(output$value), 1)
   expect_equal(length(output$unit), 1)
 })
 
 test_that("Return most restrictive limit", {
-  expect_spss <- list(x = 64, unit = "byte")
-  expect_stata <- list(x = 32, unit = "char")
+  expect_spss <- list(value = 64, unit = "byte")
+  expect_stata <- list(value = 32, unit = "char")
 
   result_spss <- getProgramLimit("SPSS", "varNames")
   result_stata <- getProgramLimit("Stata", "varNames")
@@ -32,5 +32,5 @@ test_that("Return most restrictive limit", {
 test_that("Return limits of specific version", {
   stata_default <- getProgramLimit("Stata", "ncols")
   stata_be <- getProgramLimit(c("Stata", "Stata 19/BE"), "ncols")
-  expect_gt(stata_default$x, stata_be$x)
+  expect_gt(stata_default$value, stata_be$value)
 })

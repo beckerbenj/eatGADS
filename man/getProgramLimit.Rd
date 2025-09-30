@@ -15,15 +15,15 @@ getProgramLimit(
 \item{component}{Single string. Which limits should be returned?}
 }
 \value{
-A list of two elements: \code{x} (numeric size of the limit) and
+A list of two elements: \code{value} (numeric size of the limit) and
  \code{unit} ("char", "byte", or "generic").
 }
 \description{
 Get the (most restrictive) limit that \code{SPSS} and/or \code{Stata} imposes on a specific
- aspect of a data set.
+ aspect of a dataset.
 }
 \details{
-\code{SPSS} and \code{Stata} impose different limits to different components of their data sets,
+\code{SPSS} and \code{Stata} impose different limits to different components of their datasets,
  e.g., on the length of variable names. For details and a list of relevant limits, see
  \code{\link{program_limits}}. Additionally, limits may vary between software versions.
  This primarily applies to \code{Stata}'s product tiers, but also for (very) old \code{SPSS}
@@ -42,7 +42,7 @@ program_limits
 # Get the specific limit on variable name lengths under SPSS
 getProgramLimit("SPSS", "varNames")
 
-# Get the variable name length limit a data set has to adhere to to be compatible with
+# Get the variable name length limit a dataset has to adhere to to be compatible with
 #  both SPSS and Stata 19/SE
 getProgramLimit(c("Stata", "SPSS"), "varNames")
 }

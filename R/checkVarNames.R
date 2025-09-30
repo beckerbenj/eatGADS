@@ -118,11 +118,11 @@ checkVarNames.character <- function(GADSdat, checkKeywords = TRUE, checkDots = T
                                   component = "varNames")
 
     name_lengths <- nchar(NewName, type = limit_list$unit)
-    long_names <- which(name_lengths > limit_list$x)
+    long_names <- which(name_lengths > limit_list$value)
 
     for (i in long_names) {
       NewName[i] <- truncate_string(string = NewName[i],
-                                    n = limit_list$x,
+                                    n = limit_list$value,
                                     unit = limit_list$unit)
     }
   }
