@@ -75,13 +75,19 @@ provided in a separate column as a fail safe.</p>
     <p>According to its documentation, R can only handle <code><a href="https://rdrr.io/r/base/integer.html" class="external-link">integer</a></code>
 values of up to (roughly) \(\pm 2 \times 10^9\) (2,147,483,647 to be exact;
 c.f. <code><a href="https://rdrr.io/r/base/zMachine.html" class="external-link">.Machine</a>$integer.max</code>).
-This restriction is only relevant when exporting a <code>GADSdat</code> to <code>.dta</code>
+This restriction is relevant when exporting a <code>GADSdat</code> to <code>.dta</code>
 and only when any value exceeding the limit is also labeled (or tagged as missing).
 This is because Stata only accepts labeled <em>integer</em> (not labeled <em>floating-point</em>;
-c.f. <code>checkLabeledFractionals</code> in this package)
+c.f. <code><a href="checkLabeledFractionals.html">checkLabeledFractionals</a>()</code> in this package)
 values. <code>haven</code>'s <code><a href="https://haven.tidyverse.org/reference/read_dta.html" class="external-link">write_dta</a></code> function will therefore
 try to coerce any labeled values <code><a href="https://rdrr.io/r/base/integer.html" class="external-link">as.integer()</a></code>. Unlabeled values, however, will
 stay generic <code>numeric</code> values that have a higher limit.</p>
+    </div>
+    <div class="section level2">
+    <h2 id="see-also">See also<a class="anchor" aria-label="anchor" href="#see-also"></a></h2>
+    <div class="dont-index"><p>Other dataset compliance checks:
+<code><a href="checkLabeledFractionals.html">checkLabeledFractionals</a>()</code>,
+<code><a href="getProgramLimit.html">getProgramLimit</a>()</code></p></div>
     </div>
 
     <div class="section level2">

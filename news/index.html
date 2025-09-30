@@ -44,6 +44,14 @@
     <div class="section level2">
 <h2 class="pkg-version" data-toc-text="1.2.0.9000" id="eatgads-1209000">eatGADS 1.2.0.9000<a class="anchor" aria-label="anchor" href="#eatgads-1209000"></a></h2>
 <div class="section level3">
+<h3 id="new-features-1-2-0-9000">new features<a class="anchor" aria-label="anchor" href="#new-features-1-2-0-9000"></a></h3>
+<ul><li>
+<code><a href="../reference/checkIntOverflow.html">checkIntOverflow()</a></code> and <code><a href="../reference/checkLabeledFractionals.html">checkLabeledFractionals()</a></code> check if a <code>GADSdat</code> complies with Stata’s requirements for data sets (<a href="https://github.com/beckerbenj/eatGADS/issues/110" class="external-link">#110</a>)</li>
+<li>
+<code><a href="../reference/checkVarNames.html">checkVarNames()</a></code> can now also check the lengths of variable names against program-specific restrictions (<a href="https://github.com/beckerbenj/eatGADS/issues/110" class="external-link">#110</a>)</li>
+<li>A list of limits to dataset components under Stata and SPSS is available in <code>program_limits</code> and via its access function <code><a href="../reference/getProgramLimit.html">getProgramLimit()</a></code>.</li>
+</ul></div>
+<div class="section level3">
 <h3 id="bug-fixes-1-2-0-9000">bug fixes<a class="anchor" aria-label="anchor" href="#bug-fixes-1-2-0-9000"></a></h3>
 <ul><li>
 <code><a href="../reference/autoRecode.html">autoRecode()</a></code> no longer fails while applying a template that does not yet cover a value which occurs in the data more than once (<a href="https://github.com/beckerbenj/eatGADS/issues/131" class="external-link">#131</a>)</li>
@@ -51,6 +59,7 @@
 <code><a href="../reference/changeMissings.html">changeMissings()</a></code> no longer throws an existing value error in edge cases with multiple existing value labels</li>
 <li>
 <code><a href="../reference/recodeGADS.html">recodeGADS()</a></code> now correctly performs potentially sequential recodes for unlabeled values (<a href="https://github.com/beckerbenj/eatGADS/issues/134" class="external-link">#134</a>)</li>
+<li>arguments in <code><a href="../reference/checkVarNames.html">checkVarNames()</a></code> now turn on/off different checks correctly (<a href="https://github.com/beckerbenj/eatGADS/issues/138" class="external-link">#138</a>)</li>
 </ul></div>
 <div class="section level3">
 <h3 id="documentation-1-2-0-9000">documentation<a class="anchor" aria-label="anchor" href="#documentation-1-2-0-9000"></a></h3>
