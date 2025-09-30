@@ -24,10 +24,10 @@ Check a \code{GADSdat} object for any occurrences of labeled whole-number values
 According to its documentation, R can only handle \code{\link[base:integer]{integer}}
 values of up to (roughly) \eqn{\pm 2 \times 10^9} (2,147,483,647 to be exact;
 c.f. \code{\link[base:.Machine]{.Machine}$integer.max}).
-This restriction is only relevant when exporting a \code{GADSdat} to \code{.dta}
+This restriction is relevant when exporting a \code{GADSdat} to \code{.dta}
 and only when any value exceeding the limit is also labeled (or tagged as missing).
 This is because Stata only accepts labeled \emph{integer} (not labeled \emph{floating-point};
-c.f. \code{\link[checkLabeledFractionals()]{checkLabeledFractionals}} in this package)
+c.f. \code{\link{checkLabeledFractionals}()} in this package)
 values. \code{haven}'s \code{\link[haven:write_dta]{write_dta}} function will therefore
 try to coerce any labeled values \code{as.integer()}. Unlabeled values, however, will
 stay generic \code{numeric} values that have a higher limit.
@@ -41,3 +41,9 @@ pisa2 <- changeMissings(GADSdat = pisa,
 checkIntOverflow(pisa2)
 
 }
+\seealso{
+Other dataset compliance checks: 
+\code{\link{checkLabeledFractionals}()},
+\code{\link{getProgramLimit}()}
+}
+\concept{dataset compliance checks}

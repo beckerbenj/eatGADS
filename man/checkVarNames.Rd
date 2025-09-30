@@ -2,13 +2,14 @@
 % Please edit documentation in R/checkVarNames.R
 \name{checkVarNames}
 \alias{checkVarNames}
-\title{Check names for \code{SQLite} column name conventions.}
+\title{Check names for \code{SQLite} column name conventions and length limits.}
 \usage{
 checkVarNames(
   GADSdat,
   checkKeywords = TRUE,
   checkDots = TRUE,
-  checkDuplicates = TRUE
+  checkDuplicates = TRUE,
+  charLimits = NULL
 )
 }
 \arguments{
@@ -19,13 +20,17 @@ checkVarNames(
 \item{checkDots}{Logical. Should occurrences of \code{"."} be checked and modified?}
 
 \item{checkDuplicates}{Logical. Should case insensitive duplicate variable names be checked and modified?}
+
+\item{charLimits}{Optional character vector of one or more program names(s) for the
+limit check (see details). Currently, these are implemented: \code{c("SPSS", "Stata")}}
 }
 \value{
 Returns the original object with updated variable names.
 }
 \description{
-Checks names for \code{SQLite} column name conventions and
-applies appropriate variable name changes to \code{GADSdat} or \code{all_GADSdat} objects.
+Checks names for \code{SQLite} column name conventions and \code{SPSS}/\code{Stata}
+variable name limits, and applies appropriate variable name changes to
+\code{GADSdat} or \code{all_GADSdat} objects.
 }
 \details{
 Invalid column names in a \code{SQLite} data base include
@@ -38,12 +43,19 @@ Invalid column names in a \code{SQLite} data base include
 The corresponding variable name changes are
 \itemize{
 \item appending the suffix \code{"Var"} to all \code{SQLite} keywords,
-\item changing all \code{"."} in variable names to \code{"_"} and
+\item changing all \code{"."} in variable names to \code{"_"}, and
 \item appending \code{"_2"} to case insensitive duplicated variable names.
 }
 
 Note that avoiding \code{"."} in variable names is beneficial for multiple reasons, such as
-avoiding confusion with \code{S3} methods in \code{R} and issues when importing from \code{Stata}.
+avoiding confusion with \code{S3} methods in \code{R} and issues when exporting to \code{Stata}.
+
+\subsection{Variable name length limits}{
+The length of variable names is limited to 64 \emph{bytes} in \code{SPSS} and to 32
+ \emph{characters} in \code{Stata}. If more than one program name is provided in
+ \code{charLimits}, the most restrictive among the chosen limits will be applied. Variable names
+ exceeding that limit will be truncated and marked with the suffix \code{"_tr"}.
+}
 }
 \examples{
 # Change example data set (create an invalid variable name)
