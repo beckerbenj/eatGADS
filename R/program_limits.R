@@ -27,12 +27,12 @@
 "program_limits"
 
 #' @export
-print.program_limits_df <- function(df, ...) {
-  df_formatted <- df
-  df_formatted$value <- formatC(df_formatted$value,
-                                digits = 10,
-                                format = "fg",
-                                big.mark = "")
-  print.data.frame(df_formatted, ...)
-  invisible(df)
+print.program_limits_df <- function(x, ...) {
+  df <- x
+  df$value <- formatC(df$value,
+                      digits = 10,
+                      format = "fg",
+                      big.mark = "")
+  print.data.frame(df, ...)
+  invisible(x)
 }
