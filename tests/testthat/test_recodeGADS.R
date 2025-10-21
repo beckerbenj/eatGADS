@@ -96,3 +96,14 @@ test_that("Recode wrapper for multiple variables at once", {
   expect_equal(out2$datList$dfSAV$VAR2, c(10, 10, 10, 10))
   expect_equal(out2$datList$df2$ID1, c(10, 10))
 })
+
+test_that("Recode character variable into numeric values but keep variable type", {
+  g <- import_DF(data.frame(v1 = "99"))
+  g2 <- recodeGADS(g, varName = "v1", oldValues = 99, newValues = -99)
+  expect_equal(g2$dat$v1, "-99")
+
+  gb <- changeValLabels(g, varName = "v1", value = 99, valLabel = "a missing")
+  gb2 <- recodeGADS(gb, varName = "v1", oldValues = 99, newValues = -99)
+  expect_equal(gb2$dat$v1, "-99")
+})
+

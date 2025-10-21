@@ -86,7 +86,7 @@ recodeGADS.GADSdat <- function(GADSdat, varName, oldValues, newValues,
       if(length(not_in_data_aswell) > 0) {
           warning("The following values in 'oldValues' are neither a labeled value in the meta data nor an actual value in ",
                   single_varName, ": ", not_in_data_aswell)
-        }
+      }
       GADSdat$dat[, single_varName] <- eatTools::recodeLookup(GADSdat$dat[, single_varName], lookup = data_recode_lookup)
     }
   }

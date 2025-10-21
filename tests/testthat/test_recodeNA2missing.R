@@ -55,3 +55,8 @@ test_that("Recode2NA numerics", {
   expect_equal(out2$dat$VAR3, c(-99, 1, 1, -98))
 })
 
+test_that("Recode empty character varaible", {
+  g <- import_DF(data.frame(v1 = NA_character_))
+  g2 <- recodeNA2missing(g)
+  expect_equal(g2$dat$v1, "-99")
+})
