@@ -36,9 +36,15 @@
 #'
 #'@export
 import_raw2 <- function(dat, labels) {
-  if(!is.data.frame(dat)) stop("'dat' needs to be a data frame.")
-  if(!is.data.frame(labels)) stop("'labels' needs to be a data frame.")
-  if(any(sapply(dat, is.factor))) stop("At least one of the variables in 'dat' is a factor. All meta information on value level has to be stored in valLabels.")
+  if(!is.data.frame(dat)) {
+    stop("'dat' needs to be a data frame.")
+  }
+  if(!is.data.frame(labels)) {
+    stop("'labels' needs to be a data frame.")
+  }
+  if(any(sapply(dat, is.factor))) {
+    stop("At least one of the variables in 'dat' is a factor. All meta information on value level has to be stored in valLabels.")
+  }
 
   # avoid integer columns, these can cause problems with write_save
   labels2 <- labels
