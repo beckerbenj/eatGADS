@@ -7,7 +7,6 @@
 #' variable name limits, and applies appropriate variable name changes to
 #' \code{GADSdat} or \code{all_GADSdat} objects.
 #'
-#' @details
 #' Invalid column names in a \code{SQLite} data base include
 #' \itemize{
 #' \item \code{SQLite} keywords (see \code{\link[eatDB]{sqlite_keywords}}),

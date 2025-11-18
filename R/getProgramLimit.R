@@ -1,11 +1,9 @@
 
-#' @title Get program specific limits
+#' Get program specific limits
 #'
-#' @description
 #' Get the (most restrictive) limit that \code{SPSS} and/or \code{Stata} imposes on a specific
 #'  aspect of a dataset.
 #'
-#' @details
 #' \code{SPSS} and \code{Stata} impose different limits to different components of their datasets,
 #'  e.g., on the length of variable names. For details and a list of relevant limits, see
 #'  \code{\link{program_limits}}. Additionally, limits may vary between software versions.
@@ -21,7 +19,7 @@
 #' @param program Character vector of the programs/program version that should be considered.
 #' @param component Single string. Which limits should be returned?
 #'
-#' @returns A list of two elements: \code{value} (numeric size of the limit) and
+#' @return A list of two elements: \code{value} (numeric size of the limit) and
 #'  \code{unit} ("char", "byte", or "generic").
 #'
 #' @family dataset compliance checks
