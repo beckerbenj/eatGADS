@@ -7,10 +7,12 @@ program_limits <- data.frame(component = unlist(lapply(c("varNames", "varLabels"
                                        32767, 2*10^6, 2*10^6, 2*10^6,
                                        2^31-1, 2^31-29, 2^31-29, 2^40-1,
                                        2^31-1, 32767, 2048, 120000),
-                             unit = c("byte", "char", "char", "byte", "generic", "generic",
-                                      "char", "char", "char", "byte", "generic", "generic",
-                                      "char", "char", "char", "byte", "generic", "generic",
-                                      "char", "char", "char", "byte", "generic", "generic"),
+                             unit = c("byte", "char", "char", "char",
+                                      "char", "char", "char", "char",
+                                      "char", "char", "char", "char",
+                                      "byte", "byte", "byte", "byte",
+                                      "generic", "generic", "generic", "generic",
+                                      "generic", "generic", "generic", "generic"),
                              stringsAsFactors = FALSE)
 class(program_limits) <- c("program_limits_df", class(program_limits))
 save(program_limits, file = "data/program_limits.rda")
