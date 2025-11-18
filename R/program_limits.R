@@ -1,12 +1,17 @@
 
-#' @title List of program specific limits
+#### Program Limits
+#############################################################################
+#' Program specific limits to dataset components
 #'
-#' @description
-#' A list of two matrices, detailing different limits for datasets specific to \code{SPSS} and
-#'  \code{Stata}.
+#' Different programs impose different limits to different components of their datasets.
+#'  Additionally, limits may vary between software versions. This primarily applies to
+#'  \code{Stata}'s product tiers, but also to (very) old \code{SPSS} versions. \code{eatGADS}
+#'  offers a number of check functions - chiefly \code{\link{check4SPSS}} and
+#'  \code{\link{check4Stata}} as wrappers - to ensure a \code{GADSdat} complies with these limits,
+#'  and can be exported into an \link[= write_spss]{SPSS} or \link[= write_stata]{Stata} file.
 #'
-#' @details
-#' \code{SPSS} and \code{Stata} impose different limits to different aspects of their datasets:
+#' While datasets have several components and characteristics, the following were deemed the most
+#'  important and their limits implemented in this package's checks:
 #' \itemize{
 #'  \item \code{varNames}: length of variable names
 #'  \item \code{varLabels}: length of variable labels
@@ -17,13 +22,15 @@
 #' }
 #'
 #' While \code{SPSS} has only one set of limits (disregarding legacy limits for older versions),
-#'  \code{Stata}, employs different limits for different product versions [1]. Here, \code{SPSS}
-#'  implies \code{SPSS 30}, and \code{Stata} implies \code{Stata 19/SE}. Limits of
-#'  \code{Stata 19/BE} and \code{Stata 19/MP} are implemented as additional options for \link{getProgramLimit}.
+#'  \code{Stata} employs different limits for different product versions [1]. Within this package,
+#'  \code{"SPSS"} always implies \code{SPSS 30}, and \code{"Stata"} implies \code{Stata 19/SE}.
+#'  Limits of \code{Stata 19/BE} and \code{Stata 19/MP} are implemented as additional options.
+#'  However, no additional versions of \code{SPSS} have been implemented yet.
 #'
 #' @references [1] \href{https://www.stata.com/products/comparison-of-limits/}{Stata: Comparison of limits}
 #'
-#' @format A data.frame.
+#' @format A data.frame listing relevant limits (see details) imposed to datasets by
+#'  \code{SPSS} and \code{Stata}.
 "program_limits"
 
 #' @export

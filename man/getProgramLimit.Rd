@@ -23,17 +23,11 @@ Get the (most restrictive) limit that \code{SPSS} and/or \code{Stata} imposes on
  aspect of a dataset.
 }
 \details{
-\code{SPSS} and \code{Stata} impose different limits to different components of their datasets,
- e.g., on the length of variable names. For details and a list of relevant limits, see
- \code{\link{program_limits}}. Additionally, limits may vary between software versions.
- This primarily applies to \code{Stata}'s product tiers, but also for (very) old \code{SPSS}
- versions.
-
-For \code{program}, \code{"SPSS"} and \code{"Stata"} imply \code{SPSS 30} and \code{Stata 19/SE},
- respectively, as these are the most relevant version among the ones implemented here.
-
-If more than one program/version name is given in \code{program}, the most restrictive limit will
- be returned.
+For more details about program specific limits as well as a full list, see \link{program_limits}.
+ In \code{program}, \code{"SPSS"} implies \code{SPSS 30}, and \code{"Stata"} implies
+ \code{Stata 19/SE}, as these are the most relevant version among the ones implemented here.
+ If more than one program/version name is given in \code{program}, the most restrictive limit
+ will be returned.
 }
 \examples{
 # Show all implemented limits
