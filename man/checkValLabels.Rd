@@ -6,31 +6,42 @@
 \usage{
 checkValLabels(
   GADSdat,
+  charLimits = c("SPSS", "Stata"),
   vars = namesGADS(GADSdat),
-  charLimits = c("SPSS", "Stata")
+  printLength = 40
 )
 }
 \arguments{
 \item{GADSdat}{A \code{GADSdat} object.}
 
-\item{vars}{Character vector with the variable names to which \code{checkValLabels()} should be applied.}
+\item{charLimits}{Character vector of the program(s) against whose limit(s) the labels should
+be checked.}
 
-\item{classes}{Character vector with the classes to which \code{checkMissingLabels()} should be applied. Valid options are \code{"integer"}, \code{"double"}, and \code{"character"}.}
+\item{vars}{Optional character vector of the variables whose value labels should be checked.
+By default, all value labels will be checked.}
 
-\item{valueRange}{[optional] Numeric vector of length 2: In which range should numeric values be checked?
-If specified, only numeric values are returned and strings are omitted.}
-
-\item{output}{Should the output be structured as a \code{"list"} or a \code{"data.frame"}?}
+\item{printLength}{Single numeric value. The first n = \code{printLength} characters will be
+reported. Alternatively, specify \code{NULL} to deactivate the truncation and have the function
+report the full labels (not recommended; see details).}
 }
 \value{
-Returns a list of length \code{vars} or a \code{data.frame}.
+Returns a \code{data.frame} with every (truncated) long \code{valLabel} along with the
+\code{varName} and \code{value}, with which it occurs, its character length (\code{charLength}),
+and whether the value the label is attached to actually occurs in the data (\code{empty}).
 }
 \description{
 Check if the value labels of a \code{GADSdat} comply with the length limits imposed by
- \code{SPSS} and/or \code{Stata}.
+ \code{SPSS} or \code{Stata}.
 }
 \details{
-For details about program specific limits, see \link{getProgramLimit}.
+If more than one program name is given in \code{charLimits}, the most restrictive limit will be
+ applied. For details about program specific limits, see \link{program_limits}.
+
+Please note that setting \code{printLength} to \code{NULL} (and thereby deactivating label
+ truncation) might not actually result in the printing of the full length of the exceedingly
+ long labels if you are using RStudio. The program's own limits to how many characters are
+ printed to the console may still apply
+ (see \href{https://stackoverflow.com/questions/36800475/avoid-string-printed-to-console-getting-truncated-in-rstudio}{Stack Overflow}).
 }
 \examples{
 to be added
