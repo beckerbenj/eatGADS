@@ -1,25 +1,36 @@
 
+#### Check Value Labels
 #############################################################################
-#' Check Value Labels
+#' Check value labels for length limits.
 #'
-#' Check value labels for (a) value labels with no occurrence in the data (\code{checkEmptyValLabels}) and
-#' (b) values with no value labels (\code{checkMissingValLabels}).
+#' Check if the value labels of a \code{GADSdat} comply with the length limits imposed by
+#'  \code{SPSS} or \code{Stata}.
 #'
-#' \code{NAs} are excluded from this check. Designated missing codes are reported normally.
+#' If more than one program name is given in \code{charLimits}, the most restrictive limit will be
+#'  applied. For details about program specific limits, see \link{program_limits}.
 #'
 #'@param GADSdat A \code{GADSdat} object.
-#'@param vars Character vector with the variable names to which \code{checkValLabels()} should be applied.
-#'@param classes Character vector with the classes to which \code{checkMissingLabels()} should be applied. Valid options are \code{"integer"}, \code{"double"}, and \code{"character"}.
-#'@param valueRange [optional] Numeric vector of length 2: In which range should numeric values be checked?
-#'If specified, only numeric values are returned and strings are omitted.
-#'@param output Should the output be structured as a \code{"list"} or a \code{"data.frame"}?
+#'@param charLimits Character vector of the program(s) against whose limit(s) the labels should
+#' be checked.
+#'@param vars Optional character vector of the variables whose value labels should be checked.
+#' By default, all value labels will be checked.
 #'
-#'@return Returns a list of length \code{vars} or a \code{data.frame}.
+#'@return Returns a \code{data.frame}, listing every \code{valLabel} that exceeds the limit and its
+#' character length, along with the \code{varName}, \code{value}, and whether the value the label
+#' is attached to actually occurs in the data (\code{empty}).
 #'
 #'@examples
+#' to be added
 #'
 #'@export
+checkValLabels <- function(GADSdat, charLimits = c("SPSS", "Stata"), vars = namesGADS(GADSdat)) {
   check_GADSdat(GADSdat)
+  program <- match.arg(charLimits, several.ok = TRUE)
   check_vars_in_GADSdat(GADSdat, vars = vars)
 
+  out <- data.frame(varName = character(),
+                    value = numeric(),
+                    valLabel = character(),
+                    charLength = numeric(),
+                    empty = logical())
 }
