@@ -9,7 +9,7 @@ program_limits <- data.frame(component = unlist(lapply(c("varNames", "varLabels"
                                        2^31-1, 32767, 2048, 120000),
                              unit = c("byte", "char", "char", "char",
                                       "char", "char", "char", "char",
-                                      "char", "char", "char", "char",
+                                      "byte", "byte", "byte", "byte",
                                       "byte", "byte", "byte", "byte",
                                       "generic", "generic", "generic", "generic",
                                       "generic", "generic", "generic", "generic"),
