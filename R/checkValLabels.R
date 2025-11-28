@@ -49,46 +49,31 @@ checkValLabels <- function(GADSdat, charLimits = c("SPSS", "Stata"),
   limit_list <- getProgramLimit(program = program,
                                 component = "valLabels")
   all_meta <- extractMeta(GADSdat, vars = vars)
-  vars_without_valLabels <- NULL
-
-  for (single_var in vars) {
-    single_meta <- all_meta[all_meta$varName == single_var,]
-    # any valLabels to check?
-    if (all(is.na(single_meta$valLabel))) {
-      vars_without_valLabels <- c(vars_without_valLabels, single_var)
-      next
-    }
-
-    # any long labels to report?
-    single_var_valLabels <- single_meta$valLabel
-    label_lengths <- nchar(single_var_valLabels, type = limit_list$unit)
-    long_label_pointer <- which(label_lengths > limit_list$value)
-    if (identical(length(long_label_pointer), 0L)) {
-      next
-    }
-
-    if (!is.null(printLength)) {
-      long_labels <- unlist(lapply(single_var_valLabels[long_label_pointer],
-                                   truncate_string,
-                                   n = printLength, unit = "char", suffix = ""))
-    }
-
-    add_out <- single_meta[long_label_pointer, c("varName", "value")]
-    add_out$valLabel <- long_labels
-    add_out$charLength <- label_lengths[long_label_pointer]
-    add_out$empty <- FALSE
-
-    # any empty long labels?
-    empty_valLabels <- checkEmptyValLabels(GADSdat, vars = single_var)[[single_var]]$value
-    if (!is.null(empty_valLabels) && any(empty_valLabels %in% add_out$value)) {
-      add_out[add_out$value %in% empty_valLabels] <- TRUE
-    }
-    out <- rbind(out, add_out)
+  if (all(is.na(all_meta$valLabel))) {
+    warning("None of the selected vars have any labeled values. No value labels were checked.")
+    return(out)
   }
 
-  if (!is.null(vars_without_valLabels) && !identical(length(vars), ncol(GADSdat$dat))) {
-    message("The following variables do not have any value labels to check: ",
-            vars_without_valLabels)
+  label_meta <- all_meta[!is.na(all_meta$valLabel),
+                         c("varName", "value", "valLabel", "missings")]
+  label_meta$charLength <- nchar(label_meta$valLabel, type = limit_list$unit)
+  label_meta$too_long <- label_meta$charLength > limit_list$value
+  if (!any(label_meta$too_long)) {
+    return(out)
+  }
+
+  column_list <- c("varName", "value", "valLabel", "charLength")
+  out[1:sum(label_meta$too_long), column_list] <- label_meta[label_meta$too_long, column_list]
+
+  for (single_var in unique(out$varName)) {
+    empty_valLabels <- checkEmptyValLabels(GADSdat, vars = single_var)[[single_var]]$value
+    out[out$varName == single_var, "empty"] <- out[out$varName == single_var, "value"] %in% empty_valLabels
+  }
+
+  if (!is.null(printLength)) {
+    out$valLabel <- unlist(lapply(out$valLabel,
+                                  truncate_string,
+                                  n = printLength + 3, unit = "char", suffix = "..."))
   }
   return(out)
 }

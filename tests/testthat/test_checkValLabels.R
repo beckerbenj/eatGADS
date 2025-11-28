@@ -11,8 +11,9 @@ test_that("Correctly identify long value labels", {
   out <- checkValLabels(GADSdat = gads, charLimits = "Stata", printLength = 40)
   expected_out <- data.frame(varName = "VAR1",
                              value = -99,
-                             valLabel = paste0(rep("a", 40),
-                                               collapse = ""),
+                             valLabel = paste0(paste0(rep("a", 40),
+                                                      collapse = ""),
+                                               "..."),
                              charLength = stata_limit + 1,
                              empty = FALSE)
   expect_equal(out, expected_out)
