@@ -17,7 +17,7 @@ Different programs impose different limits to different components of their data
  \code{Stata}'s product tiers, but also to (very) old \code{SPSS} versions. \code{eatGADS}
  offers a number of check functions - chiefly \code{\link{check4SPSS}} and
  \code{\link{check4Stata}} as wrappers - to ensure a \code{GADSdat} complies with these limits,
- and can be exported into an \link[= write_spss]{SPSS} or \link[= write_stata]{Stata} file.
+ and can be exported into an \link[=write_spss]{SPSS} or \link[=write_stata]{Stata} file.
 }
 \details{
 While datasets have several components and characteristics, the following were deemed the most

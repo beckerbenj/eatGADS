@@ -29,7 +29,9 @@
 #' and whether the value the label is attached to actually occurs in the data (\code{empty}).
 #'
 #'@examples
-#' to be added
+#' pisa2 <- pisa
+#' pisa2$labels[4, "valLabel"] <- paste0(rep("abcdefg", 4300), collapse = "")
+#' checkValLabels(pisa2)
 #'
 #'@export
 checkValLabels <- function(GADSdat, charLimits = c("SPSS", "Stata"),

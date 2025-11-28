@@ -44,6 +44,8 @@ Please note that setting \code{printLength} to \code{NULL} (and thereby deactiva
  (see \href{https://stackoverflow.com/questions/36800475/avoid-string-printed-to-console-getting-truncated-in-rstudio}{Stack Overflow}).
 }
 \examples{
-to be added
+pisa2 <- pisa
+pisa2$labels[4, "valLabel"] <- paste0(rep("abcdefg", 4300), collapse = "")
+checkValLabels(pisa2)
 
 }
