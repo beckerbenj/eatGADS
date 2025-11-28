@@ -10,7 +10,7 @@ gads_long_label <- dfSAV
 stata_limit <- getProgramLimit("Stata", "valLabels")$value
 spss_limit <- getProgramLimit("SPSS", "valLabels")$value
 gads_long_label$labels[1, "valLabel"] <- paste0(rep("a", stata_limit + 1),
-                                             collapse = "")
+                                                collapse = "")
 
 
 test_that("End early if there are no value labels to check", {
@@ -18,7 +18,7 @@ test_that("End early if there are no value labels to check", {
   expect_equal(out, default_out)
 })
 
-test_that("End early if no value labels are too long", {
+test_that("End early if all value labels are within the limits", {
   out1 <- checkValLabels(GADSdat = dfSAV, charLimits = "SPSS")
   expect_equal(out1, default_out)
 
