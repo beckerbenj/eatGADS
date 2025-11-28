@@ -6,7 +6,7 @@
 #' @examples
 #' # check variable labels
 #' pisa2$labels[1, "varLabel"] <- paste0(rep("abcdefg", 12), collapse = "")
-#' checkVarLabels(pisa2)
+#' eatGADS:::checkVarLabels(pisa2)
 #'
 checkVarLabels <- function(GADSdat, charLimits = c("SPSS", "Stata"),
                            vars = namesGADS(GADSdat), printLength = 40) {

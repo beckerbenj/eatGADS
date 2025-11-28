@@ -37,6 +37,7 @@ checkLabeledFractionals(pisa2)
 }
 \seealso{
 Other dataset compliance checks: 
+\code{\link{check4Stata}()},
 \code{\link{checkIntOverflow}()},
 \code{\link{checkValLabels}()},
 \code{\link{getProgramLimit}()}

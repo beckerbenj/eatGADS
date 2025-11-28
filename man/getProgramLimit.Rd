@@ -42,6 +42,7 @@ getProgramLimit(c("Stata", "SPSS"), "varNames")
 }
 \seealso{
 Other dataset compliance checks: 
+\code{\link{check4Stata}()},
 \code{\link{checkIntOverflow}()},
 \code{\link{checkLabeledFractionals}()},
 \code{\link{checkValLabels}()}

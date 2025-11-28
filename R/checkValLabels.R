@@ -35,7 +35,7 @@
 #' # check value labels
 #' pisa2 <- pisa
 #' pisa2$labels[4, "valLabel"] <- paste0(rep("abcdefg", 4300), collapse = "")
-#' checkValLabels(pisa2)
+#' eatGADS:::checkValLabels(pisa2)
 #'
 #' @describeIn checkValLabels Check value labels for length limits.
 checkValLabels <- function(GADSdat, charLimits = c("SPSS", "Stata"),

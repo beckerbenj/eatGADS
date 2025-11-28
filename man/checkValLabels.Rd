@@ -63,15 +63,16 @@ Please note that setting \code{printLength} to \code{NULL} (and thereby deactiva
 # check value labels
 pisa2 <- pisa
 pisa2$labels[4, "valLabel"] <- paste0(rep("abcdefg", 4300), collapse = "")
-checkValLabels(pisa2)
+eatGADS:::checkValLabels(pisa2)
 
 # check variable labels
 pisa2$labels[1, "varLabel"] <- paste0(rep("abcdefg", 12), collapse = "")
-checkVarLabels(pisa2)
+eatGADS:::checkVarLabels(pisa2)
 
 }
 \seealso{
 Other dataset compliance checks: 
+\code{\link{check4Stata}()},
 \code{\link{checkIntOverflow}()},
 \code{\link{checkLabeledFractionals}()},
 \code{\link{getProgramLimit}()}

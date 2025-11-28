@@ -3,6 +3,7 @@
 * `checkIntOverflow()` and `checkLabeledFractionals()` check if a `GADSdat` complies with Stata's requirements for data sets (#110)
 * `checkVarNames()` can now also check the lengths of variable names against program-specific restrictions (#110)
 * A list of limits to dataset components under Stata and SPSS is available in `program_limits` and via its access function `getProgramLimit()`.
+* `check4Stata()` checks if a `GADSdat` complies with all relevant limits Stata imposes on datasets (#110).
 
 ## bug fixes
 * `autoRecode()` no longer fails while applying a template that does not yet cover a value which occurs in the data more than once (#131)
