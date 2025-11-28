@@ -7,6 +7,7 @@ default_out <- data.frame(varName = character(),
                           empty = logical())
 gads_long_label <- dfSAV
 stata_limit <- getProgramLimit("Stata", "valLabels")$value
+spss_limit <- getProgramLimit("SPSS", "valLabels")$value
 gads_long_label$labels$valLabel[1] <- paste0(rep("a", stata_limit + 1),
                                              collapse = "")
 
@@ -37,6 +38,26 @@ test_that("Correctly identify long value labels", {
                              empty = FALSE)
   expect_equal(out1, expected_out)
   expect_equal(out2, expected_out)
+})
+
+test_that("Use most restrictive limit", {
+  gads_less_long_label <- gads_long_label
+  gads_less_long_label$labels[1, "valLabel"] <- paste0(rep("a", spss_limit + 1),
+                                                       collapse = "")
+  out1 <- checkValLabels(GADSdat = gads_less_long_label, charLimits = "Stata", printLength = 40)
+  out2 <- checkValLabels(GADSdat = gads_less_long_label, charLimits = "SPSS", printLength = 40)
+  out3 <- checkValLabels(GADSdat = gads_less_long_label, charLimits = c("Stata", "SPSS"),
+                         printLength = 40)
+  expected_out <- data.frame(varName = "VAR1",
+                             value = -99,
+                             valLabel = paste0(paste0(rep("a", 40),
+                                                      collapse = ""),
+                                               "..."),
+                             charLength = spss_limit + 1,
+                             empty = FALSE)
+  expect_equal(out1, default_out)
+  expect_equal(out2, expected_out)
+  expect_equal(out2, out3)
 })
 
 test_that("Return untruncated label on demand", {
