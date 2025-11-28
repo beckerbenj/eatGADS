@@ -6,6 +6,7 @@
 
 ## bug fixes
 * `autoRecode()` no longer fails while applying a template that does not yet cover a value which occurs in the data more than once (#131)
+* `autoRecode()` correctly preserves NA while applying a template (#146)
 * `changeMissings()` no longer throws an existing value error in edge cases with multiple existing value labels
 * `recodeGADS()` now correctly performs potentially sequential recodes for unlabeled values (#134)
 * arguments in `checkVarNames()` now turn on/off different checks correctly (#138)

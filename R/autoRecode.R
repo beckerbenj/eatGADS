@@ -77,6 +77,7 @@ autoRecode.GADSdat <- function(GADSdat, var, var_suffix = "", label_suffix = "",
 
     # recoding the actual data via a lookup table
     new_oldValues <- unique(GADSdat$dat[[var]][!GADSdat$dat[[var]] %in% template$oldValue])
+    new_oldValues <- new_oldValues[!is.na(new_oldValues)]
     new_newValues <- seq(from = max(template$newValue) + 1, length.out = length(new_oldValues))
     lookup <- rbind(template, data.frame(oldValue = new_oldValues, newValue = new_newValues))
     lookup_table <- data.frame(variable = new_var, lookup)
