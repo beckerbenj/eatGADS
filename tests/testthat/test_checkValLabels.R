@@ -3,12 +3,13 @@ load(file = test_path("helper_data.rda"))
 default_out <- data.frame(varName = character(),
                           value = numeric(),
                           valLabel = character(),
-                          charLength = numeric(),
+                          length = numeric(),
+                          unit = character(),
                           empty = logical())
 gads_long_label <- dfSAV
 stata_limit <- getProgramLimit("Stata", "valLabels")$value
 spss_limit <- getProgramLimit("SPSS", "valLabels")$value
-gads_long_label$labels$valLabel[1] <- paste0(rep("a", stata_limit + 1),
+gads_long_label$labels[1, "valLabel"] <- paste0(rep("a", stata_limit + 1),
                                              collapse = "")
 
 
@@ -29,15 +30,27 @@ test_that("Correctly identify long value labels", {
   out1 <- checkValLabels(GADSdat = gads_long_label, charLimits = "Stata", printLength = 40)
   out2 <- checkValLabels(GADSdat = gads_long_label, charLimits = "Stata",
                          vars = "VAR1", printLength = 40)
-  expected_out <- data.frame(varName = "VAR1",
-                             value = -99,
-                             valLabel = paste0(paste0(rep("a", 40),
-                                                      collapse = ""),
-                                               "..."),
-                             charLength = stata_limit + 1,
-                             empty = FALSE)
-  expect_equal(out1, expected_out)
-  expect_equal(out2, expected_out)
+  expected_out12 <- data.frame(varName = "VAR1",
+                               value = -99,
+                               valLabel = paste0(paste0(rep("a", 40),
+                                                        collapse = ""),
+                                                 "..."),
+                               length = stata_limit + 1,
+                               unit = "byte",
+                               empty = FALSE)
+  expect_equal(out1, expected_out12)
+  expect_equal(out2, expected_out12)
+
+  gads_long_byte <- gads_long_label
+  gads_long_byte$labels[1, "valLabel"] <- paste0(rep("ä", round(stata_limit / 2) + 1),
+                                                 collapse = "")
+  out3 <- checkValLabels(GADSdat = gads_long_byte, charLimits = "Stata", printLength = 40)
+  expected_out3 <- expected_out12
+  expected_out3$length <- (round(stata_limit / 2) + 1) * 2
+  expected_out3$valLabel <- paste0(paste0(rep("ä", 40),
+                                          collapse = ""),
+                                   "...")
+  expect_equal(out3, expected_out3)
 })
 
 test_that("Use most restrictive limit", {
@@ -53,11 +66,12 @@ test_that("Use most restrictive limit", {
                              valLabel = paste0(paste0(rep("a", 40),
                                                       collapse = ""),
                                                "..."),
-                             charLength = spss_limit + 1,
+                             length = spss_limit + 1,
+                             unit = "byte",
                              empty = FALSE)
   expect_equal(out1, default_out)
   expect_equal(out2, expected_out)
-  expect_equal(out2, out3)
+  expect_equal(out3, expected_out)
 })
 
 test_that("Return untruncated label on demand", {
@@ -66,7 +80,8 @@ test_that("Return untruncated label on demand", {
                              value = -99,
                              valLabel = paste0(rep("a", stata_limit + 1),
                                                collapse = ""),
-                             charLength = stata_limit + 1,
+                             length = stata_limit + 1,
+                             unit = "byte",
                              empty = FALSE)
   expect_equal(out, expected_out)
 })
@@ -80,7 +95,8 @@ test_that("Report on empty long labels", {
                              valLabel = paste0(paste0(rep("a", 40),
                                                       collapse = ""),
                                                "..."),
-                             charLength = stata_limit + 1,
+                             length = stata_limit + 1,
+                             unit = "byte",
                              empty = TRUE)
   expect_equal(out, expected_out)
 })

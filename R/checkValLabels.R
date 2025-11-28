@@ -46,7 +46,8 @@ checkValLabels <- function(GADSdat, charLimits = c("SPSS", "Stata"),
   out <- data.frame(varName = character(),
                     value = numeric(),
                     valLabel = character(),
-                    charLength = numeric(),
+                    length = numeric(),
+                    unit = character(),
                     empty = logical())
   limit_list <- getProgramLimit(program = program,
                                 component = "valLabels")
@@ -58,14 +59,15 @@ checkValLabels <- function(GADSdat, charLimits = c("SPSS", "Stata"),
 
   label_meta <- all_meta[!is.na(all_meta$valLabel),
                          c("varName", "value", "valLabel", "missings")]
-  label_meta$charLength <- nchar(label_meta$valLabel, type = limit_list$unit)
-  label_meta$too_long <- label_meta$charLength > limit_list$value
+  label_meta$length <- nchar(label_meta$valLabel, type = limit_list$unit)
+  label_meta$too_long <- label_meta$length > limit_list$value
   if (!any(label_meta$too_long)) {
     return(out)
   }
 
-  column_list <- c("varName", "value", "valLabel", "charLength")
+  column_list <- c("varName", "value", "valLabel", "length")
   out[1:sum(label_meta$too_long), column_list] <- label_meta[label_meta$too_long, column_list]
+  out$unit <- limit_list$unit
 
   for (single_var in unique(out$varName)) {
     empty_valLabels <- checkEmptyValLabels(GADSdat, vars = single_var)[[single_var]]$value
