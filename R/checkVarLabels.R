@@ -8,7 +8,6 @@
 #' pisa2$labels[1, "varLabel"] <- paste0(rep("abcdefg", 12), collapse = "")
 #' checkVarLabels(pisa2)
 #'
-#' @export
 checkVarLabels <- function(GADSdat, charLimits = c("SPSS", "Stata"),
                            vars = namesGADS(GADSdat), printLength = 40) {
   check_GADSdat(GADSdat)

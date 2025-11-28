@@ -38,7 +38,6 @@
 #' checkValLabels(pisa2)
 #'
 #' @describeIn checkValLabels Check value labels for length limits.
-#' @export
 checkValLabels <- function(GADSdat, charLimits = c("SPSS", "Stata"),
                            vars = namesGADS(GADSdat), printLength = 40) {
   check_GADSdat(GADSdat)
