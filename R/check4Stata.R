@@ -138,13 +138,5 @@ check4Stata <- function(GADSdat, version = NULL) {
 
   #attr(out[[7]], "label") <- "5 - long variable labels"
   #attr(out[[8]], "label") <- "5 - long value labels"
-  # names(out) <- c("overall verdict",
-  #                 "1 - variable names with dots",
-  #                 "1 - variable names with special characters",
-  #                 "2 - long variable names",
-  #                 "3 - labeled fractional values",
-  #                 "4 - labeled values that are too large to coerce",
-  #                 "5 - long variable labels",
-  #                 "5 - long value labels")
   return(out)
 }
