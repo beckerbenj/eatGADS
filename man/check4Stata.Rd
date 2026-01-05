@@ -31,7 +31,8 @@ Specifically, the following requirements are tested:
  \item All labeled values can be coerced \code{as.integer} (\link{checkIntOverflow}).
  \item Variable labels and value labels are not longer than the specific limits
   (\link{checkVarLabels}; \link{checkValLabels}).
- \item String variables do not have value labels.
+ \item String variables do not have value labels. Currently, this is not allowed for
+   \code{GADSdat} objects, anyway.
  \item String variables do not contain string values that are longer than the specific limit.
  \item The numbers of rows/observations and columns/variables do not exceed the specific limits.
 }
