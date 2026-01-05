@@ -50,21 +50,21 @@ check4Stata <- function(GADSdat, version = NULL) {
   out <- list()
 
   # varNames with dots or special characters
-  other_gads <- checkVarNames(GADSdat = GADSdat,
-                              checkKeywords = FALSE,
-                              checkDots = TRUE,
-                              charLimits = NULL)
-  names_fixEncoding <- fixEncoding(namesGADS(GADSdat))
+  other_gads <- suppressMessages(checkVarNames(GADSdat = GADSdat,
+                                               checkKeywords = FALSE,
+                                               checkDots = TRUE,
+                                               charLimits = NULL))
+  names_fixEncoding <- suppressMessages(fixEncoding(namesGADS(GADSdat)))
   out$r1_dots <- namesGADS(GADSdat)[!namesGADS(GADSdat) %in% namesGADS(other_gads)]
   out$r1_specchars <- namesGADS(GADSdat)[!namesGADS(GADSdat) %in% names_fixEncoding]
   #attr(out[[2]], "label") <- "1 - variable names with dots"
   #attr(out[[3]], "label") <- "1 - variable names with special characters"
 
   # varNames too long
-  names_truncated <- checkVarNames(GADSdat = namesGADS(GADSdat),
-                                   checkKeywords = FALSE,
-                                   checkDots = FALSE,
-                                   charLimits = "Stata")
+  names_truncated <- suppressMessages(checkVarNames(GADSdat = namesGADS(GADSdat),
+                                                    checkKeywords = FALSE,
+                                                    checkDots = FALSE,
+                                                    charLimits = "Stata"))
   out$r2_longNames <- namesGADS(GADSdat)[!namesGADS(GADSdat) %in% names_truncated]
   #attr(out[[4]], "label") <- "2 - long variable names"
 
@@ -77,10 +77,10 @@ check4Stata <- function(GADSdat, version = NULL) {
   #attr(out[[6]], "label") <- "4 - labeled values that are too large to coerce"
 
   # varLabels or valLabels too long
-  out$r5_varLabels <- checkVarLabels(GADSdat = GADSdat,
-                                     charLimits = version)
-  out$r5_valLabels <- checkValLabels(GADSdat = GADSdat,
-                                     charLimits = version)
+  out$r5_varLabels <- suppressMessages(checkVarLabels(GADSdat = GADSdat,
+                                                      charLimits = "Stata"))
+  out$r5_valLabels <- suppressMessages(checkValLabels(GADSdat = GADSdat,
+                                                      charLimits = "Stata"))
 
   # labeled strings
   char_vars <- namesGADS(GADSdat)[give_GADSdat_classes(GADSdat) == "character"]
