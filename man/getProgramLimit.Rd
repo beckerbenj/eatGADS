@@ -19,8 +19,8 @@ A list of two elements: \code{value} (numeric size of the limit) and
  \code{unit} ("char", "byte", or "generic").
 }
 \description{
-Get the (most restrictive) limit that \code{SPSS} and/or \code{Stata} imposes on a specific
- aspect of a dataset.
+Get the (most restrictive) \link[=program_limits]{limits} that \code{SPSS} and/or \code{Stata}
+ imposes on a specific aspect of a dataset.
 }
 \details{
 For more details about program specific limits as well as a full list, see \link{program_limits}.

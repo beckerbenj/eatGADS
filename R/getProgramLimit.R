@@ -1,8 +1,8 @@
 
 #' Get program specific limits
 #'
-#' Get the (most restrictive) limit that \code{SPSS} and/or \code{Stata} imposes on a specific
-#'  aspect of a dataset.
+#' Get the (most restrictive) \link[=program_limits]{limits} that \code{SPSS} and/or \code{Stata}
+#'  imposes on a specific aspect of a dataset.
 #'
 #' For more details about program specific limits as well as a full list, see \link{program_limits}.
 #'  In \code{program}, \code{"SPSS"} implies \code{SPSS 30}, and \code{"Stata"} implies
