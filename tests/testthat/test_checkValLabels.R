@@ -14,7 +14,7 @@ gads_long_label$labels[1, "valLabel"] <- paste0(rep("a", stata_limit + 1),
 
 
 test_that("End early if there are no value labels to check", {
-  expect_warning(out <- checkValLabels(GADSdat = df1, charLimits = "SPSS"))
+  expect_message(out <- checkValLabels(GADSdat = df1, charLimits = "SPSS"))
   expect_equal(out, default_out)
 })
 

@@ -12,7 +12,7 @@ gads_long_label$labels[1, "varLabel"] <- paste0(rep("a", stata_limit + 1),
 
 
 test_that("End early if there are no variable labels to check", {
-  expect_warning(out <- checkVarLabels(GADSdat = df1, charLimits = "SPSS"))
+  expect_message(out <- checkVarLabels(GADSdat = df1, charLimits = "SPSS"))
   expect_equal(out, default_out)
 })
 
