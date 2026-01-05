@@ -15,7 +15,8 @@
 #'  \item All labeled values can be coerced \code{as.integer} (\link{checkIntOverflow}).
 #'  \item Variable labels and value labels are not longer than the specific limits
 #'   (\link{checkVarLabels}; \link{checkValLabels}).
-#'  \item String variables do not have value labels.
+#'  \item String variables do not have value labels. Currently, this is not allowed for
+#'    \code{GADSdat} objects, anyway.
 #'  \item String variables do not contain string values that are longer than the specific limit.
 #'  \item The numbers of rows/observations and columns/variables do not exceed the specific limits.
 #' }
@@ -83,9 +84,11 @@ check4Stata <- function(GADSdat, version = NULL) {
 
   # labeled strings
   char_vars <- namesGADS(GADSdat)[give_GADSdat_classes(GADSdat) == "character"]
-  meta_of_char_vars <- extractMeta(GADSdat, char_vars)
-  out$r6_labeledStrings <- meta_of_char_vars[!is.na(meta_of_char_vars$valLabel),
-                                             c("varName", "varLabel", "value", "valLabel", "missings")]
+  ## deactivated because check_GADSdat() already blocks labeled (true) strings ##
+  # meta_of_char_vars <- extractMeta(GADSdat, char_vars)
+  # out$r6_labeledStrings <- meta_of_char_vars[!is.na(meta_of_char_vars$valLabel),
+  #                                            c("varName", "varLabel", "value", "valLabel", "missings")]
+  out$r6_labeledStrings <- GADSdat$labels[0,]
 
   # long strings
   limit_list <- getProgramLimit(version, "stringvars")
