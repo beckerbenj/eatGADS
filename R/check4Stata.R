@@ -131,7 +131,7 @@ check4Stata <- function(GADSdat, version = NULL) {
     }
     return(FALSE)
   })
-  out$verdict <- all(isTRUE(good_results))
+  out$verdict <- isTRUE(all(unlist(good_results)))
   out <- out[c("verdict", names(out)[names(out) != "verdict"])]
   #attr(out[[1]], "label") <- "overall verdict"
 
