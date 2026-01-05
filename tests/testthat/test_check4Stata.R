@@ -8,7 +8,6 @@ good_gads <- changeMissings(good_gads, "selfeff", 99, "miss")
 good_gads <- changeValLabels(good_gads, "selfeff",
                              c(1, 3, 99),
                              c("amazing", "mediocre", "missing by intention"))
-statalimits <- program_limits[program_limits$program == "Stata",]
 
 test_that("Output has correct format, regardless of result", {
   result_good <- check4Stata(good_gads)
@@ -43,7 +42,7 @@ test_that("Correctly identify 'bad' datasets using other checks", {
   # long variable names
   bad_gads <- good_gads
   names(bad_gads[[1]])[[2]] <- bad_gads$labels$varName[[2]] <-
-    paste0(rep("a", statalimits[statalimits$component == "varNames", "value"] + 1), collapse = "")
+    paste0(rep("a", getProgramLimit("Stata", "varNames")$value + 1), collapse = "")
   expect_silent(result_longname <- check4Stata(bad_gads))
 
   # labeled fractionals
@@ -58,9 +57,9 @@ test_that("Correctly identify 'bad' datasets using other checks", {
 
   # long labels
   bad_gads <- good_gads
-  bad_gads$labels$valLabel[[3]] <- paste0(rep("a", statalimits[statalimits$component == "valLabels", "value"] + 1),
+  bad_gads$labels$valLabel[[3]] <- paste0(rep("a", getProgramLimit("Stata", "valLabels")$value + 1),
                                           collapse = "")
-  bad_gads$labels$varLabel[[1]] <- paste0(rep("a", statalimits[statalimits$component == "varLabels", "value"] + 1),
+  bad_gads$labels$varLabel[[1]] <- paste0(rep("a", getProgramLimit("Stata", "varLabels")$value + 1),
                                           collapse = "")
   expect_silent(result_longlab <- check4Stata(bad_gads))
 
@@ -100,7 +99,7 @@ test_that("Correctly identify labeled strings (not really needed rn)", {
 
 test_that("Correctly identify long strings", {
   okay_gads <- good_gads
-  longstring <- paste0(rep("a", statalimits[statalimits$component == "stringvars", "value"]),
+  longstring <- paste0(rep("a", getProgramLimit("Stata", "stringvars")$value),
                        collapse = "")
   okay_gads$dat$somevar[[2]] <- longstring
   expect_silent(result_longstring <- check4Stata(okay_gads))
@@ -116,8 +115,7 @@ test_that("Correctly identify long strings", {
 })
 
 test_that("Correctly identify huge datasets", {
-  too_many_cols <- program_limits$value[program_limits$program == "Stata 19/BE" &
-                                          program_limits$component == "ncols"] + 1
+  too_many_cols <- getProgramLimit("Stata 19/BE", "ncols")$value + 1
   widedf <- as.data.frame(matrix(1:too_many_cols, ncol = too_many_cols))
   widegads <- import_DF(widedf)
   expect_silent(result_manycols <- check4Stata(widegads, version = "Stata 19/BE"))
@@ -125,7 +123,7 @@ test_that("Correctly identify huge datasets", {
   expect_equal(result_manycols$r8_surplusCols, 1)
 
   # Limits for the number of rows is not really testable because they blow up the memory.
-  # too_many_rows <- statalimits[statalimits$component == "nrows", "value"] + 1
+  # too_many_rows <- getProgramLimit("Stata", "nrows")$value + 1
   # longdf <- as.data.frame(matrix(1:too_many_rows, nrow = too_many_rows))
   # longgads <- import_DF(data.frame(x = 1))
   # longgads$dat <- longdf
