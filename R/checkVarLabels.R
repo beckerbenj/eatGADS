@@ -25,7 +25,7 @@ checkVarLabels <- function(GADSdat, charLimits = c("SPSS", "Stata"),
                                 component = "varLabels")
   all_meta <- extractMeta(GADSdat, vars = vars)
   if (all(is.na(all_meta$varLabel))) {
-    warning("None of the selected vars have a variable label. No checks were performed.")
+    message("None of the selected vars have a variable label. No checks were performed.")
     return(out)
   }
 
