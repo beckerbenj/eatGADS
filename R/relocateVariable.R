@@ -28,14 +28,14 @@ relocateVariable <- function(GADSdat, var, after = NULL) {
 #'@export
 relocateVariable.GADSdat <- function(GADSdat, var, after = NULL) {
   check_GADSdat(GADSdat)
-  check_single_varName(var)
+  check_characterArgument(var)
   check_vars_in_GADSdat(GADSdat, vars = var)
 
   nams <- namesGADS(GADSdat)
   where_var <- match(var, nams)
 
   if(!is.null(after)) {
-    check_single_varName(after)
+    check_characterArgument(after)
     check_vars_in_GADSdat(GADSdat, vars = after)
     where_after <- match(after, nams)
   } else {
