@@ -48,3 +48,11 @@ test_that("check_numericArgument", {
                "'test' needs to be a numeric vector of length 1.")
   expect_silent(check_numericArgument(1, "test"))
 })
+
+test_that("Argument name is recycled if no argName is provided", {
+  somearg <- "test"
+  expect_match(try(check_logicalArgument(somearg)), "*?somearg*?")
+  expect_match(try(check_numericArgument(somearg)), "*?somearg*?")
+  somearg <- 5
+  expect_match(try(check_characterArgument(somearg)), "*?somearg*?")
+})
