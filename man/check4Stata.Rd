@@ -13,9 +13,10 @@ check4Stata(GADSdat, version = c("Stata", "Stata 19/BE", "Stata 19/MP"))
 (see details).}
 }
 \value{
-A list of check results (enumerated corresponding to the list above), headed by an
- overall \code{verdict} if the \code{GADSdat} is compatible (\code{TRUE}) or if problems have
- been detected (\code{FALSE}).
+Either \code{NULL} if all checks are passed successfully, or a \code{list} of all
+ check results (see details for explanations for the keywords) if any problem was detected,
+ including a verdict whether any of the problems is show-stopping (\code{"hard issue"}) or will
+ be solved automatically in the export process by truncating (\code{"soft issue"}).
 }
 \description{
 This function performs all relevant checks to assess if a \code{GADSdat} complies with all of

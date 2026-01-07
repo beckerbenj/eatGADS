@@ -27,9 +27,10 @@
 #' @param version Optional single string to request checks for a specific Stata version
 #'  (see details).
 #'
-#' @returns A list of check results (enumerated corresponding to the list above), headed by an
-#'  overall \code{verdict} if the \code{GADSdat} is compatible (\code{TRUE}) or if problems have
-#'  been detected (\code{FALSE}).
+#' @returns Either \code{NULL} if all checks are passed successfully, or a \code{list} of all
+#'  check results (see details for explanations for the keywords) if any problem was detected,
+#'  including a verdict whether any of the problems is show-stopping (\code{"hard issue"}) or will
+#'  be solved automatically in the export process by truncating (\code{"soft issue"}).
 #'
 #' @family dataset compliance checks
 #'
@@ -43,7 +44,7 @@ check4Stata <- function(GADSdat, version = c("Stata", "Stata 19/BE", "Stata 19/M
 
   out <- list()
 
-  # varNames with dots or special characters
+  # varNames with dots or special characters -> show-stopping
   other_gads <- suppressMessages(checkVarNames(GADSdat = GADSdat,
                                                checkKeywords = FALSE,
                                                checkDots = TRUE,
@@ -52,30 +53,30 @@ check4Stata <- function(GADSdat, version = c("Stata", "Stata 19/BE", "Stata 19/M
   out$dots_in_varNames <- namesGADS(GADSdat)[!namesGADS(GADSdat) %in% namesGADS(other_gads)]
   out$special_chars_in_varNames <- namesGADS(GADSdat)[!namesGADS(GADSdat) %in% names_fixEncoding]
 
-  # varNames too long
+  # varNames too long -> show-stopping
   names_truncated <- suppressMessages(checkVarNames(GADSdat = namesGADS(GADSdat),
                                                     checkKeywords = FALSE,
                                                     checkDots = FALSE,
                                                     charLimits = "Stata"))
   out$varName_length <- namesGADS(GADSdat)[!namesGADS(GADSdat) %in% names_truncated]
 
-  # labeled fractional values
+  # labeled fractional values -> show-stopping
   out$labeled_fractionals <- checkLabeledFractionals(GADSdat = GADSdat)
 
-  # too large labeled values
+  # too large labeled values -> show-stopping
   out$large_integers <- checkIntOverflow(GADSdat = GADSdat)
 
-  # varLabels or valLabels too long
+  # varLabels or valLabels too long -> will be truncated
   out$varLabel_length <- suppressMessages(checkVarLabels(GADSdat = GADSdat,
                                                          charLimits = "Stata"))
   out$valLabel_length <- suppressMessages(checkValLabels(GADSdat = GADSdat,
                                                          charLimits = "Stata"))
 
-  # labeled strings
+  # labeled strings -> show-stopping
   char_vars <- namesGADS(GADSdat)[give_GADSdat_classes(GADSdat) == "character"]
   ## deactivated because check_GADSdat() already blocks labeled (true) strings ##
 
-  # long strings
+  # long strings -> exportable but not usable
   limit_list <- getProgramLimit(version, "stringvars")
   report_long_strings <- data.frame(varName = character(),
                                     string = character())
@@ -91,8 +92,9 @@ check4Stata <- function(GADSdat, version = c("Stata", "Stata 19/BE", "Stata 19/M
                                               string = strings_truncated))
     }
   }
+  out$long_strings <- report_long_strings
 
-  # too many rows or columns
+  # too many rows or columns -> show-stopping
   row_limit <- getProgramLimit(version, "nrows")
   col_limit <- getProgramLimit(version, "ncols")
   out$too_many_rows <- ifelse(nrow(GADSdat$dat) > row_limit$value,
@@ -100,22 +102,46 @@ check4Stata <- function(GADSdat, version = c("Stata", "Stata 19/BE", "Stata 19/M
                               no = 0)
   out$too_many_cols <- ifelse(ncol(GADSdat$dat) > col_limit$value,
                               yes = ncol(GADSdat$dat) - col_limit$value,
+                              no = 0)
 
   # final verdict
-  good_results <- lapply(out, function(result) {
-    if (length(result) == 0) {
+  req_hard <- c("dots_in_varNames",
+                "special_chars_in_varNames",
+                "varName_length",
+                "labeled_fractionals",
+                "large_integers",
+                "too_many_rows",
+                "too_many_cols")
+  req_soft <- c("varLabel_length",
+                "valLabel_length",
+                "long_strings")
+  res_hard <- lapply(out[req_hard], function(result) {
+    if (length(result) == 0 |
+        (is.data.frame(result) && nrow(result) == 0) |
+        (length(result) == 1 && result == 0)) {
       return(TRUE)
+    } else {
+      return(FALSE)
     }
-    if (identical(nrow(result), 0L)) {
-      return(TRUE)
-    }
-    if (length(result) == 1 && result == 0) {
-      return(TRUE)
-    }
-    return(FALSE)
   })
-  out$verdict <- isTRUE(all(unlist(good_results)))
-  out <- out[c("verdict", names(out)[names(out) != "verdict"])]
+  res_soft <- lapply(out[req_soft], function(result) {
+    if (length(result) == 0 |
+        (is.data.frame(result) && nrow(result) == 0) |
+        (length(result) == 1 && result == 0)) {
+      return(TRUE)
+    } else {
+      return(FALSE)
+    }
+  })
 
+  if (isTRUE(all(unlist(res_hard))) && isTRUE(all(unlist(res_soft)))) {
+    return(NULL)
+  }
+  if (isTRUE(all(unlist(res_hard))) && !isTRUE(all(unlist(res_soft)))) {
+    out$verdict <- "soft issue"
+  } else {
+    out$verdict <- "hard issue"
+  }
+  out <- out[c("verdict", names(out)[names(out) != "verdict"])]
   return(out)
 }
