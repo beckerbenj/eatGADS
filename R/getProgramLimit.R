@@ -16,8 +16,6 @@
 #' @return A list of two elements: \code{value} (numeric size of the limit) and
 #'  \code{unit} ("char", "byte", or "generic").
 #'
-#' @family dataset compliance checks
-#'
 #' @examples
 #' # Show all implemented limits
 #' program_limits

@@ -33,3 +33,9 @@ pisa2 <- changeVarLabels(pisa, varName = "computer_age",
 check4SPSS(pisa2)
 
 }
+\seealso{
+Other dataset compliance checks: 
+\code{\link{check4Stata}()},
+\code{\link{checkValLabels}()}
+}
+\concept{dataset compliance checks}

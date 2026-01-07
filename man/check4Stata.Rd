@@ -47,9 +47,7 @@ check4Stata(pisa)
 }
 \seealso{
 Other dataset compliance checks: 
-\code{\link{checkIntOverflow}()},
-\code{\link{checkLabeledFractionals}()},
-\code{\link{checkValLabels}()},
-\code{\link{getProgramLimit}()}
+\code{\link{check4SPSS}()},
+\code{\link{checkValLabels}()}
 }
 \concept{dataset compliance checks}

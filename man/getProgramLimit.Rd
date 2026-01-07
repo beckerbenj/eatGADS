@@ -40,11 +40,3 @@ getProgramLimit("SPSS", "varNames")
 #  both SPSS and Stata 19/SE
 getProgramLimit(c("Stata", "SPSS"), "varNames")
 }
-\seealso{
-Other dataset compliance checks: 
-\code{\link{check4Stata}()},
-\code{\link{checkIntOverflow}()},
-\code{\link{checkLabeledFractionals}()},
-\code{\link{checkValLabels}()}
-}
-\concept{dataset compliance checks}

@@ -17,6 +17,8 @@
 #'@return Returns a list with the entries \code{"varNames_special"}, \code{"varNames_length"},
 #'\code{"varLabels"}, \code{"valLabels"} and \code{"missings"}.
 #'
+#'@family dataset compliance checks
+#'
 #'@examples
 #'# Change example data set (create a violating label)
 #' pisa2 <- changeVarLabels(pisa, varName = "computer_age",

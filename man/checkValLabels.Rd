@@ -72,9 +72,7 @@ eatGADS:::checkVarLabels(pisa2)
 }
 \seealso{
 Other dataset compliance checks: 
-\code{\link{check4Stata}()},
-\code{\link{checkIntOverflow}()},
-\code{\link{checkLabeledFractionals}()},
-\code{\link{getProgramLimit}()}
+\code{\link{check4SPSS}()},
+\code{\link{check4Stata}()}
 }
 \concept{dataset compliance checks}
