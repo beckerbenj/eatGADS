@@ -21,13 +21,14 @@
 #'  \item The numbers of rows/observations and columns/variables do not exceed the specific limits.
 #' }
 #' Limits to different aspects of the dataset differ between the versions of the software. By
-#'  default, compliance with the limits for \code{Stata 19/SE} is checked. Checks against the
-#'  limits for \code{Stata 19/BE} or \code{Stata 19/MP} can be requested by specifying
-#'  \code{version} with the corresponding string. For more details, see \link{program_limits}.
+#'  default (\code{version = "Stata"}), compliance with the limits for \code{Stata 19/SE} is
+#'  checked. Checks against the limits for \code{Stata 19/BE} or \code{Stata 19/MP} can be
+#'  requested by specifying \code{version} with the corresponding string.
+#'  For more details, see \link{program_limits}.
 #'
 #' @param GADSdat A \code{GADSdat} object.
-#' @param version Optional single string to request checks for a different Stata version
-#'  (see details)
+#' @param version Optional single string to request checks for a specific Stata version
+#'  (see details).
 #'
 #' @returns A list of check results (enumerated corresponding to the list above), headed by an
 #'  overall \code{verdict} if the \code{GADSdat} is compatible (\code{TRUE}) or if problems have
@@ -39,13 +40,9 @@
 #' check4Stata(pisa)
 #'
 #' @export
-check4Stata <- function(GADSdat, version = NULL) {
+check4Stata <- function(GADSdat, version = c("Stata", "Stata 19/BE", "Stata 19/MP")) {
   check_GADSdat(GADSdat)
-  if (is.null(version)) {
-    version <- "Stata"
-  } else {
-    version <- match.arg(version, c("Stata 19/BE", "Stata 19/MP"))
-  }
+  version <- match.arg(version, several.ok = TRUE)[[1]]
 
   out <- list()
 

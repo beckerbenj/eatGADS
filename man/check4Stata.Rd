@@ -4,13 +4,13 @@
 \alias{check4Stata}
 \title{Check a \code{GADSdat} for compatibility with \code{Stata}.}
 \usage{
-check4Stata(GADSdat, version = NULL)
+check4Stata(GADSdat, version = c("Stata", "Stata 19/BE", "Stata 19/MP"))
 }
 \arguments{
 \item{GADSdat}{A \code{GADSdat} object.}
 
-\item{version}{Optional single string to request checks for a different Stata version
-(see details)}
+\item{version}{Optional single string to request checks for a specific Stata version
+(see details).}
 }
 \value{
 A list of check results (enumerated corresponding to the list above), headed by an
