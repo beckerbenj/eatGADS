@@ -24,22 +24,20 @@ This function performs all relevant checks to assess if a \code{GADSdat} complie
 }
 \details{
 Specifically, the following requirements are tested:
-\enumerate{
- \item Variable names do not contain dots or special characters.
- \item Variable names are not longer than the specific limit (\link{checkVarNames}).
- \item There are no labeled fractional values like \code{99.9} (\link{checkLabeledFractionals}).
- \item All labeled values can be coerced \code{as.integer} (\link{checkIntOverflow}).
- \item Variable labels and value labels are not longer than the specific limits
-  (\link{checkVarLabels}; \link{checkValLabels}).
- \item String variables do not have value labels. Currently, this is not allowed for
-   \code{GADSdat} objects, anyway.
- \item String variables do not contain string values that are longer than the specific limit.
- \item The numbers of rows/observations and columns/variables do not exceed the specific limits.
+\tabular{rll}{
+ dots_in_varNames + special_chars_in_varNames \tab - \tab Variable names do not contain dots or special characters. \cr
+ varName_length \tab - \tab Variable names are not longer than the specific limit (\link{checkVarNames}). \cr
+ labeled_fractionals \tab - \tab There are no labeled fractional values like \code{99.9} (\link{checkLabeledFractionals}). \cr
+ large_integers \tab - \tab All labeled values can be coerced \code{as.integer} (\link{checkIntOverflow}). \cr
+ varLabel_length + valLabel_length \tab - \tab Variable labels and value labels are not longer than the specific limits (\link{checkVarLabels}; \link{checkValLabels}). \cr
+ long_strings \tab - \tab String variables do not contain string values that are longer than the specific limit. \cr
+ too_many_rows + too_many_cols \tab - \tab The numbers of rows/observations and columns/variables do not exceed the specific limits. \cr
 }
 Limits to different aspects of the dataset differ between the versions of the software. By
- default, compliance with the limits for \code{Stata 19/SE} is checked. Checks against the
- limits for \code{Stata 19/BE} or \code{Stata 19/MP} can be requested by specifying
- \code{version} with the corresponding string. For more details, see \link{program_limits}.
+ default (\code{version = "Stata"}), compliance with the limits for \code{Stata 19/SE} is
+ checked. Checks against the limits for \code{Stata 19/BE} or \code{Stata 19/MP} can be
+ requested by specifying \code{version} with the corresponding string.
+ For more details, see \link{program_limits}.
 }
 \examples{
 check4Stata(pisa)

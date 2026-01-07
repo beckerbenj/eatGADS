@@ -20,17 +20,17 @@ test_that("Output has correct format, regardless of result", {
   expect_type(result_bad, "list")
   expect_length(result_good, 12)
   expect_length(result_bad, 12)
-  listnames <- c("verdict",
-                 "r1_dots", "r1_specchars",
-                 "r2_longNames",
-                 "r3_labeledFractionals",
-                 "r4_largeIntegers",
-                 "r5_varLabels", "r5_valLabels",
-                 "r6_labeledStrings",
-                 "r7_longStrings",
-                 "r8_surplusRows", "r8_surplusCols")
-  expect_named(result_good, listnames)
-  expect_named(result_bad, listnames)
+  expect_named(result_bad, c("verdict",
+                             "dots_in_varNames",
+                             "special_chars_in_varNames",
+                             "varName_length",
+                             "labeled_fractionals",
+                             "large_integers",
+                             "varLabel_length",
+                             "valLabel_length",
+                             "long_strings",
+                             "too_many_rows",
+                             "too_many_cols"))
 })
 
 test_that("Correctly identify 'good' datasets", {
@@ -75,18 +75,18 @@ test_that("Correctly identify variable names with dots and special characters", 
   names(bad_gads1[[1]])[[1]] <- bad_gads1$labels$varName[[1]] <- "id.stud"
   expect_silent(result_dots <- check4Stata(bad_gads1))
   expect_false(result_dots$verdict)
-  expect_equal(result_dots$r1_dots, "id.stud")
+  expect_equal(result_dots$dots_in_varNames, "id.stud")
 
   names(bad_gads2[[1]])[[1]] <- bad_gads2$labels$varName[[1]] <- "idstüd"
   expect_silent(result_specchar <- check4Stata(bad_gads2))
   expect_false(result_specchar$verdict)
-  expect_equal(result_specchar$r1_specchars, "idstüd")
+  expect_equal(result_specchar$special_chars_in_varNames, "idstüd")
 
   names(bad_gads3[[1]])[[1]] <- bad_gads3$labels$varName[[1]] <- "id.stüd"
   expect_silent(result_dotandspec <- check4Stata(bad_gads3))
   expect_false(result_specchar$verdict)
-  expect_equal(result_dotandspec$r1_dots, "id.stüd")
-  expect_equal(result_dotandspec$r1_specchars, "id.stüd")
+  expect_equal(result_dotandspec$dots_in_varNames, "id.stüd")
+  expect_equal(result_dotandspec$special_chars_in_varNames, "id.stüd")
 })
 
 test_that("Correctly identify labeled strings (not really needed rn)", {
@@ -109,22 +109,25 @@ test_that("Correctly identify long strings", {
   bad_gads$dat$somevar[[2]] <- paste0(longstring, "a")
   expect_silent(result_2longstring <- check4Stata(bad_gads))
   expect_false(result_2longstring$verdict)
-  expect_equal(result_2longstring$r7_longStrings,
+  expect_equal(result_2longstring$long_strings,
                data.frame(varName = "somevar",
                           string = paste0(paste0(rep("a", 37), collapse = ""), "...")))
 })
 
 test_that("Correctly identify huge datasets", {
   too_many_cols <- getProgramLimit("Stata 19/BE", "ncols")$value + 1
-  widedf <- as.data.frame(matrix(1:too_many_cols, ncol = too_many_cols))
+  widedf <- as.data.frame(t(vector(mode = "logical", length = too_many_cols)))
   widegads <- import_DF(widedf)
   expect_silent(result_manycols <- check4Stata(widegads, version = "Stata 19/BE"))
   expect_false(result_manycols$verdict)
-  expect_equal(result_manycols$r8_surplusCols, 1)
+  expect_equal(result_manycols$too_many_cols, 1)
 
   # Limits for the number of rows is not really testable because they blow up the memory.
   # too_many_rows <- getProgramLimit("Stata", "nrows")$value + 1
-  # longdf <- as.data.frame(matrix(1:too_many_rows, nrow = too_many_rows))
+  # longdf <- as.data.frame(vector(mode = "logical", length = too_many_rows))
   # longgads <- import_DF(data.frame(x = 1))
   # longgads$dat <- longdf
+  # expect_silent(result_manyrows <- check4Stata(longgads, version = "Stata 19/BE"))
+  # expect_equal(result_manyrows$verdict, "hard issue")
+  # expect_equal(result_manyrows$too_many_rows, 1)
 })

@@ -8,17 +8,14 @@
 #'  \link{write_stata}.
 #'
 #' Specifically, the following requirements are tested:
-#' \enumerate{
-#'  \item Variable names do not contain dots or special characters.
-#'  \item Variable names are not longer than the specific limit (\link{checkVarNames}).
-#'  \item There are no labeled fractional values like \code{99.9} (\link{checkLabeledFractionals}).
-#'  \item All labeled values can be coerced \code{as.integer} (\link{checkIntOverflow}).
-#'  \item Variable labels and value labels are not longer than the specific limits
-#'   (\link{checkVarLabels}; \link{checkValLabels}).
-#'  \item String variables do not have value labels. Currently, this is not allowed for
-#'    \code{GADSdat} objects, anyway.
-#'  \item String variables do not contain string values that are longer than the specific limit.
-#'  \item The numbers of rows/observations and columns/variables do not exceed the specific limits.
+#' \tabular{rll}{
+#'  dots_in_varNames + special_chars_in_varNames \tab - \tab Variable names do not contain dots or special characters. \cr
+#'  varName_length \tab - \tab Variable names are not longer than the specific limit (\link{checkVarNames}). \cr
+#'  labeled_fractionals \tab - \tab There are no labeled fractional values like \code{99.9} (\link{checkLabeledFractionals}). \cr
+#'  large_integers \tab - \tab All labeled values can be coerced \code{as.integer} (\link{checkIntOverflow}). \cr
+#'  varLabel_length + valLabel_length \tab - \tab Variable labels and value labels are not longer than the specific limits (\link{checkVarLabels}; \link{checkValLabels}). \cr
+#'  long_strings \tab - \tab String variables do not contain string values that are longer than the specific limit. \cr
+#'  too_many_rows + too_many_cols \tab - \tab The numbers of rows/observations and columns/variables do not exceed the specific limits. \cr
 #' }
 #' Limits to different aspects of the dataset differ between the versions of the software. By
 #'  default (\code{version = "Stata"}), compliance with the limits for \code{Stata 19/SE} is
@@ -52,40 +49,31 @@ check4Stata <- function(GADSdat, version = c("Stata", "Stata 19/BE", "Stata 19/M
                                                checkDots = TRUE,
                                                charLimits = NULL))
   names_fixEncoding <- suppressMessages(fixEncoding(namesGADS(GADSdat)))
-  out$r1_dots <- namesGADS(GADSdat)[!namesGADS(GADSdat) %in% namesGADS(other_gads)]
-  out$r1_specchars <- namesGADS(GADSdat)[!namesGADS(GADSdat) %in% names_fixEncoding]
-  #attr(out[[2]], "label") <- "1 - variable names with dots"
-  #attr(out[[3]], "label") <- "1 - variable names with special characters"
+  out$dots_in_varNames <- namesGADS(GADSdat)[!namesGADS(GADSdat) %in% namesGADS(other_gads)]
+  out$special_chars_in_varNames <- namesGADS(GADSdat)[!namesGADS(GADSdat) %in% names_fixEncoding]
 
   # varNames too long
   names_truncated <- suppressMessages(checkVarNames(GADSdat = namesGADS(GADSdat),
                                                     checkKeywords = FALSE,
                                                     checkDots = FALSE,
                                                     charLimits = "Stata"))
-  out$r2_longNames <- namesGADS(GADSdat)[!namesGADS(GADSdat) %in% names_truncated]
-  #attr(out[[4]], "label") <- "2 - long variable names"
+  out$varName_length <- namesGADS(GADSdat)[!namesGADS(GADSdat) %in% names_truncated]
 
   # labeled fractional values
-  out$r3_labeledFractionals <- checkLabeledFractionals(GADSdat = GADSdat)
-  #attr(out[[5]], "label") <- "3 - labeled fractional values"
+  out$labeled_fractionals <- checkLabeledFractionals(GADSdat = GADSdat)
 
   # too large labeled values
-  out$r4_largeIntegers <- checkIntOverflow(GADSdat = GADSdat)
-  #attr(out[[6]], "label") <- "4 - labeled values that are too large to coerce"
+  out$large_integers <- checkIntOverflow(GADSdat = GADSdat)
 
   # varLabels or valLabels too long
-  out$r5_varLabels <- suppressMessages(checkVarLabels(GADSdat = GADSdat,
-                                                      charLimits = "Stata"))
-  out$r5_valLabels <- suppressMessages(checkValLabels(GADSdat = GADSdat,
-                                                      charLimits = "Stata"))
+  out$varLabel_length <- suppressMessages(checkVarLabels(GADSdat = GADSdat,
+                                                         charLimits = "Stata"))
+  out$valLabel_length <- suppressMessages(checkValLabels(GADSdat = GADSdat,
+                                                         charLimits = "Stata"))
 
   # labeled strings
   char_vars <- namesGADS(GADSdat)[give_GADSdat_classes(GADSdat) == "character"]
   ## deactivated because check_GADSdat() already blocks labeled (true) strings ##
-  # meta_of_char_vars <- extractMeta(GADSdat, char_vars)
-  # out$r6_labeledStrings <- meta_of_char_vars[!is.na(meta_of_char_vars$valLabel),
-  #                                            c("varName", "varLabel", "value", "valLabel", "missings")]
-  out$r6_labeledStrings <- GADSdat$labels[0,]
 
   # long strings
   limit_list <- getProgramLimit(version, "stringvars")
@@ -103,17 +91,15 @@ check4Stata <- function(GADSdat, version = c("Stata", "Stata 19/BE", "Stata 19/M
                                               string = strings_truncated))
     }
   }
-  out$r7_longStrings <- report_long_strings
 
   # too many rows or columns
   row_limit <- getProgramLimit(version, "nrows")
   col_limit <- getProgramLimit(version, "ncols")
-  out$r8_surplusRows <- ifelse(nrow(GADSdat$dat) > row_limit$value,
-                               yes = nrow(GADSdat$dat) - row_limit$value,
-                               no = 0)
-  out$r8_surplusCols <- ifelse(ncol(GADSdat$dat) > col_limit$value,
-                               yes = ncol(GADSdat$dat) - col_limit$value,
-                               no = 0)
+  out$too_many_rows <- ifelse(nrow(GADSdat$dat) > row_limit$value,
+                              yes = nrow(GADSdat$dat) - row_limit$value,
+                              no = 0)
+  out$too_many_cols <- ifelse(ncol(GADSdat$dat) > col_limit$value,
+                              yes = ncol(GADSdat$dat) - col_limit$value,
 
   # final verdict
   good_results <- lapply(out, function(result) {
@@ -130,10 +116,6 @@ check4Stata <- function(GADSdat, version = c("Stata", "Stata 19/BE", "Stata 19/M
   })
   out$verdict <- isTRUE(all(unlist(good_results)))
   out <- out[c("verdict", names(out)[names(out) != "verdict"])]
-  #attr(out[[1]], "label") <- "overall verdict"
 
-
-  #attr(out[[7]], "label") <- "5 - long variable labels"
-  #attr(out[[8]], "label") <- "5 - long value labels"
   return(out)
 }
