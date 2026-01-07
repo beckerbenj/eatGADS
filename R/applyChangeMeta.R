@@ -42,7 +42,7 @@ applyChangeMeta.varChanges <- function(changeTable, GADSdat, checkVarNames = TRU
   changeTable <- check_varChanges(changeTable, checkVarNames = checkVarNames)
   check_changeTable(GADSdat, changeTable)
   check_format_vector(changeTable$format_new)
-  check_logicalArgument(checkVarNames, argName = checkVarNames)
+  check_logicalArgument(checkVarNames)
 
   dat <- GADSdat$dat
   labels <- GADSdat$labels

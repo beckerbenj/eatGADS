@@ -51,8 +51,8 @@ test_that("check_numericArgument", {
 
 test_that("Argument name is recycled if no argName is provided", {
   somearg <- "test"
-  expect_match(try(check_logicalArgument(somearg)), "*?somearg*?")
-  expect_match(try(check_numericArgument(somearg)), "*?somearg*?")
+  expect_match(try(check_logicalArgument(somearg), silent = TRUE), "*?somearg*?")
+  expect_match(try(check_numericArgument(somearg), silent = TRUE), "*?somearg*?")
   somearg <- 5
-  expect_match(try(check_characterArgument(somearg)), "*?somearg*?")
+  expect_match(try(check_characterArgument(somearg), silent = TRUE), "*?somearg*?")
 })

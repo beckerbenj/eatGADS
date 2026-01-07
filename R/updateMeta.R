@@ -26,7 +26,7 @@ updateMeta <- function(GADSdat, newDat, checkVarNames = TRUE) {
 #'@export
 updateMeta.GADSdat <- function(GADSdat, newDat, checkVarNames = TRUE) {
   check_GADSdat(GADSdat)
-  check_logicalArgument(checkVarNames, argName = checkVarNames)
+  check_logicalArgument(checkVarNames)
   if(!identical(class(newDat), "data.frame")) stop("newDat needs to be a data.frame. Use as.data.frame is necessary.")
   labels <- GADSdat[["labels"]]
   labels <- remove_rows_meta(labels = labels, allNames = names(newDat))

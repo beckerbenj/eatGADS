@@ -26,7 +26,7 @@ cloneVariable <- function(GADSdat, varName, new_varName, label_suffix = "", chec
 cloneVariable.GADSdat <- function(GADSdat, varName, new_varName, label_suffix = "", checkVarName = TRUE) {
   check_GADSdat(GADSdat)
   check_vars_in_GADSdat(GADSdat, vars = varName)
-  check_logicalArgument(checkVarName, argName = checkVarName)
+  check_logicalArgument(checkVarName)
   if(new_varName %in% namesGADS(GADSdat)) {
     stop("'",  new_varName, "' is already an existing variable in the 'GADSdat'.")
   }
