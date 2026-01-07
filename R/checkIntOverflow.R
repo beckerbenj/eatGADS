@@ -30,7 +30,7 @@
 #'                         varName = "schtype",
 #'                         value = 9999999999,
 #'                         missings = "miss")
-#' checkIntOverflow(pisa2)
+#' eatGADS:::checkIntOverflow(pisa2)
 #'
 checkIntOverflow <- function(GADSdat) {
   check_GADSdat(GADSdat)

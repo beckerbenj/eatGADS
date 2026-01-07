@@ -32,7 +32,7 @@ pisa2 <- recodeGADS(GADSdat = pisa,
                     varName = "schtype",
                     oldValues = 2,
                     newValues = .5)
-checkLabeledFractionals(pisa2)
+eatGADS:::checkLabeledFractionals(pisa2)
 
 }
 \seealso{
