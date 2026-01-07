@@ -32,7 +32,6 @@
 #'                         missings = "miss")
 #' checkIntOverflow(pisa2)
 #'
-#'@export
 checkIntOverflow <- function(GADSdat) {
   check_GADSdat(GADSdat)
   labels <- GADSdat$labels
