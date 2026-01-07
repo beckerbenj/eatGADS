@@ -29,7 +29,7 @@
 #'
 #' @returns Either \code{NULL} if all checks are passed successfully, or a \code{list} of all
 #'  check results (see details for explanations for the keywords) if any problem was detected,
-#'  including a verdict whether any of the problems is show-stopping (\code{"hard issue"}) or will
+#'  including a verdict whether any of the problems is critical (\code{"hard issue"}) or will
 #'  be solved automatically in the export process by truncating (\code{"soft issue"}).
 #'
 #' @family dataset compliance checks
