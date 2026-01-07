@@ -29,8 +29,8 @@ checkVarLabels <- function(GADSdat, charLimits = c("SPSS", "Stata"),
     return(out)
   }
 
-  label_meta <- all_meta[!is.na(all_meta$varLabel),
-                         c("varName", "varLabel")]
+  label_meta <- unique(all_meta[!is.na(all_meta$varLabel),
+                                c("varName", "varLabel")])
   label_meta$length <- nchar(label_meta$varLabel, type = limit_list$unit)
   label_meta$too_long <- label_meta$length > limit_list$value
   if (!any(label_meta$too_long)) {
@@ -46,5 +46,6 @@ checkVarLabels <- function(GADSdat, charLimits = c("SPSS", "Stata"),
                                   truncate_string,
                                   n = printLength + 3, unit = "char", suffix = "..."))
   }
+  rownames(out) <- NULL
   return(out)
 }
