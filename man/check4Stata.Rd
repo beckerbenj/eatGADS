@@ -18,7 +18,7 @@ A list of check results (enumerated corresponding to the list above), headed by 
  been detected (\code{FALSE}).
 }
 \description{
-This wrapper performs all relevant checks tp assess if a \code{GADSdat} complies with all of
+This function performs all relevant checks to assess if a \code{GADSdat} complies with all of
  Stata's dataset requirements. Run this before exporting a dataset as \code{.dta}, using
  \link{write_stata}.
 }
