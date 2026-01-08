@@ -5,7 +5,7 @@ test_that("Data frames directly from R are imported correctly", {
   expect_equal(iris2$labels$valLabel,
                c(NA, NA, NA, NA, "setosa", "versicolor", "virginica"))
   expect_equal(iris2$labels$value,
-               c(NA, NA, NA, NA, 1, 2, 3))
+               c(NA, NA, NA, NA, "1", "2", "3"))
   expect_false(is.integer(iris2$labels$value))
   expect_false(is.integer(iris2$dat$Species))
 })
@@ -16,7 +16,7 @@ test_that("import_DF with factors with zero levels", {
   expect_equal(warns[1], "The following variables in the data are factors with zero valid levels: v2")
   expect_true(is.numeric(gads$dat$v2))
   expect_equal(gads$dat$v2, c(NA_real_, NA_real_))
-  expect_equal(gads$labels[2, "value"], c(NA_real_))
+  expect_equal(gads$labels[2, "value"], c(NA_character_))
   expect_equal(gads$labels[2, "valLabel"], c(NA_character_))
 
   df2 <- data.frame(v1 = c(1, 2), v2 = factor(c(NA, NA)), v3 = factor(c(NA, "a")), v4 = factor(c(NA, NA)))
@@ -25,6 +25,6 @@ test_that("import_DF with factors with zero levels", {
   expect_true(is.numeric(gads2$dat$v2))
   expect_true(is.numeric(gads2$dat$v4))
   expect_equal(gads2$dat$v2, c(NA_real_, NA_real_))
-  expect_equal(gads2$labels[2, "value"], c(NA_real_))
+  expect_equal(gads2$labels[2, "value"], c(NA_character_))
   expect_equal(gads2$labels[2, "valLabel"], c(NA_character_))
 })

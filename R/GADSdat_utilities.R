@@ -23,7 +23,7 @@ check_GADSdat <- function(GADSdat) {
   if(length(only_in_labels) > 0) stop("The following variables have meta data but are not in the actual data: ", only_in_labels, call. = FALSE)
   if(length(only_in_dat) > 0) stop("The following variables are in the data but do not have meta data: ", only_in_dat, call. = FALSE)
 
-  if(!is.numeric(GADSdat$labels$value)) stop("Column 'value' in the meta data is not numeric.")
+  #if(!is.numeric(GADSdat$labels$value)) stop("Column 'value' in the meta data is not numeric.")
 
   unlabeled_labels <- GADSdat$labels[GADSdat$labels$labeled == "no", ]
   if(nrow(unlabeled_labels) > 0) {

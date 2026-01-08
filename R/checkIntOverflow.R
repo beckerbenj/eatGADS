@@ -40,8 +40,8 @@ checkIntOverflow <- function(GADSdat) {
                     empty = logical(),
                     rownum = integer())
 
-  huge_labeled_number_rows <- which(abs(labels$value) > .Machine$integer.max &
-                                      labels$value %% 1 == 0)
+  huge_labeled_number_rows <- which(abs(eatTools::asNumericIfPossible(labels$value)) > .Machine$integer.max &
+                                      eatTools::asNumericIfPossible(labels$value) %% 1 == 0)
 
   if (length(huge_labeled_number_rows) == 0) {
     return(out)

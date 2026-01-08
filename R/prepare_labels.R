@@ -22,6 +22,13 @@ prepare_labels <- function(rawDat, checkVarNames, labeledStrings) {
   }
   if(is.integer(label_df$value)) label_df$value <- as.numeric(label_df$value)
 
+  label_df$value <- as.character(label_df$value)
+  for(varNam in unique(label_df$varName)) {
+    sub_label_df <- label_df[label_df$varName == varNam, ]  
+    labeled_values <- eatTools::asNumericIfPossible(sub_label_df$value)
+    label_df[label_df$varName == varNam, ] <- sub_label_df[order(labeled_values), ]
+  }
+  
   # output
   new_GADSdat(dat = plainDat, labels = label_df)
 }

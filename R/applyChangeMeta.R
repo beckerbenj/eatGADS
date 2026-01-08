@@ -88,6 +88,12 @@ applyChangeMeta.valChanges <- function(changeTable, GADSdat, existingMeta = c("s
   # 02) valueLabels, missings and values in labels
   labels2 <- recode_labels(labels = labels, changeTable = changeTable, existingMeta = existingMeta)
 
+  for(varNam in unique(labels2$varName)) {
+    sub_label_df <- labels2[labels2$varName == varNam, ]  
+    labeled_values <- eatTools::asNumericIfPossible(sub_label_df$value)
+    labels2[labels2$varName == varNam, ] <- sub_label_df[order(labeled_values), ]
+  }
+  
   out_GADSdat <- new_GADSdat(dat = dat, labels = labels2)
   check_GADSdat(out_GADSdat)
   #check_GADSdat_varLevel_meta(out_GADSdat)

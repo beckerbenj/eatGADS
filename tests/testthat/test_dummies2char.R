@@ -31,9 +31,9 @@ test_that("dummies 2 characters", {
   expect_equal(as.character(out$dat[3, 4:6]), c("english", NA, NA))
   expect_equal(as.character(out$dat[4, 4:6]), c("german", NA, NA))
 
-  expect_equal(extractMeta(out, "c1")$value, -99)
+  expect_equal(extractMeta(out, "c1")$value, "-99")
   expect_equal(extractMeta(out, "c1")$missings, "miss")
-  expect_equal(extractMeta(out, "c2")$value, NA_real_)
+  expect_equal(extractMeta(out, "c2")$value, NA_character_)
   expect_equal(extractMeta(out, "c2")$missings, NA_character_)
 })
 

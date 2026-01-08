@@ -41,7 +41,7 @@ test_that("Changes to GADSdat on value level", {
 test_that("Changes to GADSdat: recoding", {
   changes_val[3, "value_new"] <- 10
   g1 <- applyChangeMeta(changes_val, dfSAV)
-  expect_equal(g1$labels$value[3], 10)
+  expect_equal(g1$labels$value[3], "10")
   expect_equal(g1$dat[1, 1], 10)
   changes_val[4, "value_new"] <- "test"
   expect_error(applyChangeMeta(changes_val, dfSAV))
@@ -54,13 +54,13 @@ test_that("recoding if potential danger of overwriting old values!", {
   chang2 <- chang
   chang2[, "value_new"] <- c(3, 4, 1, NA, NA, NA)
   out <-  applyChangeMeta(chang2, df_rec)
-  expect_equal(out$labels$value, c(1, 3, 4, 1, 2, 3))
+  expect_equal(out$labels$value, c("1", 3, 4, 1, 2, 3))
   expect_equal(out$labels$valLabel, c("z", "x", "y", "a", "b", "d"))
   expect_equal(out$dat$v1, c(3, 4, 1))
   ## partial recoding, multiple variables
   chang[, "value_new"] <- c(3, NA, 1, 2, 1, 5)
   out <-  applyChangeMeta(chang, df_rec)
-  expect_equal(out$labels$value, c(1, 2, 3, 1, 2, 5))
+  expect_equal(out$labels$value, c("1", 2, 3, 1, 2, 5))
   expect_equal(out$labels$valLabel, c("z", "y", "x", "b", "a", "d"))
   expect_equal(out$dat$v1, 3:1)
   expect_equal(out$dat$b, c(1, 2, 5))
@@ -68,7 +68,7 @@ test_that("recoding if potential danger of overwriting old values!", {
   changes_val2 <- changes_val
   changes_val2[1:2, "value_new"] <- c(-96, -95)
   out3 <- applyChangeMeta(changes_val2, dfSAV)
-  expect_equal(out3$labels$value[1:3], c(-96, -95, 1))
+  expect_equal(out3$labels$value[1:3], c("-96", -95, 1))
 })
 
 test_that("Recoding with value meta data conflicts", {
@@ -79,14 +79,14 @@ test_that("Recoding with value meta data conflicts", {
 
   out <- recode_labels(dfSAV$labels, changes_val2, existingMeta = "value")
   comp1 <- dfSAV$labels[-3, ]
-  comp1[1, "value"] <- 1
+  comp1[1, "value"] <- "1"
   comp1 <- comp1[c(2, 1, 3:6),]
   rownames(comp1) <- NULL
   expect_equal(comp1, out)
 
   out2 <- recode_labels(dfSAV$labels, changes_val2, existingMeta = "value_new")
   comp2 <- dfSAV$labels[-3, ]
-  comp2[1, "value"] <- 1
+  comp2[1, "value"] <- "1"
   comp2[1, "valLabel"] <- "One"
   comp2[1, "missings"] <- "valid"
   comp2 <- comp2[c(2, 1, 3:6),]
@@ -138,7 +138,7 @@ test_that("Recoding multiple value into the same value (without meta data confli
                "Duplicated values in 'value_new' causing conflicting meta data in variable VAR1: 10. Use existingMeta = 'drop' or 'ignore' to drop all related meta data.")
 
   out2 <- recode_labels(dfSAV$labels, changes_val2, existingMeta = "drop")
-  expect_equal(out2[1, "value"], 10)
+  expect_equal(out2[1, "value"], "10")
   expect_equal(out2[1, "valLabel"], NA_character_)
   expect_equal(out2[1, "missings"], "valid")
   expect_equal(out2[2, "varName"], "VAR2")
@@ -161,14 +161,14 @@ test_that("Recoding multiple value into the same value (with meta data conflicts
 
   out2 <- recode_labels(dfSAV$labels, changes_val2, existingMeta = "value_new")
   comp2 <- dfSAV$labels[-(2:3), ]
-  comp2[1, "value"] <- 1
+  comp2[1, "value"] <- "1"
   comp2[1, "valLabel"] <- "One"
   comp2[1, "missings"] <- "valid"
   rownames(comp2) <- NULL
   expect_equal(comp2, out2)
 
   out2b <- recode_labels(dfSAV$labels, changes_val2, existingMeta = "drop")
-  expect_equal(out2b[1, "value"], 1)
+  expect_equal(out2b[1, "value"], "1")
   expect_equal(out2b[1, "valLabel"], NA_character_)
   expect_equal(out2b[1, "missings"], "valid")
 
@@ -191,8 +191,8 @@ test_that("Recoding multiple value into the same value (with and without meta da
                "Duplicated values in 'value_new' causing conflicting meta data in variable VAR1: 1, 10. Use existingMeta = 'drop' or 'ignore' to drop all related meta data.")
 
   out2 <- recode_labels(dfSAVb$labels, changes_valb, existingMeta = "drop")
-  expect_equal(out2[1, "value"], 1)
-  expect_equal(out2[2, "value"], 10)
+  expect_equal(out2[1, "value"], "1")
+  expect_equal(out2[2, "value"], "10")
   expect_equal(out2[1, "valLabel"], NA_character_)
   expect_equal(out2[2, "valLabel"], NA_character_)
   expect_equal(out2[1, "missings"], "valid")
@@ -211,22 +211,22 @@ test_that("Expand labels", {
   expect_equal(out2$varName, c("ID1", "V2", "V2"))
   expect_equal(out2$labeled, c("no", "yes", "yes"))
   expect_equal(out2$varLabel, c(NA, "Variable 2", "Variable 2"))
-  expect_equal(out2$value, c(NA, 99, NA))
+  expect_equal(out2$value, c(NA, "99", NA))
   out3 <- expand_labels(dfSAV$labels, changes_val2$varName)
-  expect_equal(out3[1:4, "value"], c(-99, -96, 1, NA))
+  expect_equal(out3[1:4, "value"], c("-99", -96, 1, NA))
   expect_equal(out3[1:4, "varName"], rep("VAR1", 4))
 })
 
 test_that("Adding value labels for values without labels", {
   out <- recode_labels(dfSAV$labels, changes_val2, existingMeta = "stop")
-  expect_equal(out$value[1:4], c(-99, -96, 1, 2))
+  expect_equal(out$value[1:4], c("-99", -96, 1, 2))
   expect_equal(dim(out), c(8, 8))
 
   df1_changes <- getChangeMeta(df1, level = "value")
   df1_changes[2, "value_new"] <- 99
   df1_changes[2, "valLabel_new"] <- "test"
   out2 <- recode_labels(df1$labels, df1_changes, existingMeta = "stop")
-  expect_equal(out2$value, c(NA, 99))
+  expect_equal(out2$value, c(NA, "99"))
   expect_equal(dim(out2), c(2, 8))
   expect_equal(out2$labeled, c("no", "yes"))
   expect_equal(out2$missings, c(NA, "valid"))
@@ -234,7 +234,7 @@ test_that("Adding value labels for values without labels", {
   # multiple new value labels
   out3 <- applyChangeMeta(changes_val3, dfSAV)
   expect_equal(dim(out3$labels), c(9, 8))
-  expect_equal(out3$labels$value[3:5], 1:3)
+  expect_equal(out3$labels$value[3:5], c("1", 2, 3))
   expect_equal(out3$labels$valLabel[3:5], c("One", "Two", "Three"))
 })
 
@@ -268,8 +268,10 @@ test_that("Adding value labels to an unlabeled variable", {
   changer[1, "missings_new"] <- "valid"
   out <- applyChangeMeta(changer, g)
 
-  expect_equal(out[[2]][1, ][6:8], data.frame(value = 99, valLabel = "some label", missings = "valid", stringsAsFactors = FALSE))
-  expect_equal(out[[2]][1, ][5], data.frame(labeled = "yes", stringsAsFactors = FALSE))
+  expect_equal(out[[2]][1, ][6:8], 
+               data.frame(value = "99", valLabel = "some label", missings = "valid", stringsAsFactors = FALSE))
+  expect_equal(out[[2]][1, ][5], 
+               data.frame(labeled = "yes", stringsAsFactors = FALSE))
 })
 
 test_that("Changes to all_GADSdat on variable level", {

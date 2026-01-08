@@ -1,7 +1,5 @@
 
-
-# load(file = "tests/testthat/helper_data.rda")
-load(file = "helper_data.rda")
+load(file = test_path("helper_data.rda"))
 
 
 df7 <- df6 <- df5 <- df4 <- df3 <- df1
@@ -33,7 +31,7 @@ test_that("Check length of value labels", {
   df4 <- changeValLabels(df4, "V1", value = 99, valLabel = paste(rep("3", 125), collapse = ""))
 
   out <- check4SPSS(df4)
-  expect_equal(out$valLabels, list(ID1 = 1, V1 = 99))
+  expect_equal(out$valLabels, list(ID1 = "1", V1 = "99"))
   expect_equal(out$varLabels, character())
   expect_equal(out$missings, character())
 })

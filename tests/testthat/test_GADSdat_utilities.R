@@ -1,9 +1,7 @@
 
 ###### check_GADSdat
-# testM <- import_spss("tests/testthat/helper_spss_missings.sav")
-testM <- import_spss("helper_spss_missings.sav")
-# load(file = "c:/Benjamin_Becker/02_Repositories/packages/eatGADS/tests/testthat/helper_data.rda")
-load(file = "helper_data.rda")
+testM <- import_spss(test_path("helper_spss_missings.sav"))
+load(file = test_path("helper_data.rda"))
 
 
 test_that("Object validater for GADSdat objects",{
@@ -24,8 +22,8 @@ test_that("Object validater for GADSdat objects",{
   expect_error(check_GADSdat(df1_1), "The following variable has value labels but is not marked as labeled: V1")
   expect_error(check_GADSdat(df1_2), "The following variable has value labels but is not marked as labeled: V1")
 
-  df1_3$labels[2, c("value")] <- "-99"
-  expect_error(check_GADSdat(df1_3), "Column 'value' in the meta data is not numeric.")
+  #df1_3$labels[2, c("value")] <- "-99"
+  #expect_error(check_GADSdat(df1_3), "Column 'value' in the meta data is not numeric.")
 })
 
 

@@ -6,7 +6,7 @@ label_out1 <- data.frame(varName = c("VAR1", "VAR2", "VAR3"),
                          display_width = c(NA, 10, NA),
                          labeled = c("yes", "yes", "no"),
                          stringsAsFactors = FALSE)
-label_out2 <- data.frame(varName = c("VAR1", "VAR2"), value = c(1, 2),
+label_out2 <- data.frame(varName = c("VAR1", "VAR2"), value = c("1", "2"),
                          valLabel = c("One", "Two"), missings = c("valid", "valid"), stringsAsFactors = FALSE)
 label_out_all <- merge(label_out1, label_out2, by = "varName", all = TRUE)
 ##
@@ -39,7 +39,7 @@ test_that("Haven bug for value labels of long string variables does no longer ex
   expect_equal(out$labels[["format"]], c("F8.2", "F8.2", "A8", "A8", "A9", "A9", "A10", "A10", "A200", "A200"))
   expect_equal(extractMeta(out, "v5")[["missings"]], c("valid", "miss"))
   expect_equal(extractMeta(out, "v5")[["valLabel"]], c("one", "missing"))
-  expect_equal(extractMeta(out, "v5")[["value"]], c(1, 99))
+  expect_equal(extractMeta(out, "v5")[["value"]], c("1", "99"))
 })
 
 

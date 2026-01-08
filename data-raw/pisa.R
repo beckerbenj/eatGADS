@@ -69,7 +69,8 @@ namesGADS("inst/extdata/pisa.db")
 
 ## Create GADSdat and all_GADSdat objects for internal use
 # -----------------------------------------------------------------------------------------------
-pisa <- pisa_s
+sav_path <- system.file("extdata", "pisa.zsav", package = "eatGADS")
+pisa <- import_spss(sav_path)
 
 usethis::use_data(pisa, overwrite = TRUE)
 

@@ -1,7 +1,6 @@
 ################# Recode based on lookup table ---------------------------------------------------
 
-# testM <- import_spss("tests/testthat/helper_spss_missings.sav")
-testM <- import_spss("helper_spss_missings.sav")
+testM <- import_spss(test_path("helper_spss_missings.sav"))
 
 lu1 <- createLookup(testM, recodeVars = c("VAR1", "VAR2"), addCols = c("r1", "r2"))
 lu2 <- createLookup(testM, recodeVars = c("VAR1"), sort_by = "value")

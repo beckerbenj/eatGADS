@@ -17,7 +17,7 @@ test_that("changemissings wrapper", {
   expect_equal(out$dat, dfSAV$dat)
 
   out2 <- changeMissings(dfSAV, varName = "VAR2", value = c(-99, -96), missings = c("valid", "miss"))
-  expect_equal(out2$labels[c(4, 5), "value"], c(-99, -96))
+  expect_equal(out2$labels[c(4, 5), "value"], c("-99", "-96"))
   expect_equal(out2$labels[c(4, 5), "missings"], c("valid", "miss"))
   expect_equal(out2$dat, dfSAV$dat)
 })
@@ -27,15 +27,15 @@ test_that("changemissings for adding value labels", {
   #out <- changeMissings(dfSAV, varName = "VAR1", value = c(2, 1), missings = c("miss", "miss"))
   expect_equal(nrow(out$labels[out$labels$varName == "VAR1", ]), 4)
   expect_equal(out$labels[4, "missings"], "miss")
-  expect_equal(out$labels[4, "value"], 2)
+  expect_equal(out$labels[4, "value"], "2")
   expect_equal(out$dat, dfSAV$dat)
 
   out <- changeMissings(dfSAV, varName = "VAR1", value = c(1, 2), missings = c("miss", "valid"))
   expect_equal(nrow(out$labels[out$labels$varName == "VAR1", ]), 4)
   expect_equal(out$labels[3, "missings"], "miss")
   expect_equal(out$labels[4, "missings"], "valid")
-  expect_equal(out$labels[3, "value"], 1)
-  expect_equal(out$labels[4, "value"], 2)
+  expect_equal(out$labels[3, "value"], "1")
+  expect_equal(out$labels[4, "value"], "2")
   expect_equal(out$dat, dfSAV$dat)
 })
 
@@ -43,7 +43,7 @@ test_that("changemissings for adding value labels", {
 test_that("changemissings for adding value labels to unlabeled variable", {
   out <- changeMissings(dfUn, varName = "v1", value = 1, missings = "miss")
   expect_equal(out$labels[1, "missings"], "miss")
-  expect_equal(out$labels[1, "value"], 1)
+  expect_equal(out$labels[1, "value"], "1")
   expect_equal(out$dat, dfUn$dat)
 
   out <- changeMissings(dfUn, varName = "v2", value = c(1, 2), missings = c("miss", "valid"))
@@ -51,8 +51,8 @@ test_that("changemissings for adding value labels to unlabeled variable", {
   expect_equal(out$labels[2, "missings"], "miss")
   expect_equal(out$labels[3, "missings"], "valid")
   expect_equal(out$labels[1, "missings"], NA_character_)
-  expect_equal(out$labels[2, "value"], 1)
-  expect_equal(out$labels[3, "value"], 2)
+  expect_equal(out$labels[2, "value"], "1")
+  expect_equal(out$labels[3, "value"], "2")
   expect_equal(out$dat, dfUn$dat)
 })
 
@@ -61,7 +61,7 @@ test_that("changemissings for adding value labels to unlabeled values but with e
   out <- changeMissings(dfUn1, varName = "v1", value = 1, missings = "miss")
 
   expect_equal(out$labels[1:2, "missings"], c("miss", "valid"))
-  expect_equal(out$labels[1:2, "value"], 1:2)
+  expect_equal(out$labels[1:2, "value"], c("1", "2"))
   expect_equal(out$labels[1:2, "valLabel"], c(NA, "a label"))
   expect_equal(out$dat, dfUn$dat)
 })
@@ -103,13 +103,13 @@ test_that("changeMissings for multiple variables at once",{
   expect_equal(nrow(out_labels_var1), 4)
   expect_equal(out_labels_var1[out_labels_var1$value == 1, "missings"], "miss")
   expect_equal(out_labels_var1[out_labels_var1$value == 2, "missings"], "valid")
-  expect_equal(out$labels[3, "value"], 1)
-  expect_equal(out$labels[4, "value"], 2)
+  expect_equal(out$labels[3, "value"], "1")
+  expect_equal(out$labels[4, "value"], "2")
 
   out_labels_var2 <- out$labels[out$labels$varName == "VAR2", ]
   expect_equal(nrow(out_labels_var1), 4)
   expect_equal(out_labels_var2[out_labels_var2$value == 1, "missings"], "miss")
   expect_equal(out_labels_var2[out_labels_var2$value == 2, "missings"], "valid")
-  expect_equal(out$labels[3, "value"], 1)
-  expect_equal(out$labels[4, "value"], 2)
+  expect_equal(out$labels[3, "value"], "1")
+  expect_equal(out$labels[4, "value"], "2")
 })

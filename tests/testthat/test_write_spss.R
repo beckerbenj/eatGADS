@@ -1,10 +1,8 @@
 
 
 ### load test data
-# df <- getGADS(filePath = "tests/testthat/helper_database.db")
-df <- getGADS(filePath = "helper_dataBase.db")
-# label_df <- labelsGADS(filePath = "tests/testthat/helper_database.db")
-label_df <- labelsGADS(filePath = "helper_dataBase.db")
+df <- getGADS(filePath = test_path("helper_dataBase.db"))
+label_df <- labelsGADS(filePath = test_path("helper_dataBase.db"))
 
 label_df_V2 <- label_df[which(label_df == "V2"), ]
 

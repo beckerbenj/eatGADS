@@ -99,11 +99,11 @@ check_valChanges <- function(changeTable) {
                                                                                  force.string = FALSE))
     if(is.character(changeTable[, "value_new"])) stop("Column 'value_new' in 'changeTable' is character and can not be transformed to numeric.")
   }
-  if(is.character(changeTable[, "value"])) {
-    changeTable[, "value"] <- suppressWarnings(eatTools::asNumericIfPossible(changeTable[, "value"],
-                                                                                 force.string = FALSE))
-    if(is.character(changeTable[, "value"])) stop("Column 'value' in 'changeTable' is character and can not be transformed to numeric.")
-  }
+  #if(is.character(changeTable[, "value"])) {
+  #  changeTable[, "value"] <- suppressWarnings(eatTools::asNumericIfPossible(changeTable[, "value"],
+  #                                                                               force.string = FALSE))
+  #  if(is.character(changeTable[, "value"])) stop("Column 'value' in 'changeTable' is character and can not be transformed to numeric.")
+  #}
 
   wrong_new_miss <- which((changeTable$missings_new == "miss" | !is.na(changeTable$valLabel_new))
                           & is.na(changeTable$value) & is.na(changeTable$value_new))

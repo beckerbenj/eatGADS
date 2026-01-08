@@ -1,8 +1,6 @@
 
-# load(file = "tests/testthat/helper_data.rda")
-load(file = "helper_data.rda")
-# gBig <- getGADS(filePath = "tests/testthat/helper_dataBase.db")
-gBig <- getGADS(filePath = "helper_dataBase.db")
+load(file = test_path("helper_data.rda"))
+gBig <- getGADS(filePath = test_path("helper_dataBase.db"))
 
 ### Split GADS into all_GADSdat
 test_that("drop duplicates", {
