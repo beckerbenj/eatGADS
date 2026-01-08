@@ -14,9 +14,7 @@ check4Stata(GADSdat, version = c("Stata", "Stata 19/BE", "Stata 19/MP"))
 }
 \value{
 Either \code{NULL} if all checks are passed successfully, or a \code{list} of all
- check results (see details for explanations for the keywords) if any problem was detected,
- including a verdict whether any of the problems is critical (\code{"hard issue"}) or will
- be solved automatically in the export process by truncating (\code{"soft issue"}).
+ check results (see details for explanations of the keywords) if any problem was detected.
 }
 \description{
 This function performs all relevant checks to assess if a \code{GADSdat} complies with all of

@@ -15,9 +15,8 @@ test_that("Output has correct format", {
   result_bad <- check4Stata(bad_gads)
 
   expect_type(result_bad, "list")
-  expect_length(result_bad, 11)
-  expect_named(result_bad, c("verdict",
-                             "dots_in_varNames",
+  expect_length(result_bad, 10)
+  expect_named(result_bad, c("dots_in_varNames",
                              "special_chars_in_varNames",
                              "varName_length",
                              "labeled_fractionals",
@@ -59,10 +58,14 @@ test_that("Correctly identify 'bad' datasets using other checks", {
                                           collapse = "")
   expect_silent(result_longlab <- check4Stata(bad_gads))
 
-  expect_equal(result_longname$verdict, "hard issue")
-  expect_equal(result_labfract$verdict, "hard issue")
-  expect_equal(result_intover$verdict, "hard issue")
-  expect_equal(result_longlab$verdict, "soft issue")
+  expect_type(result_longname, "list")
+  expect_type(result_labfract, "list")
+  expect_type(result_intover, "list")
+  expect_type(result_longlab, "list")
+  expect_true(stata_issues_critical(result_longname))
+  expect_true(stata_issues_critical(result_labfract))
+  expect_true(stata_issues_critical(result_intover))
+  expect_false(stata_issues_critical(result_longlab))
 })
 
 test_that("Correctly identify variable names with dots and special characters", {
@@ -70,17 +73,20 @@ test_that("Correctly identify variable names with dots and special characters", 
 
   names(bad_gads1[[1]])[[1]] <- bad_gads1$labels$varName[[1]] <- "id.stud"
   expect_silent(result_dots <- check4Stata(bad_gads1))
-  expect_equal(result_dots$verdict, "hard issue")
+  expect_type(result_dots, "list")
+  expect_true(stata_issues_critical(result_dots))
   expect_equal(result_dots$dots_in_varNames, "id.stud")
 
   names(bad_gads2[[1]])[[1]] <- bad_gads2$labels$varName[[1]] <- "idstüd"
   expect_silent(result_specchar <- check4Stata(bad_gads2))
-  expect_equal(result_specchar$verdict, "hard issue")
+  expect_type(result_specchar, "list")
+  expect_true(stata_issues_critical(result_specchar))
   expect_equal(result_specchar$special_chars_in_varNames, "idstüd")
 
   names(bad_gads3[[1]])[[1]] <- bad_gads3$labels$varName[[1]] <- "id.stüd"
   expect_silent(result_dotandspec <- check4Stata(bad_gads3))
-  expect_equal(result_dotandspec$verdict, "hard issue")
+  expect_type(result_dotandspec, "list")
+  expect_true(stata_issues_critical(result_dotandspec))
   expect_equal(result_dotandspec$dots_in_varNames, "id.stüd")
   expect_equal(result_dotandspec$special_chars_in_varNames, "id.stüd")
 })
@@ -104,7 +110,8 @@ test_that("Correctly identify long strings", {
   bad_gads <- okay_gads
   bad_gads$dat$somevar[[2]] <- paste0(longstring, "a")
   expect_silent(result_2longstring <- check4Stata(bad_gads))
-  expect_equal(result_2longstring$verdict, "soft issue")
+  expect_type(result_2longstring, "list")
+  expect_false(stata_issues_critical(result_2longstring))
   expect_equal(result_2longstring$long_strings,
                data.frame(varName = "somevar",
                           string = paste0(paste0(rep("a", 37), collapse = ""), "...")))
@@ -115,7 +122,8 @@ test_that("Correctly identify huge datasets", {
   widedf <- as.data.frame(t(vector(mode = "logical", length = too_many_cols)))
   widegads <- import_DF(widedf)
   expect_silent(result_manycols <- check4Stata(widegads, version = "Stata 19/BE"))
-  expect_equal(result_manycols$verdict, "hard issue")
+  expect_type(result_manycols, "list")
+  expect_true(stata_issues_critical(result_manycols))
   expect_equal(result_manycols$too_many_cols, 1)
 
   # Limits for the number of rows is not really testable because they blow up the memory.
@@ -124,6 +132,7 @@ test_that("Correctly identify huge datasets", {
   # longgads <- import_DF(data.frame(x = 1))
   # longgads$dat <- longdf
   # expect_silent(result_manyrows <- check4Stata(longgads, version = "Stata 19/BE"))
-  # expect_equal(result_manyrows$verdict, "hard issue")
+  # expect_type(result_manyrows, "list")
+  # expect_true(stata_issues_critical(result_manyrows))
   # expect_equal(result_manyrows$too_many_rows, 1)
 })

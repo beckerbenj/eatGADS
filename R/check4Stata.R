@@ -33,9 +33,7 @@
 #'  (see details).
 #'
 #' @returns Either \code{NULL} if all checks are passed successfully, or a \code{list} of all
-#'  check results (see details for explanations for the keywords) if any problem was detected,
-#'  including a verdict whether any of the problems is critical (\code{"hard issue"}) or will
-#'  be solved automatically in the export process by truncating (\code{"soft issue"}).
+#'  check results (see details for explanations of the keywords) if any problem was detected.
 #'
 #' @family dataset compliance checks
 #'
@@ -107,8 +105,23 @@ check4Stata <- function(GADSdat, version = c("Stata", "Stata 19/BE", "Stata 19/M
   out$too_many_cols <- ifelse(ncol(GADSdat$dat) > col_limit$value,
                               yes = ncol(GADSdat$dat) - col_limit$value,
                               no = 0)
+  good_results <- lapply(out, function(result) {
+    if (length(result) == 0 |
+        (is.data.frame(result) && nrow(result) == 0) |
+        (length(result) == 1 && result == 0)) {
+      return(TRUE)
+    } else {
+      return(FALSE)
+    }
+  })
+  if (isTRUE(all(unlist(good_results)))) {
+    return(NULL)
+  } else {
+    return(out)
+  }
+}
 
-  # final verdict
+stata_issues_critical <- function(results) {
   req_hard <- c("dots_in_varNames",
                 "special_chars_in_varNames",
                 "varName_length",
@@ -119,7 +132,7 @@ check4Stata <- function(GADSdat, version = c("Stata", "Stata 19/BE", "Stata 19/M
   req_soft <- c("varLabel_length",
                 "valLabel_length",
                 "long_strings")
-  res_hard <- lapply(out[req_hard], function(result) {
+  res_hard <- lapply(results[req_hard], function(result) {
     if (length(result) == 0 |
         (is.data.frame(result) && nrow(result) == 0) |
         (length(result) == 1 && result == 0)) {
@@ -128,7 +141,7 @@ check4Stata <- function(GADSdat, version = c("Stata", "Stata 19/BE", "Stata 19/M
       return(FALSE)
     }
   })
-  res_soft <- lapply(out[req_soft], function(result) {
+  res_soft <- lapply(results[req_soft], function(result) {
     if (length(result) == 0 |
         (is.data.frame(result) && nrow(result) == 0) |
         (length(result) == 1 && result == 0)) {
@@ -138,14 +151,9 @@ check4Stata <- function(GADSdat, version = c("Stata", "Stata 19/BE", "Stata 19/M
     }
   })
 
-  if (isTRUE(all(unlist(res_hard))) && isTRUE(all(unlist(res_soft)))) {
-    return(NULL)
-  }
   if (isTRUE(all(unlist(res_hard))) && !isTRUE(all(unlist(res_soft)))) {
-    out$verdict <- "soft issue"
+    return(FALSE)
   } else {
-    out$verdict <- "hard issue"
+    return(TRUE)
   }
-  out <- out[c("verdict", names(out)[names(out) != "verdict"])]
-  return(out)
 }
