@@ -16,6 +16,10 @@
 - A list of limits to dataset components under Stata and SPSS is
   available in `program_limits` and via its access function
   [`getProgramLimit()`](https://beckerbenj.github.io/eatGADS/reference/getProgramLimit.md).
+- [`check4Stata()`](https://beckerbenj.github.io/eatGADS/reference/check4Stata.md)
+  checks if a `GADSdat` complies with all relevant limits Stata imposes
+  on datasets
+  ([\#110](https://github.com/beckerbenj/eatGADS/issues/110)).
 
 ### bug fixes
 

@@ -97,6 +97,11 @@ dat1 <- extractData2(gads_obj)
 
   Check `SPSS` Compliance of Meta Data
 
+- [`check4Stata()`](https://beckerbenj.github.io/eatGADS/reference/check4Stata.md)
+  :
+
+  Check a `GADSdat` for compatibility with `Stata`.
+
 - [`checkEmptyValLabels()`](https://beckerbenj.github.io/eatGADS/reference/checkEmptyValLabels.md)
   [`checkMissingValLabels()`](https://beckerbenj.github.io/eatGADS/reference/checkEmptyValLabels.md)
   : Check Value Labels
@@ -128,6 +133,10 @@ dat1 <- extractData2(gads_obj)
 
 - [`checkUniqueness2()`](https://beckerbenj.github.io/eatGADS/reference/checkUniqueness2.md)
   : Check uniqueness of a variable.
+
+- [`checkValLabels()`](https://beckerbenj.github.io/eatGADS/reference/checkValLabels.md)
+  [`checkVarLabels()`](https://beckerbenj.github.io/eatGADS/reference/checkValLabels.md)
+  : Check Lengths of Labels.
 
 - [`checkValue()`](https://beckerbenj.github.io/eatGADS/reference/checkValue.md)
   : Check for a specific value
@@ -335,7 +344,7 @@ dat1 <- extractData2(gads_obj)
   PISA Plus Example Data
 
 - [`program_limits`](https://beckerbenj.github.io/eatGADS/reference/program_limits.md)
-  : List of program specific limits
+  : Program specific limits to dataset components
 
 - [`recode2NA()`](https://beckerbenj.github.io/eatGADS/reference/recode2NA.md)
   :

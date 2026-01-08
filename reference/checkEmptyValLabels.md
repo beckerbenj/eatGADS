@@ -31,7 +31,8 @@ checkMissingValLabels(
 
 - vars:
 
-  Character vector with the variable names to which `checkValLabels()`
+  Character vector with the variable names to which
+  [`checkValLabels()`](https://beckerbenj.github.io/eatGADS/reference/checkValLabels.md)
   should be applied.
 
 - valueRange:

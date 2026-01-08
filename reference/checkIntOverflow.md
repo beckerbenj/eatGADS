@@ -41,12 +41,6 @@ function will therefore try to coerce any labeled values
 [`as.integer()`](https://rdrr.io/r/base/integer.html). Unlabeled values,
 however, will stay generic `numeric` values that have a higher limit.
 
-## See also
-
-Other dataset compliance checks:
-[`checkLabeledFractionals()`](https://beckerbenj.github.io/eatGADS/reference/checkLabeledFractionals.md),
-[`getProgramLimit()`](https://beckerbenj.github.io/eatGADS/reference/getProgramLimit.md)
-
 ## Examples
 
 ``` r
@@ -55,7 +49,7 @@ pisa2 <- changeMissings(GADSdat = pisa,
                         varName = "schtype",
                         value = 9999999999,
                         missings = "miss")
-checkIntOverflow(pisa2)
+eatGADS:::checkIntOverflow(pisa2)
 #>   varName value missings empty rownum
 #> 1 schtype 1e+10     miss  TRUE      7
 ```

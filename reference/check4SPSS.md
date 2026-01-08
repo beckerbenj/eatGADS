@@ -31,6 +31,11 @@ flagged in variable names (`"varNames_special"`). Check results are
 reported back on variable level, with the exception of `"valLabels"`,
 which is a list with entries per violating variable.
 
+## See also
+
+Other dataset compliance checks:
+[`check4Stata()`](https://beckerbenj.github.io/eatGADS/reference/check4Stata.md)
+
 ## Examples
 
 ``` r

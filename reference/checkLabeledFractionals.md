@@ -34,12 +34,6 @@ therefore cause problems and run into an error from `haven`'s
 [`write_dta`](https://haven.tidyverse.org/reference/read_dta.html)
 function.
 
-## See also
-
-Other dataset compliance checks:
-[`checkIntOverflow()`](https://beckerbenj.github.io/eatGADS/reference/checkIntOverflow.md),
-[`getProgramLimit()`](https://beckerbenj.github.io/eatGADS/reference/getProgramLimit.md)
-
 ## Examples
 
 ``` r
@@ -48,7 +42,7 @@ pisa2 <- recodeGADS(GADSdat = pisa,
                     varName = "schtype",
                     oldValues = 2,
                     newValues = .5)
-checkLabeledFractionals(pisa2)
+eatGADS:::checkLabeledFractionals(pisa2)
 #>   varName value missings empty
 #> 1 schtype   0.5    valid FALSE
 ```
