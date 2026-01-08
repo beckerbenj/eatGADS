@@ -36,7 +36,6 @@
 #'
 #' @examples
 #' check4Stata(pisa)
-#'
 #' @export
 check4Stata <- function(GADSdat, version = c("Stata", "Stata 19/BE", "Stata 19/MP")) {
   check_GADSdat(GADSdat)

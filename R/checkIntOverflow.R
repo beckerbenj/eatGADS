@@ -29,7 +29,7 @@
 #'                         value = 9999999999,
 #'                         missings = "miss")
 #' eatGADS:::checkIntOverflow(pisa2)
-#'
+
 checkIntOverflow <- function(GADSdat) {
   check_GADSdat(GADSdat)
   labels <- GADSdat$labels

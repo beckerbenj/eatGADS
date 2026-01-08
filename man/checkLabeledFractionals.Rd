@@ -33,5 +33,4 @@ pisa2 <- recodeGADS(GADSdat = pisa,
                     oldValues = 2,
                     newValues = .5)
 eatGADS:::checkLabeledFractionals(pisa2)
-
 }

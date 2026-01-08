@@ -68,11 +68,4 @@ eatGADS:::checkValLabels(pisa2)
 # check variable labels
 pisa2$labels[1, "varLabel"] <- paste0(rep("abcdefg", 12), collapse = "")
 eatGADS:::checkVarLabels(pisa2)
-
 }
-\seealso{
-Other dataset compliance checks: 
-\code{\link{check4SPSS}()},
-\code{\link{check4Stata}()}
-}
-\concept{dataset compliance checks}

@@ -29,8 +29,6 @@
 #'  they occur. For \code{checkValLabels}, the labeled \code{value}, as well as whether that value
 #'  actually occurs in the data (\code{empty}), is also reported.
 #'
-#' @family dataset compliance checks
-#'
 #' @examples
 #' # check value labels
 #' pisa2 <- pisa
@@ -38,6 +36,7 @@
 #' eatGADS:::checkValLabels(pisa2)
 #'
 #' @describeIn checkValLabels Check value labels for length limits.
+
 checkValLabels <- function(GADSdat, charLimits = c("SPSS", "Stata"),
                            vars = namesGADS(GADSdat), printLength = 40) {
   check_GADSdat(GADSdat)

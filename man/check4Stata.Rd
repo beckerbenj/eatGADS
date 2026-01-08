@@ -42,11 +42,9 @@ Limits to different aspects of the dataset differ between the versions of the so
 }
 \examples{
 check4Stata(pisa)
-
 }
 \seealso{
 Other dataset compliance checks: 
-\code{\link{check4SPSS}()},
-\code{\link{checkValLabels}()}
+\code{\link{check4SPSS}()}
 }
 \concept{dataset compliance checks}

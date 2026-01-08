@@ -23,7 +23,7 @@
 #'                     oldValues = 2,
 #'                     newValues = .5)
 #' eatGADS:::checkLabeledFractionals(pisa2)
-#'
+
 checkLabeledFractionals <- function(GADSdat) {
   check_GADSdat(GADSdat)
   labels <- GADSdat$labels
