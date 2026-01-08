@@ -2,15 +2,6 @@
 # dfSAV <- import_spss(file = "tests/testthat/helper_spss_missings.sav")
 dfSAV <- import_spss(file = "helper_spss_missings.sav")
 
-test_that("check_single_varName", {
-  expect_error(check_single_varName(var = c("VAR1", "VAR1")),
-               "'varName' must be of length 1.")
-  expect_error(check_single_varName(var = 1),
-               "'varName' is not a character vector.")
-  expect_error(check_single_varName(var = 1, argumentName = "someArgument"),
-               "'someArgument' is not a character vector.")
-})
-
 
 test_that("check_vars_in_GADSdat", {
   expect_error(check_vars_in_GADSdat(dfSAV, vars = c("VAR1", "VAR1")),
@@ -56,4 +47,12 @@ test_that("check_numericArgument", {
   expect_error(check_numericArgument(1:2, "test"),
                "'test' needs to be a numeric vector of length 1.")
   expect_silent(check_numericArgument(1, "test"))
+})
+
+test_that("Argument name is recycled if no argName is provided", {
+  somearg <- "test"
+  expect_error(check_logicalArgument(somearg), "'somearg' needs to be a logical vector of length 1.")
+  expect_error(check_numericArgument(somearg), "'somearg' needs to be a numeric vector of length 1.")
+  somearg <- 5
+  expect_error(check_characterArgument(somearg), "'somearg' needs to be a character vector of length 1.")
 })

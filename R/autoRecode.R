@@ -47,7 +47,7 @@ autoRecode <- function(GADSdat, var, var_suffix = "", label_suffix = "", csv_pat
 #'@export
 autoRecode.GADSdat <- function(GADSdat, var, var_suffix = "", label_suffix = "", csv_path = NULL, template = NULL) {
   check_GADSdat(GADSdat)
-  check_single_varName(var)
+  check_characterArgument(var)
   check_vars_in_GADSdat(GADSdat, vars = c(var))
 
   # duplicate

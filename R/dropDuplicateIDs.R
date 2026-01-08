@@ -35,7 +35,7 @@ dropDuplicateIDs <- function(GADSdat, ID, varNames = setdiff(namesGADS(GADSdat),
 #'@export
 dropDuplicateIDs.GADSdat <- function(GADSdat, ID, varNames = setdiff(namesGADS(GADSdat), ID)) {
   check_GADSdat(GADSdat)
-  check_single_varName(ID, argumentName = "ID")
+  check_characterArgument(ID, argName = "ID")
   check_vars_in_GADSdat(GADSdat, vars = ID, argName = "ID")
   check_vars_in_GADSdat(GADSdat, vars = varNames, argName = "varNames")
 

@@ -21,7 +21,7 @@ createVariable <- function(GADSdat, varName, checkVarName = TRUE) {
 #'@export
 createVariable.GADSdat <- function(GADSdat, varName, checkVarName = TRUE) {
   check_GADSdat(GADSdat)
-  check_logicalArgument(checkVarName, argName = checkVarName)
+  check_logicalArgument(checkVarName)
   if(varName %in% namesGADS(GADSdat)) {
     stop("'",  varName, "' is already an existing variable in the 'GADSdat'.")
   }

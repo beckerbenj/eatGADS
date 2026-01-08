@@ -42,7 +42,7 @@ changeVarNames.all_GADSdat <- function(GADSdat, oldNames, newNames, checkVarName
 #'@export
 changeVarNames.GADSdat <- function(GADSdat, oldNames, newNames, checkVarNames = TRUE) {
   check_GADSdat(GADSdat)
-  check_logicalArgument(checkVarNames, argName = checkVarNames)
+  check_logicalArgument(checkVarNames)
 
   checkNamesVectors(oldNames = oldNames, newNames = newNames, dat = GADSdat[["dat"]])
   changeTable <- getChangeMeta(GADSdat, level = "variable")
