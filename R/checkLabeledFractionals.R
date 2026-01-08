@@ -16,17 +16,14 @@
 #' the labeled fractional \code{value}s, their respective \code{missings} tags,
 #' and whether they actually occur in the data (\code{empty}).
 #'
-#'@family dataset compliance checks
-#'
 #'@examples
 #' # Introduce a fractional value into meta data
 #' pisa2 <- recodeGADS(GADSdat = pisa,
 #'                     varName = "schtype",
 #'                     oldValues = 2,
 #'                     newValues = .5)
-#' checkLabeledFractionals(pisa2)
-#'
-#'@export
+#' eatGADS:::checkLabeledFractionals(pisa2)
+
 checkLabeledFractionals <- function(GADSdat) {
   check_GADSdat(GADSdat)
   labels <- GADSdat$labels

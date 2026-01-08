@@ -38,12 +38,5 @@ pisa2 <- changeMissings(GADSdat = pisa,
                         varName = "schtype",
                         value = 9999999999,
                         missings = "miss")
-checkIntOverflow(pisa2)
-
+eatGADS:::checkIntOverflow(pisa2)
 }
-\seealso{
-Other dataset compliance checks: 
-\code{\link{checkLabeledFractionals}()},
-\code{\link{getProgramLimit}()}
-}
-\concept{dataset compliance checks}

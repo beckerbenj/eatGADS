@@ -7,7 +7,6 @@
 #' variable name limits, and applies appropriate variable name changes to
 #' \code{GADSdat} or \code{all_GADSdat} objects.
 #'
-#' @details
 #' Invalid column names in a \code{SQLite} data base include
 #' \itemize{
 #' \item \code{SQLite} keywords (see \code{\link[eatDB]{sqlite_keywords}}),
@@ -147,16 +146,16 @@ unduplicate <- function(x) {
   out
 }
 
-truncate_string <- function(string, n, unit) {
+truncate_string <- function(string, n, unit, suffix = "_tr") {
   check_characterArgument(string)
   check_numericArgument(n)
   check_characterArgument(unit)
-  trunc_suffix <- "_tr"
+  check_characterArgument(suffix)
 
   # limit is character length
   if (unit == "char") {
-    out <- substr(string, start = 0, stop = n - nchar(trunc_suffix))
-    out <- paste0(out, trunc_suffix)
+    out <- substr(string, start = 0, stop = n - nchar(suffix))
+    out <- paste0(out, suffix)
     return(out)
   }
 
@@ -169,9 +168,9 @@ truncate_string <- function(string, n, unit) {
 
   # n_bytes != n_chars
   last_char_below_limit <- find_byte_length(string = string,
-                                            n = n - nchar(trunc_suffix))
+                                            n = n - nchar(suffix))
   out <- substr(string, start = 0, stop = last_char_below_limit)
-  out <- paste0(out, trunc_suffix)
+  out <- paste0(out, suffix)
   return(out)
 }
 

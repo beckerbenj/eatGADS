@@ -22,17 +22,14 @@
 #' The \code{rownum}s of the affected rows in \code{GADSdat$labels} are also
 #' provided in a separate column as a fail safe.
 #'
-#'@family dataset compliance checks
-#'
 #'@examples
 #' # Introduce a fractional value into meta data
 #' pisa2 <- changeMissings(GADSdat = pisa,
 #'                         varName = "schtype",
 #'                         value = 9999999999,
 #'                         missings = "miss")
-#' checkIntOverflow(pisa2)
-#'
-#'@export
+#' eatGADS:::checkIntOverflow(pisa2)
+
 checkIntOverflow <- function(GADSdat) {
   check_GADSdat(GADSdat)
   labels <- GADSdat$labels
