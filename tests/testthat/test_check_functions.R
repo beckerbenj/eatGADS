@@ -51,8 +51,8 @@ test_that("check_numericArgument", {
 
 test_that("Argument name is recycled if no argName is provided", {
   somearg <- "test"
-  expect_match(try(check_logicalArgument(somearg), silent = TRUE), "*?somearg*?")
-  expect_match(try(check_numericArgument(somearg), silent = TRUE), "*?somearg*?")
+  expect_error(check_logicalArgument(somearg), "'somearg' needs to be a logical vector of length 1.")
+  expect_error(check_numericArgument(somearg), "'somearg' needs to be a numeric vector of length 1.")
   somearg <- 5
-  expect_match(try(check_characterArgument(somearg), silent = TRUE), "*?somearg*?")
+  expect_error(check_characterArgument(somearg), "'somearg' needs to be a character vector of length 1.")
 })
