@@ -105,6 +105,7 @@ add_miss_tags <- function(varName, attr_list, label_df, raw_dat) {
       attr_list[["na_values"]] <- miss_values
     # incompatibel case
     } else {
+      # TODO: transform to numeric before calculating the range?
       full_range <- range(miss_values)
       # check variable class
       if(is.character(raw_dat)) {

@@ -1,10 +1,7 @@
 ### load test data
-# df <- getGADS(filePath = "tests/testthat/helper_database.db")
-df <- getGADS(filePath = "helper_dataBase.db")
-# label_df <- labelsGADS(filePath = "tests/testthat/helper_database.db")
-label_df <- labelsGADS(filePath = "helper_dataBase.db")
-# dfSAV <- import_spss(file = "tests/testthat/helper_spss_missings.sav")
-dfSAV <- import_spss(file = "helper_spss_missings.sav")
+df <- getGADS(filePath = test_path("helper_dataBase.db"))
+label_df <- labelsGADS(filePath = test_path("helper_dataBase.db"))
+dfSAV <- import_spss(file = test_path("helper_spss_missings.sav"))
 
 
 label_df_V2 <- label_df[which(label_df == "V2"), ]
