@@ -88,19 +88,10 @@ addLabels_single <- function(varName, label_df, raw_dat) {
     attr_list[["labels"]] <- value_label_df[, "value"]
     names(attr_list[["labels"]]) <- value_label_df[, "valLabel"]
   }
-
-  # value labels and missing codes need to have the same class as the variable format
-  if((length(attr_list[["format.spss"]]) > 0 &&
-      grepl("^A", unique(attr_list[["format.spss"]]))) ||
-     identical(varClass, "character")) {
-    attr_list[["na_values"]] <- as.character(attr_list[["na_values"]])
-    if(nrow(value_label_df) > 0) {
-      attr_list[["labels"]] <- as.character(attr_list[["labels"]])
-      names(attr_list[["labels"]]) <- value_label_df[, "valLabel"]
-    }
-    #if(identical(labeled, "yes")) attr_list[["class"]] <- c("haven_labelled")
-  }
-
+  
+  attr_list <- assimilate_attribute_classes(attr_list = attr_list, 
+                                            value_label_df = value_label_df,
+                                            varClass = varClass)
   attr_list
 }
 
@@ -149,8 +140,31 @@ add_miss_tags <- function(varName, attr_list, label_df, raw_dat) {
       attr_list[["na_range"]] <- full_range
     }
   }
+  attr_list
+}
 
-
-
+assimilate_attribute_classes <- function(attr_list, value_label_df, varClass) {
+  ## value labels and missing codes need to have the same class as the variable format
+  # backwards compatability with old eatGADS versions that had numeric value column
+  if((length(attr_list[["format.spss"]]) > 0 &&
+      grepl("^A", unique(attr_list[["format.spss"]]))) ||
+     identical(varClass, "character")) {
+    attr_list[["na_values"]] <- as.character(attr_list[["na_values"]])
+    if(nrow(value_label_df) > 0) {
+      attr_list[["labels"]] <- as.character(attr_list[["labels"]])
+      names(attr_list[["labels"]]) <- value_label_df[, "valLabel"]
+    }
+  }
+  if((length(attr_list[["format.spss"]]) > 0 &&
+      grepl("^F", unique(attr_list[["format.spss"]]))) ||
+     identical(varClass, "numeric")) {
+    if(!is.null(attr_list[["na_values"]])) {
+      attr_list[["na_values"]] <- eatTools::asNumericIfPossible(attr_list[["na_values"]], force.string = FALSE) 
+    }
+    if(nrow(value_label_df) > 0) {
+      attr_list[["labels"]] <- eatTools::asNumericIfPossible(attr_list[["labels"]], force.string = FALSE)
+      names(attr_list[["labels"]]) <- value_label_df[, "valLabel"]
+    }
+  }
   attr_list
 }

@@ -44,6 +44,27 @@ test_that("Variable labels are added correctly to attributes, for single charact
                "character")
 })
 
+
+test_that("assimilate attribute classes", {
+  attr_list0 <- list(format.spss = "F8.2", na_values = c("99", "98"))
+  values0 <- data.frame(value = character(), valLabel = character())
+  out <- assimilate_attribute_classes(attr_list0, value_label_df = values0, varClass = "numeric")
+  expect_equal(out$na_values, c(99, 98))
+  
+  attr_list1 <- list(format.spss = "F8.2", na_values = c("99", "98"), labels = c(one = "1", missing = "99"))
+  values1 <- data.frame(value = c("1", "99"), valLabel = c("one", "missing"))
+  out1 <- assimilate_attribute_classes(attr_list1, value_label_df = values1, varClass = "numeric")
+  expect_equal(out1$na_values, c(99, 98))
+  expect_equal(out1$labels, c(one = 1, missing = 99))
+  
+  # backwards compatability
+  attr_list2 <- list(format.spss = "A8", na_values = c(99, 98), labels = c(one = 1, missing = 99))
+  values2 <- data.frame(value = c(1, 99), valLabel = c("one", "missing"))
+  out2 <- assimilate_attribute_classes(attr_list2, value_label_df = values2, varClass = "character")
+  expect_equal(out2$na_values, c("99", "98"))
+  expect_equal(out2$labels, c(one = "1", missing = "99"))
+})
+
 test_that("Value labels work correctly for character variable with and without SPSS format", {
   PlantGrowth$group <- as.character(PlantGrowth$group)
   suppressMessages(g <- import_DF(PlantGrowth))
@@ -92,7 +113,8 @@ dfSAV2 <- changeMissings(dfSAV, varName = "VAR1", value = c(-90, -80), missings 
 miss_labs <- dfSAV2$labels[dfSAV2$labels$varName == "VAR1", ]
 
 test_that("add_miss_tags", {
-  out <- add_miss_tags(varName = "VAR1", attr_list = list(), label_df = miss_labs, raw_dat = dfSAV$dat$VAR1)
+  out <- add_miss_tags(varName = "VAR1", attr_list = list(), 
+                       label_df = miss_labs, raw_dat = dfSAV$dat$VAR1)
   expect_equal(out, list(na_range = c(-99, -80)))
 })
 

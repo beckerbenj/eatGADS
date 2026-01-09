@@ -13,7 +13,6 @@ expected_V2 <- list(label = "Variable 2",
                     class = c("haven_labelled_spss", "haven_labelled"),
                     labels = c(mis = 99))
 
-
 ### write SPSS
 test_that("GADSdat correctly written to sav", {
   # write_spss("c:/Benjamin_Becker/02_Repositories/packages/eatGADS/tests/testthat/helper_write_spss.sav")
@@ -34,8 +33,7 @@ test_that("GADSdat correctly written to sav", {
 
 
 test_that("Full workflow with haven", {
-  #test_df <- import_spss("tests/testthat/helper_spss_havenbug.sav")
-  suppressWarnings(test_df <- import_spss("helper_spss_havenbug.sav"))
+  suppressWarnings(test_df <- import_spss(test_path("helper_spss_havenbug.sav")))
   test_tbl <- export_tibble(test_df)
 
   expect_silent(write_spss(test_df, filePath = tempfile()))
