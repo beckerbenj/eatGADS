@@ -104,6 +104,7 @@ test_that("Correctly identify long strings", {
   longstring <- paste0(rep("a", getProgramLimit("Stata", "stringvars")$value),
                        collapse = "")
   okay_gads$dat$somevar[[2]] <- longstring
+  okay_gads$dat$somevar[[1]] <- NA
   expect_silent(result_longstring <- check4Stata(okay_gads))
   expect_null(result_longstring)
 

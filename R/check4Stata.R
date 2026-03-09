@@ -83,7 +83,9 @@ check4Stata <- function(GADSdat, version = c("Stata", "Stata 19/BE", "Stata 19/M
   report_long_strings <- data.frame(varName = character(),
                                     string = character())
   for (single_var in char_vars) {
-    string_lengths <- nchar(GADSdat$dat[, single_var], type = limit_list$unit)
+    string_lengths <- nchar(GADSdat$dat[, single_var],
+                            type = limit_list$unit,
+                            keepNA = FALSE)
     string_too_long <- string_lengths > limit_list$value
     if (any(string_too_long)) {
       strings_truncated <- unlist(lapply(GADSdat$dat[string_too_long, single_var],
