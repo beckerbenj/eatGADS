@@ -12,7 +12,7 @@
 #'
 #'@param GADSdat \code{GADSdat} object imported via \code{eatGADS}.
 #'@param varName Single string containing the variable name for which the check should be performed.
-#'@param idVar Single string containing the name of the identifier variable.
+#'@param idVar Character vector containing the name(s) of the identifier variable(s).
 #'@param impVar Single string containing the name of the imputation number.
 #'
 #'@return Returns a logical of length one.
@@ -43,21 +43,22 @@ checkUniqueness2.GADSdat <- function(GADSdat, varName, idVar, impVar) {
 #'@export
 checkUniqueness2.data.frame <- function(GADSdat, varName, idVar, impVar) {
   dat <- data.table::as.data.table(GADSdat)
-  if(nrow(dat) == length(unique(dat[[idVar]]))) {
+  n <- length(idVar)
+  if(nrow(dat) == nrow(unique(dat[, idVar, with = FALSE]))) {
     message("'idVar' is unique per row in 'GADSdat' and checking for uniqueness is obsolete.")
     return(TRUE)
   }
 
-  form <- stats::as.formula(paste0(idVar, " ~ ", impVar))
+  form <- stats::as.formula(paste0(paste(idVar, collapse = " + "), " ~ ", impVar))
   subdat <- dat[, c(idVar, varName, impVar), with = FALSE]
   wide <- data.table::dcast(subdat, formula = form, value.var = varName)
 
   ## compare all of them
   imp_num <- length(unique(dat[[impVar]]))
   if(imp_num < 2)  stop("'impVar' must be an imputation variable with at least two different values.")
-  log_list <- sapply(3:(imp_num+1), function(x) {
+  log_list <- sapply((n + 2):(n + imp_num), function(x) {
     #browser()
-    wide_sub <- wide[, c(2, x), with = FALSE]
+    wide_sub <- wide[, c(n + 1, x), with = FALSE]
     wide_sub <- stats::na.omit(wide_sub)
     all(wide_sub[[1]] == wide_sub[[2]])
   })
