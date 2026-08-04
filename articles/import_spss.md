@@ -18,6 +18,7 @@ and [here](https://www.iqb.hu-berlin.de/fdz/Datenzugang/SUF-Antrag).
 ## Importing
 
 ``` r
+
 library(eatGADS)
 ```
 
@@ -29,6 +30,7 @@ the console. This behavior can be suppressed by setting
 `checkVarNames = FALSE`.
 
 ``` r
+
 sav_path <- system.file("extdata", "pisa.zsav", package = "eatGADS")
 gads_obj <- import_spss(sav_path)
 ```
@@ -39,6 +41,7 @@ The resulting object is of the class `GADSdat`. It is basically a named
 list containing the actual data (`dat`) and the meta data (`labels`).
 
 ``` r
+
 class(gads_obj)
 #> [1] "GADSdat" "list"
 names(gads_obj)
@@ -52,6 +55,7 @@ function. The meta data of variables can be accessed via the
 function.
 
 ``` r
+
 namesGADS(gads_obj)
 #>   [1] "idstud"       "idschool"     "idclass"      "schtype"      "sameteach"   
 #>   [6] "g8g9"         "ganztag"      "classsize"    "repeated"     "gender"      
@@ -121,6 +125,7 @@ See
 for more details.
 
 ``` r
+
 ## convert all labeled variables to character
 dat1 <- extractData2(gads_obj, labels2character = namesGADS(gads_obj))
 dat1[1:5, 1:10]

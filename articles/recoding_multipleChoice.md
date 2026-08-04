@@ -36,6 +36,7 @@ Note that the data set is a minimal working example, containing only the
 required variables for this illustration.
 
 ``` r
+
 library(eatGADS)
 data_path <- system.file("extdata", "multipleChoice.sav", package = "eatGADS")
 gads <- import_spss(data_path)
@@ -105,6 +106,7 @@ argument. Note that the function only performs recodings to exact
 matches of a single, specific string (in our example `""`).
 
 ``` r
+
 gads <- recode2NA(gads, value = "")
 #> Recodes in variable ID: 0
 #> Recodes in variable mcvar1: 0
@@ -130,6 +132,7 @@ table. The respective column names are irrelevant and just for
 convenience purpose.
 
 ``` r
+
 lookup <- createLookup(GADSdat = gads, recodeVars = "stringvar", sort_by = 'value', 
                        addCols = c("language", "language2", "language3"))
 
@@ -160,6 +163,7 @@ Alternatively, we recommend using `eatAnalysis::write_xlsx()` to create
 an Excel file in which you can fill in the values.
 
 ``` r
+
 # write lookup table to Excel
 eatAnalysis::write_xlsx(lookup, "lookup_forcedChoice.xlsx")
 ```
@@ -183,6 +187,7 @@ lookup table below). The corresponding value labels will be assigned in
 a later step.
 
 ``` r
+
 # write lookup table to Excel
 eatAnalysis::write_xlsx(lookup, "lookup_multipleChoice.xlsx")
 
@@ -214,6 +219,7 @@ creating as many character variables as there are additional columns in
 the lookup table. Variable names are generated automatically.
 
 ``` r
+
 gads_string <- applyLookup_expandVar(GADSdat = gads, lookup = lookup)
 #> Warning in check_lookup(lookup, GADSdat): Not all values have a recode value
 #> assigned (missings in value_new).
@@ -250,6 +256,7 @@ attaches missing codes. The loop below performs the appropriate labeling
 and missing coding for all three new string variables.
 
 ``` r
+
 for(nam in paste0("stringvar_", 1:3)) {
   gads_string <- changeValLabels(gads_string, varName = nam, 
                                  value = -96, valLabel = "Missing: Not codeable")
@@ -312,6 +319,7 @@ these values could be added to the `value_string` as well, to enable
 automatic matching.
 
 ``` r
+
 value_string <- c(lookup$language, lookup$language2, lookup$language3)
 named_char_vec <- matchValues_varLabels(GADSdat = gads_string, 
                                         mc_vars = c("mcvar1", "mcother"), 
@@ -344,6 +352,7 @@ is. All empty entries in the `text_vars` are assigned missing codes
 (`notext_miss_code`).
 
 ``` r
+
 gads_string2 <- collapseMultiMC_Text(GADSdat = gads_string, mc_vars = named_char_vec, 
                                      text_vars = c("stringvar_1", "stringvar_2", "stringvar_3"), 
                                      mc_var_4text = "mcother", var_suffix = "_r", 
@@ -397,6 +406,7 @@ entries in one of the removed variables, a specific missing code
 (`na_value`) is inserted into this row on all remaining text variables.
 
 ``` r
+
 gads_string3 <- remove2NAchar(GADSdat = gads_string2, 
                               vars = c("stringvar_1_r", "stringvar_2_r", "stringvar_3_r"), 
                               max_num = 2, na_value = -97, 
@@ -446,6 +456,7 @@ All resulting labeled variables share the exact same value labels, which
 are sorted alphabetically.
 
 ``` r
+
 gads_numeric <- multiChar2fac(GADSdat = gads_string3, vars = c("stringvar_1_r", "stringvar_2_r"), 
                               var_suffix = "_r", label_suffix = "(recoded)")
 
@@ -544,6 +555,7 @@ object by using
 [`removeVars()`](https://beckerbenj.github.io/eatGADS/reference/extractVars.md).
 
 ``` r
+
 gads_final2 <- removeVars(gads_final, vars = c("stringvar_1", "stringvar_2", "stringvar_3",
                                                "stringvar_1_r", "stringvar_2_r"))
 #> Removing the following rows from meta data: stringvar_1, stringvar_2, stringvar_3, stringvar_1_r, stringvar_2_r

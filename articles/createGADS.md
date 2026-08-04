@@ -30,6 +30,7 @@ and [here](https://www.iqb.hu-berlin.de/fdz/Datenzugang/SUF-Antrag).
 ## Importing data
 
 ``` r
+
 library(eatGADS)
 ```
 
@@ -40,6 +41,7 @@ performed automatically. Changes to the variable names are reported to
 the console.
 
 ``` r
+
 sav_path <- system.file("extdata", "pisa.zsav", package = "eatGADS")
 dat <- import_spss(sav_path)
 ```
@@ -66,6 +68,7 @@ can be performed into as many hierarchy levels as desired. The reshaping
 has to be performed for each hierarchy level separately.
 
 ``` r
+
 pvs <- grep("pv", namesGADS(dat), value = T)
 splitted_gads <- splitGADS(dat, nameList = list(noImp = namesGADS(dat)[!namesGADS(dat) %in% pvs],
                     PVs = c("idstud", pvs)))
@@ -123,6 +126,7 @@ and `imp`). Finally, we clean the `imp` column and transform it to
 numeric.
 
 ``` r
+
 # Extract raw data from pv gads
 pvs_wide <- pvs_gads$dat
 
@@ -178,6 +182,7 @@ extensive tutorial see the vignette [Handling Meta
 Data](https://beckerbenj.github.io/eatGADS/articles/import_raw.md).
 
 ``` r
+
 pvs_gads2 <- updateMeta(pvs_gads, newDat = as.data.frame(pvs_long2))
 #> Removing the following rows from meta data: ma_pv1, ma_pv2, ma_pv3, ma_pv4, ma_pv5, rea_pv1, rea_pv2, rea_pv3, rea_pv4, rea_pv5, sci_pv1, sci_pv2, sci_pv3, sci_pv4, sci_pv5
 #> Adding meta data for the following variables: dimension, imp, value
@@ -233,6 +238,7 @@ after its creation or extracting data from it with different merges than
 specified when it was set up.
 
 ``` r
+
 merged_gads <- mergeLabels(noImp = noImp_gads, PVs = pvs_gads2)
 
 pkList <- list(noImp = "idstud",
@@ -246,6 +252,7 @@ Finally, we create the relational data base on disc via the
 function.
 
 ``` r
+
 temp_path <- paste0(tempfile(), ".db")
 
 createGADS(merged_gads, pkList = pkList, fkList = fkList,

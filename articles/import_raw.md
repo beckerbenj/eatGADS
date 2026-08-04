@@ -34,10 +34,12 @@ issues with installations from online repositories like GitHub. `R`
 version `> 3.6.0` should work without any issues.
 
 ``` r
+
 devtools::install_github("beckerbenj/eatGADS")
 ```
 
 ``` r
+
 # loading the package
 library(eatGADS)
 ```
@@ -52,6 +54,7 @@ formats. `SPSS` data (`.sav` files) can be imported directly into the
 easiest way to import data into the `GADSdat` format.
 
 ``` r
+
 # importing an SPSS file
 gads <- import_spss("path/example.sav")
 ```
@@ -73,6 +76,7 @@ import data make sure to use the argument `stringsAsFactors = FALSE`. If
 necessary, convert `factors` to character via `as.character`.
 
 ``` r
+
 # importing text files
 input_txt <- read.table("path/example.txt", stringsAsFactors = FALSE)
 # importing German csv files (; separated)
@@ -104,6 +108,7 @@ can not contain any `varNames` that are not variables in `df`. However,
 not all variables in `df` have to occur in `valLabels`.
 
 ``` r
+
 # Example data set
 df <- data.frame(ID = 1:4, sex = c(0, 0, 1, 1), 
                  forename = c("Tim", "Bill", "Ann", "Chris"), stringsAsFactors = FALSE)
@@ -145,6 +150,7 @@ The resulting object is of the class `GADSdat` and contains a data sheet
 and a meta data sheet.
 
 ``` r
+
 # Inpsect resulting object 
 gads 
 #> $dat
@@ -179,6 +185,7 @@ also the preferred data format for distributing `GADSdat` objects to the
 `FDZ`.
 
 ``` r
+
 # Inpsect resulting object 
 saveRDS(gads, "path/gads.RDS")
 ```
@@ -191,6 +198,7 @@ data for specific variables (or all variables, if no specific variable
 name is provided).
 
 ``` r
+
 # Inpsect resulting object 
 extractMeta(gads, vars = c("sex"))
 #>   varName             varLabel format display_width labeled value
@@ -225,6 +233,7 @@ values are recoded to character, the same applies to “`factor`”. If set
 to `"numeric"`, the value labels are not applied.
 
 ``` r
+
 # Extract data without applying labels
 dat1 <- extractData(gads, convertMiss = TRUE, convertLabels = "numeric")
 dat1
@@ -252,6 +261,7 @@ modifying variable labels (`changeVarLabels`), modifying variable names
 (`changeVarNames`) and recoding values (`recodeGADS`).
 
 ``` r
+
 ### wrapper functions
 # Modify variable labels
 gads2 <- changeVarLabels(gads, varName = c("ID"), varLabel = c("Test taker ID"))
@@ -300,6 +310,7 @@ imported into `R`. See the help pages of the respective functions for
 more details.
 
 ``` r
+
 # extract changeTable
 varChanges <- getChangeMeta(gads, level = "variable")
 # modify changeTable
@@ -318,6 +329,7 @@ format, utilizing `haven`. Note that this function is slightly
 experimental and problems with specific character strings might occur.
 
 ``` r
+
 write_spss(gads, "path/example_out.sav")
 ```
 
@@ -326,6 +338,7 @@ object can also be transformed to its equivalent `tibble` format, as if
 the data was imported from SPSS via `haven`.
 
 ``` r
+
 haven_dat <- export_tibble(gads)
 haven_dat
 #> # A tibble: 4 × 3

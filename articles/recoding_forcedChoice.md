@@ -38,6 +38,7 @@ Note that the data set is a minimal working example, containing only the
 required variables for this illustration.
 
 ``` r
+
 library(eatGADS)
 data_path <- system.file("extdata", "forcedChoice.sav", package = "eatGADS")
 gads <- import_spss(data_path)
@@ -95,6 +96,7 @@ argument. Note that the function only performs recodings to exact
 matches of a single, specific value (in our example `""`).
 
 ``` r
+
 gads <- recode2NA(gads, value = "")
 #> Recodes in variable ID: 0
 #> Recodes in variable mcvar: 0
@@ -117,6 +119,7 @@ manually e.g. in Excel). The respective column names are irrelevant and
 just for convenience purpose.
 
 ``` r
+
 lookup <- createLookup(GADSdat = gads, recodeVars = "stringvar", sort_by = 'value', 
                        addCols = c("new", "new2"))
 
@@ -141,6 +144,7 @@ Alternatively, we recommend using `eatAnalysis::write_xlsx()` to create
 an Excel file in which you can fill in the values.
 
 ``` r
+
 # write lookup table to Excel
 eatAnalysis::write_xlsx(lookup, "lookup_forcedChoice.xlsx")
 ```
@@ -167,6 +171,7 @@ our example: `new` and `new2`) . You can fill in both in the lookup
 table and then choose which one you want to prioritize later.
 
 ``` r
+
 # read lookup table back to R
 lookup <- readxl::read_xlsx("lookup_forcedChoice.xlsx")
 lookup
@@ -190,6 +195,7 @@ Only if there is an `NA` in the prioritized column, the other column
 will be used instead.
 
 ``` r
+
 lookup_formatted <- collapseColumns(lookup = lookup, recodeVars = c("new", "new2"), 
                                     prioritize = "new")
 lookup_formatted
@@ -214,6 +220,7 @@ performs recoding for all of these variables simultaneously. If you
 define a `suffix`, the old variable(s) will not be overwritten.
 
 ``` r
+
 gads_string <- applyLookup(GADSdat = gads, lookup = lookup_formatted, suffix = "_r")
 #> No rows removed from meta data.
 #> Adding meta data for the following variables: stringvar_r
@@ -259,6 +266,7 @@ Integrating multiple variable pairs has to be performed in separate
 steps.
 
 ``` r
+
 gads_final <- collapseMC_Text(GADSdat = gads_string, mc_var = "mcvar", 
                               text_var = "stringvar_r", mc_code4text = "other", 
                               var_suffix = "_r", label_suffix = "(recoded)")
@@ -296,6 +304,7 @@ missings have been added, therefore the function does not change the
 `GADSdat` object.
 
 ``` r
+
 gads_final <- checkMissings(GADSdat = gads_final, missingLabel = "missing", 
                             addMissingCode = TRUE, addMissingLabel = FALSE)
 extractMeta(gads_final, "mcvar_r")
@@ -315,6 +324,7 @@ the `GADSdat` object by using the function
 [`removeVars()`](https://beckerbenj.github.io/eatGADS/reference/extractVars.md).
 
 ``` r
+
 gads_final <- removeVars(GADSdat = gads_final, vars = c("mcvar", "stringvar_r"))
 #> Removing the following rows from meta data: mcvar, stringvar_r
 #> No rows added to meta data.
@@ -350,6 +360,7 @@ valid entry, `NA` indicating for example an omission and
 `special missing`, indicating for example an invalid entry.
 
 ``` r
+
 data_path_miss <- system.file("extdata", "forcedChoice_missings.sav", package = "eatGADS")
 gads_miss <- import_spss(data_path_miss)
 gads_miss <- recode2NA(gads_miss, value = "")
@@ -400,6 +411,7 @@ via an actual `NA` in the character variable, the information from the
 numerical, labeled variable is preferred (e.g. row 7).
 
 ``` r
+
 # summarize numerical, labeled variable and character variable
 gads <- collapseMC_Text(gads_miss, "mc", "string", mc_code4text = "other", "_r", "recoded")
 #> No rows removed from meta data.

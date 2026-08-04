@@ -70,6 +70,10 @@ Useful links:
 
 **Maintainer**: Benjamin Becker <b.becker@iqb.hu-berlin.de>
 
+Authors:
+
+- Benjamin Becker <b.becker@iqb.hu-berlin.de>
+
 Other contributors:
 
 - Karoline Sachse \[contributor\]

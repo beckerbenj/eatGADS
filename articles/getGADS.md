@@ -14,6 +14,7 @@ via the [`system.file()`](https://rdrr.io/r/base/system.file.html)
 function.
 
 ``` r
+
 library(eatGADS)
 db_path <- system.file("extdata", "pisa.db", package = "eatGADS")
 db_path
@@ -46,6 +47,7 @@ represents a hierarchy level. The corresponding character vector
 contains all variable names on this hierarchy level.
 
 ``` r
+
 nam <- namesGADS(db_path)
 nam
 #> $noImp
@@ -90,6 +92,7 @@ the
 function.
 
 ``` r
+
 # Meta data for one variable
 extractMeta(db_path, "age")
 #>   varName             varLabel format display_width labeled value valLabel
@@ -103,6 +106,7 @@ earlier. This way, we can extract all meta information available for a
 hierarchy level.
 
 ``` r
+
 extractMeta(db_path, nam$PVs)
 #>       varName                                       varLabel format
 #> 236    idstud                                     Student-ID   F8.0
@@ -128,6 +132,7 @@ variable labels), `value` (referencing labeled values), `valLabel`
 value (`"miss"`) or not (`"valid"`)).
 
 ``` r
+
 # Meta data for manually chosen multiple variables
 extractMeta(db_path, c("idstud", "schtype"))
 #>     varName     varLabel format display_width labeled value
@@ -162,6 +167,7 @@ however, use the
 function on it to access the meta data.
 
 ``` r
+
 gads1 <- getGADS(filePath = db_path, vSelect = c("idstud", "schtype", "gender"))
 class(gads1)
 #> [1] "GADSdat" "list"
@@ -201,6 +207,7 @@ should be a character variable, this can specified via, for example,
 setting `labels2character = c("var1", "var2")`.
 
 ``` r
+
 ## leave all labeled variables as numeric, convert missings to NA
 dat1 <- extractData2(gads1)
 head(dat1)
@@ -262,6 +269,7 @@ level, the data returned is on the student level. Each student is
 represented in a single row.
 
 ``` r
+
 gads1 <- getGADS(db_path, vSelect = c("schtype", "g8g9"))
 dat1 <- extractData2(gads1)
 dim(dat1)
@@ -282,6 +290,7 @@ data is stored on the “student x dimension x plausible value number”
 level. The returned data has exactly this structure.
 
 ``` r
+
 gads2 <- getGADS(db_path, vSelect = c("schtype", "value"))
 dat2 <- extractData2(gads2)
 dim(dat2)
@@ -308,6 +317,7 @@ longitudinal developments (*trends*). `getTrendGADS` allows extracting
 data from multiple data bases with identical variables in it.
 
 ``` r
+
 trend_path1 <- system.file("extdata", "trend_gads_2020.db", package = "eatGADS")
 trend_path2 <- system.file("extdata", "trend_gads_2015.db", package = "eatGADS")
 trend_path3 <- system.file("extdata", "trend_gads_2010.db", package = "eatGADS")
@@ -317,6 +327,7 @@ trend_path3 <- system.file("extdata", "trend_gads_2010.db", package = "eatGADS")
 illustrative purposes.
 
 ``` r
+
 gads_trend <- getTrendGADS(filePaths = c(trend_path1, trend_path2, trend_path3), 
                            vSelect = c("idstud", "dimension", "score"), 
                            years = c(2020, 2015, 2010), fast = FALSE)

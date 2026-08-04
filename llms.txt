@@ -17,6 +17,7 @@ for importing `SPSS` files.
 ## Installation
 
 ``` r
+
 # Install stable version from CRAN via
 install.packages("eatGADS")
 
@@ -31,6 +32,7 @@ vignettes. If you have questions regarding existing functionality or
 requests for new features, contact the package author.
 
 ``` r
+
 # import SPSS data
 sav_path <- system.file("extdata", "pisa.zsav", package = "eatGADS")
 gads_obj <- import_spss(sav_path)

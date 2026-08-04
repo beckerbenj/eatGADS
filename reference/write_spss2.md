@@ -70,6 +70,7 @@ currently under development.
 ## Examples
 
 ``` r
+
 # write to spss
 tmp_txt <- tempfile(fileext = ".txt")
 write_spss2(pisa, txtPath = tmp_txt)

@@ -32,18 +32,18 @@ problem was detected.
 
 Specifically, the following requirements are tested:
 
-|                               |                                                                                                                                                  |
-|-------------------------------|--------------------------------------------------------------------------------------------------------------------------------------------------|
-| `dots_in_varNames`\*          | Variable names do not contain dots ([`checkVarNames`](https://beckerbenj.github.io/eatGADS/reference/checkVarNames.md)).                         |
-| `special_chars_in_varNames`\* | Variable names do not contain special characters.                                                                                                |
-| `varName_length`\*            | Variable names are not longer than the specific limit ([`checkVarNames`](https://beckerbenj.github.io/eatGADS/reference/checkVarNames.md)).      |
-| `labeled_fractionals`\*       | There are no labeled fractional values ([`checkLabeledFractionals`](https://beckerbenj.github.io/eatGADS/reference/checkLabeledFractionals.md)). |
-| `large_integers`\*            | All labeled values can be coerced `as.integer` ([`checkIntOverflow`](https://beckerbenj.github.io/eatGADS/reference/checkIntOverflow.md)).       |
-| `varLabel_length`             | Variable labels are not longer than the specific limit ([`checkVarLabels`](https://beckerbenj.github.io/eatGADS/reference/checkValLabels.md)).   |
-| `valLabel_length`             | Value labels are not longer than the specific limit ([`checkValLabels`](https://beckerbenj.github.io/eatGADS/reference/checkValLabels.md)).      |
-| `long_strings`                | String variables do not contain string values that are longer than the specific limit.                                                           |
-| `too_many_rows`\*             | The number of rows/observations does not exceed the specific limit.                                                                              |
-| `too_many_cols`\*             | The number of columns/variables does not exceed the specific limit.                                                                              |
+|  |  |
+|----|----|
+| `dots_in_varNames`\* | Variable names do not contain dots ([`checkVarNames`](https://beckerbenj.github.io/eatGADS/reference/checkVarNames.md)). |
+| `special_chars_in_varNames`\* | Variable names do not contain special characters. |
+| `varName_length`\* | Variable names are not longer than the specific limit ([`checkVarNames`](https://beckerbenj.github.io/eatGADS/reference/checkVarNames.md)). |
+| `labeled_fractionals`\* | There are no labeled fractional values ([`checkLabeledFractionals`](https://beckerbenj.github.io/eatGADS/reference/checkLabeledFractionals.md)). |
+| `large_integers`\* | All labeled values can be coerced `as.integer` ([`checkIntOverflow`](https://beckerbenj.github.io/eatGADS/reference/checkIntOverflow.md)). |
+| `varLabel_length` | Variable labels are not longer than the specific limit ([`checkVarLabels`](https://beckerbenj.github.io/eatGADS/reference/checkValLabels.md)). |
+| `valLabel_length` | Value labels are not longer than the specific limit ([`checkValLabels`](https://beckerbenj.github.io/eatGADS/reference/checkValLabels.md)). |
+| `long_strings` | String variables do not contain string values that are longer than the specific limit. |
+| `too_many_rows`\* | The number of rows/observations does not exceed the specific limit. |
+| `too_many_cols`\* | The number of columns/variables does not exceed the specific limit. |
 
 Not complying with the marked (\*) requirements will prevent a dataset
 from being exported to a `.dta` file. Issues with unmarked requirements

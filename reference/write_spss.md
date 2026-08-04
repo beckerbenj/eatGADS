@@ -63,6 +63,7 @@ Currently known limitations for `write_stata` are:
 ## Examples
 
 ``` r
+
 # write to spss
 tmp <- tempfile(fileext = ".sav")
 write_spss(pisa, tmp)
@@ -71,7 +72,7 @@ write_spss(pisa, tmp)
 # write to stata
 tmp <- tempfile(fileext = ".dta")
 write_stata(pisa, tmp)
-#> Warning: This GADSdat does comply with some Stata-specific requirements for datasets. It will still be exported to a .dta file, but parts of the (meta) data may be truncated. Further invesigations using check4Stata() are recommended.
+#> Warning: This GADSdat does not comply with some Stata-specific requirements for datasets. It will still be exported to a .dta file, but parts of the (meta) data may be truncated. Further investigations using check4Stata() are recommended.
 #> Warning: Missing codes and variable formats are dropped when writing to '.dta'.
 #> NULL
 ```

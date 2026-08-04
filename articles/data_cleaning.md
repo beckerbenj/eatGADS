@@ -7,6 +7,7 @@ containing both the data (`"dat"`) as well as the meta data
 (`"labels"`).
 
 ``` r
+
 class(pisa)
 #> [1] "GADSdat" "list"
 names(pisa)
@@ -33,6 +34,7 @@ complete campus files and the original data set can be accessed
 and [here](https://www.iqb.hu-berlin.de/fdz/Datenzugang/SUF-Antrag).
 
 ``` r
+
 library(eatGADS)
 gads <- pisa
 ```
@@ -46,6 +48,7 @@ data suitable for data analyses, see the
 function.
 
 ``` r
+
 pisa$dat[1:5, 1:5]
 #>   idstud idschool idclass schtype sameteach
 #> 1      1      127     392       2         2
@@ -85,6 +88,7 @@ vignette to check whether changes to meta data have been performed
 successfully.
 
 ``` r
+
 extractMeta(gads, vars = c("hisei", "schtype"))
 #>    varName                             varLabel format display_width labeled value
 #> 5  schtype                         School track   F8.0            NA     yes     1
@@ -112,6 +116,7 @@ function. The old variable names are overwritten. Multiple variable
 names can be adjusted at once.
 
 ``` r
+
 # inspect original meta data
 extractMeta(gads, vars = "hisei")
 #>    varName                             varLabel format display_width labeled value valLabel
@@ -137,6 +142,7 @@ Variable labels can be adjusted analogously via the
 function. Again, multiple variable labels can be adjusted at once.
 
 ``` r
+
 extractMeta(gads_labeled, vars = "hisei_new")
 #>      varName                             varLabel format display_width labeled value valLabel
 #> 39 hisei_new Highest parental occupational status   F8.2            NA      no    NA     <NA>
@@ -161,6 +167,7 @@ The same applies for the `SPSS` format of a variable using the
 function.
 
 ``` r
+
 extractMeta(gads_labeled, "hisei_new")
 #>      varName                               varLabel format display_width labeled value valLabel
 #> 39 hisei_new Parental occupational status (highest)   F8.2            NA      no    NA     <NA>
@@ -187,6 +194,7 @@ and missing codes should be given to numeric values, even if a variable
 is a character variable.
 
 ``` r
+
 # Adding value labels
 extractMeta(gads_labeled, "hisei_new")
 #>      varName                               varLabel format display_width labeled value valLabel
@@ -224,6 +232,7 @@ Value labels can be deleted using the
 function.
 
 ``` r
+
 # Removing value labels
 extractMeta(gads_labeled, "schtype")
 #>   varName     varLabel format display_width labeled value                                  valLabel
@@ -249,6 +258,7 @@ modified using the
 function. Valid entries for `missings` are `"miss"` and `"valid"`.
 
 ``` r
+
 # Defining missings
 extractMeta(gads_labeled, "hisei_new")
 #>      varName                               varLabel format display_width labeled value
@@ -288,6 +298,7 @@ allows searching for labeled values in a specific value range (e.g.,
 `-50:-99`).
 
 ``` r
+
 # Creating a new value label for a missing value but leaving the missing code as valid
 gads_labeled <- changeValLabels(GADSdat = gads_labeled, varName = "gender", 
                                 value = -94, valLabel = "missing: Question omitted")
@@ -323,6 +334,7 @@ In the example below we transfer only the missing codes from variable
 `hisei_new` to variable `age`.
 
 ``` r
+
 extractMeta(gads_labeled, "age")
 #>    varName             varLabel format display_width labeled value valLabel missings
 #> 18     age Age of student at T1   F8.2            NA      no    NA     <NA>     <NA>
@@ -356,6 +368,7 @@ or removed via
 [`removeVars()`](https://beckerbenj.github.io/eatGADS/reference/extractVars.md).
 
 ``` r
+
 # Selecting variables
 gads_motint <- extractVars(gads_labeled, 
                            vars = c("int_a", "int_b", "int_c", "int_d", "instmot_a"))
@@ -381,6 +394,7 @@ purpose, the variable can be cloned and later modified (e.g., via
 `recodeGADS`).
 
 ``` r
+
 # Clone the variable "sameteach"
 gads_labeled <- cloneVariable(gads_labeled, varName = "sameteach", new_varName = "sameteach2")
 ```
@@ -396,6 +410,7 @@ added using the
 function.
 
 ``` r
+
 # Extract the data
 newDat <- gads_labeled$dat
 # Adding a variable
@@ -424,6 +439,7 @@ can be performed using the
 function.
 
 ``` r
+
 # Empty a variable completely
 gads_labeled <- emptyTheseVariables(gads_labeled, vars = "idschool")
 # Resulting frequency table
@@ -440,6 +456,7 @@ The function
 allows the manual recoding of a variable.
 
 ``` r
+
 # Original data and meta data
 gads_labeled$dat$gender[1:10]
 #>  [1] 1 1 2 2 1 1 2 2 1 1
@@ -468,6 +485,7 @@ Moreover,
 allows recoding values without value labels or even `NA` values.
 
 ``` r
+
 # Recoding of NA values 
 gads_labeled$dat$int_a[1:10]
 #>  [1]  2  2  3  2  1  2 NA NA NA NA
@@ -489,6 +507,7 @@ labels for the specified values are deleted. For each variable it is
 reported how many cases have been recoded.
 
 ``` r
+
 # Recoding of values as Missing/NA
 gads_labeled$dat$schtype[1:10]
 #>  [1] 2 3 1 3 2 3 1 3 2 1
@@ -507,6 +526,7 @@ variable via
 [`multiChar2fac()`](https://beckerbenj.github.io/eatGADS/reference/multiChar2fac.md).
 
 ``` r
+
 # Example data set
 test_df <- data.frame(id = 1:5, varChar = c("german", "English", 
                                             "english", "POLISH", "polish"),
@@ -528,6 +548,7 @@ Via the argument `convertCase` upper and lower case can be automatically
 adjusted.
 
 ``` r
+
 # Recoding a character variable to numeric while simplying case
 test_gads2 <- multiChar2fac(test_gads, vars = "varChar", var_suffix = "_new",
                             convertCase = "upperFirst")
@@ -547,6 +568,7 @@ This can be desirable, for instance, for the recoding of identifier
 variables.
 
 ``` r
+
 id_df <- data.frame(id = c(1101, 1102, 1103, 1104, 1105), 
                     varChar = c("german", "English", "english", "POLISH", "polish"),
                         stringsAsFactors = FALSE)
@@ -575,6 +597,7 @@ The function
 allows the relocation of a single variable within a `GADSdat` object.
 
 ``` r
+
 namesGADS(gads_labeled)[1:5]
 #> [1] "idstud"    "idschool"  "idclass"   "schtype"   "sameteach"
 
@@ -613,6 +636,7 @@ We start by extracting this change table via the
 function.
 
 ``` r
+
 # variable level
 meta_var <- getChangeMeta(GADSdat = pisa, level = "variable")
 ```
@@ -623,6 +647,7 @@ to `.xlsx` via the `eatAnalysis::write_xlsx()` function. To perform
 changes, entries are made into the corresponding “\_new”-columns.
 
 ``` r
+
 # write to Excel
 eatAnalysis::write_xlsx(meta_var, row.names = FALSE, "variable_changes.xlsx")
 ```
@@ -636,6 +661,7 @@ eatAnalysis::write_xlsx(meta_var, row.names = FALSE, "variable_changes.xlsx")
 The Excel file can be read back into `R` via `readxl::read_xlsx()`.
 
 ``` r
+
 # write to Excel
 meta_var_changed <- readxl::read_excel("variable_changes.xlsx", col_types = rep("text", 8))
 ```
@@ -645,6 +671,7 @@ The
 function applies the meta data changes to the `GADSdat` object.
 
 ``` r
+
 gads2 <- applyChangeMeta(meta_var_changed, GADSdat = pisa)
 extractMeta(gads2, vars = c("idstud", "idschool", "schoolType"))
 #>      varName                    varLabel format display_width labeled value
@@ -667,11 +694,13 @@ At value level, information on value, value labels or missings can be
 changed. The general workflow is identical.
 
 ``` r
+
 # value level
 meta_val <- getChangeMeta(GADSdat = pisa, level = "value")
 ```
 
 ``` r
+
 # write to Excel
 eatAnalysis::write_xlsx(meta_val, row.names = FALSE, "value_changes.xlsx")
 ```
@@ -683,12 +712,14 @@ eatAnalysis::write_xlsx(meta_val, row.names = FALSE, "value_changes.xlsx")
  
 
 ``` r
+
 # write to Excel
 meta_val_changed <- readxl::read_excel("value_changes.xlsx", 
                                        col_types = c("text", rep(c("numeric", "text", "text"), 2)))
 ```
 
 ``` r
+
 gads3 <- applyChangeMeta(meta_val_changed, GADSdat = pisa)
 extractMeta(gads3, vars = c("schtype", "sameteach"))
 #>     varName                               varLabel format display_width labeled value
