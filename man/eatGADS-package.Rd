@@ -50,6 +50,11 @@ Useful links:
 \author{
 \strong{Maintainer}: Benjamin Becker \email{b.becker@iqb.hu-berlin.de}
 
+Authors:
+\itemize{
+  \item Benjamin Becker \email{b.becker@iqb.hu-berlin.de}
+}
+
 Other contributors:
 \itemize{
   \item Karoline Sachse [contributor]

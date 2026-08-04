@@ -68,12 +68,12 @@ write_stata.GADSdat <- function(GADSdat, filePath) {
   stata_check <- check4Stata(GADSdat)
   if (!is.null(stata_check)) {
     if (stata_issues_critical(stata_check)) {
-      stop("This GADSdat does comply with some Stata-specific requirements for datasets. ",
+      stop("This GADSdat does not comply with some Stata-specific requirements for datasets. ",
            "It cannot be exported to a .dta file. Please investigate this issue using check4Stata().")
     } else {
-      warning("This GADSdat does comply with some Stata-specific requirements for datasets. ",
+      warning("This GADSdat does not comply with some Stata-specific requirements for datasets. ",
               "It will still be exported to a .dta file, but parts of the (meta) data may be ",
-              "truncated. Further invesigations using check4Stata() are recommended.")
+              "truncated. Further investigations using check4Stata() are recommended.")
     }
   }
   df <- export_tibble(GADSdat = GADSdat)

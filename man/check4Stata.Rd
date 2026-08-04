@@ -47,7 +47,7 @@ Limits to different aspects of the dataset vary between versions of the software
 check4Stata(pisa)
 }
 \seealso{
-Other dataset compliance checks: 
-\code{\link{check4SPSS}()}
+Other dataset compliance checks:
+\code{\link[=check4SPSS]{check4SPSS()}}
 }
 \concept{dataset compliance checks}

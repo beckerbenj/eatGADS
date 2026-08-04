@@ -34,7 +34,7 @@ check4SPSS(pisa2)
 
 }
 \seealso{
-Other dataset compliance checks: 
-\code{\link{check4Stata}()}
+Other dataset compliance checks:
+\code{\link[=check4Stata]{check4Stata()}}
 }
 \concept{dataset compliance checks}
