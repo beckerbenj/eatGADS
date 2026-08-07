@@ -29,97 +29,91 @@ assimilateValLabels <- function(GADSdat, varNames, lookup = NULL) {
 }
 #'@export
 assimilateValLabels.GADSdat <- function(GADSdat, varNames, lookup = NULL) {
+  check_GADSdat(GADSdat)
   check_vars_in_GADSdat(GADSdat, vars = varNames)
 
-  # extract GADSdat only including variables
-  suppressMessages(fac_GADS <- extractVars(GADSdat, vars = varNames))
-
-  # apply value labels
-  fac_df <- extractData(fac_GADS, convertMiss = FALSE, convertLabels = "character")
-
-  # (if lookup does not exist, create it from all variables)
-  # (if lookup exists, check whether all values are mentioned in lookup)
-  if(!is.null(lookup)) stop("Lookup argument is currently not supported.")
-  if(is.null(lookup)) {
-    lookup_vec <- extractMeta(GADSdat, varNames[1])[, "valLabel"]
-    lookup <- data.frame(valLabel = lookup_vec, value = seq_along(lookup_vec))
+  ## use lookup table if supplied ##
+  master_lookup <- data.frame(value = NULL, valLabel = NULL, missings = NULL)
+  if (!is.null(lookup)) {
+    if (!is.data.frame(lookup) || !all(names(lookup) %in% names(master_lookup))) {
+      stop("'lookup' needs to be a data.frame with columns 'value', 'valLabel', and 'missings'.")
+    }
+    master_lookup <- lookup[, c("value", "valLabel", "missings")]
   }
 
-  lookup_valLabels <- lookup$valLabel[!is.na(lookup$valLabel)]
+  ## add missings of first variable ##
+  meta_first_var <- extractMeta(GADSdat, varNames[[1]])
+  missings_first_var <- !is.na(meta_first_var$valLabel) & meta_first_var$missings == "miss"
+  if (any(missings_first_var)) {
+    lookup_missings_first_var <- data.frame(value = meta_first_var$value[missings_first_var],
+                                            valLabel = meta_first_var$valLabel[missings_first_var],
+                                            missings = "miss")
+  } else {
+    lookup_missings_first_var <- data.frame(value = NULL, valLabel = NULL, missings = NULL)
+  }
+  master_lookup <- rbind(master_lookup, lookup_missings_first_var)
 
-  #if(length(lookup_valLabels) > nrow(fac_df)) stop("'lookups' with longer length than rows in the data are currently not supported.")
-  lookup_helper <- resize_vector(lookup_valLabels, max_nrow = nrow(GADSdat$dat))
-  fac_df2 <- cbind(fac_df, lookup_helper)
+  ## add other values ##
+  labels_all_vars <- unique(extractMeta(GADSdat, varNames)$valLabel)
+  labels_not_yet_in_lookup <- labels_all_vars[!labels_all_vars %in% master_lookup$valLabel]
+  additional_lookup <- data.frame(value = seq_along(labels_not_yet_in_lookup),
+                                  valLabel = sort(labels_not_yet_in_lookup),
+                                  missings = "valid")
+  # increase values if positions in the value range are already taken
+  if (any(additional_lookup$value %in% lookup_missings_first_var$value)) {
+    warning("Some missing values are now inside the assimilated value range.")
+  }
+  while (any(additional_lookup$value %in% master_lookup$value)) {
+    # pointers
+    p_affected <- additional_lookup$value %in% master_lookup$value
+    p_first_affected <- which(p_affected)[[1]]
+    p_nonaffected <- which(!p_affected)[which(!p_affected) > p_first_affected]
+    p_move <- p_first_affected:length(additional_lookup$value)
+    # values
+    if (length(p_nonaffected) > 0) {
+      v_next_nonaffected <- additional_lookup$value[min(p_nonaffected)]
+    } else {
+      v_next_nonaffected <- max(additional_lookup$value) + 1
+    }
+    additional_lookup$value[p_move] <- seq(from = v_next_nonaffected,
+                                           length.out = length(p_move))
+  }
+  master_lookup <- rbind(master_lookup, additional_lookup)
 
-  # multiChar2fac on all resulting variables
-  char_gads <- import_DF(fac_df2)
-  newVars_gads <- multiChar2fac(char_gads, vars = namesGADS(char_gads), var_suffix = "", label_suffix = "")
-  suppressMessages(newVars_gads_red <- extractVars(newVars_gads, vars = varNames))
+  ## recode labels to common values ##
+  # extract data of variables in form of their value labels
+  suppressMessages(fac_GADS <- extractVars(GADSdat, vars = varNames))
+  fac_df <- extractData(fac_GADS, convertMiss = FALSE, convertLabels = "character")
+  for (this_var in varNames) {
+    attr(fac_df[, this_var], "label") <- NULL
+  }
+  char_gads <- import_DF(fac_df)
+  newVars_gads <- multiChar2fac(char_gads, vars = namesGADS(char_gads),
+                                var_suffix = "", label_suffix = "")
 
-  # merge data and meta data into old GADSdat
+  ## apply master lookup to recoded value ##
+  multiChar_change_table <- getChangeMeta(newVars_gads, level = "value")
+  names(master_lookup) <- c("value_new", "valLabel", "missings_new")
+  assimilation_change_table <- merge(x = multiChar_change_table[, 1:4],
+                                     y = master_lookup,
+                                     by = "valLabel",
+                                     all.x = TRUE,
+                                     all.y = FALSE)
+  assimilation_change_table$valLabel_new <- NA
+  assimilation_change_table <- assimilation_change_table[, names(multiChar_change_table)]
+
+  newVars_gads_assimilated <- applyChangeMeta(assimilation_change_table, newVars_gads)
+
+  # merge data into original GADSdat
   suppressMessages(GADSdat_removed <- removeVars(GADSdat, vars = varNames))
-  #browser()
   # cbind Method, orderlike
-  GADSdat_unorderd <- cbind(GADSdat_removed, newVars_gads_red)
+  GADSdat_unorderd <- cbind(GADSdat_removed, newVars_gads_assimilated)
   GADSdat_out <- orderLike(GADSdat_unorderd, newOrder = namesGADS(GADSdat))
 
-  # restore missing value labels?
-  # maybe using recodeGADSdat and the first variable in varNames?
-  miss_old <- extractMeta(GADSdat, varNames[1])
-  miss_old <- miss_old[which(miss_old$missings == "miss"), c("value", "valLabel")]
-
-  #browser()
-
-  if(nrow(miss_old) > 0){
-    if(any(is.na(miss_old$valLabel))) stop("Missing values in 'valLabel' for declared missings.")
-    miss_new <- extractMeta(GADSdat_out, varNames[1])
-    miss_new <- miss_new[which(miss_new$valLabel %in% miss_new$valLabel), c("value", "valLabel")]
-
-    miss_rec <- merge(miss_old, miss_new, by = "valLabel")
-
-    for(nam in varNames) {
-      GADSdat_out <- recodeGADS(GADSdat_out, varName = nam, oldValues = miss_rec$value.y, newValues = miss_rec$value.x)
-    }
-    #browser()
-  }
-
-  ## tbd:
-  # is lookup a specific lookup or just a list of character entries
-  # restore specific value label order?
-
-  GADSdat_out
+  return(GADSdat_out)
 }
 
 #'@export
 changeValLabels.all_GADSdat <- function(GADSdat, varName, value, valLabel) {
   stop("This method has not been implemented yet")
 }
-
-# restructure a vector into a data.frame with maximum row number (and possibly more columns)
-resize_vector <- function(vec, max_nrow) {
-  stopifnot(is.numeric(max_nrow) && length(max_nrow) == 1)
-  stopifnot(is.vector(vec))
-
-  suppressWarnings(mat <- matrix(vec, nrow = max_nrow))
-  as.data.frame(mat)
-}
-
-# resize_vector2 <- function(vec, max_nrow) {
-#   stopifnot(is.numeric(max_nrow) && length(max_nrow) == 1)
-#   stopifnot(is.vector(vec))
-#
-#   vec_len <- length(vec)
-#   if(vec_len <= max_nrow) return(data.frame(vec, stringsAsFactors = FALSE))
-#
-#   out <- data.frame(pre_length = numeric(max_nrow))
-#   while(vec_len > 0) {
-#     # add NAs if necessary
-#     if(vec_len < max_nrow) vec <- c(vec, rep(NA, max_nrow - vec_len))
-#
-#     pick_ind <- seq(max_nrow)
-#     out <- data.frame(out, vec[pick_ind])
-#     vec <- vec[-pick_ind]
-#     vec_len <- length(vec)
-#   }
-#   out[, -1]
-# }
