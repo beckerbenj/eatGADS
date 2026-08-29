@@ -89,3 +89,18 @@ test_that("fast Version: GADSdat", {
   out <- checkUniqueness2(long_gads, varName = "v1", idVar = "id", impVar = "imp")
   expect_true(out)
 })
+
+test_that("fast Version: multiple idVars", {
+  l <- 10
+  long_df_mid <- data.table::data.table(id = rep(1:l, each = 15),
+                                        year = rep(2020:2022, each = 5, times = l),
+                                        v1 = rep(1:(l*3), each = 5),
+                                        imp = rep(1:5, times = l*3))
+  out <- checkUniqueness2(long_df_mid, varName = "v1", idVar = c("id", "year"), impVar = "imp")
+  expect_true(out)
+
+  long_df_mid_err <- long_df_mid
+  long_df_mid_err[1, "v1"] <- 999
+  out2 <- checkUniqueness2(long_df_mid_err, varName = "v1", idVar = c("id", "year"), impVar = "imp")
+  expect_false(out2)
+})
