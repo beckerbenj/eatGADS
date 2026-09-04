@@ -16,10 +16,13 @@ for(i in paste0("fac", 1:3)) {
 facs_gads3 <- changeMissings(facs_gads1, varName = "fac3",
                              value = 3, missings = "miss")
 
-facs_gads4 <- changeValLabels(facs_gads1, varName = "fac1",
+facs_gads4 <- recodeGADS(facs_gads3, varName = "fac3",
+                         oldValues = 3, newValues = 7)
+
+facs_gads5 <- changeValLabels(facs_gads1, varName = "fac1",
                               value = c(4:6, -97),
                               valLabel = c("Swe", "USA", "Den", "missing by design"))
-facs_gads4 <- changeMissings(facs_gads4, varName = "fac1", value = -97, missings = "miss")
+facs_gads5 <- changeMissings(facs_gads5, varName = "fac1", value = -97, missings = "miss")
 
 load(file = "helper_data.rda")
 
@@ -131,8 +134,18 @@ test_that("Missing tags inside the valid value range cause a warning", {
   expect_identical(missing_meta$missings[[1]], "miss")
 })
 
+test_that("Valid values are arranged around a missing tag if necessary", {
+  suppressWarnings(out3 <- assimilateValLabels(facs_gads3, varNames = paste0("fac", 3:1)))
+  expect_warning(out4 <- assimilateValLabels(facs_gads4, varNames = paste0("fac", 3:1)),
+                 regexp = "^Some missing")
+  korea_meta3 <- out3$labels[out3$labels$valLabel == "Kor" & !is.na(out3$labels$valLabel), ]
+  korea_meta4 <- out4$labels[out4$labels$valLabel == "Kor" & !is.na(out3$labels$valLabel), ]
+  expect_identical(korea_meta3$value[[1]], 8)
+  expect_identical(korea_meta4$value[[1]], 8)
+})
+
 test_that("Only existing labels are retained", {
   out1 <- assimilateValLabels(facs_gads1, varNames = paste0("fac", 1:3))
-  out4 <- assimilateValLabels(facs_gads4, varNames = paste0("fac", 1:3))
-  expect_identical(out1, out4)
+  out5 <- assimilateValLabels(facs_gads5, varNames = paste0("fac", 1:3))
+  expect_identical(out1, out5)
 })
