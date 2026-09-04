@@ -38,6 +38,11 @@ assimilateValLabels.GADSdat <- function(GADSdat, varNames, lookup = NULL) {
   check_GADSdat(GADSdat)
   check_vars_in_GADSdat(GADSdat, vars = varNames)
 
+  # extract data of variables in form of their value labels
+  suppressMessages(fac_gads <- extractVars(GADSdat, vars = varNames))
+  suppressWarnings(fac_df <- extractData(fac_gads, convertMiss = FALSE,
+                                         convertLabels = "character"))
+
   ## use lookup table if supplied ##
   master_lookup <- data.frame(value = NULL, valLabel = NULL, missings = NULL)
   master_colnames <- c("value", "valLabel", "missings")
@@ -45,7 +50,7 @@ assimilateValLabels.GADSdat <- function(GADSdat, varNames, lookup = NULL) {
     if (!is.data.frame(lookup) || !all(master_colnames %in% names(lookup))) {
       stop("'lookup' needs to be a data.frame with columns 'value', 'valLabel', and 'missings'.")
     }
-    master_lookup <- lookup[, c("value", "valLabel", "missings")]
+    master_lookup <- select_occurring(lookup[, master_colnames], fac_df)
   }
 
   ## add missings of first variable ##
@@ -55,6 +60,7 @@ assimilateValLabels.GADSdat <- function(GADSdat, varNames, lookup = NULL) {
     lookup_miss_first_var <- data.frame(value = meta_first_var$value[missings_first_var],
                                         valLabel = meta_first_var$valLabel[missings_first_var],
                                         missings = "miss")
+    lookup_miss_first_var <- select_occurring(lookup_miss_first_var, fac_df)
   } else {
     lookup_miss_first_var <- data.frame(value = NULL, valLabel = NULL, missings = NULL)
   }
@@ -72,7 +78,8 @@ assimilateValLabels.GADSdat <- function(GADSdat, varNames, lookup = NULL) {
   master_lookup <- rbind(master_lookup, lookup_miss_first_var)
 
   ## add other values ##
-  labels_all_vars <- unique(extractMeta(GADSdat, varNames)$valLabel)
+  meta_all_vars <- select_occurring(extractMeta(GADSdat, varNames)[, master_colnames], fac_df)
+  labels_all_vars <- unique(meta_all_vars$valLabel)
   labels_all_vars <- labels_all_vars[!is.na(labels_all_vars)]
   labels_not_yet_in_lookup <- labels_all_vars[!labels_all_vars %in% master_lookup$valLabel]
   additional_lookup <- data.frame(value = seq_along(labels_not_yet_in_lookup),
@@ -100,9 +107,6 @@ assimilateValLabels.GADSdat <- function(GADSdat, varNames, lookup = NULL) {
   master_lookup <- rbind(master_lookup, additional_lookup)
 
   ## recode labels to common values ##
-  # extract data of variables in form of their value labels
-  suppressMessages(fac_gads <- extractVars(GADSdat, vars = varNames))
-  fac_df <- extractData(fac_gads, convertMiss = FALSE, convertLabels = "character")
   # remove unnecessary labels to avoid warning from import_DF
   for (this_var in varNames) {
     attr(fac_df[, this_var], "label") <- NULL
@@ -135,4 +139,10 @@ assimilateValLabels.GADSdat <- function(GADSdat, varNames, lookup = NULL) {
 #' @export
 assimilateValLabels.all_GADSdat <- function(GADSdat, varNames, lookup = NULL) {
   stop("This method has not been implemented yet")
+}
+
+
+select_occurring <- function(lookup, data) {
+  valLabel_in_data <- lookup$valLabel %in% unlist(data)
+  out <- lookup[valLabel_in_data, ]
 }
