@@ -16,10 +16,10 @@
 #' @param lookup Optional lookup \code{data.frame} with columns \code{value},
 #'  \code{valLabel}, and \code{missings}.
 #'
-#'@return Returns the \code{GADSdat} object with changed meta data and recoded values.
+#' @return Returns the \code{GADSdat} object with changed meta data and recoded values.
 #'
-#'@examples
-#'# Example data set
+#' @examples
+#' # Example data set
 #' facs_df <- data.frame(id = 1:3, fac1 = c("Eng", "Aus", "Ger"),
 #'                       fac2 = c("Ger", "Franz", "Ita"),
 #'                       fac3 = c("Kor", "Chi", "Alg"),
@@ -28,11 +28,12 @@
 #'
 #' assimilateValLabels(facs_gads, varNames = paste0("fac", 1:3))
 #'
-#'@export
+#' @export
 assimilateValLabels <- function(GADSdat, varNames, lookup = NULL) {
   UseMethod("assimilateValLabels")
 }
-#'@export
+
+#' @export
 assimilateValLabels.GADSdat <- function(GADSdat, varNames, lookup = NULL) {
   check_GADSdat(GADSdat)
   check_vars_in_GADSdat(GADSdat, vars = varNames)
@@ -50,13 +51,24 @@ assimilateValLabels.GADSdat <- function(GADSdat, varNames, lookup = NULL) {
   meta_first_var <- extractMeta(GADSdat, varNames[[1]])
   missings_first_var <- !is.na(meta_first_var$valLabel) & meta_first_var$missings == "miss"
   if (any(missings_first_var)) {
-    lookup_missings_first_var <- data.frame(value = meta_first_var$value[missings_first_var],
-                                            valLabel = meta_first_var$valLabel[missings_first_var],
-                                            missings = "miss")
+    lookup_miss_first_var <- data.frame(value = meta_first_var$value[missings_first_var],
+                                        valLabel = meta_first_var$valLabel[missings_first_var],
+                                        missings = "miss")
   } else {
-    lookup_missings_first_var <- data.frame(value = NULL, valLabel = NULL, missings = NULL)
+    lookup_miss_first_var <- data.frame(value = NULL, valLabel = NULL, missings = NULL)
   }
-  master_lookup <- rbind(master_lookup, lookup_missings_first_var)
+  # check for conflicts between first var missings and user-supplied lookup
+  lookup_conflicts <- master_lookup$valLabel %in% lookup_miss_first_var$valLabel &
+    master_lookup$missings == "valid"
+  if (any(lookup_conflicts)) {
+    warning("Some values marked as valid in 'lookup' are marked as missing in ",
+            varNames[[1]], ". The tag in 'lookup' is being prioritized for these values: ",
+            paste0(master_lookup$value[lookup_conflicts], collapse = ", "))
+    # discard conflicting rows from first var missings
+    conflicting_missings <- lookup_miss_first_var$valLabel %in% master_lookup$valLabel[lookup_conflicts]
+    lookup_miss_first_var <- lookup_miss_first_var[!conflicting_missings, ]
+  }
+  master_lookup <- rbind(master_lookup, lookup_miss_first_var)
 
   ## add other values ##
   labels_all_vars <- unique(extractMeta(GADSdat, varNames)$valLabel)
@@ -64,8 +76,8 @@ assimilateValLabels.GADSdat <- function(GADSdat, varNames, lookup = NULL) {
   additional_lookup <- data.frame(value = seq_along(labels_not_yet_in_lookup),
                                   valLabel = sort(labels_not_yet_in_lookup),
                                   missings = "valid")
-  # increase values if positions in the value range are already taken
-  if (any(additional_lookup$value %in% lookup_missings_first_var$value)) {
+  # increment values if positions in the value range are already taken
+  if (any(additional_lookup$value %in% lookup_miss_first_var$value)) {
     warning("Some missing values are now inside the assimilated value range.")
   }
   while (any(additional_lookup$value %in% master_lookup$value)) {
@@ -87,8 +99,9 @@ assimilateValLabels.GADSdat <- function(GADSdat, varNames, lookup = NULL) {
 
   ## recode labels to common values ##
   # extract data of variables in form of their value labels
-  suppressMessages(fac_GADS <- extractVars(GADSdat, vars = varNames))
-  fac_df <- extractData(fac_GADS, convertMiss = FALSE, convertLabels = "character")
+  suppressMessages(fac_gads <- extractVars(GADSdat, vars = varNames))
+  fac_df <- extractData(fac_gads, convertMiss = FALSE, convertLabels = "character")
+  # remove unnecessary labels to avoid warning from import_DF
   for (this_var in varNames) {
     attr(fac_df[, this_var], "label") <- NULL
   }
@@ -111,14 +124,13 @@ assimilateValLabels.GADSdat <- function(GADSdat, varNames, lookup = NULL) {
 
   # merge data into original GADSdat
   suppressMessages(GADSdat_removed <- removeVars(GADSdat, vars = varNames))
-  # cbind Method, orderlike
   GADSdat_unorderd <- cbind(GADSdat_removed, newVars_gads_assimilated)
   GADSdat_out <- orderLike(GADSdat_unorderd, newOrder = namesGADS(GADSdat))
 
   return(GADSdat_out)
 }
 
-#'@export
-changeValLabels.all_GADSdat <- function(GADSdat, varName, value, valLabel) {
+#' @export
+assimilateValLabels.all_GADSdat <- function(GADSdat, varNames, lookup = NULL) {
   stop("This method has not been implemented yet")
 }
