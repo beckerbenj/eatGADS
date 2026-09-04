@@ -2,14 +2,19 @@
 #############################################################################
 #' Assimilate value labels.
 #'
-#' Assimilate all value labels of multiple variables as part of a \code{GADSdat} or \code{all_GADSdat} object.
+#' Assimilate all value labels of multiple variables as part of a \code{GADSdat}
+#'  or \code{all_GADSdat} object.
 #'
-#' Assimilation can be performed using all existing value labels or a lookup table containing at least all existing value labels.
-#' Missing codes are reused based on the meta data of the first variable in \code{varNames}.
+#' Assimilation can be performed using all existing value labels or a lookup
+#'  table containing at least all existing value labels. Missing tags are
+#'  reused based on the meta data of the first variable in \code{varNames}.
+#'  If a \code{lookup} is supplied, its order of value labels as well as its
+#'  \code{missings} tags are prioritized over the meta data of the variables.
 #'
-#'@param GADSdat \code{GADSdat} object imported via \code{eatGADS}.
-#'@param varNames Character string of a variable name.
-#'@param lookup Lookup \code{data.frame}.
+#' @param GADSdat A \code{GADSdat} object.
+#' @param varNames Character string of the variable name(s).
+#' @param lookup Optional lookup \code{data.frame} with columns \code{value},
+#'  \code{valLabel}, and \code{missings}.
 #'
 #'@return Returns the \code{GADSdat} object with changed meta data and recoded values.
 #'

@@ -7,21 +7,26 @@
 assimilateValLabels(GADSdat, varNames, lookup = NULL)
 }
 \arguments{
-\item{GADSdat}{\code{GADSdat} object imported via \code{eatGADS}.}
+\item{GADSdat}{A \code{GADSdat} object.}
 
-\item{varNames}{Character string of a variable name.}
+\item{varNames}{Character string of the variable name(s).}
 
-\item{lookup}{Lookup \code{data.frame}.}
+\item{lookup}{Optional lookup \code{data.frame} with columns \code{value},
+\code{valLabel}, and \code{missings}.}
 }
 \value{
 Returns the \code{GADSdat} object with changed meta data and recoded values.
 }
 \description{
-Assimilate all value labels of multiple variables as part of a \code{GADSdat} or \code{all_GADSdat} object.
+Assimilate all value labels of multiple variables as part of a \code{GADSdat}
+ or \code{all_GADSdat} object.
 }
 \details{
-Assimilation can be performed using all existing value labels or a lookup table containing at least all existing value labels.
-Missing codes are reused based on the meta data of the first variable in \code{varNames}.
+Assimilation can be performed using all existing value labels or a lookup
+ table containing at least all existing value labels. Missing tags are
+ reused based on the meta data of the first variable in \code{varNames}.
+ If a \code{lookup} is supplied, its order of value labels as well as its
+ \code{missings} tags are prioritized over the meta data of the variables.
 }
 \examples{
 # Example data set
