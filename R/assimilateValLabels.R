@@ -40,8 +40,9 @@ assimilateValLabels.GADSdat <- function(GADSdat, varNames, lookup = NULL) {
 
   ## use lookup table if supplied ##
   master_lookup <- data.frame(value = NULL, valLabel = NULL, missings = NULL)
+  master_colnames <- c("value", "valLabel", "missings")
   if (!is.null(lookup)) {
-    if (!is.data.frame(lookup) || !all(names(lookup) %in% names(master_lookup))) {
+    if (!is.data.frame(lookup) || !all(master_colnames %in% names(lookup))) {
       stop("'lookup' needs to be a data.frame with columns 'value', 'valLabel', and 'missings'.")
     }
     master_lookup <- lookup[, c("value", "valLabel", "missings")]
@@ -72,6 +73,7 @@ assimilateValLabels.GADSdat <- function(GADSdat, varNames, lookup = NULL) {
 
   ## add other values ##
   labels_all_vars <- unique(extractMeta(GADSdat, varNames)$valLabel)
+  labels_all_vars <- labels_all_vars[!is.na(labels_all_vars)]
   labels_not_yet_in_lookup <- labels_all_vars[!labels_all_vars %in% master_lookup$valLabel]
   additional_lookup <- data.frame(value = seq_along(labels_not_yet_in_lookup),
                                   valLabel = sort(labels_not_yet_in_lookup),
