@@ -59,6 +59,7 @@ Other contributors:
 \itemize{
   \item Karoline Sachse [contributor]
   \item Johanna Busse [contributor]
+  \item Nikolas D. Weigt (\href{https://orcid.org/0000-0003-1486-9295}{ORCID}) [contributor]
 }
 
 }
