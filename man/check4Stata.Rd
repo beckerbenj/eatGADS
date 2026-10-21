@@ -36,7 +36,9 @@ Specifically, the following requirements are tested:
  \code{too_many_cols}* \tab The number of columns/variables does not exceed the specific limit. \cr
 }
 Not complying with the marked (*) requirements will prevent a dataset from being exported to a
- \code{.dta} file. Issues with unmarked requirements will be solved automatically by truncating.
+ \code{.dta} file. Issues with unmarked requirements will be solved automatically by truncating, with
+ the exception of variable labels: newer \code{haven} versions throw an error on export instead of
+ truncating variable labels that are too long.
 
 Limits to different aspects of the dataset vary between versions of the software. By default
  (\code{version = "Stata"}), compliance with the limits for \code{Stata 19/SE} is checked.

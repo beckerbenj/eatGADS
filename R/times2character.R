@@ -11,6 +11,7 @@ times2character <- function(rawDat) {
 ## Function works for labelled and unlabelled time and date variables (which are handeled very inconsistently by haven under user_na = T)
 #'@export
 times2character.savDat<- function(rawDat) {
+  rawDat[] <- lapply(rawDat, haven_meta2attributes)
   varClass <- unlist(lapply(rawDat, extract_attribute, attr_name = "format.spss"))
   #if("vDatetime" %in% names(rawDat)) browser()
 

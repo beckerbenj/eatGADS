@@ -27,7 +27,10 @@
 #' Currently known limitations for \code{write_stata} are:
 #' \itemize{
 #' \item a) Variable format is dropped,
-#' \item b) missing codes are dropped.
+#' \item b) missing codes are dropped,
+#' \item c) variable labels exceeding the \code{Stata} limit (80 characters, see
+#' \code{\link{check4Stata}}) cause an error from \code{haven}'s \code{\link[haven:read_dta]{write_dta}}
+#' function with newer \code{haven} versions (older \code{haven} versions silently truncate them).
 #' }
 #'
 #'@param GADSdat A \code{GADSdat} object.
@@ -41,9 +44,12 @@
 #'tmp <- tempfile(fileext = ".sav")
 #'write_spss(pisa, tmp)
 #'
-#'# write to stata
+#'# write to stata (shorten variable labels to the Stata limit first)
+#'pisa2 <- pisa
+#'limit <- getProgramLimit("Stata", "varLabels")$value
+#'pisa2$labels$varLabel <- substr(pisa2$labels$varLabel, 1, limit)
 #'tmp <- tempfile(fileext = ".dta")
-#'write_stata(pisa, tmp)
+#'write_stata(pisa2, tmp)
 #'
 #'@export
 write_spss <- function(GADSdat, filePath) {

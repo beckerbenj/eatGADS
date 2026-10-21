@@ -58,5 +58,19 @@ test_that("Abort with error for a hard-incompatible dataset", {
 
 test_that("Warn about a soft-incompatible dataset", {
   temppath <- tempfile(fileext = ".dta")
-  expect_warning(write_stata(pisa, temppath))
+  soft_gads <- example_df
+  soft_gads$labels$valLabel[3] <- paste(rep("z", 31000), collapse = "")
+  expect_warning(write_stata(soft_gads, temppath))
+})
+
+test_that("Variable labels too long for Stata", {
+  temppath <- tempfile(fileext = ".dta")
+  # pisa has a variable label exceeding the Stata limit: older haven versions
+  # silently truncate it, newer versions throw an error
+  res <- tryCatch(suppressWarnings(write_stata(pisa, temppath)), error = identity)
+  if (inherits(res, "error")) {
+    expect_match(conditionMessage(res), "label is too long")
+  } else {
+    succeed()
+  }
 })

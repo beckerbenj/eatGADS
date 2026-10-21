@@ -6,6 +6,7 @@ extract_variable_level <- function(rawDat) {
 
 #'@export
 extract_variable_level.savDat<- function(rawDat) {
+  rawDat[] <- lapply(rawDat, haven_meta2attributes)
   # check for unknown attributes (mostly to secure against changes in haven)
   all_attr <- unlist(lapply(rawDat, function(var) names(attributes(var))))
   unknown_attr <- all_attr[!all_attr %in% c("label", "format.spss", "display_width", "class", "tzone", "labels", "na_range", "na_values",
@@ -52,6 +53,32 @@ extract_attribute <- function(var, attr_name, NA_type = NA_character_) {
   if(is.null(out)) out <- NA_type
   if(length(out) > 1) out <- paste(out, collapse = ", ")
   out
+}
+
+# newer haven versions (>= 2.6.0) store format and display width in a single S7
+# attribute 'haven_meta' instead of the top-level 'format.spss' and 'display_width'
+# attributes. This shim converts the new format back to the old attributes so the
+# rest of the package works unchanged with both haven versions.
+#
+# TODO: once the new haven is on CRAN and eatGADS can depend on it (i.e. require
+# the new haven version in DESCRIPTION), remove this shim and read 'haven_meta'
+# directly instead: extract_variable_level.savDat() should get 'format' and
+# 'display_width' from attr(var, "haven_meta") (an S7 object, e.g. of class
+# "haven::meta_var_spss", whose properties can be read with attr()), and
+# times2character.savDat() should do the same for 'format'. The unknown-attributes
+# check in extract_variable_level.savDat() can then simply drop 'haven_meta'.
+haven_meta2attributes <- function(var) {
+  meta <- attr(var, "haven_meta", exact = TRUE)
+  if(is.null(meta)) return(var)
+  if(inherits(meta, "haven::meta_var_spss")) {
+    format <- attr(meta, "format", exact = TRUE)
+    display_width <- attr(meta, "display_width", exact = TRUE)
+    if(!is.null(format)) attr(var, "format.spss") <- format
+    # older haven versions only exported non-default display widths
+    if(!is.null(display_width) && display_width != 8) attr(var, "display_width") <- display_width
+  }
+  attr(var, "haven_meta") <- NULL
+  var
 }
 
 
